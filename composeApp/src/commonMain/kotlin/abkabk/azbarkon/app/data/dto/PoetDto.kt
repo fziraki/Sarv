@@ -1,0 +1,23 @@
+package abkabk.azbarkon.app.data.dto
+
+import abkabk.azbarkon.app.domain.model.Poet
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class PoetDto(
+    val id: Int?,
+    val name: String?,
+    val description: String?,
+    val rootCatId: Int?,
+    val imageUrl: String?
+) {
+    fun toDomain(): Poet {
+        return Poet(
+            id = id,
+            name = name,
+            description = description,
+            rootCatId = rootCatId,
+            imageUrl = imageUrl
+        )
+    }
+}
