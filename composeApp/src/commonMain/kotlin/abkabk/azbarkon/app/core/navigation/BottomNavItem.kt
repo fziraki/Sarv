@@ -1,7 +1,10 @@
 package abkabk.azbarkon.app.core.navigation
 
 import azbarkoncmp.composeapp.generated.resources.Res
+import azbarkoncmp.composeapp.generated.resources.games
 import azbarkoncmp.composeapp.generated.resources.home
+import azbarkoncmp.composeapp.generated.resources.library
+import azbarkoncmp.composeapp.generated.resources.profile
 import org.jetbrains.compose.resources.DrawableResource
 
 sealed class BottomNavItem(
@@ -11,26 +14,26 @@ sealed class BottomNavItem(
 ) {
 
     data object Home : BottomNavItem(
-        route = "home",
+        route = Routes.HOME,
         title = "آستان",
         icon = Res.drawable.home
     )
 
     data object Library : BottomNavItem(
-        route = "library",
+        route = Routes.LIBRARY,
         title = "گنجینه",
-        icon = Res.drawable.home
+        icon = Res.drawable.library
     )
 
     data object Games : BottomNavItem(
-        route = "games",
-        title = "بازی",
-        icon = Res.drawable.home
+        route = Routes.GAMES,
+        title = "میدان",
+        icon = Res.drawable.games
     )
 
     data object Profile : BottomNavItem(
-        route = "profile",
+        route = Routes.PROFILE,
         title = "من",
-        icon = Res.drawable.home
+        icon = Res.drawable.profile
     )
 }

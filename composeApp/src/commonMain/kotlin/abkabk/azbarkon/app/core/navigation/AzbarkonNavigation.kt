@@ -1,15 +1,22 @@
 package abkabk.azbarkon.app.core.navigation
 
+import abkabk.azbarkon.app.features.games.GamesScreen
 import abkabk.azbarkon.app.features.home.HomeScreen
+import abkabk.azbarkon.app.features.library.LibraryScreen
+import abkabk.azbarkon.app.features.profile.ProfileScreen
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -32,9 +39,13 @@ fun AzbarkonNavigation() {
     val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
 
-            NavigationBar {
+            NavigationBar(
+                modifier = Modifier,
+                containerColor = MaterialTheme.colorScheme.surface,
+            ) {
 
                 items.forEach { item ->
 
@@ -57,9 +68,23 @@ fun AzbarkonNavigation() {
                                 contentDescription = item.title)
                         },
 
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.secondary,
+                            selectedTextColor = MaterialTheme.colorScheme.secondary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            indicatorColor = Color.Transparent
+                        ),
+
                         label = {
-                            Text(item.title)
-                        }
+                            Text(
+                                item.title,
+                                style = if (currentRoute == item.route)
+                                    MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                                else
+                                    MaterialTheme.typography.labelMedium
+                            )
+                        },
                     )
                 }
             }
@@ -74,6 +99,18 @@ fun AzbarkonNavigation() {
 
             composable(BottomNavItem.Home.route) {
                 HomeScreen()
+            }
+
+            composable(BottomNavItem.Library.route) {
+                LibraryScreen()
+            }
+
+            composable(BottomNavItem.Games.route) {
+                GamesScreen()
+            }
+
+            composable(BottomNavItem.Profile.route) {
+                ProfileScreen()
             }
 
         }

@@ -1,9 +1,12 @@
 package abkabk.azbarkon.app.ui.theme
 
-import abkabk.azbarkon.app.core.designsystem.AzbarkonTypography
-import androidx.compose.runtime.Composable
+import abkabk.azbarkon.app.core.designsystem.azbarkonTypography
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 
 @Composable
 fun AzbarkonTheme(
@@ -16,9 +19,14 @@ fun AzbarkonTheme(
         LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = AzbarkonTypography,
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalLayoutDirection provides LayoutDirection.Rtl
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = azbarkonTypography(),
+            content = content
+        )
+    }
+
 }
