@@ -19,8 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.composeapp.generated.resources.Res
-import azbarkoncmp.composeapp.generated.resources.home
+import azbarkoncmp.composeapp.generated.resources.favorite
 import azbarkoncmp.composeapp.generated.resources.likes
+import azbarkoncmp.composeapp.generated.resources.palette
 import azbarkoncmp.composeapp.generated.resources.pic_negar
 import azbarkoncmp.composeapp.generated.resources.review
 import azbarkoncmp.composeapp.generated.resources.search
@@ -64,7 +65,7 @@ fun QuickAccessMenu() {
     ){
        QuickAccessItem(
            modifier = Modifier.weight(1f),
-           icon = Res.drawable.home,
+           icon = Res.drawable.favorite,
            title = Res.string.likes,
            onItemClick = {
 
@@ -73,7 +74,7 @@ fun QuickAccessMenu() {
 
         QuickAccessItem(
             modifier = Modifier.weight(1f),
-            icon = Res.drawable.home,
+            icon = Res.drawable.search,
             title = Res.string.search,
             onItemClick = {
 
@@ -82,7 +83,7 @@ fun QuickAccessMenu() {
 
         QuickAccessItem(
             modifier = Modifier.weight(1f),
-            icon = Res.drawable.home,
+            icon = Res.drawable.palette,
             title = Res.string.pic_negar,
             onItemClick = {
 
@@ -91,7 +92,7 @@ fun QuickAccessMenu() {
 
         QuickAccessItem(
             modifier = Modifier.weight(1f),
-            icon = Res.drawable.home,
+            icon = Res.drawable.review,
             title = Res.string.review,
             onItemClick = {
 

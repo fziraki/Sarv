@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AzbarkonNavigation() {
@@ -64,8 +65,10 @@ fun AzbarkonNavigation() {
                         },
 
                         icon = {
-                            Icon( painter = painterResource(item.icon),
-                                contentDescription = item.title)
+                            Icon(
+                                painter = painterResource(item.icon),
+                                contentDescription = stringResource(item.title)
+                            )
                         },
 
                         colors = NavigationBarItemDefaults.colors(
@@ -78,7 +81,7 @@ fun AzbarkonNavigation() {
 
                         label = {
                             Text(
-                                item.title,
+                                text = stringResource(item.title),
                                 style = if (currentRoute == item.route)
                                     MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
                                 else

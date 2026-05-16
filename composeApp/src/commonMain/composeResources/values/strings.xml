@@ -1,4 +1,10 @@
 <resources>
+
+    <string name="home">آستان</string>
+    <string name="library">گنجینه</string>
+    <string name="games">میدان</string>
+    <string name="profile">من</string>
+
     <string name="likes">علاقه مندی‌ها</string>
     <string name="search">جستجو</string>
     <string name="pic_negar">تصویر نگار</string>
