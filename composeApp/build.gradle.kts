@@ -30,7 +30,6 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
-
         }
 
         iosMain.dependencies {
@@ -47,7 +46,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.navigation.compose)
-            implementation("org.jetbrains.compose.components:components-resources")
             // 🧠 Ktor Core
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
@@ -57,7 +55,15 @@ kotlin {
             // 🧩 Kotlin Serialization
             implementation(libs.kotlinx.serialization.json)
 
+            implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+
+            implementation(libs.napier)
+
+            implementation(libs.slf4j.nop)
+
+            implementation(libs.kamel.image)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

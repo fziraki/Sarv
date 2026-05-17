@@ -1,5 +1,6 @@
 package abkabk.azbarkon.app.core.navigation
 
+import abkabk.azbarkon.app.core.presentation.rememberAzbarkonAppState
 import abkabk.azbarkon.app.features.games.GamesScreen
 import abkabk.azbarkon.app.features.home.HomeScreen
 import abkabk.azbarkon.app.features.library.LibraryScreen
@@ -11,6 +12,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -39,7 +42,12 @@ fun AzbarkonNavigation() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val appState = rememberAzbarkonAppState()
+
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(appState.snackbarHostState)
+        },
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
 
@@ -99,6 +107,7 @@ fun AzbarkonNavigation() {
             startDestination = BottomNavItem.Home.route,
             modifier = Modifier.padding(padding)
         ) {
+            Napier.d("NavHost loaded")
 
             composable(BottomNavItem.Home.route) {
                 HomeScreen()
