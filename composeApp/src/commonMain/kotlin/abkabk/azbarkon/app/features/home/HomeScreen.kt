@@ -1,6 +1,8 @@
 package abkabk.azbarkon.app.features.home
 
 import abkabk.azbarkon.app.core.presentation.BaseScreen
+import abkabk.azbarkon.app.core.presentation.UiText
+import abkabk.azbarkon.app.core.presentation.asString
 import abkabk.azbarkon.app.core.util.Constants.BASE_URL
 import abkabk.azbarkon.app.domain.model.Poet
 import abkabk.azbarkon.app.ui.components.NetworkImage
@@ -8,15 +10,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,13 +33,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.composeapp.generated.resources.Res
+import azbarkoncmp.composeapp.generated.resources.all
 import azbarkoncmp.composeapp.generated.resources.favorite
 import azbarkoncmp.composeapp.generated.resources.likes
+import azbarkoncmp.composeapp.generated.resources.memorization_button
+import azbarkoncmp.composeapp.generated.resources.new_memorization_button
+import azbarkoncmp.composeapp.generated.resources.new_memorization_desc
+import azbarkoncmp.composeapp.generated.resources.new_memorization_title
 import azbarkoncmp.composeapp.generated.resources.palette
 import azbarkoncmp.composeapp.generated.resources.pic_negar
+import azbarkoncmp.composeapp.generated.resources.poetry_memorization
+import azbarkoncmp.composeapp.generated.resources.popular_poets
 import azbarkoncmp.composeapp.generated.resources.review
 import azbarkoncmp.composeapp.generated.resources.search
-import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
@@ -72,8 +82,6 @@ fun HomeScreen(){
 @Composable
 fun HomeContent(state: HomeContract.State) {
 
-    Napier.d("HomeContent loaded")
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -82,7 +90,7 @@ fun HomeContent(state: HomeContract.State) {
             TopSlider()
         }
         item {
-            HeroCard()
+            HeroCard(state.isNewMemorization)
         }
         item {
             QuickAccessMenu()
@@ -103,13 +111,13 @@ fun Poets(poets: List<Poet>) {
         Row(modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
-                text = "شاعران محبوب",
-                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                text = stringResource(Res.string.popular_poets),
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Text(
-                text = "همه",
-                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                text = stringResource(Res.string.all),
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
@@ -144,7 +152,7 @@ fun PoetItem(item: Poet) {
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = item.name?:"",
-            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
@@ -223,14 +231,90 @@ fun QuickAccessItem(
         )
         Text(
             text = stringResource(title),
-            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.secondary
         )
     }
 }
 
 @Composable
-fun HeroCard() {
+fun HeroCard(newMemorization: Boolean) {
+
+    val res1 = Res.string.poetry_memorization
+    val res2 = if (newMemorization){
+        stringResource(Res.string.new_memorization_title)
+    } else {
+        UiText.Dynamic("").asString()
+    }
+    val res3 = if (newMemorization){
+        stringResource(Res.string.new_memorization_desc)
+    } else {
+        UiText.Dynamic("").asString()
+    }
+    val resButton = if (newMemorization) { Res.string.new_memorization_button } else {
+        Res.string.memorization_button
+    }
+
+    Box(
+        modifier = Modifier.fillMaxWidth().padding(16.dp)
+        .background(
+            color = MaterialTheme.colorScheme.primaryContainer,
+            shape = RoundedCornerShape(12.dp)
+        )
+    ){
+
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+
+            Image(
+                modifier = Modifier.weight(1f),
+                painter = painterResource(Res.drawable.palette),
+                contentDescription = null
+            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(
+                    text = stringResource(res1),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = res2,
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = res3,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        disabledContainerColor = MaterialTheme.colorScheme.primary,
+                        disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                    onClick = {}
+                ){
+                    Text(
+                        text = stringResource(resButton),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
+
+        }
+    }
 
 }
 

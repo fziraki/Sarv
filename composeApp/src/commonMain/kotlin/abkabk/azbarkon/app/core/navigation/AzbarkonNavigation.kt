@@ -91,9 +91,9 @@ fun AzbarkonNavigation() {
                             Text(
                                 text = stringResource(item.title),
                                 style = if (currentRoute == item.route)
-                                    MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                                    MaterialTheme.typography.headlineMedium
                                 else
-                                    MaterialTheme.typography.labelMedium
+                                    MaterialTheme.typography.labelSmall
                             )
                         },
                     )

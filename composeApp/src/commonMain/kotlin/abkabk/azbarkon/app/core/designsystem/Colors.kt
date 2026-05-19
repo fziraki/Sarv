@@ -28,7 +28,7 @@ val onTertiary = Color(0xFFFFFFFF)
 val tertiaryContainer = Color(0xFFEDE4D3)
 val onTertiaryContainer = Color(0xFF3E2A1E)
 //رنگ پس زمینه
-val background = Color(0xFFF6F2E8)
+val background = Color(0xFFFAF7EF)
 val onBackground = Color(0xFF2B241D)
 //رنگ کانتینر باتم نویگیشن
 val surface = Color(0xFFF5EFE1)

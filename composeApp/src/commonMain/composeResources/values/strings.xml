@@ -9,4 +9,14 @@
     <string name="search">جستجو</string>
     <string name="pic_negar">تصویر نگار</string>
     <string name="review">مرور شعر</string>
+
+    <string name="popular_poets">شاعران محبوب</string>
+    <string name="all">همه</string>
+
+    <string name="poetry_memorization">حفظ شعر</string>
+    <string name="new_memorization_title">حفظ جدید</string>
+    <string name="new_memorization_desc">شعری را برای حفظ انتخاب کنید\nو مسیر حفظ خود را شروع کنید</string>
+    <string name="new_memorization_button">انتخاب شعر</string>
+    <string name="memorization_button">ادامه حفظ</string>
+
 </resources>

@@ -11,18 +11,49 @@ fun azbarkonTypography(): Typography {
     val fontFamily = vazirmatnFontFamily()
 
     return Typography(
-        bodyLarge = TextStyle(
+        headlineSmall = TextStyle(
             fontFamily = fontFamily,
-            fontSize = 16.sp
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold
+        ),
+        headlineMedium = TextStyle(
+            fontFamily = fontFamily,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold
+        ),
+        headlineLarge = TextStyle(
+            fontFamily = fontFamily,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        ),
+
+        bodySmall = TextStyle(
+            fontFamily = fontFamily,
+            fontSize = 12.sp
         ),
         bodyMedium = TextStyle(
             fontFamily = fontFamily,
             fontSize = 14.sp
         ),
-        headlineMedium = TextStyle(
+        bodyLarge = TextStyle(
+            fontFamily = fontFamily,
+            fontSize = 20.sp
+        ),
+
+        labelSmall = TextStyle(
+            fontFamily = fontFamily,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Thin
+        ),
+        labelMedium = TextStyle(
+            fontFamily = fontFamily,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Thin
+        ),
+        labelLarge = TextStyle(
             fontFamily = fontFamily,
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
+            fontWeight = FontWeight.Thin
+        ),
     )
 }
