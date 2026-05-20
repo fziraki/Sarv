@@ -20,6 +20,7 @@ class HomeViewModel(
 
     init {
         onEvent(HomeContract.Event.LoadPoets)
+        onEvent(HomeContract.Event.LoadTodayPoem)
     }
 
     override fun onEvent(event: HomeContract.Event) {
@@ -27,6 +28,10 @@ class HomeViewModel(
 
             HomeContract.Event.LoadPoets -> {
                 loadPoets()
+            }
+
+            HomeContract.Event.LoadTodayPoem -> {
+//                loadTodayPoem()
             }
 
             HomeContract.Event.Retry -> {
@@ -75,4 +80,45 @@ class HomeViewModel(
             }
         }
     }
+
+//    private fun loadTodayPoem() {
+//        viewModelScope.launch {
+//
+//            setState {
+//                copy(
+//                    screenState = UiScreenState.Loading
+//                )
+//            }
+//
+//            when (val result = getTodayPoemUseCase()) {
+//
+//                is ApiResult.Success -> {
+//
+//                    setState {
+//                        copy(
+//                            screenState = UiScreenState.Success,
+//                            poets = result.data
+//                        )
+//                    }
+//                }
+//
+//                is ApiResult.Error -> {
+//
+//                    setState {
+//                        copy(
+//                            screenState = UiScreenState.Error(
+//                                message = UiText.Dynamic(result.message)
+//                            ),
+//                        )
+//                    }
+//
+//                    sendEffect(
+//                        HomeContract.Effect.ShowSnackbar(
+//                            result.message
+//                        )
+//                    )
+//                }
+//            }
+//        }
+//    }
 }

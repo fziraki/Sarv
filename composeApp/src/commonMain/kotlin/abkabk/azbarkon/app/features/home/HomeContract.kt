@@ -8,11 +8,12 @@ class HomeContract {
     data class State(
         val screenState: UiScreenState = UiScreenState.Idle,
         val poets: List<Poet> = emptyList(),
-        val isNewMemorization: Boolean = true
+        val isNewMemorization: Boolean = true,
     )
 
     sealed interface Event {
         data object LoadPoets : Event
+        data object LoadTodayPoem : Event
         data object Retry : Event
     }
 
