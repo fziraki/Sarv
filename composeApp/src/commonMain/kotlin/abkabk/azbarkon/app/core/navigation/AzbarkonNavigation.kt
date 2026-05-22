@@ -5,8 +5,14 @@ import abkabk.azbarkon.app.features.games.GamesScreen
 import abkabk.azbarkon.app.features.home.HomeScreen
 import abkabk.azbarkon.app.features.library.LibraryScreen
 import abkabk.azbarkon.app.features.profile.ProfileScreen
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -14,19 +20,25 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import azbarkoncmp.composeapp.generated.resources.Res
+import azbarkoncmp.composeapp.generated.resources.arrow_back
 import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AzbarkonNavigation() {
 
@@ -44,11 +56,69 @@ fun AzbarkonNavigation() {
 
     val appState = rememberAzbarkonAppState()
 
+    val currentItem = items.find { it.route == currentRoute }
+
     Scaffold(
         snackbarHost = {
             SnackbarHost(appState.snackbarHostState)
         },
         containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+
+            CenterAlignedTopAppBar(
+
+                title = {
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = currentItem?.headerTitle
+                                ?.let { stringResource(it) }
+                                ?: "",
+                            style = MaterialTheme.typography.headlineLarge
+                        )
+                        Text(
+                            text = currentItem?.subtitle
+                                ?.let { stringResource(it) }
+                                ?: "",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                },
+                colors = TopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = MaterialTheme.colorScheme.background,
+                    navigationIconContentColor = MaterialTheme.colorScheme.secondary,
+                    titleContentColor = MaterialTheme.colorScheme.secondary,
+                    actionIconContentColor = MaterialTheme.colorScheme.secondary,
+                    subtitleContentColor = MaterialTheme.colorScheme.secondary,
+                ),
+                navigationIcon = {
+
+                    val canNavigateBack =
+                        navController.previousBackStackEntry != null
+
+                    if (canNavigateBack) {
+
+                        IconButton(
+                            onClick = {
+                                navController.navigateUp()
+                            }
+                        ) {
+
+                            Icon(
+                                painter = painterResource(Res.drawable.arrow_back),
+                                contentDescription = "Back"
+                            )
+                        }
+                    }
+                }
+            )
+        },
         bottomBar = {
 
             NavigationBar(

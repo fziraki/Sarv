@@ -1,9 +1,13 @@
 <resources>
 
+    <string name="app_name">ازبرکن</string>
+
     <string name="home">آستان</string>
     <string name="library">گنجینه</string>
     <string name="games">میدان</string>
     <string name="profile">من</string>
+
+    <string name="games_subtitle">با بازی های ادبی شعر را بهتر یاد بگیر و لذت ببر</string>
 
     <string name="likes">علاقه مندی‌ها</string>
     <string name="search">جستجو</string>
@@ -18,5 +22,21 @@
     <string name="new_memorization_desc">شعری را برای حفظ انتخاب کنید\nو مسیر حفظ خود را شروع کنید</string>
     <string name="new_memorization_button">انتخاب شعر</string>
     <string name="memorization_button">ادامه حفظ</string>
+
+    <string name="next_line_title">مصرع بعدی</string>
+    <string name="next_line_desc">مصرع بعدی را از بین گزینه ها انتخاب کن</string>
+    <string name="next_line_score">10</string>
+
+    <string name="missed_word_title">واژه گمشده</string>
+    <string name="missed_word_desc">واژه گمشده را پیدا کن</string>
+    <string name="missed_word_score">15</string>
+
+    <string name="poetry_arrangement_title">چینش شعر</string>
+    <string name="poetry_arrangement_desc">ابیات را به ترتیب درست بچین</string>
+    <string name="poetry_arrangement_score">20</string>
+
+    <string name="whois_poet_title">کشف شاعر</string>
+    <string name="whois_poet_desc">شاعر کیست؟</string>
+    <string name="whois_poet_score">25</string>
 
 </resources>

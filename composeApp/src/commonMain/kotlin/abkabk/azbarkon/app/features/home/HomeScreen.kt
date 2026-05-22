@@ -80,7 +80,6 @@ import kotlin.math.abs
 fun HomeScreen(){
 
     val viewModel: HomeViewModel = koinViewModel()
-
     val state by viewModel.state.collectAsState()
 
     BaseScreen(
