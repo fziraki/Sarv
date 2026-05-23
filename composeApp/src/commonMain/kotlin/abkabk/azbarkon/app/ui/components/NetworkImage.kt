@@ -1,9 +1,7 @@
 package abkabk.azbarkon.app.ui.components
 
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -14,7 +12,7 @@ fun NetworkImage(
     modifier: Modifier = Modifier
 ) {
     KamelImage(
-        modifier = modifier.clip(CircleShape),
+        modifier = modifier,
         resource = asyncPainterResource(imageUrl),
         contentDescription = null,
         contentScale = ContentScale.Crop,

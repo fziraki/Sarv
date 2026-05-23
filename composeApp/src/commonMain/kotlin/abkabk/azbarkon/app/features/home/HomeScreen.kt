@@ -107,7 +107,7 @@ fun HomeContent(state: HomeContract.State) {
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         item {
             TopSlider(
@@ -173,13 +173,16 @@ fun PoetItem(item: Poet) {
     ) {
 
         NetworkImage(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .size(80.dp)
+                .clip(CircleShape),
             imageUrl = item.imageUrl?.let {
                 BASE_URL.plus(it.removePrefix("/"))
             }?:run{""}
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
+            maxLines = 1,
             text = item.name?:"",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground,
@@ -249,7 +252,7 @@ fun QuickAccessItem(
             .background(
                 color = MaterialTheme.colorScheme.surfaceVariant,
                 shape = RoundedCornerShape(24.dp)
-            ).padding(vertical = 24.dp, horizontal = 4.dp),
+            ).padding(vertical = 20.dp, horizontal = 4.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
@@ -306,7 +309,7 @@ fun HeroCard(newMemorization: Boolean) {
             )
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
@@ -390,7 +393,7 @@ fun TopSlider(
             beyondViewportPageCount = 1,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(190.dp)
+                .height(180.dp)
         ) { page ->
 
             val item = getItem(page)
@@ -405,7 +408,7 @@ fun TopSlider(
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         // 🎯 Indicators
         Row(
@@ -418,7 +421,7 @@ fun TopSlider(
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 4.dp)
-                        .size(8.dp)
+                        .size(6.dp)
                         .clip(CircleShape)
                         .background(
                             if (currentIndex == index)

@@ -6,14 +6,25 @@ import abkabk.azbarkon.app.features.home.HomeScreen
 import abkabk.azbarkon.app.features.library.LibraryScreen
 import abkabk.azbarkon.app.features.profile.ProfileScreen
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -28,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -64,65 +76,52 @@ fun AzbarkonNavigation() {
         },
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
+            Box(
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .fillMaxWidth()
+                    .height(56.dp)
+            ) {
 
-            CenterAlignedTopAppBar(
-
-                title = {
-
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                if (navController.previousBackStackEntry != null) {
+                    IconButton(
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        onClick = { navController.navigateUp() }
                     ) {
-                        Text(
-                            text = currentItem?.headerTitle
-                                ?.let { stringResource(it) }
-                                ?: "",
-                            style = MaterialTheme.typography.headlineLarge
+                        Icon(
+                            painter = painterResource(Res.drawable.arrow_back),
+                            contentDescription = "Back"
                         )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier.align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = currentItem?.headerTitle?.let { stringResource(it) } ?: "",
+                        style = MaterialTheme.typography.headlineLarge
+                    )
+
+                    currentItem?.subtitle?.let{
                         Text(
-                            text = currentItem?.subtitle
-                                ?.let { stringResource(it) }
-                                ?: "",
+                            text = stringResource(it),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                },
-                colors = TopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    scrolledContainerColor = MaterialTheme.colorScheme.background,
-                    navigationIconContentColor = MaterialTheme.colorScheme.secondary,
-                    titleContentColor = MaterialTheme.colorScheme.secondary,
-                    actionIconContentColor = MaterialTheme.colorScheme.secondary,
-                    subtitleContentColor = MaterialTheme.colorScheme.secondary,
-                ),
-                navigationIcon = {
 
-                    val canNavigateBack =
-                        navController.previousBackStackEntry != null
-
-                    if (canNavigateBack) {
-
-                        IconButton(
-                            onClick = {
-                                navController.navigateUp()
-                            }
-                        ) {
-
-                            Icon(
-                                painter = painterResource(Res.drawable.arrow_back),
-                                contentDescription = "Back"
-                            )
-                        }
-                    }
                 }
-            )
+            }
         },
         bottomBar = {
 
             NavigationBar(
-                modifier = Modifier,
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .fillMaxWidth()
+                    .height(64.dp),
                 containerColor = MaterialTheme.colorScheme.surface,
             ) {
 
@@ -144,6 +143,7 @@ fun AzbarkonNavigation() {
 
                         icon = {
                             Icon(
+                                modifier = Modifier.size(22.dp),
                                 painter = painterResource(item.icon),
                                 contentDescription = stringResource(item.title)
                             )
@@ -160,12 +160,10 @@ fun AzbarkonNavigation() {
                         label = {
                             Text(
                                 text = stringResource(item.title),
-                                style = if (currentRoute == item.route)
-                                    MaterialTheme.typography.headlineMedium
-                                else
-                                    MaterialTheme.typography.labelSmall
+                                style = MaterialTheme.typography.labelSmall
                             )
                         },
+                        alwaysShowLabel = false
                     )
                 }
             }
