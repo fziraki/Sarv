@@ -470,7 +470,7 @@ fun TasvirNegarSlide() {
                 modifier = Modifier.fillMaxWidth(),
                 text = "شعر خود را\nتصویر کنید",
                 color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End
             )
 
@@ -532,7 +532,7 @@ fun ChallengeSlide() {
                 modifier = Modifier.fillMaxWidth(),
                 text = "مصرع بعدی این بیت\nرا بلدی؟",
                 color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End
             )
 
@@ -586,7 +586,7 @@ fun BeytOfDaySlide() {
                 modifier = Modifier.fillMaxWidth(),
                 text = "که عشق آسان نمود اول\nولی افتاد مشکل ها",
                 color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center
             )
 
