@@ -1,0 +1,10 @@
+CREATE TABLE poet (
+    id INTEGER NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+selectAll:
+SELECT * FROM poet;
+
+selectById:
+SELECT * FROM poet WHERE id = ?;

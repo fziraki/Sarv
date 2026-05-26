@@ -1,7 +1,7 @@
 package abkabk.azbarkon
 
-import abkabk.azbarkon.app.core.navigation.AzbarkonNavigation
-import abkabk.azbarkon.app.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.core.navigation.AzbarkonNavigation
+import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
