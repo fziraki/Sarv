@@ -9,7 +9,7 @@ import io.kamel.image.asyncPainterResource
 @Composable
 fun NetworkImage(
     imageUrl: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     KamelImage(
         modifier = modifier,

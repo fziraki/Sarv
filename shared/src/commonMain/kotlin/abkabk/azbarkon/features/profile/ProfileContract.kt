@@ -4,19 +4,20 @@ import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.domain.model.UserInfo
 
 class ProfileContract {
-
-
     data class State(
         val screenState: UiScreenState = UiScreenState.Idle,
-        val userInfo: UserInfo? = null
+        val userInfo: UserInfo? = null,
     )
 
     sealed interface Event {
         data object LoadUserInfo : Event
+
         data object Retry : Event
     }
 
     sealed interface Effect {
-        data class ShowSnackbar(val message: String) : Effect
+        data class ShowSnackbar(
+            val message: String,
+        ) : Effect
     }
 }

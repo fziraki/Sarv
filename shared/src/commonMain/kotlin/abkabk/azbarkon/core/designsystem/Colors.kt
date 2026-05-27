@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 // =======================
 // Light Colors
 // =======================
-//رنگ دکمه
+// رنگ دکمه
 val primary = Color(0xFF355B50)
 val onPrimary = Color(0xFFFFFFFF)
 
@@ -15,7 +15,7 @@ val onPrimaryContainer = Color(0xFFFFFFFF)
 
 val inversePrimary = Color(0xFF7FA397)
 
-//رنگ آیکون سلکت شده باتم نویگیشن
+// رنگ آیکون سلکت شده باتم نویگیشن
 val secondary = Color(0xFF457367)
 val onSecondary = Color(0xFFFFFFFF)
 
@@ -27,16 +27,18 @@ val onTertiary = Color(0xFFFFFFFF)
 
 val tertiaryContainer = Color(0xFFEDE4D3)
 val onTertiaryContainer = Color(0xFF3E2A1E)
-//رنگ پس زمینه
+
+// رنگ پس زمینه
 val background = Color(0xFFFAF7EF)
 val onBackground = Color(0xFF2B241D)
-//رنگ کانتینر باتم نویگیشن
+
+// رنگ کانتینر باتم نویگیشن
 val surface = Color(0xFFF5EFE1)
 val onSurface = Color(0xFF2B241D)
 
 val surfaceVariant = Color(0xFFEDE4D3)
 
-//رنگ آیکون و تکست های سلکت نشده باتم نویگیشن
+// رنگ آیکون و تکست های سلکت نشده باتم نویگیشن
 val onSurfaceVariant = Color(0xFF6C4D36)
 
 val surfaceTint = primary

@@ -5,5 +5,5 @@ data class Poet(
     val name: String?,
     val description: String?,
     val rootCatId: Int?,
-    val imageUrl: String?
+    val imageUrl: String?,
 )

@@ -43,15 +43,15 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AzbarkonNavigation() {
-
     val navController = rememberNavController()
 
-    val items = listOf(
-        BottomNavItem.Home,
-        BottomNavItem.Library,
-        BottomNavItem.Games,
-        BottomNavItem.Profile
-    )
+    val items =
+        listOf(
+            BottomNavItem.Home,
+            BottomNavItem.Library,
+            BottomNavItem.Games,
+            BottomNavItem.Profile,
+        )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -67,60 +67,56 @@ fun AzbarkonNavigation() {
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             Box(
-                modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.statusBars)
-                    .fillMaxWidth()
-                    .height(56.dp)
+                modifier =
+                    Modifier
+                        .windowInsetsPadding(WindowInsets.statusBars)
+                        .fillMaxWidth()
+                        .height(56.dp),
             ) {
-
                 if (navController.previousBackStackEntry != null) {
                     IconButton(
                         modifier = Modifier.align(Alignment.CenterStart),
-                        onClick = { navController.navigateUp() }
+                        onClick = { navController.navigateUp() },
                     ) {
                         Icon(
                             painter = painterResource(Res.drawable.arrow_back),
-                            contentDescription = "Back"
+                            contentDescription = "Back",
                         )
                     }
                 }
 
                 Column(
                     modifier = Modifier.align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
                         text = currentItem?.headerTitle?.let { stringResource(it) } ?: "",
-                        style = MaterialTheme.typography.headlineLarge
+                        style = MaterialTheme.typography.headlineLarge,
                     )
 
-                    currentItem?.subtitle?.let{
+                    currentItem?.subtitle?.let {
                         Text(
                             text = stringResource(it),
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-
                 }
             }
         },
         bottomBar = {
-
             NavigationBar(
-                modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.navigationBars)
-                    .fillMaxWidth()
-                    .height(64.dp),
+                modifier =
+                    Modifier
+                        .windowInsetsPadding(WindowInsets.navigationBars)
+                        .fillMaxWidth()
+                        .height(64.dp),
                 containerColor = MaterialTheme.colorScheme.surface,
             ) {
-
                 items.forEach { item ->
 
                     NavigationBarItem(
-
                         selected = currentRoute == item.route,
-
                         onClick = {
                             navController.navigate(item.route) {
                                 popUpTo(navController.graph.startDestinationId) {
@@ -130,42 +126,39 @@ fun AzbarkonNavigation() {
                                 restoreState = true
                             }
                         },
-
                         icon = {
                             Icon(
                                 modifier = Modifier.size(22.dp),
                                 painter = painterResource(item.icon),
-                                contentDescription = stringResource(item.title)
+                                contentDescription = stringResource(item.title),
                             )
                         },
-
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.secondary,
-                            selectedTextColor = MaterialTheme.colorScheme.secondary,
-                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            indicatorColor = Color.Transparent
-                        ),
-
+                        colors =
+                            NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.secondary,
+                                selectedTextColor = MaterialTheme.colorScheme.secondary,
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                indicatorColor = Color.Transparent,
+                            ),
                         label = {
                             Text(
                                 text = stringResource(item.title),
-                                style = MaterialTheme.typography.labelSmall
+                                style = MaterialTheme.typography.labelSmall,
                             )
                         },
-                        alwaysShowLabel = false
+                        alwaysShowLabel = false,
                     )
                 }
             }
-        }
+        },
     ) { padding ->
 
         NavHost(
             navController = navController,
             startDestination = BottomNavItem.Home.route,
-            modifier = Modifier.padding(padding)
+            modifier = Modifier.padding(padding),
         ) {
-
             composable(BottomNavItem.Home.route) {
                 HomeScreen()
             }
@@ -181,7 +174,6 @@ fun AzbarkonNavigation() {
             composable(BottomNavItem.Profile.route) {
                 ProfileScreen()
             }
-
         }
     }
 }

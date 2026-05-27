@@ -10,10 +10,9 @@ import azbarkoncmp.shared.generated.resources.vazirmatn_regular
 import org.jetbrains.compose.resources.Font
 
 @Composable
-fun vazirmatnFontFamily(): FontFamily {
-    return FontFamily(
+fun vazirmatnFontFamily(): FontFamily =
+    FontFamily(
         Font(Res.font.vazirmatn_regular, FontWeight.Normal),
         Font(Res.font.vazirmatn_medium, FontWeight.Medium),
         Font(Res.font.vazirmatn_bold, FontWeight.Bold),
     )
-}

@@ -5,17 +5,18 @@ import abkabk.azbarkon.domain.usecase.GetPoetsUseCase
 import abkabk.azbarkon.domain.usecase.GetUserInfoUseCase
 import org.koin.dsl.module
 
-val domainModule = module {
+val domainModule =
+    module {
 
-    factory {
-        GetPoetsLocallyUseCase(get())
-    }
+        factory {
+            GetPoetsLocallyUseCase(get())
+        }
 
-    factory {
-        GetPoetsUseCase(get())
-    }
+        factory {
+            GetPoetsUseCase(get())
+        }
 
-    factory {
-        GetUserInfoUseCase(get())
+        factory {
+            GetUserInfoUseCase(get())
+        }
     }
-}

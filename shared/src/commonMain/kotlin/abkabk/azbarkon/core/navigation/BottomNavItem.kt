@@ -15,21 +15,20 @@ sealed class BottomNavItem(
     val title: StringResource,
     val icon: DrawableResource,
     val headerTitle: StringResource,
-    val subtitle: StringResource? = null
+    val subtitle: StringResource? = null,
 ) {
-
     data object Home : BottomNavItem(
         route = Routes.HOME,
         title = Res.string.home,
         icon = Res.drawable.home,
-        headerTitle = Res.string.app_name
+        headerTitle = Res.string.app_name,
     )
 
     data object Library : BottomNavItem(
         route = Routes.LIBRARY,
         title = Res.string.library,
         icon = Res.drawable.library,
-        headerTitle = Res.string.library
+        headerTitle = Res.string.library,
     )
 
     data object Games : BottomNavItem(
@@ -37,13 +36,13 @@ sealed class BottomNavItem(
         title = Res.string.games,
         icon = Res.drawable.games,
         headerTitle = Res.string.games,
-        subtitle = Res.string.games_subtitle
+        subtitle = Res.string.games_subtitle,
     )
 
     data object Profile : BottomNavItem(
         route = Routes.PROFILE,
         title = Res.string.profile,
         icon = Res.drawable.profile,
-        headerTitle = Res.string.profile
+        headerTitle = Res.string.profile,
     )
 }

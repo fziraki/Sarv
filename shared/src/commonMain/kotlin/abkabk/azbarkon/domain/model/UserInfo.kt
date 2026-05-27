@@ -7,17 +7,16 @@ data class UserInfo(
     val streakNumber: Int? = null,
     val poetsNumber: Int? = null,
     val poemsNumber: Int? = null,
-    val badges: List<Badge> = emptyList()
+    val badges: List<Badge> = emptyList(),
 )
-
 
 data class GameLevel(
     val id: Int,
     val name: String,
-    val totalScore: Int
+    val totalScore: Int,
 )
 
 data class Badge(
     val id: Int,
-    val name: String
+    val name: String,
 )

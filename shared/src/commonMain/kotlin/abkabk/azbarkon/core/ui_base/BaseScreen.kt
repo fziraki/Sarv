@@ -15,31 +15,27 @@ fun <EFFECT> BaseScreen(
     onRetry: (() -> Unit)? = null,
     onEffect: suspend (EFFECT) -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
-
     LaunchedEffect(Unit) {
         effectFlow.collect(onEffect)
     }
 
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
     ) {
-
         content()
 
         when (screenState) {
-
             UiScreenState.Loading -> {
                 LoadingView()
             }
 
             is UiScreenState.Error -> {
-
                 ErrorView(
                     message = screenState.message.asString(),
                     showRetry = screenState.retryable,
-                    onRetry = onRetry
+                    onRetry = onRetry,
                 )
             }
 
@@ -49,7 +45,11 @@ fun <EFFECT> BaseScreen(
 }
 
 @Composable
-fun ErrorView(message: String, showRetry: Boolean, onRetry: (() -> Unit)?) {
+fun ErrorView(
+    message: String,
+    showRetry: Boolean,
+    onRetry: (() -> Unit)?,
+) {
 }
 
 @Composable

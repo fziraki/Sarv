@@ -40,7 +40,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ProfileScreen() {
-
     val viewModel: ProfileViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
 
@@ -51,69 +50,64 @@ fun ProfileScreen() {
             viewModel.onEvent(ProfileContract.Event.Retry)
         },
         onEffect = {
-            when(it){
+            when (it) {
                 is ProfileContract.Effect.ShowSnackbar -> {
-
                 }
             }
-        }
+        },
     ) {
-
         ProfileContent(state)
     }
 }
 
 @Composable
 fun ProfileContent(state: ProfileContract.State) {
-
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
             ProfileHeader(
-                completedLevelName = state.userInfo?.completedLevel?.name ?:"",
-                inProgressLevelNumber = state.userInfo?.inProgressLevel?.id?:1,
-                currentScore = state.userInfo?.currentScore?:0,
-                totalScore = state.userInfo?.inProgressLevel?.totalScore?:0
+                completedLevelName = state.userInfo?.completedLevel?.name ?: "",
+                inProgressLevelNumber = state.userInfo?.inProgressLevel?.id ?: 1,
+                currentScore = state.userInfo?.currentScore ?: 0,
+                totalScore = state.userInfo?.inProgressLevel?.totalScore ?: 0,
             )
         }
 
         item {
             ProfileStreak(
-                streakNumber = state.userInfo?.streakNumber?:0,
-                poetsNumber = state.userInfo?.poetsNumber?:0,
-                poemsNumber = state.userInfo?.poemsNumber?:0
+                streakNumber = state.userInfo?.streakNumber ?: 0,
+                poetsNumber = state.userInfo?.poetsNumber ?: 0,
+                poemsNumber = state.userInfo?.poemsNumber ?: 0,
             )
         }
 
         item {
-            ProfileBadges(state.userInfo?.badges?:emptyList())
+            ProfileBadges(state.userInfo?.badges ?: emptyList())
         }
     }
 }
 
 @Composable
 fun ProfileBadges(badges: List<Badge>) {
-
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.secondaryContainer,
-                shape = RoundedCornerShape(12.dp)
-            )
-            .padding(16.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    shape = RoundedCornerShape(12.dp),
+                ).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.End
+        horizontalAlignment = Alignment.End,
     ) {
-
         Text(
             modifier = Modifier,
             text = "مشاهده همه",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.End
+            textAlign = TextAlign.End,
         )
 
         LazyRow(modifier = Modifier.fillMaxWidth()) {
@@ -128,13 +122,11 @@ fun ProfileBadges(badges: List<Badge>) {
 
 @Composable
 fun BadgeItem(item: Badge) {
-
     Column(
         modifier = Modifier.width(80.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
         Image(painter = painterResource(Res.drawable.palette), contentDescription = null)
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -142,84 +134,85 @@ fun BadgeItem(item: Badge) {
             text = item.name,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }
 
-
 @Composable
-fun ProfileStreak(streakNumber: Int, poetsNumber: Int, poemsNumber: Int) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .height(IntrinsicSize.Min)
-        .background(
-            color = MaterialTheme.colorScheme.secondaryContainer,
-            shape = RoundedCornerShape(12.dp)
-        )
-        .padding(24.dp)
+fun ProfileStreak(
+    streakNumber: Int,
+    poetsNumber: Int,
+    poemsNumber: Int,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+                .background(
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    shape = RoundedCornerShape(12.dp),
+                ).padding(24.dp),
     ) {
-
         StreakItem(
             modifier = Modifier.weight(1f),
             num = streakNumber,
-            desc = "روز پیاپی"
+            desc = "روز پیاپی",
         )
 
         VerticalDivider(
             modifier = Modifier.fillMaxHeight(),
             thickness = 1.dp,
-            color = MaterialTheme.colorScheme.surface
+            color = MaterialTheme.colorScheme.surface,
         )
 
         StreakItem(
             modifier = Modifier.weight(1f),
             num = poetsNumber,
-            desc = "شاعر خوانده اید"
+            desc = "شاعر خوانده اید",
         )
 
         VerticalDivider(
             modifier = Modifier.fillMaxHeight(),
             thickness = 1.dp,
-            color = MaterialTheme.colorScheme.surface
+            color = MaterialTheme.colorScheme.surface,
         )
 
         StreakItem(
             modifier = Modifier.weight(1f),
             num = poemsNumber,
-            desc = "بیت حفظ شده"
+            desc = "بیت حفظ شده",
         )
-
     }
 }
 
 @Composable
 fun StreakItem(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     num: Int,
-    desc: String
-){
+    desc: String,
+) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             modifier = Modifier,
             text = num.toString(),
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Text(
             modifier = Modifier,
             text = desc,
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
-
 }
 
 @Composable
@@ -227,16 +220,16 @@ fun ProfileHeader(
     completedLevelName: String,
     inProgressLevelNumber: Int,
     currentScore: Int,
-    totalScore: Int
+    totalScore: Int,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
             painter = painterResource(Res.drawable.palette),
-            contentDescription = null
+            contentDescription = null,
         )
 
         Text(
@@ -244,7 +237,7 @@ fun ProfileHeader(
             text = completedLevelName,
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
         Text(
@@ -252,24 +245,23 @@ fun ProfileHeader(
             text = "سطح $inProgressLevelNumber",
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-
             LinearProgressIndicator(
                 progress = { currentScore.toFloat() / totalScore.toFloat() },
-                modifier = Modifier
-                    .fillMaxWidth().padding(horizontal = 32.dp)
-                    .height(8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp)
+                        .height(8.dp),
                 color = ProgressIndicatorDefaults.linearColor,
                 trackColor = ProgressIndicatorDefaults.linearTrackColor,
                 strokeCap = StrokeCap.Round,
                 drawStopIndicator = {},
-                gapSize = (-4).dp
+                gapSize = (-4).dp,
             )
         }
-
-
     }
 }

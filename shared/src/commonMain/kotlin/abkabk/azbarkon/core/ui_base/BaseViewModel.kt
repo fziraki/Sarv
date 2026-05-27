@@ -8,9 +8,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 
 abstract class BaseViewModel<EVENT, STATE, EFFECT>(
-    initialState: STATE
+    initialState: STATE,
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
 

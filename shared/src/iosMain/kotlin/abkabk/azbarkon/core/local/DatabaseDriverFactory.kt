@@ -7,12 +7,9 @@ import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import com.azbarkon.db.AzbarKonDatabase
 
 actual class DatabaseDriverFactory {
-
-    actual fun createDriver(): SqlDriver {
-
-        return NativeSqliteDriver(
+    actual fun createDriver(): SqlDriver =
+        NativeSqliteDriver(
             schema = AzbarKonDatabase.Schema,
-            name = "ganjoor.s3db"
+            name = "ganjoor.s3db",
         )
-    }
 }
