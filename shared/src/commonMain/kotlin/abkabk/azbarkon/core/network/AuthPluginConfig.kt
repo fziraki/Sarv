@@ -6,27 +6,28 @@ class AuthPluginConfig {
     lateinit var provider: AuthProvider
 }
 
-val AuthPlugin = createClientPlugin(
-    name = "AuthPlugin",
-    createConfiguration = ::AuthPluginConfig
-) {
+val AuthPlugin =
+    createClientPlugin(
+        name = "AuthPlugin",
+        createConfiguration = ::AuthPluginConfig,
+    ) {
 
-    val provider = pluginConfig.provider
+        val provider = pluginConfig.provider
 
-    onRequest { request, _ ->
+        onRequest { request, _ ->
 
-        val isAuthorizable =
-            request.headers["isAuthorizable"]?.toBoolean() ?: true
+            val isAuthorizable =
+                request.headers["isAuthorizable"]?.toBoolean() ?: true
 
-        request.headers.remove("isAuthorizable")
+            request.headers.remove("isAuthorizable")
 
-        if (isAuthorizable) {
-            provider.getToken()?.let { token ->
-                request.headers.append(
-                    "Authorization",
-                    "Bearer $token"
-                )
+            if (isAuthorizable) {
+                provider.getToken()?.let { token ->
+                    request.headers.append(
+                        "Authorization",
+                        "Bearer $token",
+                    )
+                }
             }
         }
     }
-}

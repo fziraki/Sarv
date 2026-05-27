@@ -9,17 +9,12 @@ import abkabk.azbarkon.domain.repository.PoetRepository
 
 class PoetRepositoryImpl(
     private val api: PoetApi,
-    private val poetLocalDataSource: PoetLocalDataSource
+    private val poetLocalDataSource: PoetLocalDataSource,
 ) : PoetRepository {
-
-    override suspend fun getPoets(): ApiResult<List<Poet>> {
-        return safeApiCall {
+    override suspend fun getPoets(): ApiResult<List<Poet>> =
+        safeApiCall {
             api.getPoetList().map { it.toDomain() }
         }
-    }
 
-    override suspend fun getPoetsLocally(): List<Poet> {
-        return poetLocalDataSource.getAllPoets()
-    }
-
+    override suspend fun getPoetsLocally(): List<Poet> = poetLocalDataSource.getAllPoets()
 }

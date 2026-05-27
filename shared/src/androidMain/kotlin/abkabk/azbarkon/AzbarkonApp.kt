@@ -13,7 +13,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 class AzbarkonApp : Application() {
-
     override fun onCreate() {
         super.onCreate()
 
@@ -25,7 +24,7 @@ class AzbarkonApp : Application() {
                 dataModule,
                 domainModule,
                 presentationModule,
-                androidModule
+                androidModule,
             )
         }
         Napier.base(DebugAntilog())

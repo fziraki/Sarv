@@ -84,138 +84,106 @@ import abkabk.azbarkon.core.designsystem.tertiaryFixedDim
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 
-val LightColorScheme = lightColorScheme(
-    primary = primary,
-    onPrimary = onPrimary,
-    primaryContainer = primaryContainer,
-    onPrimaryContainer = onPrimaryContainer,
-    inversePrimary = inversePrimary,
+val LightColorScheme =
+    lightColorScheme(
+        primary = primary,
+        onPrimary = onPrimary,
+        primaryContainer = primaryContainer,
+        onPrimaryContainer = onPrimaryContainer,
+        inversePrimary = inversePrimary,
+        secondary = secondary,
+        onSecondary = onSecondary,
+        secondaryContainer = secondaryContainer,
+        onSecondaryContainer = onSecondaryContainer,
+        tertiary = tertiary,
+        onTertiary = onTertiary,
+        tertiaryContainer = tertiaryContainer,
+        onTertiaryContainer = onTertiaryContainer,
+        background = background,
+        onBackground = onBackground,
+        surface = surface,
+        onSurface = onSurface,
+        surfaceVariant = surfaceVariant,
+        onSurfaceVariant = onSurfaceVariant,
+        surfaceTint = surfaceTint,
+        inverseSurface = inverseSurface,
+        inverseOnSurface = inverseOnSurface,
+        error = error,
+        onError = onError,
+        errorContainer = errorContainer,
+        onErrorContainer = onErrorContainer,
+        outline = outline,
+        outlineVariant = outlineVariant,
+        scrim = scrim,
+        surfaceBright = surfaceBright,
+        surfaceContainer = surfaceContainer,
+        surfaceContainerHigh = surfaceContainerHigh,
+        surfaceContainerHighest = surfaceContainerHighest,
+        surfaceContainerLow = surfaceContainerLow,
+        surfaceContainerLowest = surfaceContainerLowest,
+        surfaceDim = surfaceDim,
+        primaryFixed = primaryFixed,
+        primaryFixedDim = primaryFixedDim,
+        onPrimaryFixed = onPrimaryFixed,
+        onPrimaryFixedVariant = onPrimaryFixedVariant,
+        secondaryFixed = secondaryFixed,
+        secondaryFixedDim = secondaryFixedDim,
+        onSecondaryFixed = onSecondaryFixed,
+        onSecondaryFixedVariant = onSecondaryFixedVariant,
+        tertiaryFixed = tertiaryFixed,
+        tertiaryFixedDim = tertiaryFixedDim,
+        onTertiaryFixed = onTertiaryFixed,
+        onTertiaryFixedVariant = onTertiaryFixedVariant,
+    )
 
-    secondary = secondary,
-    onSecondary = onSecondary,
-    secondaryContainer = secondaryContainer,
-    onSecondaryContainer = onSecondaryContainer,
-
-    tertiary = tertiary,
-    onTertiary = onTertiary,
-    tertiaryContainer = tertiaryContainer,
-    onTertiaryContainer = onTertiaryContainer,
-
-    background = background,
-    onBackground = onBackground,
-
-    surface = surface,
-    onSurface = onSurface,
-
-    surfaceVariant = surfaceVariant,
-    onSurfaceVariant = onSurfaceVariant,
-
-    surfaceTint = surfaceTint,
-
-    inverseSurface = inverseSurface,
-    inverseOnSurface = inverseOnSurface,
-
-    error = error,
-    onError = onError,
-    errorContainer = errorContainer,
-    onErrorContainer = onErrorContainer,
-
-    outline = outline,
-    outlineVariant = outlineVariant,
-
-    scrim = scrim,
-
-    surfaceBright = surfaceBright,
-
-    surfaceContainer = surfaceContainer,
-    surfaceContainerHigh = surfaceContainerHigh,
-    surfaceContainerHighest = surfaceContainerHighest,
-
-    surfaceContainerLow = surfaceContainerLow,
-    surfaceContainerLowest = surfaceContainerLowest,
-
-    surfaceDim = surfaceDim,
-
-    primaryFixed = primaryFixed,
-    primaryFixedDim = primaryFixedDim,
-    onPrimaryFixed = onPrimaryFixed,
-    onPrimaryFixedVariant = onPrimaryFixedVariant,
-
-    secondaryFixed = secondaryFixed,
-    secondaryFixedDim = secondaryFixedDim,
-    onSecondaryFixed = onSecondaryFixed,
-    onSecondaryFixedVariant = onSecondaryFixedVariant,
-
-    tertiaryFixed = tertiaryFixed,
-    tertiaryFixedDim = tertiaryFixedDim,
-    onTertiaryFixed = onTertiaryFixed,
-    onTertiaryFixedVariant = onTertiaryFixedVariant
-)
-
-val DarkColorScheme = darkColorScheme(
-    primary = darkPrimary,
-    onPrimary = darkOnPrimary,
-    primaryContainer = darkPrimaryContainer,
-    onPrimaryContainer = darkOnPrimaryContainer,
-    inversePrimary = darkInversePrimary,
-
-    secondary = darkSecondary,
-    onSecondary = darkOnSecondary,
-    secondaryContainer = darkSecondaryContainer,
-    onSecondaryContainer = darkOnSecondaryContainer,
-
-    tertiary = darkTertiary,
-    onTertiary = darkOnTertiary,
-    tertiaryContainer = darkTertiaryContainer,
-    onTertiaryContainer = darkOnTertiaryContainer,
-
-    background = darkBackground,
-    onBackground = darkOnBackground,
-
-    surface = darkSurface,
-    onSurface = darkOnSurface,
-
-    surfaceVariant = darkSurfaceVariant,
-    onSurfaceVariant = darkOnSurfaceVariant,
-
-    surfaceTint = darkPrimary,
-
-    inverseSurface = darkInverseSurface,
-    inverseOnSurface = darkInverseOnSurface,
-
-    error = darkError,
-    onError = darkOnError,
-    errorContainer = darkErrorContainer,
-    onErrorContainer = onErrorContainer,
-
-    outline = darkOutline,
-    outlineVariant = darkOutlineVariant,
-
-    scrim = scrim,
-
-    surfaceBright = darkSurfaceBright,
-
-    surfaceContainer = darkSurfaceContainer,
-    surfaceContainerHigh = darkSurfaceContainerHigh,
-    surfaceContainerHighest = darkSurfaceContainerHighest,
-
-    surfaceContainerLow = darkSurfaceContainerLow,
-    surfaceContainerLowest = darkSurfaceContainerLowest,
-
-    surfaceDim = darkSurfaceDim,
-
-    primaryFixed = primaryFixed,
-    primaryFixedDim = primaryFixedDim,
-    onPrimaryFixed = onPrimaryFixed,
-    onPrimaryFixedVariant = onPrimaryFixedVariant,
-
-    secondaryFixed = secondaryFixed,
-    secondaryFixedDim = secondaryFixedDim,
-    onSecondaryFixed = onSecondaryFixed,
-    onSecondaryFixedVariant = onSecondaryFixedVariant,
-
-    tertiaryFixed = tertiaryFixed,
-    tertiaryFixedDim = tertiaryFixedDim,
-    onTertiaryFixed = onTertiaryFixed,
-    onTertiaryFixedVariant = onTertiaryFixedVariant
-)
+val DarkColorScheme =
+    darkColorScheme(
+        primary = darkPrimary,
+        onPrimary = darkOnPrimary,
+        primaryContainer = darkPrimaryContainer,
+        onPrimaryContainer = darkOnPrimaryContainer,
+        inversePrimary = darkInversePrimary,
+        secondary = darkSecondary,
+        onSecondary = darkOnSecondary,
+        secondaryContainer = darkSecondaryContainer,
+        onSecondaryContainer = darkOnSecondaryContainer,
+        tertiary = darkTertiary,
+        onTertiary = darkOnTertiary,
+        tertiaryContainer = darkTertiaryContainer,
+        onTertiaryContainer = darkOnTertiaryContainer,
+        background = darkBackground,
+        onBackground = darkOnBackground,
+        surface = darkSurface,
+        onSurface = darkOnSurface,
+        surfaceVariant = darkSurfaceVariant,
+        onSurfaceVariant = darkOnSurfaceVariant,
+        surfaceTint = darkPrimary,
+        inverseSurface = darkInverseSurface,
+        inverseOnSurface = darkInverseOnSurface,
+        error = darkError,
+        onError = darkOnError,
+        errorContainer = darkErrorContainer,
+        onErrorContainer = onErrorContainer,
+        outline = darkOutline,
+        outlineVariant = darkOutlineVariant,
+        scrim = scrim,
+        surfaceBright = darkSurfaceBright,
+        surfaceContainer = darkSurfaceContainer,
+        surfaceContainerHigh = darkSurfaceContainerHigh,
+        surfaceContainerHighest = darkSurfaceContainerHighest,
+        surfaceContainerLow = darkSurfaceContainerLow,
+        surfaceContainerLowest = darkSurfaceContainerLowest,
+        surfaceDim = darkSurfaceDim,
+        primaryFixed = primaryFixed,
+        primaryFixedDim = primaryFixedDim,
+        onPrimaryFixed = onPrimaryFixed,
+        onPrimaryFixedVariant = onPrimaryFixedVariant,
+        secondaryFixed = secondaryFixed,
+        secondaryFixedDim = secondaryFixedDim,
+        onSecondaryFixed = onSecondaryFixed,
+        onSecondaryFixedVariant = onSecondaryFixedVariant,
+        tertiaryFixed = tertiaryFixed,
+        tertiaryFixedDim = tertiaryFixedDim,
+        onTertiaryFixed = onTertiaryFixed,
+        onTertiaryFixedVariant = onTertiaryFixedVariant,
+    )

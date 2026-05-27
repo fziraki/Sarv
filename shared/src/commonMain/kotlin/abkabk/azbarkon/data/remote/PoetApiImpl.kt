@@ -7,14 +7,12 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 
 class PoetApiImpl(
-    private val client: HttpClient
+    private val client: HttpClient,
 ) : PoetApi {
-
-    override suspend fun getPoetList(): List<PoetDto> {
-        return client.get("api/ganjoor/poets") {
-            header("isAuthorizable", "false")
-            header("cacheSeconds", 60 * 60 * 24)
-        }.body()
-    }
-
+    override suspend fun getPoetList(): List<PoetDto> =
+        client
+            .get("api/ganjoor/poets") {
+                header("isAuthorizable", "false")
+                header("cacheSeconds", 60 * 60 * 24)
+            }.body()
 }

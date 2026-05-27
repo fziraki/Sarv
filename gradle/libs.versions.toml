@@ -21,6 +21,8 @@ navigationCompose = "2.9.2"
 koin = "4.2.1"
 slf4jNop = "2.0.13"
 sqldelight = "2.3.2"
+detekt = "1.23.8"
+
 
 
 [libraries]
@@ -70,3 +72,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 androidMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

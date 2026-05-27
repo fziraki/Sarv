@@ -11,22 +11,22 @@ import androidx.compose.ui.unit.LayoutDirection
 @Composable
 fun AzbarkonTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    val colorScheme = if (darkTheme) {
-        DarkColorScheme
-    } else {
-        LightColorScheme
-    }
+    val colorScheme =
+        if (darkTheme) {
+            DarkColorScheme
+        } else {
+            LightColorScheme
+        }
 
     CompositionLocalProvider(
-        LocalLayoutDirection provides LayoutDirection.Rtl
+        LocalLayoutDirection provides LayoutDirection.Rtl,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = azbarkonTypography(),
-            content = content
+            content = content,
         )
     }
-
 }

@@ -9,24 +9,25 @@ import abkabk.azbarkon.data.remote.PoetApiImpl
 import io.ktor.client.engine.HttpClientEngine
 import org.koin.dsl.module
 
-val networkModule = module {
+val networkModule =
+    module {
 
-    single<HttpClientEngine> {
-        getEngine()
-    }
+        single<HttpClientEngine> {
+            getEngine()
+        }
 
-    single<AuthProvider> {
-        DefaultAuthProvider()
-    }
+        single<AuthProvider> {
+            DefaultAuthProvider()
+        }
 
-    single {
-        createHttpClient(
-            engine = get(),
-            authProvider = get()
-        )
-    }
+        single {
+            createHttpClient(
+                engine = get(),
+                authProvider = get(),
+            )
+        }
 
-    single<PoetApi> {
-        PoetApiImpl(get())
+        single<PoetApi> {
+            PoetApiImpl(get())
+        }
     }
-}

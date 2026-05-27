@@ -16,11 +16,9 @@ import kotlinx.serialization.json.Json
 
 fun createHttpClient(
     engine: HttpClientEngine,
-    authProvider: AuthProvider
-): HttpClient {
-
-    return HttpClient(engine) {
-
+    authProvider: AuthProvider,
+): HttpClient =
+    HttpClient(engine) {
         install(HttpTimeout) {
             requestTimeoutMillis = 30_000
         }
@@ -31,16 +29,17 @@ fun createHttpClient(
                     ignoreUnknownKeys = true
                     prettyPrint = true
                     isLenient = true
-                }
+                },
             )
         }
 
         install(Logging) {
-            logger = object : Logger {
-                override fun log(message: String) {
-                    Napier.d(tag = "Ktor", message = message)
+            logger =
+                object : Logger {
+                    override fun log(message: String) {
+                        Napier.d(tag = "Ktor", message = message)
+                    }
                 }
-            }
             level = LogLevel.ALL
         }
 
@@ -55,4 +54,3 @@ fun createHttpClient(
             header("Content-Type", "application/json")
         }
     }
-}

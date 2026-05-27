@@ -8,17 +8,15 @@ import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.azbarkon.db.AzbarKonDatabase
 
 actual class DatabaseDriverFactory(
-    private val context: Context
+    private val context: Context,
 ) {
-
     actual fun createDriver(): SqlDriver {
-
         copyDatabaseIfNeeded(context)
 
         return AndroidSqliteDriver(
             schema = AzbarKonDatabase.Schema,
             context = context,
-            name = "ganjoor.s3db"
+            name = "ganjoor.s3db",
         )
     }
 }

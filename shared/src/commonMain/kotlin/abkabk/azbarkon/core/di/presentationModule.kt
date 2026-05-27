@@ -4,18 +4,19 @@ import abkabk.azbarkon.features.home.HomeViewModel
 import abkabk.azbarkon.features.profile.ProfileViewModel
 import org.koin.dsl.module
 
-val presentationModule = module {
+val presentationModule =
+    module {
 
-    factory {
-        HomeViewModel(
-            getPoetsUseCase = get(),
-            getPoetsLocallyUseCase = get()
-        )
-    }
+        factory {
+            HomeViewModel(
+                getPoetsUseCase = get(),
+                getPoetsLocallyUseCase = get(),
+            )
+        }
 
-    factory {
-        ProfileViewModel(
-            getUserInfoUseCase = get()
-        )
+        factory {
+            ProfileViewModel(
+                getUserInfoUseCase = get(),
+            )
+        }
     }
-}

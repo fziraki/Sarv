@@ -5,26 +5,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 
 class AzbarkonAppState(
-    val snackbarHostState: SnackbarHostState
+    val snackbarHostState: SnackbarHostState,
 ) {
-
-    suspend fun showSnackbar(
-        message: String
-    ) {
+    suspend fun showSnackbar(message: String) {
         snackbarHostState.showSnackbar(message)
     }
 }
 
 @Composable
 fun rememberAzbarkonAppState(): AzbarkonAppState {
-
-    val snackbarHostState = remember {
-        SnackbarHostState()
-    }
+    val snackbarHostState =
+        remember {
+            SnackbarHostState()
+        }
 
     return remember {
         AzbarkonAppState(
-            snackbarHostState
+            snackbarHostState,
         )
     }
 }

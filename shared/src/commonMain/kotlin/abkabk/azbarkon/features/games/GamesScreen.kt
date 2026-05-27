@@ -45,11 +45,10 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GamesScreen() {
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp)
+        contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp),
     ) {
         item {
             GameItem(
@@ -57,7 +56,7 @@ fun GamesScreen() {
                 desc = Res.string.next_line_desc,
                 score = Res.string.next_line_score,
                 icon = Res.drawable.games,
-                onClick = {}
+                onClick = {},
             )
         }
 
@@ -67,7 +66,7 @@ fun GamesScreen() {
                 desc = Res.string.missed_word_desc,
                 score = Res.string.missed_word_score,
                 icon = Res.drawable.games,
-                onClick = {}
+                onClick = {},
             )
         }
 
@@ -77,7 +76,7 @@ fun GamesScreen() {
                 desc = Res.string.poetry_arrangement_desc,
                 score = Res.string.poetry_arrangement_score,
                 icon = Res.drawable.games,
-                onClick = {}
+                onClick = {},
             )
         }
 
@@ -87,7 +86,7 @@ fun GamesScreen() {
                 desc = Res.string.whois_poet_desc,
                 score = Res.string.whois_poet_score,
                 icon = Res.drawable.games,
-                onClick = {}
+                onClick = {},
             )
         }
     }
@@ -99,47 +98,50 @@ fun GameItem(
     desc: StringResource,
     score: StringResource,
     icon: DrawableResource,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.clickable{
-            onClick()
-        }.fillMaxWidth()
-            .height(IntrinsicSize.Min)
-            .clip(RoundedCornerShape(12.dp))
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                shape = RoundedCornerShape(12.dp)
-            )
+        modifier =
+            Modifier
+                .clickable {
+                    onClick()
+                }.fillMaxWidth()
+                .height(IntrinsicSize.Min)
+                .clip(RoundedCornerShape(12.dp))
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    shape = RoundedCornerShape(12.dp),
+                ),
     ) {
-
         Image(
-            modifier = Modifier.weight(0.3f)
-                .fillMaxHeight()
-                .background(
-                color = MaterialTheme.colorScheme.secondary
-            ),
+            modifier =
+                Modifier
+                    .weight(0.3f)
+                    .fillMaxHeight()
+                    .background(
+                        color = MaterialTheme.colorScheme.secondary,
+                    ),
             painter = painterResource(icon),
-            contentDescription = null
+            contentDescription = null,
         )
 
         Column(
-            modifier = Modifier.weight(0.7f)
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceContainer
-                )
-            .padding(16.dp),
+            modifier =
+                Modifier
+                    .weight(0.7f)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceContainer,
+                    ).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
-            horizontalAlignment = Alignment.End
+            horizontalAlignment = Alignment.End,
         ) {
-
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(title),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Start,
             )
 
             Text(
@@ -147,23 +149,22 @@ fun GameItem(
                 text = stringResource(desc),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Start,
             )
 
             Text(
-                modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.tertiary,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                modifier =
+                    Modifier
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            shape = RoundedCornerShape(8.dp),
+                        ).padding(horizontal = 8.dp, vertical = 4.dp),
                 text = "${stringResource(score)} امتیاز ",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.End
+                textAlign = TextAlign.End,
             )
         }
-
     }
 }

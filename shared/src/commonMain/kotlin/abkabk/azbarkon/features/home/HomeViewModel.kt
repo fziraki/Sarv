@@ -12,15 +12,14 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val getPoetsUseCase: GetPoetsUseCase,
-    private val getPoetsLocallyUseCase: GetPoetsLocallyUseCase
+    private val getPoetsLocallyUseCase: GetPoetsLocallyUseCase,
 ) : BaseViewModel<
         HomeContract.Event,
         HomeContract.State,
-        HomeContract.Effect
-        >(
-        initialState = HomeContract.State()
+        HomeContract.Effect,
+    >(
+        initialState = HomeContract.State(),
     ) {
-
     init {
         onEvent(HomeContract.Event.LoadPoets)
         onEvent(HomeContract.Event.LoadTodayPoem)
@@ -28,7 +27,6 @@ class HomeViewModel(
 
     override fun onEvent(event: HomeContract.Event) {
         when (event) {
-
             HomeContract.Event.LoadPoets -> {
                 loadPoetsLocally()
             }
@@ -45,40 +43,36 @@ class HomeViewModel(
 
     private fun loadPoets() {
         viewModelScope.launch {
-
             setState {
                 copy(
-                    screenState = UiScreenState.Loading
+                    screenState = UiScreenState.Loading,
                 )
             }
 
             when (val result = getPoetsUseCase()) {
-
                 is ApiResult.Success -> {
-
-
                     setState {
                         copy(
                             screenState = UiScreenState.Success,
-                            poets = result.data
+                            poets = result.data,
                         )
                     }
                 }
 
                 is ApiResult.Error -> {
-
                     setState {
                         copy(
-                            screenState = UiScreenState.Error(
-                                message = UiText.Dynamic(result.message)
-                            ),
+                            screenState =
+                                UiScreenState.Error(
+                                    message = UiText.Dynamic(result.message),
+                                ),
                         )
                     }
 
                     sendEffect(
                         HomeContract.Effect.ShowSnackbar(
-                            result.message
-                        )
+                            result.message,
+                        ),
                     )
                 }
             }
@@ -86,20 +80,15 @@ class HomeViewModel(
     }
 
     private fun loadPoetsLocally() {
-
         viewModelScope.launch {
             val result = getPoetsLocallyUseCase()
             Napier.d("result ${result.size}")
             setState {
                 copy(
                     screenState = UiScreenState.Success,
-                    poets = result
+                    poets = result,
                 )
             }
         }
-
-
     }
-
-
 }

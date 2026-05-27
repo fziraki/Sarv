@@ -9,15 +9,14 @@ data class PoetDto(
     val name: String?,
     val description: String?,
     val rootCatId: Int?,
-    val imageUrl: String?
+    val imageUrl: String?,
 ) {
-    fun toDomain(): Poet {
-        return Poet(
+    fun toDomain(): Poet =
+        Poet(
             id = id,
             name = name,
             description = description,
             rootCatId = rootCatId,
-            imageUrl = imageUrl
+            imageUrl = imageUrl,
         )
-    }
 }
