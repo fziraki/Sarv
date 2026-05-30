@@ -68,6 +68,10 @@ android {
                 "proguard-rules.pro"
             )
         }
+
+        getByName("debug"){
+            isMinifyEnabled = false
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
