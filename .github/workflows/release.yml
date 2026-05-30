@@ -24,18 +24,25 @@ jobs:
 
       - name: Decode Keystore
         run: |
-          echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 -d > androidApp/azbarkon.jks
+          echo -n "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > androidApp/azbarkon.jks
 
       - name: Build Release APK
         env:
-          KEYSTORE_PATH: file("androidApp/azbarkon.jks")
+          # Resolved by androidApp/build.gradle.kts file() relative to the androidApp module
+          KEYSTORE_PATH: azbarkon.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        run: ./gradlew assembleRelease
+        run: ./gradlew :androidApp:assembleRelease
+
+      - name: Verify release outputs
+        run: |
+          echo "Keystore:" && ls -la androidApp/azbarkon.jks
+          echo "APK (release dir):" && ls -la androidApp/release/*.apk 2>/dev/null || echo "none in androidApp/release"
+          echo "APK (build outputs):" && ls -la androidApp/build/outputs/apk/release/*.apk 2>/dev/null || echo "none in build/outputs"
 
       - name: Cleanup
-        run: rm azbarkon.jks
+        run: rm -f androidApp/azbarkon.jks
 
 #      - name: Build Release AAB (optional for Play Store)
 #        env:
@@ -49,7 +56,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
-          path: androidApp/release/*.apk
+          path: |
+            androidApp/release/*.apk
+            androidApp/build/outputs/apk/release/*.apk
 
 #      - name: Upload AAB
 #        uses: actions/upload-artifact@v4
