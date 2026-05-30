@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Grant permission
+        run: chmod +x gradlew
+
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_PATH }}" | base64 -d > azbarkon.jks
+
+      - name: Build Release APK
+        env:
+          KEYSTORE_PATH: azbarkon.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: ./gradlew assembleRelease
+
+      - name: Cleanup
+        run: rm azbarkon.jks
+
+#      - name: Build Release AAB (optional for Play Store)
+#        env:
+#          KEYSTORE_PATH: keystore.jks
+#          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+#          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+#          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+#        run: ./gradlew bundleRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: androidApp/release/*.apk
+
+#      - name: Upload AAB
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: app-release-aab
+#          path: androidApp/build/outputs/bundle/release/*.aab
