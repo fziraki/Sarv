@@ -5,12 +5,12 @@ import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.toUiText
-import abkabk.azbarkon.domain.usecase.GetUserInfoUseCase
+import abkabk.azbarkon.domain.repository.UserRepository
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
-    private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val userRepository: UserRepository,
 ) : BaseViewModel<ProfileAction, ProfileState, ProfileEvent>(
         initialState = ProfileState(),
     ) {
@@ -32,7 +32,7 @@ class ProfileViewModel(
                 copy(screenState = UiScreenState.Loading)
             }
 
-            getUserInfoUseCase()
+            userRepository.getUserInfo()
                 .onSuccess { userInfo ->
                     setState {
                         copy(

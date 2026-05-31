@@ -2,7 +2,6 @@ package abkabk.azbarkon.features.home
 
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.domain.model.Poet
-import abkabk.azbarkon.domain.usecase.GetPoetsUseCase
 import abkabk.azbarkon.testing.FakePoetRepository
 import app.cash.turbine.test
 import assertk.assertThat
@@ -49,7 +48,7 @@ class HomeViewModelTest {
                             ),
                         )
                 }
-            val viewModel = HomeViewModel(GetPoetsUseCase(repository))
+            val viewModel = HomeViewModel(repository)
 
             val state = viewModel.state.value
             assertThat(state.screenState).isInstanceOf(UiScreenState.Success::class)
@@ -64,7 +63,7 @@ class HomeViewModelTest {
                 FakePoetRepository().apply {
                     shouldFail = true
                 }
-            val viewModel = HomeViewModel(GetPoetsUseCase(repository))
+            val viewModel = HomeViewModel(repository)
 
             viewModel.events.test {
                 val event = awaitItem()

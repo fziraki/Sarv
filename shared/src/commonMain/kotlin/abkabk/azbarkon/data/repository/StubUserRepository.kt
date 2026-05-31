@@ -1,13 +1,14 @@
-package abkabk.azbarkon.domain.usecase
+package abkabk.azbarkon.data.repository
 
 import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.domain.model.Badge
 import abkabk.azbarkon.domain.model.GameLevel
 import abkabk.azbarkon.domain.model.UserInfo
+import abkabk.azbarkon.domain.repository.UserRepository
 
-class GetUserInfoUseCase {
-    suspend operator fun invoke(): Result<UserInfo, DataError> =
+class StubUserRepository : UserRepository {
+    override suspend fun getUserInfo(): Result<UserInfo, DataError> =
         Result.Success(
             UserInfo(
                 completedLevel = GameLevel(id = 3, name = "همنشین غزل", 900),

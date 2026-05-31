@@ -5,13 +5,13 @@ import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.toUiText
-import abkabk.azbarkon.domain.usecase.GetPoetsUseCase
+import abkabk.azbarkon.domain.repository.PoetRepository
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val getPoetsUseCase: GetPoetsUseCase,
+    private val poetRepository: PoetRepository,
 ) : BaseViewModel<HomeAction, HomeState, HomeEvent>(
         initialState = HomeState(),
     ) {
@@ -33,7 +33,7 @@ class HomeViewModel(
                 copy(screenState = UiScreenState.Loading)
             }
 
-            getPoetsUseCase()
+            poetRepository.getPoets()
                 .onSuccess { poets ->
                     Napier.d("Loaded ${poets.size} poets from local database")
                     setState {
