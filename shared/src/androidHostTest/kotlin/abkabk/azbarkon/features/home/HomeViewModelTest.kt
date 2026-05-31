@@ -2,12 +2,13 @@ package abkabk.azbarkon.features.home
 
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.domain.model.Poet
-import abkabk.azbarkon.domain.usecase.GetPoetsLocallyUseCase
+import abkabk.azbarkon.domain.usecase.GetPoetsUseCase
 import abkabk.azbarkon.testing.FakePoetRepository
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -33,36 +34,37 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `loading local poets updates success state`() =
+    fun `loading poets updates success state`() =
         runTest {
             val repository =
                 FakePoetRepository().apply {
-                    localPoets =
+                    poets =
                         listOf(
                             Poet(
                                 id = 1,
                                 name = "حافظ",
                                 description = null,
-                                rootCatId = null,
-                                imageUrl = null,
+                                rootCatId = 10,
+                                imageUrl = "https://api.ganjoor.net/api/ganjoor/poet/image/hafez.png",
                             ),
                         )
                 }
-            val viewModel = HomeViewModel(GetPoetsLocallyUseCase(repository))
+            val viewModel = HomeViewModel(GetPoetsUseCase(repository))
 
             val state = viewModel.state.value
             assertThat(state.screenState).isInstanceOf(UiScreenState.Success::class)
             assertThat(state.poets.size).isEqualTo(1)
+            assertThat(state.poets.first().imageUrl).isNotNull()
         }
 
     @Test
-    fun `local load failure emits snackbar event`() =
+    fun `load failure emits snackbar event`() =
         runTest {
             val repository =
                 FakePoetRepository().apply {
-                    shouldFailLocal = true
+                    shouldFail = true
                 }
-            val viewModel = HomeViewModel(GetPoetsLocallyUseCase(repository))
+            val viewModel = HomeViewModel(GetPoetsUseCase(repository))
 
             viewModel.events.test {
                 val event = awaitItem()

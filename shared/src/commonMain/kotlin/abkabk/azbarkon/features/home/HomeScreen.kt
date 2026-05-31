@@ -10,7 +10,6 @@ import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.asString
-import abkabk.azbarkon.core.util.Constants.BASE_URL
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.ui.components.NetworkImage
 import androidx.compose.animation.core.spring
@@ -204,16 +203,24 @@ fun PoetItem(item: Poet) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        NetworkImage(
-            modifier =
-                Modifier
-                    .size(80.dp)
-                    .clip(CircleShape),
-            imageUrl =
-                item.imageUrl?.let {
-                    BASE_URL.plus(it.removePrefix("/"))
-                } ?: run { "" },
-        )
+        if (item.imageUrl != null) {
+            NetworkImage(
+                modifier =
+                    Modifier
+                        .size(80.dp)
+                        .clip(CircleShape),
+                imageUrl = item.imageUrl,
+            )
+        } else {
+            Image(
+                modifier =
+                    Modifier
+                        .size(80.dp)
+                        .clip(CircleShape),
+                painter = painterResource(Res.drawable.palette),
+                contentDescription = null,
+            )
+        }
         Text(
             modifier = Modifier.fillMaxWidth(),
             maxLines = 1,

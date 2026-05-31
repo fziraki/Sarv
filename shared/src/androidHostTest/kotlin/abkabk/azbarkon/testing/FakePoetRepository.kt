@@ -6,15 +6,13 @@ import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.repository.PoetRepository
 
 class FakePoetRepository : PoetRepository {
-    var localPoets: List<Poet> = emptyList()
-    var shouldFailLocal: Boolean = false
+    var poets: List<Poet> = emptyList()
+    var shouldFail: Boolean = false
 
-    override suspend fun getPoets(): Result<List<Poet>, DataError> = Result.Success(localPoets)
-
-    override suspend fun getPoetsLocally(): Result<List<Poet>, DataError.Local> =
-        if (shouldFailLocal) {
+    override suspend fun getPoets(): Result<List<Poet>, DataError.Local> =
+        if (shouldFail) {
             Result.Error(DataError.Local.UNKNOWN)
         } else {
-            Result.Success(localPoets)
+            Result.Success(poets)
         }
 }

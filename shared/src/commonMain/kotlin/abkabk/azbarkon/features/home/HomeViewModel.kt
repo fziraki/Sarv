@@ -5,13 +5,13 @@ import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.toUiText
-import abkabk.azbarkon.domain.usecase.GetPoetsLocallyUseCase
+import abkabk.azbarkon.domain.usecase.GetPoetsUseCase
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val getPoetsLocallyUseCase: GetPoetsLocallyUseCase,
+    private val getPoetsUseCase: GetPoetsUseCase,
 ) : BaseViewModel<HomeAction, HomeState, HomeEvent>(
         initialState = HomeState(),
     ) {
@@ -23,17 +23,17 @@ class HomeViewModel(
         when (action) {
             HomeAction.OnLoad,
             HomeAction.OnRetryClick,
-            -> loadPoetsLocally()
+            -> loadPoets()
         }
     }
 
-    private fun loadPoetsLocally() {
+    private fun loadPoets() {
         viewModelScope.launch {
             setState {
                 copy(screenState = UiScreenState.Loading)
             }
 
-            getPoetsLocallyUseCase()
+            getPoetsUseCase()
                 .onSuccess { poets ->
                     Napier.d("Loaded ${poets.size} poets from local database")
                     setState {
@@ -43,7 +43,7 @@ class HomeViewModel(
                         )
                     }
                 }.onFailure { error ->
-                    Napier.e("Failed to load local poets: $error")
+                    Napier.e("Failed to load poets: $error")
                     val message = error.toUiText()
                     setState {
                         copy(

@@ -8,5 +8,5 @@ import abkabk.azbarkon.domain.repository.PoetRepository
 class GetPoetsUseCase(
     private val repository: PoetRepository,
 ) {
-    suspend operator fun invoke(): Result<List<Poet>, DataError> = repository.getPoets()
+    suspend operator fun invoke(): Result<List<Poet>, DataError.Local> = repository.getPoets()
 }

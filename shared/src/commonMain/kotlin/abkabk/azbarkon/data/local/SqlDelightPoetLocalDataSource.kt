@@ -14,7 +14,7 @@ class SqlDelightPoetLocalDataSource(
         try {
             Result.Success(
                 queries
-                    .selectAll()
+                    .selectAllWithCatUrl()
                     .executeAsList()
                     .map { it.toPoet() },
             )

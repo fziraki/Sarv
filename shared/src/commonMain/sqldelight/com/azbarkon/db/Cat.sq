@@ -1,0 +1,10 @@
+CREATE TABLE cat (
+    id INTEGER NOT NULL PRIMARY KEY,
+    poet_id INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    parent_id INTEGER NOT NULL,
+    url TEXT NOT NULL
+);
+
+selectUrlByCatId:
+SELECT url FROM cat WHERE id = ?;
