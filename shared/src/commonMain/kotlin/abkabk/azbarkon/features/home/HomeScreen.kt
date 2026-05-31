@@ -82,6 +82,8 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeRoot(
+    onNavigateToPoetsList: () -> Unit,
+    onNavigateToPoetDetail: (Int) -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -93,6 +95,10 @@ fun HomeRoot(
             is HomeEvent.ShowSnackbar -> {
                 snackbarMessage = event.message
             }
+
+            HomeEvent.NavigateToPoetsList -> onNavigateToPoetsList()
+
+            is HomeEvent.NavigateToPoetDetail -> onNavigateToPoetDetail(event.poetId)
         }
     }
 
@@ -141,7 +147,11 @@ fun HomeScreen(
             QuickAccessMenu()
         }
         item {
-            Poets(state.poets)
+            Poets(
+                poets = state.poets,
+                onSeeAllClick = { onAction(HomeAction.OnSeeAllPoetsClick) },
+                onPoetClick = { poetId -> onAction(HomeAction.OnPoetClick(poetId)) },
+            )
         }
     }
 }
@@ -158,7 +168,11 @@ private fun HomeScreenPreview() {
 }
 
 @Composable
-fun Poets(poets: List<Poet>) {
+fun Poets(
+    poets: List<Poet>,
+    onSeeAllClick: () -> Unit,
+    onPoetClick: (Int) -> Unit,
+) {
     Column(
         modifier =
             Modifier
@@ -176,6 +190,7 @@ fun Poets(poets: List<Poet>) {
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Text(
+                modifier = Modifier.clickable(onClick = onSeeAllClick),
                 text = stringResource(Res.string.all),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -190,16 +205,27 @@ fun Poets(poets: List<Poet>) {
                 items = poets,
                 key = { poet -> poet.id ?: poet.name.orEmpty() },
             ) { poet ->
-                PoetItem(poet)
+                PoetItem(
+                    item = poet,
+                    onClick = {
+                        poet.id?.let(onPoetClick)
+                    },
+                )
             }
         }
     }
 }
 
 @Composable
-fun PoetItem(item: Poet) {
+fun PoetItem(
+    item: Poet,
+    onClick: () -> Unit,
+) {
     Column(
-        modifier = Modifier.width(80.dp),
+        modifier =
+            Modifier
+                .width(80.dp)
+                .clickable(onClick = onClick),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

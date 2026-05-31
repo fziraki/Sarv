@@ -10,4 +10,5 @@ val sharedModules: List<Module> =
         userDataModule,
         homePresentationModule,
         profilePresentationModule,
+        poetsPresentationModule,
     )

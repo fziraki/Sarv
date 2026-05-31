@@ -9,7 +9,10 @@ import org.koin.dsl.module
 val poetsDataModule =
     module {
         single<PoetLocalDataSource> {
-            SqlDelightPoetLocalDataSource(get())
+            SqlDelightPoetLocalDataSource(
+                poetQueries = get(),
+                catQueries = get(),
+            )
         }
         single<PoetRepository> {
             OfflineFirstPoetRepository(

@@ -11,6 +11,17 @@ SELECT * FROM poet;
 selectById:
 SELECT * FROM poet WHERE id = ?;
 
+selectByIdWithCatUrl:
+SELECT
+    poet.id,
+    poet.name,
+    poet.cat_id,
+    poet.description,
+    cat.url AS cat_url
+FROM poet
+LEFT JOIN cat ON cat.id = poet.cat_id
+WHERE poet.id = ?;
+
 selectAllWithCatUrl:
 SELECT
     poet.id,

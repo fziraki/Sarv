@@ -8,3 +8,15 @@ CREATE TABLE cat (
 
 selectUrlByCatId:
 SELECT url FROM cat WHERE id = ?;
+
+selectChildrenByParentId:
+SELECT id, poet_id, text, parent_id, url
+FROM cat
+WHERE parent_id = ? AND poet_id = ?
+ORDER BY id;
+
+selectAllByPoetId:
+SELECT id, poet_id, text, parent_id, url
+FROM cat
+WHERE poet_id = ?
+ORDER BY id;
