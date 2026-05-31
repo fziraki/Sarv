@@ -1,8 +1,10 @@
 package abkabk.azbarkon.features.home
 
+import abkabk.azbarkon.core.domain.result.onFailure
+import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.ui_base.toUiText
 import abkabk.azbarkon.domain.usecase.GetPoetsLocallyUseCase
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
@@ -10,36 +12,28 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val getPoetsLocallyUseCase: GetPoetsLocallyUseCase,
-) : BaseViewModel<
-        HomeContract.Event,
-        HomeContract.State,
-        HomeContract.Effect,
-    >(
-        initialState = HomeContract.State(),
+) : BaseViewModel<HomeAction, HomeState, HomeEvent>(
+        initialState = HomeState(),
     ) {
     init {
-        onEvent(HomeContract.Event.LoadPoets)
+        onAction(HomeAction.OnLoad)
     }
 
-    override fun onEvent(event: HomeContract.Event) {
-        when (event) {
-            HomeContract.Event.LoadPoets,
-            HomeContract.Event.Retry,
-            -> {
-                loadPoetsLocally()
-            }
+    override fun onAction(action: HomeAction) {
+        when (action) {
+            HomeAction.OnLoad,
+            HomeAction.OnRetryClick,
+            -> loadPoetsLocally()
         }
     }
 
     private fun loadPoetsLocally() {
         viewModelScope.launch {
             setState {
-                copy(
-                    screenState = UiScreenState.Loading,
-                )
+                copy(screenState = UiScreenState.Loading)
             }
 
-            runCatching { getPoetsLocallyUseCase() }
+            getPoetsLocallyUseCase()
                 .onSuccess { poets ->
                     Napier.d("Loaded ${poets.size} poets from local database")
                     setState {
@@ -49,20 +43,17 @@ class HomeViewModel(
                         )
                     }
                 }.onFailure { error ->
-                    Napier.e("Failed to load local poets", error)
+                    Napier.e("Failed to load local poets: $error")
+                    val message = error.toUiText()
                     setState {
                         copy(
                             screenState =
                                 UiScreenState.Error(
-                                    message = UiText.Dynamic(error.message.orEmpty()),
+                                    message = message,
                                 ),
                         )
                     }
-                    sendEffect(
-                        HomeContract.Effect.ShowSnackbar(
-                            error.message.orEmpty(),
-                        ),
-                    )
+                    sendEvent(HomeEvent.ShowSnackbar(message))
                 }
         }
     }

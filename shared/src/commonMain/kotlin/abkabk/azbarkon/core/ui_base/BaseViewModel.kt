@@ -7,22 +7,22 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 
-abstract class BaseViewModel<EVENT, STATE, EFFECT>(
+abstract class BaseViewModel<ACTION, STATE, EVENT>(
     initialState: STATE,
 ) : ViewModel() {
     private val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
 
-    private val _effect = Channel<EFFECT>()
-    val effect = _effect.receiveAsFlow()
+    private val _events = Channel<EVENT>()
+    val events = _events.receiveAsFlow()
 
     protected fun setState(reducer: STATE.() -> STATE) {
         _state.update(reducer)
     }
 
-    protected suspend fun sendEffect(effect: EFFECT) {
-        _effect.send(effect)
+    protected suspend fun sendEvent(event: EVENT) {
+        _events.send(event)
     }
 
-    abstract fun onEvent(event: EVENT)
+    abstract fun onAction(action: ACTION)
 }

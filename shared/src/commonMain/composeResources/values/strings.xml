@@ -53,4 +53,12 @@
     <string name="slider_tasvir_negar_text">شعر خود را\nتصویر کنید</string>
     <string name="slider_tasvir_negar_button">شروع ساخت</string>
 
+    <string name="error_no_internet">اتصال اینترنت برقرار نیست</string>
+    <string name="error_server">خطای سرور. لطفاً دوباره تلاش کنید</string>
+    <string name="error_unauthorized">دسترسی مجاز نیست</string>
+    <string name="error_not_found">مورد یافت نشد</string>
+    <string name="error_disk_full">فضای ذخیره‌سازی کافی نیست</string>
+    <string name="error_unknown">خطای ناشناخته</string>
+    <string name="cd_back">بازگشت</string>
+
 </resources>

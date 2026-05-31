@@ -1,7 +1,11 @@
 package abkabk.azbarkon.features.profile
 
 import abkabk.azbarkon.core.ui_base.BaseScreen
+import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
+import abkabk.azbarkon.core.ui_base.ObserveAsEvents
+import abkabk.azbarkon.core.ui_base.asString
 import abkabk.azbarkon.domain.model.Badge
+import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -24,44 +29,65 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.palette
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ProfileScreen() {
-    val viewModel: ProfileViewModel = koinViewModel()
-    val state by viewModel.state.collectAsState()
+fun ProfileRoot(
+    viewModel: ProfileViewModel = koinViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val appState = LocalAzbarkonAppState.current
+    var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.ui_base.UiText?>(null) }
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is ProfileEvent.ShowSnackbar -> {
+                snackbarMessage = event.message
+            }
+        }
+    }
+
+    snackbarMessage?.let { message ->
+        val resolvedMessage = message.asString()
+        LaunchedEffect(resolvedMessage) {
+            appState.showSnackbar(resolvedMessage)
+            snackbarMessage = null
+        }
+    }
 
     BaseScreen(
         screenState = state.screenState,
-        effectFlow = viewModel.effect,
-        onRetry = {
-            viewModel.onEvent(ProfileContract.Event.Retry)
-        },
-        onEffect = {
-            when (it) {
-                is ProfileContract.Effect.ShowSnackbar -> {
-                }
-            }
-        },
+        onRetry = { viewModel.onAction(ProfileAction.OnRetryClick) },
     ) {
-        ProfileContent(state)
+        ProfileScreen(
+            state = state,
+            onAction = viewModel::onAction,
+        )
     }
 }
 
 @Composable
-fun ProfileContent(state: ProfileContract.State) {
+fun ProfileScreen(
+    state: ProfileState,
+    onAction: (ProfileAction) -> Unit,
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -89,6 +115,17 @@ fun ProfileContent(state: ProfileContract.State) {
     }
 }
 
+@Preview
+@Composable
+private fun ProfileScreenPreview() {
+    AzbarkonTheme {
+        ProfileScreen(
+            state = ProfileState(),
+            onAction = {},
+        )
+    }
+}
+
 @Composable
 fun ProfileBadges(badges: List<Badge>) {
     Column(
@@ -111,10 +148,11 @@ fun ProfileBadges(badges: List<Badge>) {
         )
 
         LazyRow(modifier = Modifier.fillMaxWidth()) {
-            badges.forEach {
-                item {
-                    BadgeItem(it)
-                }
+            items(
+                items = badges,
+                key = { badge -> badge.id },
+            ) { badge ->
+                BadgeItem(badge)
             }
         }
     }

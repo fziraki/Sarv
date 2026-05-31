@@ -1,73 +1,57 @@
 package abkabk.azbarkon.features.profile
 
-import abkabk.azbarkon.core.network.ApiResult
+import abkabk.azbarkon.core.domain.result.onFailure
+import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.ui_base.toUiText
 import abkabk.azbarkon.domain.usecase.GetUserInfoUseCase
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val getUserInfoUseCase: GetUserInfoUseCase,
-) : BaseViewModel<
-        ProfileContract.Event,
-        ProfileContract.State,
-        ProfileContract.Effect,
-    >(
-        initialState = ProfileContract.State(),
+) : BaseViewModel<ProfileAction, ProfileState, ProfileEvent>(
+        initialState = ProfileState(),
     ) {
     init {
-        onEvent(ProfileContract.Event.LoadUserInfo)
+        onAction(ProfileAction.OnLoad)
     }
 
-    override fun onEvent(event: ProfileContract.Event) {
-        when (event) {
-            ProfileContract.Event.LoadUserInfo -> {
-                loadUserInfo()
-            }
-
-            ProfileContract.Event.Retry -> {
-                loadUserInfo()
-            }
+    override fun onAction(action: ProfileAction) {
+        when (action) {
+            ProfileAction.OnLoad,
+            ProfileAction.OnRetryClick,
+            -> loadUserInfo()
         }
     }
 
     private fun loadUserInfo() {
         viewModelScope.launch {
             setState {
-                copy(
-                    screenState = UiScreenState.Loading,
-                )
+                copy(screenState = UiScreenState.Loading)
             }
 
-            when (val result = getUserInfoUseCase()) {
-                is ApiResult.Success -> {
+            getUserInfoUseCase()
+                .onSuccess { userInfo ->
                     setState {
                         copy(
                             screenState = UiScreenState.Success,
-                            userInfo = result.data,
+                            userInfo = userInfo,
                         )
                     }
-                }
-
-                is ApiResult.Error -> {
+                }.onFailure { error ->
+                    val message = error.toUiText()
                     setState {
                         copy(
                             screenState =
                                 UiScreenState.Error(
-                                    message = UiText.Dynamic(result.message),
+                                    message = message,
                                 ),
                         )
                     }
-
-                    sendEffect(
-                        ProfileContract.Effect.ShowSnackbar(
-                            result.message,
-                        ),
-                    )
+                    sendEvent(ProfileEvent.ShowSnackbar(message))
                 }
-            }
         }
     }
 }

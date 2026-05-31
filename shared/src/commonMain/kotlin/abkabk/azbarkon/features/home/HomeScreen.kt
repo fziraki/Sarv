@@ -1,7 +1,14 @@
 package abkabk.azbarkon.features.home
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
+import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.asString
 import abkabk.azbarkon.core.util.Constants.BASE_URL
 import abkabk.azbarkon.domain.model.Poet
@@ -36,15 +43,13 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.all
 import azbarkoncmp.shared.generated.resources.favorite
@@ -68,6 +73,7 @@ import azbarkoncmp.shared.generated.resources.slider_challenge_title
 import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_button
 import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_text
 import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_title
+import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -76,29 +82,45 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun HomeScreen() {
-    val viewModel: HomeViewModel = koinViewModel()
-    val state by viewModel.state.collectAsState()
+fun HomeRoot(
+    viewModel: HomeViewModel = koinViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val appState = LocalAzbarkonAppState.current
+    var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.ui_base.UiText?>(null) }
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is HomeEvent.ShowSnackbar -> {
+                snackbarMessage = event.message
+            }
+        }
+    }
+
+    snackbarMessage?.let { message ->
+        val resolvedMessage = message.asString()
+        LaunchedEffect(resolvedMessage) {
+            appState.showSnackbar(resolvedMessage)
+            snackbarMessage = null
+        }
+    }
 
     BaseScreen(
         screenState = state.screenState,
-        effectFlow = viewModel.effect,
-        onRetry = {
-            viewModel.onEvent(HomeContract.Event.Retry)
-        },
-        onEffect = {
-            when (it) {
-                is HomeContract.Effect.ShowSnackbar -> {
-                }
-            }
-        },
+        onRetry = { viewModel.onAction(HomeAction.OnRetryClick) },
     ) {
-        HomeContent(state)
+        HomeScreen(
+            state = state,
+            onAction = viewModel::onAction,
+        )
     }
 }
 
 @Composable
-fun HomeContent(state: HomeContract.State) {
+fun HomeScreen(
+    state: HomeState,
+    onAction: (HomeAction) -> Unit,
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -122,6 +144,17 @@ fun HomeContent(state: HomeContract.State) {
         item {
             Poets(state.poets)
         }
+    }
+}
+
+@Preview
+@Composable
+private fun HomeScreenPreview() {
+    AzbarkonTheme {
+        HomeScreen(
+            state = HomeState(),
+            onAction = {},
+        )
     }
 }
 
@@ -154,8 +187,11 @@ fun Poets(poets: List<Poet>) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            items(poets) {
-                PoetItem(it)
+            items(
+                items = poets,
+                key = { poet -> poet.id ?: poet.name.orEmpty() },
+            ) { poet ->
+                PoetItem(poet)
             }
         }
     }
@@ -269,13 +305,13 @@ fun HeroCard(newMemorization: Boolean) {
         if (newMemorization) {
             stringResource(Res.string.new_memorization_title)
         } else {
-            UiText.Dynamic("").asString()
+            ""
         }
     val res3 =
         if (newMemorization) {
             stringResource(Res.string.new_memorization_desc)
         } else {
-            UiText.Dynamic("").asString()
+            ""
         }
     val resButton =
         if (newMemorization) {

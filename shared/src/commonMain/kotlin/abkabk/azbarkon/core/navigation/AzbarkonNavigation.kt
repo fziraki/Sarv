@@ -1,10 +1,15 @@
 package abkabk.azbarkon.core.navigation
 
+import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.rememberAzbarkonAppState
-import abkabk.azbarkon.features.games.GamesScreen
-import abkabk.azbarkon.features.home.HomeScreen
-import abkabk.azbarkon.features.library.LibraryScreen
-import abkabk.azbarkon.features.profile.ProfileScreen
+import abkabk.azbarkon.features.games.navigation.GamesRoute
+import abkabk.azbarkon.features.games.navigation.gamesGraph
+import abkabk.azbarkon.features.home.navigation.HomeRoute
+import abkabk.azbarkon.features.home.navigation.homeGraph
+import abkabk.azbarkon.features.library.navigation.LibraryRoute
+import abkabk.azbarkon.features.library.navigation.libraryGraph
+import abkabk.azbarkon.features.profile.navigation.ProfileRoute
+import abkabk.azbarkon.features.profile.navigation.profileGraph
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -26,17 +31,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.arrow_back
+import azbarkoncmp.shared.generated.resources.cd_back
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -44,6 +51,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun AzbarkonNavigation() {
     val navController = rememberNavController()
+    val appState = rememberAzbarkonAppState()
 
     val items =
         listOf(
@@ -54,125 +62,135 @@ fun AzbarkonNavigation() {
         )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val currentDestination = navBackStackEntry?.destination
 
-    val appState = rememberAzbarkonAppState()
+    val currentItem =
+        items.find { item ->
+            when (item) {
+                BottomNavItem.Home -> currentDestination?.hasRoute<HomeRoute>() == true
+                BottomNavItem.Library -> currentDestination?.hasRoute<LibraryRoute>() == true
+                BottomNavItem.Games -> currentDestination?.hasRoute<GamesRoute>() == true
+                BottomNavItem.Profile -> currentDestination?.hasRoute<ProfileRoute>() == true
+            }
+        }
 
-    val currentItem = items.find { it.route == currentRoute }
-
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(appState.snackbarHostState)
-        },
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            Box(
-                modifier =
-                    Modifier
-                        .windowInsetsPadding(WindowInsets.statusBars)
-                        .fillMaxWidth()
-                        .height(56.dp),
-            ) {
-                if (navController.previousBackStackEntry != null) {
-                    IconButton(
-                        modifier = Modifier.align(Alignment.CenterStart),
-                        onClick = { navController.navigateUp() },
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_back),
-                            contentDescription = "Back",
-                        )
-                    }
-                }
-
-                Column(
-                    modifier = Modifier.align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+    CompositionLocalProvider(LocalAzbarkonAppState provides appState) {
+        Scaffold(
+            snackbarHost = {
+                SnackbarHost(appState.snackbarHostState)
+            },
+            containerColor = MaterialTheme.colorScheme.background,
+            topBar = {
+                Box(
+                    modifier =
+                        Modifier
+                            .windowInsetsPadding(WindowInsets.statusBars)
+                            .fillMaxWidth()
+                            .height(56.dp),
                 ) {
-                    Text(
-                        text = currentItem?.headerTitle?.let { stringResource(it) } ?: "",
-                        style = MaterialTheme.typography.headlineLarge,
-                    )
+                    if (navController.previousBackStackEntry != null) {
+                        IconButton(
+                            modifier = Modifier.align(Alignment.CenterStart),
+                            onClick = { navController.navigateUp() },
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.arrow_back),
+                                contentDescription = stringResource(Res.string.cd_back),
+                            )
+                        }
+                    }
 
-                    currentItem?.subtitle?.let {
+                    Column(
+                        modifier = Modifier.align(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
                         Text(
-                            text = stringResource(it),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            text = currentItem?.headerTitle?.let { stringResource(it) } ?: "",
+                            style = MaterialTheme.typography.headlineLarge,
+                        )
+
+                        currentItem?.subtitle?.let {
+                            Text(
+                                text = stringResource(it),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+            },
+            bottomBar = {
+                NavigationBar(
+                    modifier =
+                        Modifier
+                            .windowInsetsPadding(WindowInsets.navigationBars)
+                            .fillMaxWidth()
+                            .height(64.dp),
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ) {
+                    items.forEach { item ->
+                        val selected =
+                            when (item) {
+                                BottomNavItem.Home -> currentDestination?.hasRoute<HomeRoute>() == true
+                                BottomNavItem.Library -> currentDestination?.hasRoute<LibraryRoute>() == true
+                                BottomNavItem.Games -> currentDestination?.hasRoute<GamesRoute>() == true
+                                BottomNavItem.Profile -> currentDestination?.hasRoute<ProfileRoute>() == true
+                            }
+
+                        NavigationBarItem(
+                            selected = selected,
+                            onClick = {
+                                val route =
+                                    when (item) {
+                                        BottomNavItem.Home -> HomeRoute
+                                        BottomNavItem.Library -> LibraryRoute
+                                        BottomNavItem.Games -> GamesRoute
+                                        BottomNavItem.Profile -> ProfileRoute
+                                    }
+                                navController.navigate(route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            },
+                            icon = {
+                                Icon(
+                                    modifier = Modifier.size(22.dp),
+                                    painter = painterResource(item.icon),
+                                    contentDescription = stringResource(item.title),
+                                )
+                            },
+                            colors =
+                                NavigationBarItemDefaults.colors(
+                                    selectedIconColor = MaterialTheme.colorScheme.secondary,
+                                    selectedTextColor = MaterialTheme.colorScheme.secondary,
+                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    indicatorColor = Color.Transparent,
+                                ),
+                            label = {
+                                Text(
+                                    text = stringResource(item.title),
+                                    style = MaterialTheme.typography.labelSmall,
+                                )
+                            },
+                            alwaysShowLabel = false,
                         )
                     }
                 }
-            }
-        },
-        bottomBar = {
-            NavigationBar(
-                modifier =
-                    Modifier
-                        .windowInsetsPadding(WindowInsets.navigationBars)
-                        .fillMaxWidth()
-                        .height(64.dp),
-                containerColor = MaterialTheme.colorScheme.surface,
+            },
+        ) { padding ->
+            NavHost(
+                navController = navController,
+                startDestination = HomeRoute,
+                modifier = Modifier.padding(padding),
             ) {
-                items.forEach { item ->
-
-                    NavigationBarItem(
-                        selected = currentRoute == item.route,
-                        onClick = {
-                            navController.navigate(item.route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                modifier = Modifier.size(22.dp),
-                                painter = painterResource(item.icon),
-                                contentDescription = stringResource(item.title),
-                            )
-                        },
-                        colors =
-                            NavigationBarItemDefaults.colors(
-                                selectedIconColor = MaterialTheme.colorScheme.secondary,
-                                selectedTextColor = MaterialTheme.colorScheme.secondary,
-                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                indicatorColor = Color.Transparent,
-                            ),
-                        label = {
-                            Text(
-                                text = stringResource(item.title),
-                                style = MaterialTheme.typography.labelSmall,
-                            )
-                        },
-                        alwaysShowLabel = false,
-                    )
-                }
-            }
-        },
-    ) { padding ->
-
-        NavHost(
-            navController = navController,
-            startDestination = BottomNavItem.Home.route,
-            modifier = Modifier.padding(padding),
-        ) {
-            composable(BottomNavItem.Home.route) {
-                HomeScreen()
-            }
-
-            composable(BottomNavItem.Library.route) {
-                LibraryScreen()
-            }
-
-            composable(BottomNavItem.Games.route) {
-                GamesScreen()
-            }
-
-            composable(BottomNavItem.Profile.route) {
-                ProfileScreen()
+                homeGraph()
+                libraryGraph()
+                gamesGraph()
+                profileGraph()
             }
         }
     }

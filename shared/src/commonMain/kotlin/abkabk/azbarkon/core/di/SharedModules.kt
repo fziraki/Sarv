@@ -6,7 +6,8 @@ val sharedModules: List<Module> =
     listOf(
         networkModule,
         databaseModule,
-        dataModule,
+        poetsDataModule,
         domainModule,
-        presentationModule,
+        homePresentationModule,
+        profilePresentationModule,
     )
