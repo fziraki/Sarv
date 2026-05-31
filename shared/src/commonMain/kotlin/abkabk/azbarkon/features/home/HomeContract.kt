@@ -13,8 +13,6 @@ class HomeContract {
     sealed interface Event {
         data object LoadPoets : Event
 
-        data object LoadTodayPoem : Event
-
         data object Retry : Event
     }
 

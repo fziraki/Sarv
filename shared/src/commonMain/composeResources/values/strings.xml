@@ -39,4 +39,18 @@
     <string name="whois_poet_desc">شاعر کیست؟</string>
     <string name="whois_poet_score">25</string>
 
+    <string name="library_coming_soon">به‌زودی</string>
+
+    <string name="slider_beyt_of_day_title">بیت امروز</string>
+    <string name="slider_beyt_of_day_text">که عشق آسان نمود اول\nولی افتاد مشکل ها</string>
+    <string name="slider_beyt_of_day_poet">حافظ</string>
+
+    <string name="slider_challenge_title">چالش روز</string>
+    <string name="slider_challenge_text">مصرع بعدی این بیت\nرا بلدی؟</string>
+    <string name="slider_challenge_button">شروع چالش</string>
+
+    <string name="slider_tasvir_negar_title">تصویرنگار</string>
+    <string name="slider_tasvir_negar_text">شعر خود را\nتصویر کنید</string>
+    <string name="slider_tasvir_negar_button">شروع ساخت</string>
+
 </resources>

@@ -59,6 +59,15 @@ import azbarkoncmp.shared.generated.resources.poetry_memorization
 import azbarkoncmp.shared.generated.resources.popular_poets
 import azbarkoncmp.shared.generated.resources.review
 import azbarkoncmp.shared.generated.resources.search
+import azbarkoncmp.shared.generated.resources.slider_beyt_of_day_poet
+import azbarkoncmp.shared.generated.resources.slider_beyt_of_day_text
+import azbarkoncmp.shared.generated.resources.slider_beyt_of_day_title
+import azbarkoncmp.shared.generated.resources.slider_challenge_button
+import azbarkoncmp.shared.generated.resources.slider_challenge_text
+import azbarkoncmp.shared.generated.resources.slider_challenge_title
+import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_button
+import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_text
+import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_title
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -448,7 +457,7 @@ fun TasvirNegarSlide() {
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "تصویرنگار",
+                text = stringResource(Res.string.slider_tasvir_negar_title),
                 color = MaterialTheme.colorScheme.onSecondaryFixedVariant,
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.End,
@@ -456,7 +465,7 @@ fun TasvirNegarSlide() {
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "شعر خود را\nتصویر کنید",
+                text = stringResource(Res.string.slider_tasvir_negar_text),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End,
@@ -478,7 +487,7 @@ fun TasvirNegarSlide() {
                 onClick = {},
             ) {
                 Text(
-                    text = "شروع ساخت",
+                    text = stringResource(Res.string.slider_tasvir_negar_button),
                     style = MaterialTheme.typography.labelSmall,
                 )
             }
@@ -510,7 +519,7 @@ fun ChallengeSlide() {
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "چالش روز",
+                text = stringResource(Res.string.slider_challenge_title),
                 color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.End,
@@ -518,7 +527,7 @@ fun ChallengeSlide() {
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "مصرع بعدی این بیت\nرا بلدی؟",
+                text = stringResource(Res.string.slider_challenge_text),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End,
@@ -540,7 +549,7 @@ fun ChallengeSlide() {
                 onClick = {},
             ) {
                 Text(
-                    text = "شروع چالش",
+                    text = stringResource(Res.string.slider_challenge_button),
                     style = MaterialTheme.typography.labelSmall,
                 )
             }
@@ -565,7 +574,7 @@ fun BeytOfDaySlide() {
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "بیت امروز",
+                text = stringResource(Res.string.slider_beyt_of_day_title),
                 color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.Start,
@@ -573,7 +582,7 @@ fun BeytOfDaySlide() {
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "که عشق آسان نمود اول\nولی افتاد مشکل ها",
+                text = stringResource(Res.string.slider_beyt_of_day_text),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
@@ -581,7 +590,7 @@ fun BeytOfDaySlide() {
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "حافظ",
+                text = stringResource(Res.string.slider_beyt_of_day_poet),
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.End,

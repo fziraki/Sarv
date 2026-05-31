@@ -17,6 +17,6 @@ val domainModule =
         }
 
         factory {
-            GetUserInfoUseCase(get())
+            GetUserInfoUseCase()
         }
     }

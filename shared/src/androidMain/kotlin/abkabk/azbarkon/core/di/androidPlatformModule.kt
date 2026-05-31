@@ -5,9 +5,8 @@ import com.azbarkon.db.AzbarKonDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-val androidModule =
+val androidPlatformModule =
     module {
-
         single {
             DatabaseDriverFactory(
                 context = androidContext(),

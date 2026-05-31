@@ -9,7 +9,6 @@ val presentationModule =
 
         factory {
             HomeViewModel(
-                getPoetsUseCase = get(),
                 getPoetsLocallyUseCase = get(),
             )
         }

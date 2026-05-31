@@ -12,6 +12,15 @@ This is a Kotlin Multiplatform project targeting Android, iOS.
     Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./shared/src/jvmMain/kotlin)
     folder is the appropriate location.
 
+### Local database setup
+
+The app reads poets from a pre-packaged SQLite database named `ganjoor.s3db`.
+
+- **Android:** place `ganjoor.s3db` in `androidApp/src/main/assets/ganjoor.s3db`. The file is copied into app storage on first launch.
+- **iOS:** add `ganjoor.s3db` to the iOS app bundle in Xcode (Copy Bundle Resources). The shared module copies it into the documents directory on first launch.
+
+These database files are gitignored. Obtain or generate `ganjoor.s3db` locally before running features that depend on local poets.
+
 ### Running the apps
 
 Use the run configurations provided by the run widget in your IDE's toolbar. You can also use these commands and options:

@@ -4,11 +4,7 @@ import abkabk.azbarkon.core.network.ApiResult
 import abkabk.azbarkon.domain.model.Badge
 import abkabk.azbarkon.domain.model.GameLevel
 import abkabk.azbarkon.domain.model.UserInfo
-import abkabk.azbarkon.domain.repository.PoetRepository
-
-class GetUserInfoUseCase(
-    private val repository: PoetRepository,
-) {
+class GetUserInfoUseCase {
     suspend operator fun invoke(): ApiResult<UserInfo> =
         ApiResult.Success(
             data =
