@@ -1,9 +1,15 @@
 package abkabk.azbarkon.features.home
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
+import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.asString
-import abkabk.azbarkon.core.util.Constants.BASE_URL
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.ui.components.NetworkImage
 import androidx.compose.animation.core.spring
@@ -36,15 +42,13 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.all
 import azbarkoncmp.shared.generated.resources.favorite
@@ -59,6 +63,16 @@ import azbarkoncmp.shared.generated.resources.poetry_memorization
 import azbarkoncmp.shared.generated.resources.popular_poets
 import azbarkoncmp.shared.generated.resources.review
 import azbarkoncmp.shared.generated.resources.search
+import azbarkoncmp.shared.generated.resources.slider_beyt_of_day_poet
+import azbarkoncmp.shared.generated.resources.slider_beyt_of_day_text
+import azbarkoncmp.shared.generated.resources.slider_beyt_of_day_title
+import azbarkoncmp.shared.generated.resources.slider_challenge_button
+import azbarkoncmp.shared.generated.resources.slider_challenge_text
+import azbarkoncmp.shared.generated.resources.slider_challenge_title
+import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_button
+import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_text
+import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_title
+import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -67,29 +81,45 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun HomeScreen() {
-    val viewModel: HomeViewModel = koinViewModel()
-    val state by viewModel.state.collectAsState()
+fun HomeRoot(
+    viewModel: HomeViewModel = koinViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val appState = LocalAzbarkonAppState.current
+    var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.ui_base.UiText?>(null) }
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is HomeEvent.ShowSnackbar -> {
+                snackbarMessage = event.message
+            }
+        }
+    }
+
+    snackbarMessage?.let { message ->
+        val resolvedMessage = message.asString()
+        LaunchedEffect(resolvedMessage) {
+            appState.showSnackbar(resolvedMessage)
+            snackbarMessage = null
+        }
+    }
 
     BaseScreen(
         screenState = state.screenState,
-        effectFlow = viewModel.effect,
-        onRetry = {
-            viewModel.onEvent(HomeContract.Event.Retry)
-        },
-        onEffect = {
-            when (it) {
-                is HomeContract.Effect.ShowSnackbar -> {
-                }
-            }
-        },
+        onRetry = { viewModel.onAction(HomeAction.OnRetryClick) },
     ) {
-        HomeContent(state)
+        HomeScreen(
+            state = state,
+            onAction = viewModel::onAction,
+        )
     }
 }
 
 @Composable
-fun HomeContent(state: HomeContract.State) {
+fun HomeScreen(
+    state: HomeState,
+    onAction: (HomeAction) -> Unit,
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -113,6 +143,17 @@ fun HomeContent(state: HomeContract.State) {
         item {
             Poets(state.poets)
         }
+    }
+}
+
+@Preview
+@Composable
+private fun HomeScreenPreview() {
+    AzbarkonTheme {
+        HomeScreen(
+            state = HomeState(),
+            onAction = {},
+        )
     }
 }
 
@@ -145,8 +186,11 @@ fun Poets(poets: List<Poet>) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            items(poets) {
-                PoetItem(it)
+            items(
+                items = poets,
+                key = { poet -> poet.id ?: poet.name.orEmpty() },
+            ) { poet ->
+                PoetItem(poet)
             }
         }
     }
@@ -159,16 +203,24 @@ fun PoetItem(item: Poet) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        NetworkImage(
-            modifier =
-                Modifier
-                    .size(80.dp)
-                    .clip(CircleShape),
-            imageUrl =
-                item.imageUrl?.let {
-                    BASE_URL.plus(it.removePrefix("/"))
-                } ?: run { "" },
-        )
+        if (item.imageUrl != null) {
+            NetworkImage(
+                modifier =
+                    Modifier
+                        .size(80.dp)
+                        .clip(CircleShape),
+                imageUrl = item.imageUrl,
+            )
+        } else {
+            Image(
+                modifier =
+                    Modifier
+                        .size(80.dp)
+                        .clip(CircleShape),
+                painter = painterResource(Res.drawable.palette),
+                contentDescription = null,
+            )
+        }
         Text(
             modifier = Modifier.fillMaxWidth(),
             maxLines = 1,
@@ -260,13 +312,13 @@ fun HeroCard(newMemorization: Boolean) {
         if (newMemorization) {
             stringResource(Res.string.new_memorization_title)
         } else {
-            UiText.Dynamic("").asString()
+            ""
         }
     val res3 =
         if (newMemorization) {
             stringResource(Res.string.new_memorization_desc)
         } else {
-            UiText.Dynamic("").asString()
+            ""
         }
     val resButton =
         if (newMemorization) {
@@ -448,7 +500,7 @@ fun TasvirNegarSlide() {
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "تصویرنگار",
+                text = stringResource(Res.string.slider_tasvir_negar_title),
                 color = MaterialTheme.colorScheme.onSecondaryFixedVariant,
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.End,
@@ -456,7 +508,7 @@ fun TasvirNegarSlide() {
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "شعر خود را\nتصویر کنید",
+                text = stringResource(Res.string.slider_tasvir_negar_text),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End,
@@ -478,7 +530,7 @@ fun TasvirNegarSlide() {
                 onClick = {},
             ) {
                 Text(
-                    text = "شروع ساخت",
+                    text = stringResource(Res.string.slider_tasvir_negar_button),
                     style = MaterialTheme.typography.labelSmall,
                 )
             }
@@ -510,7 +562,7 @@ fun ChallengeSlide() {
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "چالش روز",
+                text = stringResource(Res.string.slider_challenge_title),
                 color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.End,
@@ -518,7 +570,7 @@ fun ChallengeSlide() {
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "مصرع بعدی این بیت\nرا بلدی؟",
+                text = stringResource(Res.string.slider_challenge_text),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End,
@@ -540,7 +592,7 @@ fun ChallengeSlide() {
                 onClick = {},
             ) {
                 Text(
-                    text = "شروع چالش",
+                    text = stringResource(Res.string.slider_challenge_button),
                     style = MaterialTheme.typography.labelSmall,
                 )
             }
@@ -565,7 +617,7 @@ fun BeytOfDaySlide() {
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "بیت امروز",
+                text = stringResource(Res.string.slider_beyt_of_day_title),
                 color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.Start,
@@ -573,7 +625,7 @@ fun BeytOfDaySlide() {
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "که عشق آسان نمود اول\nولی افتاد مشکل ها",
+                text = stringResource(Res.string.slider_beyt_of_day_text),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
@@ -581,7 +633,7 @@ fun BeytOfDaySlide() {
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "حافظ",
+                text = stringResource(Res.string.slider_beyt_of_day_poet),
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.End,

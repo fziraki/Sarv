@@ -1,14 +1,22 @@
 package abkabk.azbarkon.data.mapper
 
+import abkabk.azbarkon.core.util.Constants
 import abkabk.azbarkon.domain.model.Poet
 
-object PoetMapper {
-    fun fromEntity(entity: com.azbarkon.db.Poet): Poet =
-        Poet(
-            id = entity.id.toInt(),
-            name = entity.name,
-            description = null,
-            rootCatId = null,
-            imageUrl = null,
-        )
+fun buildPoetImageUrl(catUrl: String?): String? {
+    val slug =
+        catUrl
+            ?.trim('/')
+            ?.substringAfterLast('/')
+            ?.takeIf { it.isNotBlank() }
+    return slug?.let { "${Constants.BASE_URL}api/ganjoor/poet/image/$it.png" }
 }
+
+fun com.azbarkon.db.SelectAllWithCatUrl.toPoet(): Poet =
+    Poet(
+        id = id.toInt(),
+        name = name,
+        description = description,
+        rootCatId = cat_id.toInt(),
+        imageUrl = buildPoetImageUrl(cat_url),
+    )

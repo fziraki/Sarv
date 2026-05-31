@@ -42,6 +42,13 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import androidx.compose.ui.tooling.preview.Preview
+
+@Composable
+fun GamesRoot() {
+    GamesScreen()
+}
 
 @Composable
 fun GamesScreen() {
@@ -166,5 +173,13 @@ fun GameItem(
                 textAlign = TextAlign.End,
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun GamesScreenPreview() {
+    AzbarkonTheme {
+        GamesScreen()
     }
 }

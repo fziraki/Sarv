@@ -22,6 +22,10 @@ koin = "4.2.1"
 slf4jNop = "2.0.13"
 sqldelight = "2.3.2"
 detekt = "1.23.8"
+junit5 = "5.11.4"
+assertk = "0.28.1"
+turbine = "1.2.0"
+coroutines = "1.10.1"
 
 
 
@@ -62,6 +66,10 @@ slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4jNop" }
 sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqldelight" }
 sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
+junit5 = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit5" }
+assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

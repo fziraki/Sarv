@@ -3,25 +3,37 @@ package abkabk.azbarkon.core.ui_base
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.staticCompositionLocalOf
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.launch
 
 class AzbarkonAppState(
     val snackbarHostState: SnackbarHostState,
+    private val scope: CoroutineScope,
 ) {
-    suspend fun showSnackbar(message: String) {
-        snackbarHostState.showSnackbar(message)
+    fun showSnackbar(message: String) {
+        scope.launch {
+            snackbarHostState.showSnackbar(message)
+        }
     }
 }
 
+val LocalAzbarkonAppState =
+    staticCompositionLocalOf<AzbarkonAppState> {
+        error("AzbarkonAppState not provided")
+    }
+
 @Composable
 fun rememberAzbarkonAppState(): AzbarkonAppState {
-    val snackbarHostState =
-        remember {
-            SnackbarHostState()
-        }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
-    return remember {
+    return remember(snackbarHostState, scope) {
         AzbarkonAppState(
-            snackbarHostState,
+            snackbarHostState = snackbarHostState,
+            scope = scope,
         )
     }
 }

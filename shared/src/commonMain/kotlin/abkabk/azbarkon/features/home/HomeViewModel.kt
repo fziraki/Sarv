@@ -1,94 +1,60 @@
 package abkabk.azbarkon.features.home
 
-import abkabk.azbarkon.core.network.ApiResult
+import abkabk.azbarkon.core.domain.result.onFailure
+import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.UiText
-import abkabk.azbarkon.domain.usecase.GetPoetsLocallyUseCase
-import abkabk.azbarkon.domain.usecase.GetPoetsUseCase
+import abkabk.azbarkon.core.ui_base.toUiText
+import abkabk.azbarkon.domain.repository.PoetRepository
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val getPoetsUseCase: GetPoetsUseCase,
-    private val getPoetsLocallyUseCase: GetPoetsLocallyUseCase,
-) : BaseViewModel<
-        HomeContract.Event,
-        HomeContract.State,
-        HomeContract.Effect,
-    >(
-        initialState = HomeContract.State(),
+    private val poetRepository: PoetRepository,
+) : BaseViewModel<HomeAction, HomeState, HomeEvent>(
+        initialState = HomeState(),
     ) {
     init {
-        onEvent(HomeContract.Event.LoadPoets)
-        onEvent(HomeContract.Event.LoadTodayPoem)
+        onAction(HomeAction.OnLoad)
     }
 
-    override fun onEvent(event: HomeContract.Event) {
-        when (event) {
-            HomeContract.Event.LoadPoets -> {
-                loadPoetsLocally()
-            }
-
-            HomeContract.Event.LoadTodayPoem -> {
-//                loadTodayPoem()
-            }
-
-            HomeContract.Event.Retry -> {
-                loadPoetsLocally()
-            }
+    override fun onAction(action: HomeAction) {
+        when (action) {
+            HomeAction.OnLoad,
+            HomeAction.OnRetryClick,
+            -> loadPoets()
         }
     }
 
     private fun loadPoets() {
         viewModelScope.launch {
             setState {
-                copy(
-                    screenState = UiScreenState.Loading,
-                )
+                copy(screenState = UiScreenState.Loading)
             }
 
-            when (val result = getPoetsUseCase()) {
-                is ApiResult.Success -> {
+            poetRepository.getPoets()
+                .onSuccess { poets ->
+                    Napier.d("Loaded ${poets.size} poets from local database")
                     setState {
                         copy(
                             screenState = UiScreenState.Success,
-                            poets = result.data,
+                            poets = poets,
                         )
                     }
-                }
-
-                is ApiResult.Error -> {
+                }.onFailure { error ->
+                    Napier.e("Failed to load poets: $error")
+                    val message = error.toUiText()
                     setState {
                         copy(
                             screenState =
                                 UiScreenState.Error(
-                                    message = UiText.Dynamic(result.message),
+                                    message = message,
                                 ),
                         )
                     }
-
-                    sendEffect(
-                        HomeContract.Effect.ShowSnackbar(
-                            result.message,
-                        ),
-                    )
+                    sendEvent(HomeEvent.ShowSnackbar(message))
                 }
-            }
-        }
-    }
-
-    private fun loadPoetsLocally() {
-        viewModelScope.launch {
-            val result = getPoetsLocallyUseCase()
-            Napier.d("result ${result.size}")
-            setState {
-                copy(
-                    screenState = UiScreenState.Success,
-                    poets = result,
-                )
-            }
         }
     }
 }

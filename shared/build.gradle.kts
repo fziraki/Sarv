@@ -84,6 +84,15 @@ kotlin {
             implementation(libs.kamel.image)
             implementation(libs.sqldelight.runtime)
         }
+        val androidHostTest by getting {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.junit5)
+                implementation(libs.assertk)
+                implementation(libs.turbine)
+                implementation(libs.kotlinx.coroutines.test)
+            }
+        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
@@ -100,4 +109,8 @@ sqldelight {
             packageName.set("com.azbarkon.db")
         }
     }
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
