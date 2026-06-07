@@ -1,4 +1,4 @@
-package abkabk.azbarkon.features.poets
+package abkabk.azbarkon.features.poems.list
 
 import abkabk.azbarkon.core.domain.result.onFailure
 import abkabk.azbarkon.core.domain.result.onSuccess
@@ -25,6 +25,12 @@ class PoemListViewModel(
             PoemListAction.OnLoad,
             PoemListAction.OnRetryClick,
             -> loadPoems()
+
+            is PoemListAction.OnPoemClick -> {
+                viewModelScope.launch {
+                    sendEvent(PoemListEvent.NavigateToPoemDetail(poemId = action.poemId))
+                }
+            }
         }
     }
 

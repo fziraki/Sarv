@@ -1,4 +1,4 @@
-package abkabk.azbarkon.features.poets
+package abkabk.azbarkon.features.poems.list
 
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.UiText
@@ -21,10 +21,18 @@ sealed interface PoemListAction {
     data object OnLoad : PoemListAction
 
     data object OnRetryClick : PoemListAction
+
+    data class OnPoemClick(
+        val poemId: Int,
+    ) : PoemListAction
 }
 
 sealed interface PoemListEvent {
     data class ShowSnackbar(
         val message: UiText,
+    ) : PoemListEvent
+
+    data class NavigateToPoemDetail(
+        val poemId: Int,
     ) : PoemListEvent
 }

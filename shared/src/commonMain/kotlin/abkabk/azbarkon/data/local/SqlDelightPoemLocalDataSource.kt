@@ -2,13 +2,18 @@ package abkabk.azbarkon.data.local
 
 import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.core.domain.result.Result
+import abkabk.azbarkon.data.mapper.toPoemDetail
+import abkabk.azbarkon.data.mapper.toPoemVerses
 import abkabk.azbarkon.data.mapper.toPoemSummary
 import abkabk.azbarkon.domain.datasource.PoemLocalDataSource
+import abkabk.azbarkon.domain.model.PoemDetail
 import abkabk.azbarkon.domain.model.PoemSummary
 import com.azbarkon.db.PoemQueries
+import com.azbarkon.db.VerseQueries
 
 class SqlDelightPoemLocalDataSource(
     private val poemQueries: PoemQueries,
+    private val verseQueries: VerseQueries,
 ) : PoemLocalDataSource {
     override suspend fun getPoemsByCatId(catId: Int): Result<List<PoemSummary>, DataError.Local> =
         try {
@@ -18,6 +23,25 @@ class SqlDelightPoemLocalDataSource(
                     .executeAsList()
                     .map { it.toPoemSummary() },
             )
+        } catch (_: Exception) {
+            Result.Error(DataError.Local.UNKNOWN)
+        }
+
+    override suspend fun getPoemDetail(poemId: Int): Result<PoemDetail, DataError.Local> =
+        try {
+            val detail =
+                poemQueries
+                    .selectDetailById(id = poemId.toLong())
+                    .executeAsOneOrNull()
+                    ?: return Result.Error(DataError.Local.NOT_FOUND)
+
+            val verses =
+                verseQueries
+                    .selectByPoemId(poem_id = poemId.toLong())
+                    .executeAsList()
+                    .toPoemVerses(poemId)
+
+            Result.Success(detail.toPoemDetail(poemId = poemId, verses = verses))
         } catch (_: Exception) {
             Result.Error(DataError.Local.UNKNOWN)
         }

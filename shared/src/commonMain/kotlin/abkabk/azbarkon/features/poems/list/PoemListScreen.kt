@@ -1,14 +1,15 @@
-package abkabk.azbarkon.features.poets
+package abkabk.azbarkon.features.poems.list
 
 import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.asString
-import abkabk.azbarkon.features.poets.components.PoetsTopBar
+import abkabk.azbarkon.features.poets.list.PoetsTopBar
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -40,6 +41,7 @@ fun PoemListRoot(
     catId: Int,
     title: String,
     onBackClick: () -> Unit,
+    onNavigateToPoemDetail: (Int) -> Unit,
     viewModel: PoemListViewModel = koinViewModel { parametersOf(catId, title) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -49,6 +51,7 @@ fun PoemListRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is PoemListEvent.ShowSnackbar -> snackbarMessage = event.message
+            is PoemListEvent.NavigateToPoemDetail -> onNavigateToPoemDetail(event.poemId)
         }
     }
 
@@ -67,6 +70,7 @@ fun PoemListRoot(
         PoemListScreen(
             state = state,
             onBackClick = onBackClick,
+            onPoemClick = { poemId -> viewModel.onAction(PoemListAction.OnPoemClick(poemId)) },
         )
     }
 }
@@ -75,6 +79,7 @@ fun PoemListRoot(
 fun PoemListScreen(
     state: PoemListState,
     onBackClick: () -> Unit,
+    onPoemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -102,6 +107,7 @@ fun PoemListScreen(
                         Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(16.dp))
+                            .clickable { onPoemClick(poem.id) }
                             .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                             .border(
                                 width = 1.dp,
@@ -133,6 +139,7 @@ private fun PoemListScreenPreview() {
                         ),
                 ),
             onBackClick = {},
+            onPoemClick = {},
         )
     }
 }

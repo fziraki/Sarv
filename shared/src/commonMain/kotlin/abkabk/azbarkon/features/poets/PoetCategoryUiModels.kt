@@ -1,7 +1,5 @@
 package abkabk.azbarkon.features.poets
 
-import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.domain.model.PoetCategoryNode
 import androidx.compose.runtime.Stable
 

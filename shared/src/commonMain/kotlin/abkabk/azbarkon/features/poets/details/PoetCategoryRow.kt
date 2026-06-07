@@ -1,4 +1,4 @@
-package abkabk.azbarkon.features.poets.components
+package abkabk.azbarkon.features.poets.details
 
 import abkabk.azbarkon.features.poets.PoetCategoryRowUi
 import abkabk.azbarkon.ui.theme.AzbarkonTheme

@@ -1,4 +1,4 @@
-package abkabk.azbarkon.features.poets
+package abkabk.azbarkon.features.poets.list
 
 import abkabk.azbarkon.core.domain.result.onFailure
 import abkabk.azbarkon.core.domain.result.onSuccess
@@ -7,6 +7,9 @@ import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.toUiText
 import abkabk.azbarkon.domain.model.PoetWithRootCategories
 import abkabk.azbarkon.domain.repository.PoetRepository
+import abkabk.azbarkon.features.poets.FeaturedPoetUi
+import abkabk.azbarkon.features.poets.toFeaturedPoetUi
+import abkabk.azbarkon.features.poets.toListItemUi
 import androidx.lifecycle.viewModelScope
 import kotlin.random.Random
 import kotlinx.coroutines.launch

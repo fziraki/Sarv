@@ -1,4 +1,4 @@
-package abkabk.azbarkon.features.poets.components
+package abkabk.azbarkon.features.poets.list
 
 import abkabk.azbarkon.ui.components.NetworkImage
 import androidx.compose.foundation.Image
@@ -30,7 +30,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.arrow_back
+import azbarkoncmp.shared.generated.resources.bookmark
+import azbarkoncmp.shared.generated.resources.bookmark_filled
 import azbarkoncmp.shared.generated.resources.cd_back
+import azbarkoncmp.shared.generated.resources.cd_bookmark
 import azbarkoncmp.shared.generated.resources.palette
 import azbarkoncmp.shared.generated.resources.search
 import org.jetbrains.compose.resources.painterResource
@@ -41,6 +44,8 @@ fun PoetsTopBar(
     title: String,
     subtitle: String? = null,
     onBackClick: (() -> Unit)? = null,
+    isBookmarked: Boolean = false,
+    onBookmarkClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -90,7 +95,36 @@ fun PoetsTopBar(
             }
         }
 
-        Box(modifier = Modifier.size(40.dp))
+        if (onBookmarkClick != null) {
+            Box(
+                modifier =
+                    Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .clickable(onClick = onBookmarkClick),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    painter =
+                        painterResource(
+                            if (isBookmarked) {
+                                Res.drawable.bookmark_filled
+                            } else {
+                                Res.drawable.bookmark
+                            },
+                        ),
+                    contentDescription = stringResource(Res.string.cd_bookmark),
+                    tint =
+                        if (isBookmarked) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                )
+            }
+        } else {
+            Box(modifier = Modifier.size(40.dp))
+        }
     }
 }
 

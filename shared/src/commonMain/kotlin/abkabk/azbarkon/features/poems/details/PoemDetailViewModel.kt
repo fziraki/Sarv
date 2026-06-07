@@ -1,0 +1,139 @@
+package abkabk.azbarkon.features.poems.details
+
+import abkabk.azbarkon.core.domain.result.onFailure
+import abkabk.azbarkon.core.domain.result.onSuccess
+import abkabk.azbarkon.core.ui_base.BaseViewModel
+import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.ui_base.toUiText
+import abkabk.azbarkon.domain.platform.ClipboardService
+import abkabk.azbarkon.domain.platform.ShareService
+import abkabk.azbarkon.domain.repository.FavoritePoemRepository
+import abkabk.azbarkon.domain.repository.PoemRepository
+import androidx.lifecycle.viewModelScope
+import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.coming_soon
+import azbarkoncmp.shared.generated.resources.poem_copied
+import kotlinx.coroutines.launch
+
+class PoemDetailViewModel(
+    private val poemRepository: PoemRepository,
+    private val favoritePoemRepository: FavoritePoemRepository,
+    private val clipboardService: ClipboardService,
+    private val shareService: ShareService,
+    private val poemId: Int,
+) : BaseViewModel<PoemDetailAction, PoemDetailState, PoemDetailEvent>(
+        initialState = PoemDetailState(),
+    ) {
+    init {
+        onAction(PoemDetailAction.OnLoad)
+    }
+
+    override fun onAction(action: PoemDetailAction) {
+        when (action) {
+            PoemDetailAction.OnLoad,
+            PoemDetailAction.OnRetryClick,
+            -> loadPoemDetail()
+
+            PoemDetailAction.OnCopyClick -> copyPoem()
+
+            PoemDetailAction.OnShareClick -> sharePoem()
+
+            PoemDetailAction.OnLikeClick -> toggleLike()
+
+            PoemDetailAction.OnBookmarkClick -> toggleBookmark()
+
+            PoemDetailAction.OnImageCreatorClick,
+            PoemDetailAction.OnMemorizeClick,
+            -> showComingSoon()
+        }
+    }
+
+    private fun loadPoemDetail() {
+        viewModelScope.launch {
+            setState { copy(screenState = UiScreenState.Loading) }
+
+            poemRepository
+                .getPoemDetail(poemId)
+                .onSuccess { detail ->
+                    setState {
+                        copy(
+                            screenState = UiScreenState.Success,
+                            poetName = detail.poetName,
+                            subtitle = detail.title,
+                            verses = detail.verses.map { it.toPoemVerseUi() },
+                            isLiked = favoritePoemRepository.isLiked(poemId),
+                            isBookmarked = favoritePoemRepository.isBookmarked(poemId),
+                        )
+                    }
+                }.onFailure { error ->
+                    val message = error.toUiText()
+                    setState {
+                        copy(screenState = UiScreenState.Error(message = message))
+                    }
+                    sendEvent(PoemDetailEvent.ShowSnackbar(message))
+                }
+        }
+    }
+
+    private fun copyPoem() {
+        val text = buildShareText()
+        if (text.isBlank()) return
+
+        clipboardService.copyToClipboard(text)
+        viewModelScope.launch {
+            sendEvent(
+                PoemDetailEvent.ShowSnackbar(
+                    UiText.Resource(Res.string.poem_copied),
+                ),
+            )
+        }
+    }
+
+    private fun sharePoem() {
+        val text = buildShareText()
+        if (text.isBlank()) return
+
+        shareService.shareText(
+            text = text,
+            title = state.value.subtitle.ifBlank { state.value.poetName },
+        )
+    }
+
+    private fun toggleLike() {
+        val isLiked = favoritePoemRepository.toggleLike(poemId)
+        setState { copy(isLiked = isLiked) }
+    }
+
+    private fun toggleBookmark() {
+        val isBookmarked = favoritePoemRepository.toggleBookmark(poemId)
+        setState { copy(isBookmarked = isBookmarked) }
+    }
+
+    private fun showComingSoon() {
+        viewModelScope.launch {
+            sendEvent(
+                PoemDetailEvent.ShowSnackbar(
+                    UiText.Resource(Res.string.coming_soon),
+                ),
+            )
+        }
+    }
+
+    private fun buildShareText(): String {
+        val currentState = state.value
+        if (currentState.verses.isEmpty()) return ""
+
+        return buildString {
+            if (currentState.poetName.isNotBlank()) {
+                append(currentState.poetName)
+            }
+            if (currentState.subtitle.isNotBlank()) {
+                if (isNotEmpty()) append("\n")
+                append(currentState.subtitle)
+            }
+            if (isNotEmpty()) append("\n\n")
+            append(currentState.verses.joinToString("\n") { it.text })
+        }
+    }
+}

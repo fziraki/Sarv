@@ -11,6 +11,8 @@ import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.asString
 import abkabk.azbarkon.domain.model.Poet
+import abkabk.azbarkon.ui.components.AzbarkonButton
+import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.NetworkImage
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -37,7 +39,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -395,24 +396,11 @@ fun HeroCard(newMemorization: Boolean) {
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp),
-                    colors =
-                        ButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary,
-                            disabledContainerColor = MaterialTheme.colorScheme.primary,
-                            disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-                        ),
+                AzbarkonPrimaryButton(
+                    text = stringResource(resButton),
                     onClick = {},
-                ) {
-                    Text(
-                        text = stringResource(resButton),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                    )
-                }
+                    modifier = Modifier.fillMaxWidth(),
+                )
             }
         }
     }
@@ -541,12 +529,14 @@ fun TasvirNegarSlide() {
                 textAlign = TextAlign.End,
             )
 
-            Button(
+            AzbarkonButton(
+                text = stringResource(Res.string.slider_tasvir_negar_button),
+                onClick = {},
                 modifier =
                     Modifier
                         .fillMaxWidth(0.6f)
                         .height(36.dp),
-                shape = RoundedCornerShape(8.dp),
+                textStyle = MaterialTheme.typography.labelSmall,
                 colors =
                     ButtonColors(
                         containerColor = MaterialTheme.colorScheme.onSecondaryFixedVariant,
@@ -554,13 +544,7 @@ fun TasvirNegarSlide() {
                         disabledContainerColor = MaterialTheme.colorScheme.onSecondaryFixedVariant,
                         disabledContentColor = MaterialTheme.colorScheme.onSecondary,
                     ),
-                onClick = {},
-            ) {
-                Text(
-                    text = stringResource(Res.string.slider_tasvir_negar_button),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            }
+            )
         }
     }
 }
@@ -603,12 +587,14 @@ fun ChallengeSlide() {
                 textAlign = TextAlign.End,
             )
 
-            Button(
+            AzbarkonButton(
+                text = stringResource(Res.string.slider_challenge_button),
+                onClick = {},
                 modifier =
                     Modifier
                         .fillMaxWidth(0.6f)
                         .height(36.dp),
-                shape = RoundedCornerShape(8.dp),
+                textStyle = MaterialTheme.typography.labelSmall,
                 colors =
                     ButtonColors(
                         containerColor = MaterialTheme.colorScheme.onTertiaryFixedVariant,
@@ -616,13 +602,7 @@ fun ChallengeSlide() {
                         disabledContainerColor = MaterialTheme.colorScheme.onTertiaryFixedVariant,
                         disabledContentColor = MaterialTheme.colorScheme.onTertiaryFixed,
                     ),
-                onClick = {},
-            ) {
-                Text(
-                    text = stringResource(Res.string.slider_challenge_button),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            }
+            )
         }
     }
 }

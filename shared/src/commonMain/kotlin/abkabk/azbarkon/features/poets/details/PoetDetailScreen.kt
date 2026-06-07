@@ -1,14 +1,14 @@
-package abkabk.azbarkon.features.poets
+package abkabk.azbarkon.features.poets.details
 
 import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.asString
-import abkabk.azbarkon.features.poets.components.PoetCategoryRow
-import abkabk.azbarkon.features.poets.components.PoetAvatar
-import abkabk.azbarkon.features.poets.components.PoetsSectionTitle
-import abkabk.azbarkon.features.poets.components.PoetsTopBar
+import abkabk.azbarkon.features.poets.PoetCategoryRowUi
+import abkabk.azbarkon.features.poets.list.PoetAvatar
+import abkabk.azbarkon.features.poets.list.PoetsSectionTitle
+import abkabk.azbarkon.features.poets.list.PoetsTopBar
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

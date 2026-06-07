@@ -1,7 +1,9 @@
-package abkabk.azbarkon.features.poets
+package abkabk.azbarkon.features.poets.list
 
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.features.poets.FeaturedPoetUi
+import abkabk.azbarkon.features.poets.PoetListItemUi
 import androidx.compose.runtime.Stable
 
 @Stable

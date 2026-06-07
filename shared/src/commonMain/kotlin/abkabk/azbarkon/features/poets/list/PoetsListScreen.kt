@@ -1,13 +1,13 @@
-package abkabk.azbarkon.features.poets
+package abkabk.azbarkon.features.poets.list
 
 import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
+import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.asString
-import abkabk.azbarkon.features.poets.components.PoetAvatar
-import abkabk.azbarkon.features.poets.components.PoetsSearchField
-import abkabk.azbarkon.features.poets.components.PoetsSectionTitle
-import abkabk.azbarkon.features.poets.components.PoetsTopBar
+import abkabk.azbarkon.features.poets.FeaturedPoetUi
+import abkabk.azbarkon.features.poets.PoetListItemUi
+import abkabk.azbarkon.ui.components.AzbarkonSecondaryButton
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,8 +23,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.poets_all_section
 import azbarkoncmp.shared.generated.resources.poets_search_placeholder
 import azbarkoncmp.shared.generated.resources.poets_subtitle
 import azbarkoncmp.shared.generated.resources.poets_title
@@ -59,7 +56,7 @@ fun PoetsListRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.ui_base.UiText?>(null) }
+    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -204,21 +201,11 @@ private fun FeaturedPoetCard(
             }
         }
 
-        Button(
+        AzbarkonSecondaryButton(
+            text = stringResource(Res.string.poets_view_works),
             onClick = onClick,
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            colors =
-                ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.primary,
-                ),
-        ) {
-            Text(
-                text = stringResource(Res.string.poets_view_works),
-                style = MaterialTheme.typography.labelMedium,
-            )
-        }
+        )
     }
 }
 

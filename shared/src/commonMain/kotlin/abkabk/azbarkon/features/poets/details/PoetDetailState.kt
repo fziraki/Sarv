@@ -1,7 +1,8 @@
-package abkabk.azbarkon.features.poets
+package abkabk.azbarkon.features.poets.details
 
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.features.poets.PoetCategoryRowUi
 import androidx.compose.runtime.Stable
 
 @Stable
