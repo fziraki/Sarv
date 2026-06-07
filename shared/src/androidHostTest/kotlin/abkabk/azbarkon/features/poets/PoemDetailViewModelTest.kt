@@ -9,7 +9,7 @@ import abkabk.azbarkon.features.poems.details.PoemDetailEvent
 import abkabk.azbarkon.features.poems.details.PoemDetailViewModel
 import abkabk.azbarkon.features.poems.details.PoemVersePositionType
 import abkabk.azbarkon.testing.FakeClipboardService
-import abkabk.azbarkon.testing.FakeFavoritePoemRepository
+import abkabk.azbarkon.testing.FakeSavedPoemRepository
 import abkabk.azbarkon.testing.FakePoemRepository
 import abkabk.azbarkon.testing.FakeShareService
 import app.cash.turbine.test
@@ -56,7 +56,7 @@ class PoemDetailViewModelTest {
             val viewModel =
                 PoemDetailViewModel(
                     poemRepository = repository,
-                    favoritePoemRepository = FakeFavoritePoemRepository(),
+                    savedPoemRepository = FakeSavedPoemRepository(),
                     clipboardService = FakeClipboardService(),
                     shareService = FakeShareService(),
                     poemId = 77,
@@ -82,7 +82,7 @@ class PoemDetailViewModelTest {
             val viewModel =
                 PoemDetailViewModel(
                     poemRepository = repository,
-                    favoritePoemRepository = FakeFavoritePoemRepository(),
+                    savedPoemRepository = FakeSavedPoemRepository(),
                     clipboardService = FakeClipboardService(),
                     shareService = FakeShareService(),
                     poemId = 77,
@@ -103,7 +103,7 @@ class PoemDetailViewModelTest {
             val viewModel =
                 PoemDetailViewModel(
                     poemRepository = repository,
-                    favoritePoemRepository = FakeFavoritePoemRepository(),
+                    savedPoemRepository = FakeSavedPoemRepository(),
                     clipboardService = FakeClipboardService(),
                     shareService = FakeShareService(),
                     poemId = 77,
@@ -125,7 +125,7 @@ class PoemDetailViewModelTest {
             val viewModel =
                 PoemDetailViewModel(
                     poemRepository = repository,
-                    favoritePoemRepository = FakeFavoritePoemRepository(),
+                    savedPoemRepository = FakeSavedPoemRepository(),
                     clipboardService = clipboardService,
                     shareService = FakeShareService(),
                     poemId = 77,
@@ -153,7 +153,7 @@ class PoemDetailViewModelTest {
             val viewModel =
                 PoemDetailViewModel(
                     poemRepository = repository,
-                    favoritePoemRepository = FakeFavoritePoemRepository(),
+                    savedPoemRepository = FakeSavedPoemRepository(),
                     clipboardService = FakeClipboardService(),
                     shareService = shareService,
                     poemId = 77,

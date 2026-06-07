@@ -9,7 +9,7 @@
 
     <string name="games_subtitle">با بازی های ادبی شعر را بهتر یاد بگیر و لذت ببر</string>
 
-    <string name="likes">علاقه مندی‌ها</string>
+    <string name="my_poems">شعرهای من</string>
     <string name="search">جستجو</string>
     <string name="pic_negar">تصویر نگار</string>
     <string name="review">مرور شعر</string>
@@ -83,5 +83,19 @@
     <string name="cd_share">اشتراک‌گذاری شعر</string>
     <string name="cd_like">پسندیدن شعر</string>
     <string name="cd_image_creator">ساخت تصویر</string>
+
+    <string name="tab_liked">پسندیده‌ها</string>
+    <string name="tab_bookmarked">نشان‌گذاری‌ها</string>
+    <string name="empty_liked">هنوز شعری پسندیده نشده</string>
+    <string name="empty_bookmarked">هنوز شعری نشان‌گذاری نشده</string>
+    <string name="clear_all_title">پاک کردن</string>
+    <string name="clear_dialog_title">پاک کردن همه</string>
+    <string name="clear_dialog_liked_body">همهٔ شعرهای پسندیده‌شده حذف شوند؟</string>
+    <string name="clear_dialog_bookmarked_body">همهٔ شعرهای نشان‌گذاری‌شده حذف شوند؟</string>
+    <string name="clear_confirm">بله، پاک شود</string>
+    <string name="clear_cancel">انصراف</string>
+    <string name="cd_clear_all">پاک کردن همه</string>
+    <string name="cd_clear_liked">پاک کردن پسندیده</string>
+    <string name="cd_clear_bookmarked">پاک کردن نشان</string>
 
 </resources>

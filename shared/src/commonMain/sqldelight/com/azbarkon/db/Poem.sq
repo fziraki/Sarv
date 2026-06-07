@@ -20,3 +20,15 @@ FROM poem
 JOIN cat ON cat.id = poem.cat_id
 JOIN poet ON poet.id = cat.poet_id
 WHERE poem.id = ?;
+
+selectByIds:
+SELECT
+    poem.id,
+    poem.title,
+    poet.name AS poet_name,
+    cat.text AS category_name
+FROM poem
+JOIN cat ON cat.id = poem.cat_id
+JOIN poet ON poet.id = cat.poet_id
+WHERE poem.id IN ?
+ORDER BY poet.name, cat.text, poem.id;

@@ -1,6 +1,7 @@
 package abkabk.azbarkon.core.di
 
 import abkabk.azbarkon.features.poems.details.PoemDetailViewModel
+import abkabk.azbarkon.features.my_poems.MyPoemsViewModel
 import abkabk.azbarkon.features.poems.list.PoemListViewModel
 import abkabk.azbarkon.features.poets.details.PoetDetailViewModel
 import abkabk.azbarkon.features.poets.list.PoetsListViewModel
@@ -32,10 +33,16 @@ val poetsPresentationModule =
         viewModel { parameters ->
             PoemDetailViewModel(
                 poemRepository = get(),
-                favoritePoemRepository = get(),
+                savedPoemRepository = get(),
                 clipboardService = get(),
                 shareService = get(),
                 poemId = parameters.get(),
+            )
+        }
+        viewModel {
+            MyPoemsViewModel(
+                poemRepository = get(),
+                savedPoemRepository = get(),
             )
         }
     }

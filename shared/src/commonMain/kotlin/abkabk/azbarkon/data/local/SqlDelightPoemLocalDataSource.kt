@@ -2,10 +2,12 @@ package abkabk.azbarkon.data.local
 
 import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.core.domain.result.Result
+import abkabk.azbarkon.data.mapper.toMyPoemSummary
 import abkabk.azbarkon.data.mapper.toPoemDetail
-import abkabk.azbarkon.data.mapper.toPoemVerses
 import abkabk.azbarkon.data.mapper.toPoemSummary
+import abkabk.azbarkon.data.mapper.toPoemVerses
 import abkabk.azbarkon.domain.datasource.PoemLocalDataSource
+import abkabk.azbarkon.domain.model.MyPoemSummary
 import abkabk.azbarkon.domain.model.PoemDetail
 import abkabk.azbarkon.domain.model.PoemSummary
 import com.azbarkon.db.PoemQueries
@@ -25,6 +27,22 @@ class SqlDelightPoemLocalDataSource(
             )
         } catch (_: Exception) {
             Result.Error(DataError.Local.UNKNOWN)
+        }
+
+    override suspend fun getPoemsByIds(ids: Set<Int>): Result<List<MyPoemSummary>, DataError.Local> =
+        if (ids.isEmpty()) {
+            Result.Success(emptyList())
+        } else {
+            try {
+                Result.Success(
+                    poemQueries
+                        .selectByIds(id = ids.map { it.toLong() })
+                        .executeAsList()
+                        .map { it.toMyPoemSummary() },
+                )
+            } catch (_: Exception) {
+                Result.Error(DataError.Local.UNKNOWN)
+            }
         }
 
     override suspend fun getPoemDetail(poemId: Int): Result<PoemDetail, DataError.Local> =

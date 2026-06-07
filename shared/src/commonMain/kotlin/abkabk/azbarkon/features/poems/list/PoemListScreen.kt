@@ -5,7 +5,7 @@ import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.asString
-import abkabk.azbarkon.features.poets.list.PoetsTopBar
+import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -88,7 +88,7 @@ fun PoemListScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
     ) {
-        PoetsTopBar(
+        Header(
             title = state.title,
             onBackClick = onBackClick,
         )

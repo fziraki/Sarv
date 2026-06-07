@@ -1,10 +1,14 @@
 package abkabk.azbarkon.testing
 
-import abkabk.azbarkon.domain.repository.FavoritePoemRepository
+import abkabk.azbarkon.domain.repository.SavedPoemRepository
 
-class FakeFavoritePoemRepository : FavoritePoemRepository {
+class FakeSavedPoemRepository : SavedPoemRepository {
     private val liked = mutableSetOf<Int>()
     private val bookmarked = mutableSetOf<Int>()
+
+    override fun getLikedIds(): Set<Int> = liked.toSet()
+
+    override fun getBookmarkedIds(): Set<Int> = bookmarked.toSet()
 
     override fun isLiked(poemId: Int): Boolean = poemId in liked
 
@@ -26,5 +30,21 @@ class FakeFavoritePoemRepository : FavoritePoemRepository {
             bookmarked.add(poemId)
         }
         return poemId in bookmarked
+    }
+
+    override fun removeLike(poemId: Int) {
+        liked.remove(poemId)
+    }
+
+    override fun removeBookmark(poemId: Int) {
+        bookmarked.remove(poemId)
+    }
+
+    override fun clearLiked() {
+        liked.clear()
+    }
+
+    override fun clearBookmarked() {
+        bookmarked.clear()
     }
 }

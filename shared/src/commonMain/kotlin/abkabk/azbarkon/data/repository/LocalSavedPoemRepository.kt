@@ -1,11 +1,15 @@
 package abkabk.azbarkon.data.repository
 
 import abkabk.azbarkon.core.platform.KeyValueStore
-import abkabk.azbarkon.domain.repository.FavoritePoemRepository
+import abkabk.azbarkon.domain.repository.SavedPoemRepository
 
-class LocalFavoritePoemRepository(
+class LocalSavedPoemRepository(
     private val keyValueStore: KeyValueStore,
-) : FavoritePoemRepository {
+) : SavedPoemRepository {
+    override fun getLikedIds(): Set<Int> = likedIds()
+
+    override fun getBookmarkedIds(): Set<Int> = bookmarkedIds()
+
     override fun isLiked(poemId: Int): Boolean = poemId in likedIds()
 
     override fun isBookmarked(poemId: Int): Boolean = poemId in bookmarkedIds()
@@ -20,6 +24,22 @@ class LocalFavoritePoemRepository(
         val updated = bookmarkedIds().toggle(poemId)
         keyValueStore.putIntSet(KEY_BOOKMARKED, updated)
         return poemId in updated
+    }
+
+    override fun removeLike(poemId: Int) {
+        keyValueStore.putIntSet(KEY_LIKED, likedIds() - poemId)
+    }
+
+    override fun removeBookmark(poemId: Int) {
+        keyValueStore.putIntSet(KEY_BOOKMARKED, bookmarkedIds() - poemId)
+    }
+
+    override fun clearLiked() {
+        keyValueStore.putIntSet(KEY_LIKED, emptySet())
+    }
+
+    override fun clearBookmarked() {
+        keyValueStore.putIntSet(KEY_BOOKMARKED, emptySet())
     }
 
     private fun likedIds(): Set<Int> = keyValueStore.getIntSet(KEY_LIKED)

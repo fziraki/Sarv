@@ -5,7 +5,7 @@ import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.asString
-import abkabk.azbarkon.features.poets.list.PoetsTopBar
+import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
@@ -86,7 +85,7 @@ fun PoemDetailScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
     ) {
-        PoetsTopBar(
+        Header(
             title = state.poetName,
             subtitle = state.subtitle,
             onBackClick = onBackClick,

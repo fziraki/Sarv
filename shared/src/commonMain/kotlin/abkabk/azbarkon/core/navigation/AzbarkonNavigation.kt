@@ -4,8 +4,10 @@ import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.rememberAzbarkonAppState
 import abkabk.azbarkon.features.games.navigation.GamesRoute
 import abkabk.azbarkon.features.games.navigation.gamesGraph
+import abkabk.azbarkon.features.home.navigation.MyPoemsRoute
 import abkabk.azbarkon.features.home.navigation.HomeRoute
 import abkabk.azbarkon.features.home.navigation.homeGraph
+import abkabk.azbarkon.features.poets.navigation.PoemDetailRoute
 import abkabk.azbarkon.features.library.navigation.LibraryRoute
 import abkabk.azbarkon.features.library.navigation.libraryGraph
 import abkabk.azbarkon.features.poets.navigation.PoetDetailRoute
@@ -211,6 +213,13 @@ fun AzbarkonNavigation() {
                     },
                     onNavigateToPoetDetail = { poetId ->
                         navController.navigate(PoetDetailRoute(poetId))
+                    },
+                    onNavigateToMyPoems = {
+                        navController.navigate(MyPoemsRoute)
+                    },
+                    onBackFromMyPoems = navController::navigateUp,
+                    onNavigateToPoemDetailFromMyPoems = { poemId ->
+                        navController.navigate(PoemDetailRoute(poemId = poemId))
                     },
                 )
                 libraryGraph()

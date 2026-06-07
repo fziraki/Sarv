@@ -1,5 +1,6 @@
 package abkabk.azbarkon.data.mapper
 
+import abkabk.azbarkon.domain.model.MyPoemSummary
 import abkabk.azbarkon.domain.model.PoemDetail
 import abkabk.azbarkon.domain.model.PoemSummary
 import abkabk.azbarkon.domain.model.PoemVerse
@@ -8,6 +9,14 @@ fun com.azbarkon.db.SelectByCatId.toPoemSummary(): PoemSummary =
     PoemSummary(
         id = id.toInt(),
         title = title,
+    )
+
+fun com.azbarkon.db.SelectByIds.toMyPoemSummary(): MyPoemSummary =
+    MyPoemSummary(
+        id = id.toInt(),
+        title = title,
+        poetName = poet_name,
+        categoryName = category_name,
     )
 
 fun com.azbarkon.db.Verse.toPoemVerse(poemId: Int): PoemVerse =

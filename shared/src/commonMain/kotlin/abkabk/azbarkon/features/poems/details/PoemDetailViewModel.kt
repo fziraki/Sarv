@@ -8,7 +8,7 @@ import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.toUiText
 import abkabk.azbarkon.domain.platform.ClipboardService
 import abkabk.azbarkon.domain.platform.ShareService
-import abkabk.azbarkon.domain.repository.FavoritePoemRepository
+import abkabk.azbarkon.domain.repository.SavedPoemRepository
 import abkabk.azbarkon.domain.repository.PoemRepository
 import androidx.lifecycle.viewModelScope
 import azbarkoncmp.shared.generated.resources.Res
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class PoemDetailViewModel(
     private val poemRepository: PoemRepository,
-    private val favoritePoemRepository: FavoritePoemRepository,
+    private val savedPoemRepository: SavedPoemRepository,
     private val clipboardService: ClipboardService,
     private val shareService: ShareService,
     private val poemId: Int,
@@ -62,8 +62,8 @@ class PoemDetailViewModel(
                             poetName = detail.poetName,
                             subtitle = detail.title,
                             verses = detail.verses.map { it.toPoemVerseUi() },
-                            isLiked = favoritePoemRepository.isLiked(poemId),
-                            isBookmarked = favoritePoemRepository.isBookmarked(poemId),
+                            isLiked = savedPoemRepository.isLiked(poemId),
+                            isBookmarked = savedPoemRepository.isBookmarked(poemId),
                         )
                     }
                 }.onFailure { error ->
@@ -101,12 +101,12 @@ class PoemDetailViewModel(
     }
 
     private fun toggleLike() {
-        val isLiked = favoritePoemRepository.toggleLike(poemId)
+        val isLiked = savedPoemRepository.toggleLike(poemId)
         setState { copy(isLiked = isLiked) }
     }
 
     private fun toggleBookmark() {
-        val isBookmarked = favoritePoemRepository.toggleBookmark(poemId)
+        val isBookmarked = savedPoemRepository.toggleBookmark(poemId)
         setState { copy(isBookmarked = isBookmarked) }
     }
 

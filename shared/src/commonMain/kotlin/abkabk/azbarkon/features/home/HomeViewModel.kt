@@ -36,6 +36,12 @@ class HomeViewModel(
                     sendEvent(HomeEvent.NavigateToPoetDetail(action.poetId))
                 }
             }
+
+            HomeAction.OnMyPoemsClick -> {
+                viewModelScope.launch {
+                    sendEvent(HomeEvent.NavigateToMyPoems)
+                }
+            }
         }
     }
 

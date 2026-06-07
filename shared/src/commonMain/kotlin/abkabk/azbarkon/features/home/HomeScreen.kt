@@ -52,8 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.all
-import azbarkoncmp.shared.generated.resources.favorite
-import azbarkoncmp.shared.generated.resources.likes
+import azbarkoncmp.shared.generated.resources.my_poems
 import azbarkoncmp.shared.generated.resources.memorization_button
 import azbarkoncmp.shared.generated.resources.new_memorization_button
 import azbarkoncmp.shared.generated.resources.new_memorization_desc
@@ -74,6 +73,7 @@ import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_button
 import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_text
 import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_title
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import azbarkoncmp.shared.generated.resources.newsstand
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -85,6 +85,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HomeRoot(
     onNavigateToPoetsList: () -> Unit,
     onNavigateToPoetDetail: (Int) -> Unit,
+    onNavigateToMyPoems: () -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -100,6 +101,8 @@ fun HomeRoot(
             HomeEvent.NavigateToPoetsList -> onNavigateToPoetsList()
 
             is HomeEvent.NavigateToPoetDetail -> onNavigateToPoetDetail(event.poetId)
+
+            HomeEvent.NavigateToMyPoems -> onNavigateToMyPoems()
         }
     }
 
@@ -146,7 +149,9 @@ fun HomeScreen(
             HeroCard(state.isNewMemorization)
         }
         item {
-            QuickAccessMenu()
+            QuickAccessMenu(
+                onMyPoemsClick = { onAction(HomeAction.OnMyPoemsClick) },
+            )
         }
         item {
             Poets(
@@ -261,7 +266,9 @@ fun PoetItem(
 }
 
 @Composable
-fun QuickAccessMenu() {
+fun QuickAccessMenu(
+    onMyPoemsClick: () -> Unit,
+) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -269,10 +276,9 @@ fun QuickAccessMenu() {
     ) {
         QuickAccessItem(
             modifier = Modifier.weight(1f),
-            icon = Res.drawable.favorite,
-            title = Res.string.likes,
-            onItemClick = {
-            },
+            icon = Res.drawable.newsstand,
+            title = Res.string.my_poems,
+            onItemClick = onMyPoemsClick,
         )
 
         QuickAccessItem(
