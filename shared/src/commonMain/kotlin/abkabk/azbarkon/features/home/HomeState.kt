@@ -16,10 +16,22 @@ sealed interface HomeAction {
     data object OnLoad : HomeAction
 
     data object OnRetryClick : HomeAction
+
+    data object OnSeeAllPoetsClick : HomeAction
+
+    data class OnPoetClick(
+        val poetId: Int,
+    ) : HomeAction
 }
 
 sealed interface HomeEvent {
     data class ShowSnackbar(
         val message: UiText,
+    ) : HomeEvent
+
+    data object NavigateToPoetsList : HomeEvent
+
+    data class NavigateToPoetDetail(
+        val poetId: Int,
     ) : HomeEvent
 }

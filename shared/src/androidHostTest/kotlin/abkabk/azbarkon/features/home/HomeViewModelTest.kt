@@ -1,7 +1,9 @@
 package abkabk.azbarkon.features.home
 
 import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.domain.model.CatNode
 import abkabk.azbarkon.domain.model.Poet
+import abkabk.azbarkon.domain.model.PoetWithRootCategories
 import abkabk.azbarkon.testing.FakePoetRepository
 import app.cash.turbine.test
 import assertk.assertThat
@@ -37,14 +39,27 @@ class HomeViewModelTest {
         runTest {
             val repository =
                 FakePoetRepository().apply {
-                    poets =
+                    poetsWithRootCategories =
                         listOf(
-                            Poet(
-                                id = 1,
-                                name = "حافظ",
-                                description = null,
-                                rootCatId = 10,
-                                imageUrl = "https://api.ganjoor.net/api/ganjoor/poet/image/hafez.png",
+                            PoetWithRootCategories(
+                                poet =
+                                    Poet(
+                                        id = 1,
+                                        name = "حافظ",
+                                        description = null,
+                                        rootCatId = 10,
+                                        imageUrl = "https://api.ganjoor.net/api/ganjoor/poet/image/hafez.png",
+                                    ),
+                                rootCategories =
+                                    listOf(
+                                        CatNode(
+                                            id = 100,
+                                            poetId = 1,
+                                            text = "غزلیات",
+                                            parentId = 10,
+                                            url = "/test",
+                                        ),
+                                    ),
                             ),
                         )
                 }
@@ -54,6 +69,53 @@ class HomeViewModelTest {
             assertThat(state.screenState).isInstanceOf(UiScreenState.Success::class)
             assertThat(state.poets.size).isEqualTo(1)
             assertThat(state.poets.first().imageUrl).isNotNull()
+        }
+
+    @Test
+    fun `poet with no root categories is excluded from home list`() =
+        runTest {
+            val repository =
+                FakePoetRepository().apply {
+                    poetsWithRootCategories =
+                        listOf(
+                            PoetWithRootCategories(
+                                poet =
+                                    Poet(
+                                        id = 1,
+                                        name = "حافظ",
+                                        description = null,
+                                        rootCatId = 10,
+                                        imageUrl = null,
+                                    ),
+                                rootCategories =
+                                    listOf(
+                                        CatNode(
+                                            id = 100,
+                                            poetId = 1,
+                                            text = "غزلیات",
+                                            parentId = 10,
+                                            url = "/test",
+                                        ),
+                                    ),
+                            ),
+                            PoetWithRootCategories(
+                                poet =
+                                    Poet(
+                                        id = 99,
+                                        name = "شاعر بدون اثر",
+                                        description = null,
+                                        rootCatId = 500,
+                                        imageUrl = null,
+                                    ),
+                                rootCategories = emptyList(),
+                            ),
+                        )
+                }
+            val viewModel = HomeViewModel(repository)
+
+            val state = viewModel.state.value
+            assertThat(state.poets.size).isEqualTo(1)
+            assertThat(state.poets.first().id).isEqualTo(1)
         }
 
     @Test

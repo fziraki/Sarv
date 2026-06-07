@@ -61,4 +61,13 @@
     <string name="error_unknown">خطای ناشناخته</string>
     <string name="cd_back">بازگشت</string>
 
+    <string name="poets_title">شاعران</string>
+    <string name="poets_subtitle">در میان واژه‌ها قدم بزن</string>
+    <string name="poets_search_placeholder">جستجوی شاعر یا اثر...</string>
+    <string name="poets_view_works">مشاهده آثار</string>
+    <string name="poets_all_section">همه شاعران</string>
+    <string name="poets_works_section">آثار</string>
+    <string name="poets_works_summary_other">%1$s و %2$d اثر دیگر</string>
+    <string name="cd_expand_category">باز کردن دسته</string>
+
 </resources>

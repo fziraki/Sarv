@@ -24,6 +24,18 @@ class HomeViewModel(
             HomeAction.OnLoad,
             HomeAction.OnRetryClick,
             -> loadPoets()
+
+            HomeAction.OnSeeAllPoetsClick -> {
+                viewModelScope.launch {
+                    sendEvent(HomeEvent.NavigateToPoetsList)
+                }
+            }
+
+            is HomeAction.OnPoetClick -> {
+                viewModelScope.launch {
+                    sendEvent(HomeEvent.NavigateToPoetDetail(action.poetId))
+                }
+            }
         }
     }
 

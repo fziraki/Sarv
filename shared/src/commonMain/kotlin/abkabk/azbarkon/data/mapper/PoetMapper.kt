@@ -20,3 +20,12 @@ fun com.azbarkon.db.SelectAllWithCatUrl.toPoet(): Poet =
         rootCatId = cat_id.toInt(),
         imageUrl = buildPoetImageUrl(cat_url),
     )
+
+fun com.azbarkon.db.SelectByIdWithCatUrl.toPoet(): Poet =
+    Poet(
+        id = id.toInt(),
+        name = name,
+        description = description,
+        rootCatId = cat_id.toInt(),
+        imageUrl = buildPoetImageUrl(cat_url),
+    )

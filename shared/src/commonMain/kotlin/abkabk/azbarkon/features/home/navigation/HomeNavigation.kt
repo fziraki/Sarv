@@ -4,8 +4,14 @@ import abkabk.azbarkon.features.home.HomeRoot
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 
-fun NavGraphBuilder.homeGraph() {
+fun NavGraphBuilder.homeGraph(
+    onNavigateToPoetsList: () -> Unit,
+    onNavigateToPoetDetail: (Int) -> Unit,
+) {
     composable<HomeRoute> {
-        HomeRoot()
+        HomeRoot(
+            onNavigateToPoetsList = onNavigateToPoetsList,
+            onNavigateToPoetDetail = onNavigateToPoetDetail,
+        )
     }
 }

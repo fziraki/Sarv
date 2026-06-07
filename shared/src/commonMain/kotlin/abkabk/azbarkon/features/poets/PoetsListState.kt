@@ -1,0 +1,41 @@
+package abkabk.azbarkon.features.poets
+
+import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.core.ui_base.UiText
+import androidx.compose.runtime.Stable
+
+@Stable
+data class PoetsListState(
+    val screenState: UiScreenState = UiScreenState.Idle,
+    val searchQuery: String = "",
+    val poets: List<PoetListItemUi> = emptyList(),
+    val featuredPoet: FeaturedPoetUi? = null,
+)
+
+sealed interface PoetsListAction {
+    data object OnLoad : PoetsListAction
+
+    data object OnRetryClick : PoetsListAction
+
+    data class OnSearchQueryChange(
+        val query: String,
+    ) : PoetsListAction
+
+    data class OnPoetClick(
+        val poetId: Int,
+    ) : PoetsListAction
+
+    data object OnFeaturedPoetClick : PoetsListAction
+
+    data object OnScreenEnter : PoetsListAction
+}
+
+sealed interface PoetsListEvent {
+    data class NavigateToPoetDetail(
+        val poetId: Int,
+    ) : PoetsListEvent
+
+    data class ShowSnackbar(
+        val message: UiText,
+    ) : PoetsListEvent
+}

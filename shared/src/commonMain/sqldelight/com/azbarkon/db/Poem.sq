@@ -1,0 +1,12 @@
+CREATE TABLE poem (
+    id INTEGER NOT NULL PRIMARY KEY,
+    cat_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    url TEXT NOT NULL
+);
+
+selectByCatId:
+SELECT id, title
+FROM poem
+WHERE cat_id = ?
+ORDER BY id;
