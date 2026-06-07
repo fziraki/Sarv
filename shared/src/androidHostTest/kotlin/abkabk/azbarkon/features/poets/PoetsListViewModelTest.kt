@@ -1,14 +1,15 @@
 package abkabk.azbarkon.features.poets
 
 import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.domain.model.CatNode
 import abkabk.azbarkon.domain.model.Poet
-import abkabk.azbarkon.domain.model.PoetWithWorks
-import abkabk.azbarkon.domain.model.PoetWork
+import abkabk.azbarkon.domain.model.PoetWithRootCategories
 import abkabk.azbarkon.testing.FakePoetRepository
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEqualTo
 import assertk.assertions.isNotNull
@@ -43,7 +44,7 @@ class PoetsListViewModelTest {
         runTest {
             val repository =
                 FakePoetRepository().apply {
-                    poetsWithWorks = samplePoetsWithWorks()
+                    poetsWithRootCategories = samplePoetsWithRootCategories()
                 }
             val viewModel = PoetsListViewModel(repository)
 
@@ -57,19 +58,35 @@ class PoetsListViewModelTest {
         }
 
     @Test
-    fun `search by work title filters list`() =
+    fun `search by category name filters list`() =
         runTest {
             val repository =
                 FakePoetRepository().apply {
-                    poetsWithWorks = samplePoetsWithWorks()
+                    poetsWithRootCategories = samplePoetsWithRootCategories()
                 }
             val viewModel = PoetsListViewModel(repository)
 
-            viewModel.onAction(PoetsListAction.OnSearchQueryChange("گلستان"))
+            viewModel.onAction(PoetsListAction.OnSearchQueryChange("غزلیات"))
 
             val state = viewModel.state.value
             assertThat(state.poets).hasSize(1)
-            assertThat(state.poets.first().name).isEqualTo("سعدی شیرازی")
+            assertThat(state.poets.first().name).isEqualTo("حافظ شیرازی")
+        }
+
+    @Test
+    fun `maps root categories to summary text`() =
+        runTest {
+            val repository =
+                FakePoetRepository().apply {
+                    poetsWithRootCategories = samplePoetsWithRootCategories()
+                }
+            val viewModel = PoetsListViewModel(repository)
+
+            val state = viewModel.state.value
+            assertThat(state.poets.first { it.name == "حافظ شیرازی" }.worksSummary)
+                .isEqualTo("قطعات و 4 اثر دیگر")
+            assertThat(state.poets.first { it.name == "سعدی شیرازی" }.worksSummary)
+                .isEqualTo("گلستان و 1 اثر دیگر")
         }
 
     @Test
@@ -77,7 +94,7 @@ class PoetsListViewModelTest {
         runTest {
             val repository =
                 FakePoetRepository().apply {
-                    poetsWithWorks = samplePoetsWithWorks()
+                    poetsWithRootCategories = samplePoetsWithRootCategories()
                 }
             val viewModel = PoetsListViewModel(repository)
 
@@ -92,10 +109,10 @@ class PoetsListViewModelTest {
     @Test
     fun `initial load picks featured poet from list using random`() =
         runTest {
-            val poets = samplePoetsWithWorks()
+            val poets = samplePoetsWithRootCategories()
             val repository =
                 FakePoetRepository().apply {
-                    poetsWithWorks = poets
+                    poetsWithRootCategories = poets
                 }
             val seed = randomSeedForIndex(size = poets.size, desiredIndex = 1)
             val viewModel = PoetsListViewModel(repository, random = Random(seed))
@@ -108,10 +125,10 @@ class PoetsListViewModelTest {
     @Test
     fun `on screen enter re-picks featured poet from loaded list`() =
         runTest {
-            val poets = samplePoetsWithWorks()
+            val poets = samplePoetsWithRootCategories()
             val repository =
                 FakePoetRepository().apply {
-                    poetsWithWorks = poets
+                    poetsWithRootCategories = poets
                 }
             val seed = randomSeedForConsecutiveIndices(size = poets.size, firstIndex = 1, secondIndex = 0)
             val viewModel = PoetsListViewModel(repository, random = Random(seed))
@@ -130,9 +147,9 @@ class PoetsListViewModelTest {
         runTest {
             val repository =
                 FakePoetRepository().apply {
-                    poetsWithWorks = samplePoetsWithWorks()
+                    poetsWithRootCategories = samplePoetsWithRootCategories()
                 }
-            val seed = randomSeedForIndex(size = samplePoetsWithWorks().size, desiredIndex = 1)
+            val seed = randomSeedForIndex(size = samplePoetsWithRootCategories().size, desiredIndex = 1)
             val viewModel = PoetsListViewModel(repository, random = Random(seed))
             val featuredBeforeSearch = viewModel.state.value.featuredPoet
             assertThat(featuredBeforeSearch).isNotNull()
@@ -149,7 +166,7 @@ class PoetsListViewModelTest {
         runTest {
             val repository =
                 FakePoetRepository().apply {
-                    poetsWithWorks = emptyList()
+                    poetsWithRootCategories = emptyList()
                 }
             val viewModel = PoetsListViewModel(repository)
 
@@ -158,9 +175,35 @@ class PoetsListViewModelTest {
             assertThat(viewModel.state.value.featuredPoet).isNull()
         }
 
-    private fun samplePoetsWithWorks(): List<PoetWithWorks> =
+    @Test
+    fun `poet with no root categories is excluded from list`() =
+        runTest {
+            val repository =
+                FakePoetRepository().apply {
+                    poetsWithRootCategories =
+                        samplePoetsWithRootCategories() +
+                            PoetWithRootCategories(
+                                poet =
+                                    Poet(
+                                        id = 99,
+                                        name = "شاعر بدون اثر",
+                                        description = null,
+                                        rootCatId = 500,
+                                        imageUrl = null,
+                                    ),
+                                rootCategories = emptyList(),
+                            )
+                }
+            val viewModel = PoetsListViewModel(repository)
+
+            val state = viewModel.state.value
+            assertThat(state.poets).hasSize(2)
+            assertThat(state.poets.any { it.id == 99 }).isFalse()
+        }
+
+    private fun samplePoetsWithRootCategories(): List<PoetWithRootCategories> =
         listOf(
-            PoetWithWorks(
+            PoetWithRootCategories(
                 poet =
                     Poet(
                         id = 2,
@@ -169,12 +212,16 @@ class PoetsListViewModelTest {
                         rootCatId = 9,
                         imageUrl = null,
                     ),
-                works =
+                rootCategories =
                     listOf(
-                        PoetWork(id = 9, title = "دیوان حافظ"),
+                        cat(id = 24, poetId = 2, text = "غزلیات", parentId = 9),
+                        cat(id = 25, poetId = 2, text = "قطعات", parentId = 9),
+                        cat(id = 26, poetId = 2, text = "رباعیات", parentId = 9),
+                        cat(id = 27, poetId = 2, text = "قصاید", parentId = 9),
+                        cat(id = 28, poetId = 2, text = "اشعار منتسب", parentId = 9),
                     ),
             ),
-            PoetWithWorks(
+            PoetWithRootCategories(
                 poet =
                     Poet(
                         id = 7,
@@ -183,12 +230,26 @@ class PoetsListViewModelTest {
                         rootCatId = 118,
                         imageUrl = null,
                     ),
-                works =
+                rootCategories =
                     listOf(
-                        PoetWork(id = 1665, title = "گلستان"),
-                        PoetWork(id = 123, title = "بوستان"),
+                        cat(id = 1665, poetId = 7, text = "گلستان", parentId = 118),
+                        cat(id = 123, poetId = 7, text = "بوستان", parentId = 118),
                     ),
             ),
+        )
+
+    private fun cat(
+        id: Int,
+        poetId: Int,
+        text: String,
+        parentId: Int,
+    ): CatNode =
+        CatNode(
+            id = id,
+            poetId = poetId,
+            text = text,
+            parentId = parentId,
+            url = "/test",
         )
 
     private fun randomSeedForIndex(

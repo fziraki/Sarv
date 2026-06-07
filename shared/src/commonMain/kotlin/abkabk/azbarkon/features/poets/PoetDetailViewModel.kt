@@ -5,6 +5,7 @@ import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.toUiText
+import abkabk.azbarkon.domain.model.PoetCategoryNode
 import abkabk.azbarkon.domain.repository.PoetRepository
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
@@ -15,6 +16,9 @@ class PoetDetailViewModel(
 ) : BaseViewModel<PoetDetailAction, PoetDetailState, PoetDetailEvent>(
         initialState = PoetDetailState(),
     ) {
+    private var categoryTree: List<PoetCategoryNode> = emptyList()
+    private var expandedCategoryIds: Set<Int> = emptySet()
+
     init {
         onAction(PoetDetailAction.OnLoad)
     }
@@ -25,7 +29,18 @@ class PoetDetailViewModel(
             PoetDetailAction.OnRetryClick,
             -> loadPoet()
 
-            is PoetDetailAction.OnWorkClick -> Unit
+            is PoetDetailAction.OnCategoryToggle -> toggleCategory(action.categoryId)
+
+            is PoetDetailAction.OnCategoryClick -> {
+                viewModelScope.launch {
+                    sendEvent(
+                        PoetDetailEvent.NavigateToPoemList(
+                            catId = action.categoryId,
+                            title = action.title,
+                        ),
+                    )
+                }
+            }
         }
     }
 
@@ -33,15 +48,21 @@ class PoetDetailViewModel(
         viewModelScope.launch {
             setState { copy(screenState = UiScreenState.Loading) }
 
-            poetRepository.getPoetWithWorks(poetId)
-                .onSuccess { poetWithWorks ->
+            poetRepository.getPoetWithCategories(poetId)
+                .onSuccess { poetWithCategories ->
+                    categoryTree = poetWithCategories.categories
+                    expandedCategoryIds = emptySet()
                     setState {
                         copy(
                             screenState = UiScreenState.Success,
-                            name = poetWithWorks.poet.name.orEmpty(),
-                            bio = poetWithWorks.poet.description.orEmpty(),
-                            imageUrl = poetWithWorks.poet.imageUrl,
-                            works = poetWithWorks.toWorkItemsUi(),
+                            name = poetWithCategories.poet.name.orEmpty(),
+                            bio = poetWithCategories.poet.description.orEmpty(),
+                            imageUrl = poetWithCategories.poet.imageUrl,
+                            categories =
+                                flattenPoetCategories(
+                                    nodes = categoryTree,
+                                    expandedCategoryIds = expandedCategoryIds,
+                                ),
                         )
                     }
                 }.onFailure { error ->
@@ -53,6 +74,24 @@ class PoetDetailViewModel(
                     }
                     sendEvent(PoetDetailEvent.ShowSnackbar(message))
                 }
+        }
+    }
+
+    private fun toggleCategory(categoryId: Int) {
+        expandedCategoryIds =
+            if (categoryId in expandedCategoryIds) {
+                expandedCategoryIds - categoryId
+            } else {
+                expandedCategoryIds + categoryId
+            }
+        setState {
+            copy(
+                categories =
+                    flattenPoetCategories(
+                        nodes = categoryTree,
+                        expandedCategoryIds = expandedCategoryIds,
+                    ),
+            )
         }
     }
 }

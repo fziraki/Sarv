@@ -1,7 +1,6 @@
 package abkabk.azbarkon.domain.model
 
-data class PoetWork(
+data class PoemSummary(
     val id: Int,
     val title: String,
-    val subtitle: String? = null,
 )

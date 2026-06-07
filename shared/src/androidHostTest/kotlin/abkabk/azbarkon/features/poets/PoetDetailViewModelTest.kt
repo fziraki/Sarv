@@ -2,9 +2,10 @@ package abkabk.azbarkon.features.poets
 
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.domain.model.Poet
-import abkabk.azbarkon.domain.model.PoetWithWorks
-import abkabk.azbarkon.domain.model.PoetWork
+import abkabk.azbarkon.domain.model.PoetCategoryNode
+import abkabk.azbarkon.domain.model.PoetWithCategories
 import abkabk.azbarkon.testing.FakePoetRepository
+import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
@@ -38,9 +39,9 @@ class PoetDetailViewModelTest {
         runTest {
             val repository =
                 FakePoetRepository().apply {
-                    poetsWithWorks =
+                    poetsWithCategories =
                         listOf(
-                            PoetWithWorks(
+                            PoetWithCategories(
                                 poet =
                                     Poet(
                                         id = 2,
@@ -49,9 +50,26 @@ class PoetDetailViewModelTest {
                                         rootCatId = 9,
                                         imageUrl = "https://example.com/hafez.png",
                                     ),
-                                works =
+                                categories =
                                     listOf(
-                                        PoetWork(id = 9, title = "دیوان حافظ", subtitle = "غزلیات"),
+                                        PoetCategoryNode(
+                                            id = 24,
+                                            text = "غزلیات",
+                                            url = "/ghazals",
+                                            children =
+                                                listOf(
+                                                    PoetCategoryNode(
+                                                        id = 100,
+                                                        text = "غزل ۱",
+                                                        url = "/ghazals/1",
+                                                    ),
+                                                ),
+                                        ),
+                                        PoetCategoryNode(
+                                            id = 25,
+                                            text = "قطعات",
+                                            url = "/qataat",
+                                        ),
                                     ),
                             ),
                         )
@@ -62,7 +80,98 @@ class PoetDetailViewModelTest {
             assertThat(state.screenState).isInstanceOf(UiScreenState.Success::class)
             assertThat(state.name).isEqualTo("حافظ شیرازی")
             assertThat(state.bio).isEqualTo("بیو")
-            assertThat(state.works).hasSize(1)
-            assertThat(state.works.first().title).isEqualTo("دیوان حافظ")
+            assertThat(state.categories).hasSize(2)
+            assertThat(state.categories.first().title).isEqualTo("غزلیات")
+        }
+
+    @Test
+    fun `toggle expands parent category children`() =
+        runTest {
+            val repository =
+                FakePoetRepository().apply {
+                    poetsWithCategories =
+                        listOf(
+                            PoetWithCategories(
+                                poet =
+                                    Poet(
+                                        id = 2,
+                                        name = "حافظ",
+                                        description = null,
+                                        rootCatId = 9,
+                                        imageUrl = null,
+                                    ),
+                                categories =
+                                    listOf(
+                                        PoetCategoryNode(
+                                            id = 24,
+                                            text = "غزلیات",
+                                            url = "/ghazals",
+                                            children =
+                                                listOf(
+                                                    PoetCategoryNode(
+                                                        id = 100,
+                                                        text = "غزل ۱",
+                                                        url = "/ghazals/1",
+                                                    ),
+                                                ),
+                                        ),
+                                    ),
+                            ),
+                        )
+                }
+            val viewModel = PoetDetailViewModel(repository, poetId = 2)
+
+            viewModel.onAction(PoetDetailAction.OnCategoryToggle(categoryId = 24))
+
+            val state = viewModel.state.value
+            assertThat(state.categories).hasSize(2)
+            assertThat(state.categories.last().title).isEqualTo("غزل ۱")
+            assertThat(state.categories.last().depth).isEqualTo(1)
+        }
+
+    @Test
+    fun `leaf click emits navigate to poem list event`() =
+        runTest {
+            val repository =
+                FakePoetRepository().apply {
+                    poetsWithCategories =
+                        listOf(
+                            PoetWithCategories(
+                                poet =
+                                    Poet(
+                                        id = 2,
+                                        name = "حافظ",
+                                        description = null,
+                                        rootCatId = 9,
+                                        imageUrl = null,
+                                    ),
+                                categories =
+                                    listOf(
+                                        PoetCategoryNode(
+                                            id = 25,
+                                            text = "قطعات",
+                                            url = "/qataat",
+                                        ),
+                                    ),
+                            ),
+                        )
+                }
+            val viewModel = PoetDetailViewModel(repository, poetId = 2)
+
+            viewModel.events.test {
+                viewModel.onAction(
+                    PoetDetailAction.OnCategoryClick(
+                        categoryId = 25,
+                        title = "قطعات",
+                    ),
+                )
+
+                assertThat(awaitItem()).isEqualTo(
+                    PoetDetailEvent.NavigateToPoemList(
+                        catId = 25,
+                        title = "قطعات",
+                    ),
+                )
+            }
         }
 }

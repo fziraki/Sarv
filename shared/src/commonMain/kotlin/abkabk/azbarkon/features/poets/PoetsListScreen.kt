@@ -4,7 +4,6 @@ import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.asString
-import abkabk.azbarkon.features.poets.components.ChevronLeading
 import abkabk.azbarkon.features.poets.components.PoetAvatar
 import abkabk.azbarkon.features.poets.components.PoetsSearchField
 import abkabk.azbarkon.features.poets.components.PoetsSectionTitle
@@ -192,11 +191,16 @@ private fun FeaturedPoetCard(
                     maxLines = 2,
                     overflow = TextOverflow.StartEllipsis,
                 )
-                Text(
-                    text = poet.stats,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                )
+                if (poet.stats.isNotBlank()) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = poet.stats,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
         }
 
@@ -237,7 +241,7 @@ private fun PoetListRow(
                 ).clickable(onClick = onClick)
                 .padding(horizontal = 14.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp),
     ) {
 
         PoetAvatar(
@@ -257,18 +261,18 @@ private fun PoetListRow(
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Start,
             )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = poet.worksSummary,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Start,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
+            if (poet.worksSummary.isNotBlank()) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = poet.worksSummary,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Start,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
-
-
     }
 }
 
@@ -284,7 +288,7 @@ private fun PoetsListScreenPreview() {
                             PoetListItemUi(
                                 id = 7,
                                 name = "سعدی شیرازی",
-                                worksSummary = "گلستان • بوستان • دیوان",
+                                worksSummary = "گلستان و 1 اثر دیگر",
                                 imageUrl = null,
                             ),
                         ),
@@ -293,7 +297,7 @@ private fun PoetsListScreenPreview() {
                             id = 2,
                             name = "حافظ شیرازی",
                             description = "غزل‌سرای بزرگ ایران",
-                            stats = "دیوان حافظ",
+                            stats = "قطعات و 4 اثر دیگر",
                             imageUrl = null,
                         ),
                 ),

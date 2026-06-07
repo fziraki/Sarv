@@ -67,6 +67,7 @@
     <string name="poets_view_works">مشاهده آثار</string>
     <string name="poets_all_section">همه شاعران</string>
     <string name="poets_works_section">آثار</string>
-    <string name="poets_works_count">%1$d اثر</string>
+    <string name="poets_works_summary_other">%1$s و %2$d اثر دیگر</string>
+    <string name="cd_expand_category">باز کردن دسته</string>
 
 </resources>

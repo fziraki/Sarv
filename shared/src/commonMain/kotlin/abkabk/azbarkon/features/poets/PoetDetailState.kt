@@ -10,7 +10,7 @@ data class PoetDetailState(
     val name: String = "",
     val bio: String = "",
     val imageUrl: String? = null,
-    val works: List<PoetWorkItemUi> = emptyList(),
+    val categories: List<PoetCategoryRowUi> = emptyList(),
 )
 
 sealed interface PoetDetailAction {
@@ -18,12 +18,22 @@ sealed interface PoetDetailAction {
 
     data object OnRetryClick : PoetDetailAction
 
-    data class OnWorkClick(
-        val workId: Int,
+    data class OnCategoryToggle(
+        val categoryId: Int,
+    ) : PoetDetailAction
+
+    data class OnCategoryClick(
+        val categoryId: Int,
+        val title: String,
     ) : PoetDetailAction
 }
 
 sealed interface PoetDetailEvent {
+    data class NavigateToPoemList(
+        val catId: Int,
+        val title: String,
+    ) : PoetDetailEvent
+
     data class ShowSnackbar(
         val message: UiText,
     ) : PoetDetailEvent

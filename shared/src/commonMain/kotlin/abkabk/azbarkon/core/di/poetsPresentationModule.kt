@@ -1,6 +1,7 @@
 package abkabk.azbarkon.core.di
 
 import abkabk.azbarkon.features.poets.PoetDetailViewModel
+import abkabk.azbarkon.features.poets.PoemListViewModel
 import abkabk.azbarkon.features.poets.PoetsListViewModel
 import kotlin.random.Random
 import org.koin.core.module.dsl.viewModel
@@ -18,6 +19,13 @@ val poetsPresentationModule =
             PoetDetailViewModel(
                 poetRepository = get(),
                 poetId = parameters.get(),
+            )
+        }
+        viewModel { parameters ->
+            PoemListViewModel(
+                poemRepository = get(),
+                catId = parameters.get(),
+                title = parameters.get(),
             )
         }
     }

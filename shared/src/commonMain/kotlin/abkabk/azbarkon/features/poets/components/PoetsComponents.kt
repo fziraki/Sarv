@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -181,53 +180,4 @@ fun PoetsSectionTitle(
         color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.Start,
     )
-}
-
-@Composable
-fun WorkCoverPlaceholder(
-    accentColor: Color,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier =
-            modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(accentColor.copy(alpha = 0.35f))
-                .border(
-                    width = 1.dp,
-                    color = accentColor.copy(alpha = 0.5f),
-                    shape = RoundedCornerShape(10.dp),
-                ),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = "📖",
-            style = MaterialTheme.typography.bodyLarge,
-        )
-    }
-}
-
-@Composable
-fun ChevronLeading(
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        modifier = modifier,
-        text = "‹",
-        style = MaterialTheme.typography.headlineLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
-}
-
-fun workAccentColor(title: String): Color {
-    val palette =
-        listOf(
-            Color(0xFFC4A574),
-            Color(0xFF6B8F71),
-            Color(0xFF8B7355),
-            Color(0xFF7A6B8A),
-            Color(0xFF5C7A8A),
-        )
-    val index = title.hashCode().mod(palette.size).let { if (it < 0) it + palette.size else it }
-    return palette[index]
 }

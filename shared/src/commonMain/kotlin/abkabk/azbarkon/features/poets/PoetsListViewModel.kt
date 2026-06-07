@@ -5,7 +5,7 @@ import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.toUiText
-import abkabk.azbarkon.domain.model.PoetWithWorks
+import abkabk.azbarkon.domain.model.PoetWithRootCategories
 import abkabk.azbarkon.domain.repository.PoetRepository
 import androidx.lifecycle.viewModelScope
 import kotlin.random.Random
@@ -17,7 +17,7 @@ class PoetsListViewModel(
 ) : BaseViewModel<PoetsListAction, PoetsListState, PoetsListEvent>(
         initialState = PoetsListState(),
     ) {
-    private var allPoetsWithWorks: List<PoetWithWorks> = emptyList()
+    private var allPoetsWithRootCategories: List<PoetWithRootCategories> = emptyList()
     private var featuredPoetWhenIdle: FeaturedPoetUi? = null
 
     init {
@@ -53,13 +53,13 @@ class PoetsListViewModel(
         viewModelScope.launch {
             setState { copy(screenState = UiScreenState.Loading) }
 
-            poetRepository.getPoetsWithWorks()
-                .onSuccess { poetsWithWorks ->
-                    allPoetsWithWorks = poetsWithWorks
-                    val featured = pickRandomFeatured(poetsWithWorks)
+            poetRepository.getPoetsWithRootCategories()
+                .onSuccess { poetsWithRootCategories ->
+                    allPoetsWithRootCategories = poetsWithRootCategories
+                    val featured = pickRandomFeatured(poetsWithRootCategories)
                     applyFilter(
                         query = state.value.searchQuery,
-                        source = poetsWithWorks,
+                        source = poetsWithRootCategories,
                         featuredPoet = featured,
                     )
                 }.onFailure { error ->
@@ -75,13 +75,13 @@ class PoetsListViewModel(
     }
 
     private fun pickAndApplyFeaturedPoet() {
-        if (allPoetsWithWorks.isEmpty()) return
+        if (allPoetsWithRootCategories.isEmpty()) return
         if (state.value.searchQuery.trim().isNotEmpty()) return
 
-        val featured = pickRandomFeatured(allPoetsWithWorks)
+        val featured = pickRandomFeatured(allPoetsWithRootCategories)
         applyFilter(
             query = state.value.searchQuery,
-            source = allPoetsWithWorks,
+            source = allPoetsWithRootCategories,
             featuredPoet = featured,
         )
     }
@@ -90,13 +90,13 @@ class PoetsListViewModel(
         setState { copy(searchQuery = query) }
         applyFilter(
             query = query,
-            source = allPoetsWithWorks,
+            source = allPoetsWithRootCategories,
         )
     }
 
     private fun applyFilter(
         query: String,
-        source: List<PoetWithWorks>,
+        source: List<PoetWithRootCategories>,
         featuredPoet: FeaturedPoetUi? = null,
     ) {
         val trimmedQuery = query.trim()
@@ -106,7 +106,7 @@ class PoetsListViewModel(
             } else {
                 source.filter { item ->
                     item.poet.name?.contains(trimmedQuery) == true ||
-                        item.works.any { work -> work.title.contains(trimmedQuery) }
+                        item.rootCategories.any { category -> category.text.contains(trimmedQuery) }
                 }
             }
 
@@ -127,6 +127,6 @@ class PoetsListViewModel(
         }
     }
 
-    private fun pickRandomFeatured(source: List<PoetWithWorks>): FeaturedPoetUi? =
+    private fun pickRandomFeatured(source: List<PoetWithRootCategories>): FeaturedPoetUi? =
         source.randomOrNull(random)?.toFeaturedPoetUi()
 }

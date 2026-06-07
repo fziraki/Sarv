@@ -6,9 +6,6 @@ CREATE TABLE cat (
     url TEXT NOT NULL
 );
 
-selectUrlByCatId:
-SELECT url FROM cat WHERE id = ?;
-
 selectChildrenByParentId:
 SELECT id, poet_id, text, parent_id, url
 FROM cat
