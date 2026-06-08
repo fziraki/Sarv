@@ -50,7 +50,6 @@ fun Header(
             modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
-                .windowInsetsPadding(WindowInsets.statusBars)
                 .padding(horizontal = 8.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

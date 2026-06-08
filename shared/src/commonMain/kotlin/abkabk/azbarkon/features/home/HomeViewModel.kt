@@ -42,6 +42,12 @@ class HomeViewModel(
                     sendEvent(HomeEvent.NavigateToMyPoems)
                 }
             }
+
+            HomeAction.OnSearchClick -> {
+                viewModelScope.launch {
+                    sendEvent(HomeEvent.NavigateToSearch)
+                }
+            }
         }
     }
 

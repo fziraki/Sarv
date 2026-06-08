@@ -13,6 +13,8 @@ import abkabk.azbarkon.features.poets.navigation.PoetsListRoute
 import abkabk.azbarkon.features.poets.navigation.poetsGraph
 import abkabk.azbarkon.features.profile.navigation.ProfileRoute
 import abkabk.azbarkon.features.profile.navigation.profileGraph
+import abkabk.azbarkon.features.search.navigation.navigateToSearch
+import abkabk.azbarkon.features.search.navigation.searchGraph
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -22,6 +24,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -139,7 +142,7 @@ fun AzbarkonNavigation() {
                             IconButton(
                                 modifier = Modifier.align(Alignment.CenterEnd),
                                 onClick = {
-                                    navController.navigateUp()
+                                    navController.navigateToSearch()
                                 },
                             ) {
                                 Icon(
@@ -231,6 +234,9 @@ fun AzbarkonNavigation() {
                     onNavigateToMyPoems = {
                         navController.navigate(MyPoemsRoute)
                     },
+                    onNavigateToSearch = {
+                        navController.navigateToSearch()
+                    },
                     onBackFromMyPoems = navController::navigateUp,
                     onNavigateToPoemDetailFromMyPoems = { poemId ->
                         navController.navigate(PoemDetailRoute(poemId = poemId))
@@ -239,6 +245,7 @@ fun AzbarkonNavigation() {
                 gamesGraph()
                 profileGraph()
                 poetsGraph(navController)
+                searchGraph(navController)
             }
         }
     }

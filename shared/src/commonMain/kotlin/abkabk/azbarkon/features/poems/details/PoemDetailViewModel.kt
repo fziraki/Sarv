@@ -12,6 +12,8 @@ import abkabk.azbarkon.domain.repository.SavedPoemRepository
 import androidx.lifecycle.viewModelScope
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.coming_soon
+import azbarkoncmp.shared.generated.resources.search_empty_query
+import azbarkoncmp.shared.generated.resources.search_not_found_in_poem
 import kotlinx.coroutines.launch
 
 class PoemDetailViewModel(
@@ -32,7 +34,19 @@ class PoemDetailViewModel(
             PoemDetailAction.OnRetryClick,
             -> loadPoemDetail()
 
-            PoemDetailAction.OnSearchClick -> searchContext()
+            PoemDetailAction.OnSearchClick -> toggleFindBar()
+
+            is PoemDetailAction.OnFindQueryChange -> {
+                setState { copy(findInput = action.query) }
+            }
+
+            PoemDetailAction.OnFindSubmit -> applyFindQuery(state.value.findInput)
+
+            PoemDetailAction.OnFindBarClose -> closeFindBar()
+
+            PoemDetailAction.OnScrollConsumed -> {
+                setState { copy(scrollToVerseId = null) }
+            }
 
             PoemDetailAction.OnShareClick -> sharePoem()
 
@@ -73,8 +87,69 @@ class PoemDetailViewModel(
         }
     }
 
-    private fun searchContext() {
+    private fun toggleFindBar() {
+        val currentState = state.value
+        if (currentState.isFindBarVisible) {
+            closeFindBar()
+            return
+        }
 
+        val prefilledInput =
+            currentState.findInput.ifBlank {
+                currentState.highlightQuery
+            }
+
+        setState {
+            copy(
+                isFindBarVisible = true,
+                findInput = prefilledInput,
+            )
+        }
+    }
+
+    private fun closeFindBar() {
+        setState {
+            copy(
+                isFindBarVisible = false,
+                findInput = "",
+                highlightQuery = "",
+                scrollToVerseId = null,
+            )
+        }
+    }
+
+    private fun applyFindQuery(query: String) {
+        val trimmedQuery = query.trim()
+        if (trimmedQuery.isEmpty()) {
+            viewModelScope.launch {
+                sendEvent(
+                    PoemDetailEvent.ShowSnackbar(
+                        UiText.Resource(Res.string.search_empty_query),
+                    ),
+                )
+            }
+            return
+        }
+
+        val matchingVerse = findFirstMatchingVerse(state.value.verses, trimmedQuery)
+        if (matchingVerse == null) {
+            viewModelScope.launch {
+                sendEvent(
+                    PoemDetailEvent.ShowSnackbar(
+                        UiText.Resource(Res.string.search_not_found_in_poem),
+                    ),
+                )
+            }
+            return
+        }
+
+        setState {
+            copy(
+                highlightQuery = trimmedQuery,
+                findInput = trimmedQuery,
+                scrollToVerseId = matchingVerse.id,
+            )
+        }
     }
 
     private fun sharePoem() {

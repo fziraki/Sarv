@@ -4,6 +4,7 @@ import abkabk.azbarkon.features.poems.details.PoemDetailRoot
 import abkabk.azbarkon.features.poems.list.PoemListRoot
 import abkabk.azbarkon.features.poets.details.PoetDetailRoot
 import abkabk.azbarkon.features.poets.list.PoetsListRoot
+import abkabk.azbarkon.features.search.navigation.navigateToSearch
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -29,7 +30,7 @@ fun NavGraphBuilder.poetsGraph(
                 navController.navigate(PoemListRoute(catId = catId, title = title))
             },
             onNavigateToSearch = {
-
+                navController.navigateToSearch(poetId = route.poetId)
             }
         )
     }
@@ -44,7 +45,7 @@ fun NavGraphBuilder.poetsGraph(
                 navController.navigate(PoemDetailRoute(poemId = poemId))
             },
             onNavigateToSearch = {
-                
+                navController.navigateToSearch(catId = route.catId)
             }
         )
     }

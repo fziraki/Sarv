@@ -1,5 +1,6 @@
 package abkabk.azbarkon.features.poems.details
 
+import abkabk.azbarkon.core.ui.HighlightedText
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -49,24 +50,69 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun PoemVerseItem(
     verse: PoemVerseUi,
+    highlightQuery: String = "",
     modifier: Modifier = Modifier,
 ) {
     when (verse.positionType) {
-        PoemVersePositionType.Comment -> CommentVerseItem(text = verse.text, modifier = modifier)
-        PoemVersePositionType.Right -> RightVerseItem(text = verse.text, modifier = modifier)
-        PoemVersePositionType.Left -> LeftVerseItem(text = verse.text, modifier = modifier)
-        PoemVersePositionType.Center -> CenterVerseItem(text = verse.text, modifier = modifier)
-        PoemVersePositionType.Paragraph -> ParagraphVerseItem(text = verse.text, modifier = modifier)
-        PoemVersePositionType.Single -> SingleVerseItem(text = verse.text, modifier = modifier)
+        PoemVersePositionType.Comment -> {
+            CommentVerseItem(
+                text = verse.text,
+                highlightQuery = highlightQuery,
+                modifier = modifier,
+            )
+        }
+
+        PoemVersePositionType.Right -> {
+            RightVerseItem(
+                text = verse.text,
+                highlightQuery = highlightQuery,
+                modifier = modifier,
+            )
+        }
+
+        PoemVersePositionType.Left -> {
+            LeftVerseItem(
+                text = verse.text,
+                highlightQuery = highlightQuery,
+                modifier = modifier,
+            )
+        }
+
+        PoemVersePositionType.Center -> {
+            CenterVerseItem(
+                text = verse.text,
+                highlightQuery = highlightQuery,
+                modifier = modifier,
+            )
+        }
+
+        PoemVersePositionType.Paragraph -> {
+            ParagraphVerseItem(
+                text = verse.text,
+                highlightQuery = highlightQuery,
+                modifier = modifier,
+            )
+        }
+
+        PoemVersePositionType.Single -> {
+            SingleVerseItem(
+                text = verse.text,
+                highlightQuery = highlightQuery,
+                modifier = modifier,
+            )
+        }
     }
 }
 
 @Composable
 private fun CommentVerseItem(
     text: String,
+    highlightQuery: String,
     modifier: Modifier = Modifier,
 ) {
-    Text(
+    HighlightedText(
+        text = text,
+        query = highlightQuery,
         modifier =
             modifier
                 .fillMaxWidth()
@@ -74,7 +120,6 @@ private fun CommentVerseItem(
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .padding(horizontal = 12.dp, vertical = 10.dp),
-        text = text,
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
@@ -84,14 +129,16 @@ private fun CommentVerseItem(
 @Composable
 private fun RightVerseItem(
     text: String,
+    highlightQuery: String,
     modifier: Modifier = Modifier,
 ) {
-    Text(
+    HighlightedText(
+        text = text,
+        query = highlightQuery,
         modifier =
             modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
-        text = text,
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.Start,
@@ -101,14 +148,16 @@ private fun RightVerseItem(
 @Composable
 private fun LeftVerseItem(
     text: String,
+    highlightQuery: String,
     modifier: Modifier = Modifier,
 ) {
-    Text(
+    HighlightedText(
+        text = text,
+        query = highlightQuery,
         modifier =
             modifier
                 .fillMaxWidth()
                 .padding(bottom = 12.dp),
-        text = text,
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.End,
@@ -118,14 +167,16 @@ private fun LeftVerseItem(
 @Composable
 private fun CenterVerseItem(
     text: String,
+    highlightQuery: String,
     modifier: Modifier = Modifier,
 ) {
-    Text(
+    HighlightedText(
+        text = text,
+        query = highlightQuery,
         modifier =
             modifier
                 .fillMaxWidth()
                 .padding(top = 12.dp),
-        text = text,
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.Center,
@@ -135,14 +186,16 @@ private fun CenterVerseItem(
 @Composable
 private fun ParagraphVerseItem(
     text: String,
+    highlightQuery: String,
     modifier: Modifier = Modifier,
 ) {
-    Text(
+    HighlightedText(
+        text = text,
+        query = highlightQuery,
         modifier =
             modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
-        text = text,
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.Center,
@@ -152,14 +205,16 @@ private fun ParagraphVerseItem(
 @Composable
 private fun SingleVerseItem(
     text: String,
+    highlightQuery: String,
     modifier: Modifier = Modifier,
 ) {
-    Text(
+    HighlightedText(
+        text = text,
+        query = highlightQuery,
         modifier =
             modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp),
-        text = text,
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.Center,

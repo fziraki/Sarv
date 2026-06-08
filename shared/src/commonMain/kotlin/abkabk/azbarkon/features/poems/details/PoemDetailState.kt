@@ -12,6 +12,10 @@ data class PoemDetailState(
     val verses: List<PoemVerseUi> = emptyList(),
     val isLiked: Boolean = false,
     val isBookmarked: Boolean = false,
+    val highlightQuery: String = "",
+    val findInput: String = "",
+    val isFindBarVisible: Boolean = false,
+    val scrollToVerseId: String? = null,
 )
 
 sealed interface PoemDetailAction {
@@ -20,6 +24,16 @@ sealed interface PoemDetailAction {
     data object OnRetryClick : PoemDetailAction
 
     data object OnSearchClick : PoemDetailAction
+
+    data class OnFindQueryChange(
+        val query: String,
+    ) : PoemDetailAction
+
+    data object OnFindSubmit : PoemDetailAction
+
+    data object OnFindBarClose : PoemDetailAction
+
+    data object OnScrollConsumed : PoemDetailAction
 
     data object OnShareClick : PoemDetailAction
 
