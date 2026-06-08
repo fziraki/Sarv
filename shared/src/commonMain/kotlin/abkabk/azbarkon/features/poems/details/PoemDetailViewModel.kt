@@ -6,20 +6,17 @@ import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.toUiText
-import abkabk.azbarkon.domain.platform.ClipboardService
 import abkabk.azbarkon.domain.platform.ShareService
-import abkabk.azbarkon.domain.repository.SavedPoemRepository
 import abkabk.azbarkon.domain.repository.PoemRepository
+import abkabk.azbarkon.domain.repository.SavedPoemRepository
 import androidx.lifecycle.viewModelScope
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.coming_soon
-import azbarkoncmp.shared.generated.resources.poem_copied
 import kotlinx.coroutines.launch
 
 class PoemDetailViewModel(
     private val poemRepository: PoemRepository,
     private val savedPoemRepository: SavedPoemRepository,
-    private val clipboardService: ClipboardService,
     private val shareService: ShareService,
     private val poemId: Int,
 ) : BaseViewModel<PoemDetailAction, PoemDetailState, PoemDetailEvent>(
@@ -35,7 +32,7 @@ class PoemDetailViewModel(
             PoemDetailAction.OnRetryClick,
             -> loadPoemDetail()
 
-            PoemDetailAction.OnCopyClick -> copyPoem()
+            PoemDetailAction.OnSearchClick -> searchContext()
 
             PoemDetailAction.OnShareClick -> sharePoem()
 
@@ -76,18 +73,8 @@ class PoemDetailViewModel(
         }
     }
 
-    private fun copyPoem() {
-        val text = buildShareText()
-        if (text.isBlank()) return
+    private fun searchContext() {
 
-        clipboardService.copyToClipboard(text)
-        viewModelScope.launch {
-            sendEvent(
-                PoemDetailEvent.ShowSnackbar(
-                    UiText.Resource(Res.string.poem_copied),
-                ),
-            )
-        }
     }
 
     private fun sharePoem() {

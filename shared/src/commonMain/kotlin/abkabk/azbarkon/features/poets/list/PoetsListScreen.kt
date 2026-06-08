@@ -8,7 +8,6 @@ import abkabk.azbarkon.core.ui_base.asString
 import abkabk.azbarkon.features.poets.FeaturedPoetUi
 import abkabk.azbarkon.features.poets.PoetListItemUi
 import abkabk.azbarkon.ui.components.AzbarkonSecondaryButton
-import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,17 +42,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.poets_search_placeholder
-import azbarkoncmp.shared.generated.resources.poets_subtitle
-import azbarkoncmp.shared.generated.resources.poets_title
+import azbarkoncmp.shared.generated.resources.chat_bubble
+import azbarkoncmp.shared.generated.resources.poets_filter_placeholder
 import azbarkoncmp.shared.generated.resources.poets_view_works
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun PoetsListRoot(
     onNavigateToPoetDetail: (Int) -> Unit,
-    onBackClick: () -> Unit,
     viewModel: PoetsListViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -86,7 +85,6 @@ fun PoetsListRoot(
         PoetsListScreen(
             state = state,
             onAction = viewModel::onAction,
-            onBackClick = onBackClick,
         )
     }
 }
@@ -95,24 +93,18 @@ fun PoetsListRoot(
 fun PoetsListScreen(
     state: PoetsListState,
     onAction: (PoetsListAction) -> Unit,
-    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier =
             modifier
-                .fillMaxSize()
+                .fillMaxSize().padding(top = 16.dp)
                 .background(MaterialTheme.colorScheme.background),
     ) {
-        Header(
-            title = stringResource(Res.string.poets_title),
-            subtitle = stringResource(Res.string.poets_subtitle),
-            onBackClick = onBackClick,
-        )
 
-        PoetsSearchField(
+        FilterField(
             value = state.searchQuery,
-            placeholder = stringResource(Res.string.poets_search_placeholder),
+            placeholder = stringResource(Res.string.poets_filter_placeholder),
             onValueChange = { onAction(PoetsListAction.OnSearchQueryChange(it)) },
             modifier = Modifier.padding(horizontal = 16.dp),
         )
@@ -187,7 +179,7 @@ private fun FeaturedPoetCard(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.9f),
                     maxLines = 2,
-                    overflow = TextOverflow.StartEllipsis,
+                    overflow = TextOverflow.Ellipsis
                 )
                 if (poet.stats.isNotBlank()) {
                     Text(
@@ -202,11 +194,25 @@ private fun FeaturedPoetCard(
             }
         }
 
-        AzbarkonSecondaryButton(
-            text = stringResource(Res.string.poets_view_works),
-            onClick = onClick,
+        Row(
             modifier = Modifier.fillMaxWidth(),
-        )
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+
+            Icon(
+                painter = painterResource(Res.drawable.chat_bubble),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.surface
+            )
+
+            AzbarkonSecondaryButton(
+                text = stringResource(Res.string.poets_view_works),
+                onClick = onClick,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
     }
 }
 
@@ -261,6 +267,12 @@ private fun PoetListRow(
                 )
             }
         }
+
+        Icon(
+            painter = painterResource(Res.drawable.chat_bubble),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
@@ -290,7 +302,6 @@ private fun PoetsListScreenPreview() {
                         ),
                 ),
             onAction = {},
-            onBackClick = {},
         )
     }
 }

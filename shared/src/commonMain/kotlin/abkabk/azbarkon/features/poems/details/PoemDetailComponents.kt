@@ -25,10 +25,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.cd_context_search
 import azbarkoncmp.shared.generated.resources.cd_copy
 import azbarkoncmp.shared.generated.resources.cd_image_creator
 import azbarkoncmp.shared.generated.resources.cd_like
 import azbarkoncmp.shared.generated.resources.cd_share
+import azbarkoncmp.shared.generated.resources.context_search
 import azbarkoncmp.shared.generated.resources.copy
 import azbarkoncmp.shared.generated.resources.heart
 import azbarkoncmp.shared.generated.resources.heart_filled
@@ -37,6 +39,7 @@ import azbarkoncmp.shared.generated.resources.poem_copy
 import azbarkoncmp.shared.generated.resources.poem_image_creator
 import azbarkoncmp.shared.generated.resources.poem_liked
 import azbarkoncmp.shared.generated.resources.poem_share
+import azbarkoncmp.shared.generated.resources.search
 import azbarkoncmp.shared.generated.resources.share
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -192,7 +195,7 @@ fun PoemOrnamentalDivider(modifier: Modifier = Modifier) {
 @Composable
 fun PoemActionBar(
     isLiked: Boolean,
-    onCopyClick: () -> Unit,
+    onSearchClick: () -> Unit,
     onShareClick: () -> Unit,
     onLikeClick: () -> Unit,
     onImageCreatorClick: () -> Unit,
@@ -237,10 +240,10 @@ fun PoemActionBar(
         )
 
         PoemActionItem(
-            icon = Res.drawable.copy,
-            label = Res.string.poem_copy,
-            contentDescription = Res.string.cd_copy,
-            onClick = onCopyClick,
+            icon = Res.drawable.search,
+            label = Res.string.context_search,
+            contentDescription = Res.string.cd_context_search,
+            onClick = onSearchClick,
         )
     }
 }

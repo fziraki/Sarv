@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.filter
 import azbarkoncmp.shared.generated.resources.palette
 import azbarkoncmp.shared.generated.resources.search
 import org.jetbrains.compose.resources.painterResource
@@ -31,7 +32,7 @@ import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
-fun PoetsSearchField(
+fun FilterField(
     value: String,
     placeholder: String,
     onValueChange: (String) -> Unit,
@@ -52,7 +53,7 @@ fun PoetsSearchField(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Icon(
-            painter = painterResource(Res.drawable.search),
+            painter = painterResource(Res.drawable.filter),
             contentDescription = stringResource(Res.string.search),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(20.dp),

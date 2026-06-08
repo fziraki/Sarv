@@ -15,6 +15,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,9 +39,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.chat_bubble
 import azbarkoncmp.shared.generated.resources.poets_works_section
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -49,6 +54,7 @@ fun PoetDetailRoot(
     poetId: Int,
     onBackClick: () -> Unit,
     onNavigateToPoemList: (catId: Int, title: String) -> Unit,
+    onNavigateToSearch: () -> Unit,
     viewModel: PoetDetailViewModel = koinViewModel { parametersOf(poetId) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -81,6 +87,7 @@ fun PoetDetailRoot(
             state = state,
             onAction = viewModel::onAction,
             onBackClick = onBackClick,
+            onSearchClick = onNavigateToSearch
         )
     }
 }
@@ -90,6 +97,7 @@ fun PoetDetailScreen(
     state: PoetDetailState,
     onAction: (PoetDetailAction) -> Unit,
     onBackClick: () -> Unit,
+    onSearchClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -101,6 +109,7 @@ fun PoetDetailScreen(
         Header(
             title = state.name,
             onBackClick = onBackClick,
+            onSearchClick = onSearchClick
         )
 
         LazyColumn(
@@ -189,6 +198,19 @@ private fun PoetDetailHero(
             textAlign = TextAlign.Center,
         )
 
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)){
+            Text(
+                text = "گفتگو با شاعر",
+                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
+                color = MaterialTheme.colorScheme.primaryContainer
+            )
+            Icon(
+                painter = painterResource(Res.drawable.chat_bubble),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primaryContainer
+            )
+        }
+
         if (state.bio.isNotBlank()) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -232,6 +254,7 @@ private fun PoetDetailScreenPreview() {
                 ),
             onAction = {},
             onBackClick = {},
+            onSearchClick = {}
         )
     }
 }

@@ -16,8 +16,7 @@ fun NavGraphBuilder.poetsGraph(
         PoetsListRoot(
             onNavigateToPoetDetail = { poetId ->
                 navController.navigate(PoetDetailRoute(poetId))
-            },
-            onBackClick = navController::navigateUp,
+            }
         )
     }
 
@@ -29,6 +28,9 @@ fun NavGraphBuilder.poetsGraph(
             onNavigateToPoemList = { catId, title ->
                 navController.navigate(PoemListRoute(catId = catId, title = title))
             },
+            onNavigateToSearch = {
+
+            }
         )
     }
 
@@ -41,6 +43,9 @@ fun NavGraphBuilder.poetsGraph(
             onNavigateToPoemDetail = { poemId ->
                 navController.navigate(PoemDetailRoute(poemId = poemId))
             },
+            onNavigateToSearch = {
+                
+            }
         )
     }
 

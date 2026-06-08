@@ -28,7 +28,9 @@ import azbarkoncmp.shared.generated.resources.bookmark
 import azbarkoncmp.shared.generated.resources.bookmark_filled
 import azbarkoncmp.shared.generated.resources.cd_back
 import azbarkoncmp.shared.generated.resources.cd_bookmark
+import azbarkoncmp.shared.generated.resources.cd_search
 import azbarkoncmp.shared.generated.resources.clear_all_title
+import azbarkoncmp.shared.generated.resources.search
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -40,6 +42,7 @@ fun Header(
     isBookmarked: Boolean = false,
     onBookmarkClick: (() -> Unit)? = null,
     onClearAllClick: (() -> Unit)? = null,
+    onSearchClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -128,6 +131,23 @@ fun Header(
                             } else {
                                 MaterialTheme.colorScheme.onSurfaceVariant
                             },
+                    )
+                }
+            }
+
+            onSearchClick != null -> {
+
+                Box(
+                    modifier =
+                        Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .clickable(onClick = onSearchClick),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.search),
+                        contentDescription = stringResource(Res.string.cd_search)
                     )
                 }
             }

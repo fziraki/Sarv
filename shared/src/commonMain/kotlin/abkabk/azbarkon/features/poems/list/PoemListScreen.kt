@@ -42,6 +42,7 @@ fun PoemListRoot(
     title: String,
     onBackClick: () -> Unit,
     onNavigateToPoemDetail: (Int) -> Unit,
+    onNavigateToSearch: () -> Unit,
     viewModel: PoemListViewModel = koinViewModel { parametersOf(catId, title) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -71,6 +72,7 @@ fun PoemListRoot(
             state = state,
             onBackClick = onBackClick,
             onPoemClick = { poemId -> viewModel.onAction(PoemListAction.OnPoemClick(poemId)) },
+            onSearchClick = onNavigateToSearch
         )
     }
 }
@@ -80,6 +82,7 @@ fun PoemListScreen(
     state: PoemListState,
     onBackClick: () -> Unit,
     onPoemClick: (Int) -> Unit,
+    onSearchClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -91,6 +94,7 @@ fun PoemListScreen(
         Header(
             title = state.title,
             onBackClick = onBackClick,
+            onSearchClick = onSearchClick
         )
 
         LazyColumn(
@@ -140,6 +144,7 @@ private fun PoemListScreenPreview() {
                 ),
             onBackClick = {},
             onPoemClick = {},
+            onSearchClick = {}
         )
     }
 }

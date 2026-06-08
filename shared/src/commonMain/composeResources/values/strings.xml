@@ -3,16 +3,21 @@
     <string name="app_name">ازبرکن</string>
 
     <string name="home">آستان</string>
-    <string name="library">گنجینه</string>
+    <string name="treasure">گنجینه</string>
     <string name="games">میدان</string>
     <string name="profile">من</string>
 
     <string name="games_subtitle">با بازی های ادبی شعر را بهتر یاد بگیر و لذت ببر</string>
+    <string name="treasure_subtitle">در میان واژه‌ها قدم بزن</string>
 
     <string name="my_poems">شعرهای من</string>
     <string name="search">جستجو</string>
     <string name="pic_negar">تصویر نگار</string>
     <string name="review">مرور شعر</string>
+
+    <string name="context_search">جستجو در متن</string>
+    <string name="cd_context_search">جستجو در متن شعر</string>
+
 
     <string name="popular_poets">شاعران محبوب</string>
     <string name="all">همه</string>
@@ -60,10 +65,9 @@
     <string name="error_disk_full">فضای ذخیره‌سازی کافی نیست</string>
     <string name="error_unknown">خطای ناشناخته</string>
     <string name="cd_back">بازگشت</string>
+    <string name="cd_search">رفتن به صفحه جستجو</string>
 
-    <string name="poets_title">شاعران</string>
-    <string name="poets_subtitle">در میان واژه‌ها قدم بزن</string>
-    <string name="poets_search_placeholder">جستجوی شاعر یا اثر...</string>
+    <string name="poets_filter_placeholder">نام شاعر یا اثر</string>
     <string name="poets_view_works">مشاهده آثار</string>
     <string name="poets_all_section">همه شاعران</string>
     <string name="poets_works_section">آثار</string>

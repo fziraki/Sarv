@@ -123,7 +123,7 @@ fun PoemDetailScreen(
         ) {
             PoemActionBar(
                 isLiked = state.isLiked,
-                onCopyClick = { onAction(PoemDetailAction.OnCopyClick) },
+                onSearchClick = { onAction(PoemDetailAction.OnSearchClick) },
                 onShareClick = { onAction(PoemDetailAction.OnShareClick) },
                 onLikeClick = { onAction(PoemDetailAction.OnLikeClick) },
                 onImageCreatorClick = { onAction(PoemDetailAction.OnImageCreatorClick) },

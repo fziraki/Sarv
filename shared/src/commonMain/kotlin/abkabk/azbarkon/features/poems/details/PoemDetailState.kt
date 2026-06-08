@@ -19,7 +19,7 @@ sealed interface PoemDetailAction {
 
     data object OnRetryClick : PoemDetailAction
 
-    data object OnCopyClick : PoemDetailAction
+    data object OnSearchClick : PoemDetailAction
 
     data object OnShareClick : PoemDetailAction
 

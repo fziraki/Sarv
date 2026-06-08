@@ -132,7 +132,7 @@ class PoemDetailViewModelTest {
                 )
 
             viewModel.events.test {
-                viewModel.onAction(PoemDetailAction.OnCopyClick)
+                viewModel.onAction(PoemDetailAction.OnSearchClick)
 
                 assertThat(awaitItem()).isEqualTo(
                     PoemDetailEvent.ShowSnackbar(UiText.Resource(Res.string.poem_copied)),
