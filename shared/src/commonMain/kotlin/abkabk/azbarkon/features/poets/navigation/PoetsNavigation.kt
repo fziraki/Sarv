@@ -1,8 +1,9 @@
 package abkabk.azbarkon.features.poets.navigation
 
-import abkabk.azbarkon.features.poets.PoemListRoot
-import abkabk.azbarkon.features.poets.PoetDetailRoot
-import abkabk.azbarkon.features.poets.PoetsListRoot
+import abkabk.azbarkon.features.poems.details.PoemDetailRoot
+import abkabk.azbarkon.features.poems.list.PoemListRoot
+import abkabk.azbarkon.features.poets.details.PoetDetailRoot
+import abkabk.azbarkon.features.poets.list.PoetsListRoot
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -15,8 +16,7 @@ fun NavGraphBuilder.poetsGraph(
         PoetsListRoot(
             onNavigateToPoetDetail = { poetId ->
                 navController.navigate(PoetDetailRoute(poetId))
-            },
-            onBackClick = navController::navigateUp,
+            }
         )
     }
 
@@ -28,6 +28,9 @@ fun NavGraphBuilder.poetsGraph(
             onNavigateToPoemList = { catId, title ->
                 navController.navigate(PoemListRoute(catId = catId, title = title))
             },
+            onNavigateToSearch = {
+
+            }
         )
     }
 
@@ -36,6 +39,20 @@ fun NavGraphBuilder.poetsGraph(
         PoemListRoot(
             catId = route.catId,
             title = route.title,
+            onBackClick = navController::navigateUp,
+            onNavigateToPoemDetail = { poemId ->
+                navController.navigate(PoemDetailRoute(poemId = poemId))
+            },
+            onNavigateToSearch = {
+                
+            }
+        )
+    }
+
+    composable<PoemDetailRoute> { backStackEntry ->
+        val route = backStackEntry.toRoute<PoemDetailRoute>()
+        PoemDetailRoot(
+            poemId = route.poemId,
             onBackClick = navController::navigateUp,
         )
     }

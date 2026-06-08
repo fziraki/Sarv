@@ -1,0 +1,398 @@
+package abkabk.azbarkon.features.my_poems
+
+import abkabk.azbarkon.core.ui_base.BaseScreen
+import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
+import abkabk.azbarkon.core.ui_base.ObserveAsEvents
+import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.ui_base.asString
+import abkabk.azbarkon.ui.components.Header
+import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.bookmark_filled
+import azbarkoncmp.shared.generated.resources.cd_clear_bookmarked
+import azbarkoncmp.shared.generated.resources.cd_clear_liked
+import azbarkoncmp.shared.generated.resources.clear_confirm
+import azbarkoncmp.shared.generated.resources.clear_cancel
+import azbarkoncmp.shared.generated.resources.clear_dialog_bookmarked_body
+import azbarkoncmp.shared.generated.resources.clear_dialog_liked_body
+import azbarkoncmp.shared.generated.resources.clear_dialog_title
+import azbarkoncmp.shared.generated.resources.empty_bookmarked
+import azbarkoncmp.shared.generated.resources.empty_liked
+import azbarkoncmp.shared.generated.resources.tab_bookmarked
+import azbarkoncmp.shared.generated.resources.tab_liked
+import azbarkoncmp.shared.generated.resources.heart_filled
+import azbarkoncmp.shared.generated.resources.my_poems
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun MyPoemsRoot(
+    onBackClick: () -> Unit,
+    onNavigateToPoemDetail: (Int) -> Unit,
+    viewModel: MyPoemsViewModel = koinViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val appState = LocalAzbarkonAppState.current
+    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.onAction(MyPoemsAction.OnResume)
+    }
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is MyPoemsEvent.ShowSnackbar -> snackbarMessage = event.message
+            is MyPoemsEvent.NavigateToPoemDetail -> onNavigateToPoemDetail(event.poemId)
+        }
+    }
+
+    snackbarMessage?.let { message ->
+        val resolvedMessage = message.asString()
+        LaunchedEffect(resolvedMessage) {
+            appState.showSnackbar(resolvedMessage)
+            snackbarMessage = null
+        }
+    }
+
+    BaseScreen(
+        screenState = state.screenState,
+        onRetry = { viewModel.onAction(MyPoemsAction.OnRetryClick) },
+    ) {
+        MyPoemsScreen(
+            state = state,
+            onBackClick = onBackClick,
+            onAction = viewModel::onAction,
+        )
+    }
+}
+
+@Composable
+fun MyPoemsScreen(
+    state: MyPoemsState,
+    onBackClick: () -> Unit,
+    onAction: (MyPoemsAction) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val clearDialogBody =
+        when (state.selectedTab) {
+            MyPoemsTab.Liked -> stringResource(Res.string.clear_dialog_liked_body)
+            MyPoemsTab.Bookmarked -> stringResource(Res.string.clear_dialog_bookmarked_body)
+        }
+
+    Column(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+    ) {
+        Header(
+            title = stringResource(Res.string.my_poems),
+            onBackClick = onBackClick,
+            onClearAllClick =
+                if (state.isActiveTabEmpty) {
+                    null
+                } else {
+                    { onAction(MyPoemsAction.OnClearAllClick) }
+                },
+        )
+
+        MyPoemsTabRow(
+            selectedTab = state.selectedTab,
+            onTabSelected = { tab -> onAction(MyPoemsAction.OnTabSelected(tab)) },
+        )
+
+        if (state.isActiveTabEmpty) {
+            Box(
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text =
+                        when (state.selectedTab) {
+                            MyPoemsTab.Liked -> stringResource(Res.string.empty_liked)
+                            MyPoemsTab.Bookmarked -> stringResource(Res.string.empty_bookmarked)
+                        },
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                state.activeGroups.forEach { poetGroup ->
+                    poetGroup.categories.forEach { categoryGroup ->
+                        items(
+                            items = categoryGroup.poems,
+                            key = { poem -> "${state.selectedTab}-${poem.id}" },
+                        ) { poem ->
+                            MyPoemRow(
+                                poemTitle = poem.title,
+                                poetName = poetGroup.poetName,
+                                categoryName = categoryGroup.categoryName,
+                                tab = state.selectedTab,
+                                onPoemClick = { onAction(MyPoemsAction.OnPoemClick(poem.id)) },
+                                onRemoveClick = { onAction(MyPoemsAction.OnRemovePoem(poem.id)) },
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (state.showClearDialog) {
+        AlertDialog(
+            onDismissRequest = { onAction(MyPoemsAction.OnClearAllDismiss) },
+            title = { Text(stringResource(Res.string.clear_dialog_title)) },
+            text = { Text(clearDialogBody) },
+            confirmButton = {
+                TextButton(onClick = { onAction(MyPoemsAction.OnClearAllConfirm) }) {
+                    Text(stringResource(Res.string.clear_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onAction(MyPoemsAction.OnClearAllDismiss) }) {
+                    Text(stringResource(Res.string.clear_cancel))
+                }
+            },
+        )
+    }
+}
+
+@Composable
+private fun MyPoemsTabRow(
+    selectedTab: MyPoemsTab,
+    onTabSelected: (MyPoemsTab) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val likedLabel = stringResource(Res.string.tab_liked)
+    val bookmarkedLabel = stringResource(Res.string.tab_bookmarked)
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+        ) {
+            Box(
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .clickable { onTabSelected(MyPoemsTab.Liked) },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = likedLabel,
+                    style = MaterialTheme.typography.titleSmall,
+                    color =
+                        if (selectedTab == MyPoemsTab.Liked) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                )
+            }
+
+            Box(
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .clickable { onTabSelected(MyPoemsTab.Bookmarked) },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = bookmarkedLabel,
+                    style = MaterialTheme.typography.titleSmall,
+                    color =
+                        if (selectedTab == MyPoemsTab.Bookmarked) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                )
+            }
+        }
+
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+        ) {
+            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                val tabWidth = maxWidth / 2
+                val indicatorOffset by animateDpAsState(
+                    targetValue = if (selectedTab == MyPoemsTab.Liked) 0.dp else tabWidth,
+                    animationSpec = tween(durationMillis = 200),
+                )
+
+                Box(
+                    modifier =
+                        Modifier
+                            .width(tabWidth)
+                            .fillMaxHeight()
+                            .offset(x = indicatorOffset)
+                            .background(MaterialTheme.colorScheme.primary),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MyPoemRow(
+    poemTitle: String,
+    poetName: String,
+    categoryName: String,
+    tab: MyPoemsTab,
+    onPoemClick: () -> Unit,
+    onRemoveClick: () -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .clickable(onClick = onPoemClick)
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    shape = RoundedCornerShape(16.dp),
+                ).padding(start = 14.dp, top = 14.dp, bottom = 14.dp, end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = poemTitle,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Start,
+            )
+            Text(
+                text = "$poetName · $categoryName",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Start,
+            )
+        }
+
+        Box(
+            modifier =
+                Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable(onClick = onRemoveClick),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painter =
+                    painterResource(
+                        when (tab) {
+                            MyPoemsTab.Liked -> Res.drawable.heart_filled
+                            MyPoemsTab.Bookmarked -> Res.drawable.bookmark_filled
+                        },
+                    ),
+                contentDescription = stringResource(
+                        when (tab) {
+                            MyPoemsTab.Liked -> Res.string.cd_clear_liked
+                            MyPoemsTab.Bookmarked -> Res.string.cd_clear_bookmarked
+                        }
+                    ),
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(22.dp),
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun MyPoemsScreenPreview() {
+    AzbarkonTheme {
+        MyPoemsScreen(
+            state =
+                MyPoemsState(
+                    selectedTab = MyPoemsTab.Liked,
+                    likedGroups =
+                        listOf(
+                            PoetGroupUi(
+                                poetName = "حافظ",
+                                categories =
+                                    listOf(
+                                        CategoryGroupUi(
+                                            categoryName = "غزلیات",
+                                            poems =
+                                                listOf(
+                                                    MyPoemItemUi(id = 1, title = "شمارهٔ ۱"),
+                                                    MyPoemItemUi(id = 2, title = "شمارهٔ ۲"),
+                                                ),
+                                        ),
+                                    ),
+                            ),
+                        ),
+                ),
+            onBackClick = {},
+            onAction = {},
+        )
+    }
+}

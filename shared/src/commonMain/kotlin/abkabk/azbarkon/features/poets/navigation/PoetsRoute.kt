@@ -15,3 +15,8 @@ data class PoemListRoute(
     val catId: Int,
     val title: String,
 )
+
+@Serializable
+data class PoemDetailRoute(
+    val poemId: Int,
+)

@@ -3,16 +3,21 @@
     <string name="app_name">ازبرکن</string>
 
     <string name="home">آستان</string>
-    <string name="library">گنجینه</string>
+    <string name="treasure">گنجینه</string>
     <string name="games">میدان</string>
     <string name="profile">من</string>
 
     <string name="games_subtitle">با بازی های ادبی شعر را بهتر یاد بگیر و لذت ببر</string>
+    <string name="treasure_subtitle">در میان واژه‌ها قدم بزن</string>
 
-    <string name="likes">علاقه مندی‌ها</string>
+    <string name="my_poems">شعرهای من</string>
     <string name="search">جستجو</string>
     <string name="pic_negar">تصویر نگار</string>
     <string name="review">مرور شعر</string>
+
+    <string name="context_search">جستجو در متن</string>
+    <string name="cd_context_search">جستجو در متن شعر</string>
+
 
     <string name="popular_poets">شاعران محبوب</string>
     <string name="all">همه</string>
@@ -60,14 +65,41 @@
     <string name="error_disk_full">فضای ذخیره‌سازی کافی نیست</string>
     <string name="error_unknown">خطای ناشناخته</string>
     <string name="cd_back">بازگشت</string>
+    <string name="cd_search">رفتن به صفحه جستجو</string>
 
-    <string name="poets_title">شاعران</string>
-    <string name="poets_subtitle">در میان واژه‌ها قدم بزن</string>
-    <string name="poets_search_placeholder">جستجوی شاعر یا اثر...</string>
+    <string name="poets_filter_placeholder">نام شاعر یا اثر</string>
     <string name="poets_view_works">مشاهده آثار</string>
     <string name="poets_all_section">همه شاعران</string>
     <string name="poets_works_section">آثار</string>
     <string name="poets_works_summary_other">%1$s و %2$d اثر دیگر</string>
     <string name="cd_expand_category">باز کردن دسته</string>
+
+    <string name="poem_copy">کپی</string>
+    <string name="poem_share">اشتراک</string>
+    <string name="poem_liked">پسندیدم</string>
+    <string name="poem_image_creator">تصویر نگار</string>
+    <string name="poem_memorize_practice">تمرین حفظ این شعر</string>
+    <string name="poem_copied">شعر کپی شد</string>
+    <string name="coming_soon">به‌زودی</string>
+    <string name="cd_bookmark">نشان‌گذاری</string>
+    <string name="cd_menu">منو</string>
+    <string name="cd_copy">کپی شعر</string>
+    <string name="cd_share">اشتراک‌گذاری شعر</string>
+    <string name="cd_like">پسندیدن شعر</string>
+    <string name="cd_image_creator">ساخت تصویر</string>
+
+    <string name="tab_liked">پسندیده‌ها</string>
+    <string name="tab_bookmarked">نشان‌گذاری‌ها</string>
+    <string name="empty_liked">هنوز شعری پسندیده نشده</string>
+    <string name="empty_bookmarked">هنوز شعری نشان‌گذاری نشده</string>
+    <string name="clear_all_title">پاک کردن</string>
+    <string name="clear_dialog_title">پاک کردن همه</string>
+    <string name="clear_dialog_liked_body">همهٔ شعرهای پسندیده‌شده حذف شوند؟</string>
+    <string name="clear_dialog_bookmarked_body">همهٔ شعرهای نشان‌گذاری‌شده حذف شوند؟</string>
+    <string name="clear_confirm">بله، پاک شود</string>
+    <string name="clear_cancel">انصراف</string>
+    <string name="cd_clear_all">پاک کردن همه</string>
+    <string name="cd_clear_liked">پاک کردن پسندیده</string>
+    <string name="cd_clear_bookmarked">پاک کردن نشان</string>
 
 </resources>

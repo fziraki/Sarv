@@ -2,15 +2,16 @@ package abkabk.azbarkon.core.navigation
 
 import abkabk.azbarkon.features.games.navigation.GamesRoute
 import abkabk.azbarkon.features.home.navigation.HomeRoute
-import abkabk.azbarkon.features.library.navigation.LibraryRoute
+import abkabk.azbarkon.features.poets.navigation.PoetsListRoute
 import abkabk.azbarkon.features.profile.navigation.ProfileRoute
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.app_name
 import azbarkoncmp.shared.generated.resources.games
 import azbarkoncmp.shared.generated.resources.games_subtitle
 import azbarkoncmp.shared.generated.resources.home
-import azbarkoncmp.shared.generated.resources.library
+import azbarkoncmp.shared.generated.resources.treasure
 import azbarkoncmp.shared.generated.resources.profile
+import azbarkoncmp.shared.generated.resources.treasure_subtitle
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import kotlin.reflect.KClass
@@ -29,11 +30,12 @@ sealed class BottomNavItem(
         headerTitle = Res.string.app_name,
     )
 
-    data object Library : BottomNavItem(
-        route = LibraryRoute::class,
-        title = Res.string.library,
-        icon = Res.drawable.library,
-        headerTitle = Res.string.library,
+    data object Treasure : BottomNavItem(
+        route = PoetsListRoute::class,
+        title = Res.string.treasure,
+        icon = Res.drawable.treasure,
+        headerTitle = Res.string.treasure,
+        subtitle = Res.string.treasure_subtitle
     )
 
     data object Games : BottomNavItem(

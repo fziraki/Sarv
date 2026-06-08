@@ -5,9 +5,9 @@ import abkabk.azbarkon.core.ui_base.rememberAzbarkonAppState
 import abkabk.azbarkon.features.games.navigation.GamesRoute
 import abkabk.azbarkon.features.games.navigation.gamesGraph
 import abkabk.azbarkon.features.home.navigation.HomeRoute
+import abkabk.azbarkon.features.home.navigation.MyPoemsRoute
 import abkabk.azbarkon.features.home.navigation.homeGraph
-import abkabk.azbarkon.features.library.navigation.LibraryRoute
-import abkabk.azbarkon.features.library.navigation.libraryGraph
+import abkabk.azbarkon.features.poets.navigation.PoemDetailRoute
 import abkabk.azbarkon.features.poets.navigation.PoetDetailRoute
 import abkabk.azbarkon.features.poets.navigation.PoetsListRoute
 import abkabk.azbarkon.features.poets.navigation.poetsGraph
@@ -48,6 +48,8 @@ import androidx.navigation.compose.rememberNavController
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.arrow_back
 import azbarkoncmp.shared.generated.resources.cd_back
+import azbarkoncmp.shared.generated.resources.cd_search
+import azbarkoncmp.shared.generated.resources.search
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -55,7 +57,7 @@ private fun NavDestination?.isRootTabDestination(): Boolean =
     this != null &&
         (
             hasRoute<HomeRoute>() ||
-                hasRoute<LibraryRoute>() ||
+                hasRoute<PoetsListRoute>() ||
                 hasRoute<GamesRoute>() ||
                 hasRoute<ProfileRoute>()
         )
@@ -69,7 +71,7 @@ fun AzbarkonNavigation() {
     val items =
         listOf(
             BottomNavItem.Home,
-            BottomNavItem.Library,
+            BottomNavItem.Treasure,
             BottomNavItem.Games,
             BottomNavItem.Profile,
         )
@@ -82,7 +84,7 @@ fun AzbarkonNavigation() {
         items.find { item ->
             when (item) {
                 BottomNavItem.Home -> currentDestination?.hasRoute<HomeRoute>() == true
-                BottomNavItem.Library -> currentDestination?.hasRoute<LibraryRoute>() == true
+                BottomNavItem.Treasure -> currentDestination?.hasRoute<PoetsListRoute>() == true
                 BottomNavItem.Games -> currentDestination?.hasRoute<GamesRoute>() == true
                 BottomNavItem.Profile -> currentDestination?.hasRoute<ProfileRoute>() == true
             }
@@ -132,6 +134,20 @@ fun AzbarkonNavigation() {
                                 )
                             }
                         }
+
+                        if (currentDestination?.hasRoute<PoetsListRoute>() == true) {
+                            IconButton(
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                onClick = {
+                                    navController.navigateUp()
+                                },
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.search),
+                                    contentDescription = stringResource(Res.string.cd_search),
+                                )
+                            }
+                        }
                     }
                 }
             },
@@ -149,7 +165,7 @@ fun AzbarkonNavigation() {
                             val selected =
                                 when (item) {
                                     BottomNavItem.Home -> currentDestination?.hasRoute<HomeRoute>() == true
-                                    BottomNavItem.Library -> currentDestination?.hasRoute<LibraryRoute>() == true
+                                    BottomNavItem.Treasure -> currentDestination?.hasRoute<PoetsListRoute>() == true
                                     BottomNavItem.Games -> currentDestination?.hasRoute<GamesRoute>() == true
                                     BottomNavItem.Profile -> currentDestination?.hasRoute<ProfileRoute>() == true
                                 }
@@ -160,7 +176,7 @@ fun AzbarkonNavigation() {
                                     val route =
                                         when (item) {
                                             BottomNavItem.Home -> HomeRoute
-                                            BottomNavItem.Library -> LibraryRoute
+                                            BottomNavItem.Treasure -> PoetsListRoute
                                             BottomNavItem.Games -> GamesRoute
                                             BottomNavItem.Profile -> ProfileRoute
                                         }
@@ -212,8 +228,14 @@ fun AzbarkonNavigation() {
                     onNavigateToPoetDetail = { poetId ->
                         navController.navigate(PoetDetailRoute(poetId))
                     },
+                    onNavigateToMyPoems = {
+                        navController.navigate(MyPoemsRoute)
+                    },
+                    onBackFromMyPoems = navController::navigateUp,
+                    onNavigateToPoemDetailFromMyPoems = { poemId ->
+                        navController.navigate(PoemDetailRoute(poemId = poemId))
+                    },
                 )
-                libraryGraph()
                 gamesGraph()
                 profileGraph()
                 poetsGraph(navController)

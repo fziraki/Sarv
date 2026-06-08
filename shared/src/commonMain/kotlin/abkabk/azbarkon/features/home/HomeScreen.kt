@@ -11,6 +11,8 @@ import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.asString
 import abkabk.azbarkon.domain.model.Poet
+import abkabk.azbarkon.ui.components.AzbarkonButton
+import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.NetworkImage
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -37,7 +39,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -51,8 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.all
-import azbarkoncmp.shared.generated.resources.favorite
-import azbarkoncmp.shared.generated.resources.likes
+import azbarkoncmp.shared.generated.resources.my_poems
 import azbarkoncmp.shared.generated.resources.memorization_button
 import azbarkoncmp.shared.generated.resources.new_memorization_button
 import azbarkoncmp.shared.generated.resources.new_memorization_desc
@@ -73,6 +73,7 @@ import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_button
 import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_text
 import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_title
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import azbarkoncmp.shared.generated.resources.newsstand
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -84,6 +85,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HomeRoot(
     onNavigateToPoetsList: () -> Unit,
     onNavigateToPoetDetail: (Int) -> Unit,
+    onNavigateToMyPoems: () -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -99,6 +101,8 @@ fun HomeRoot(
             HomeEvent.NavigateToPoetsList -> onNavigateToPoetsList()
 
             is HomeEvent.NavigateToPoetDetail -> onNavigateToPoetDetail(event.poetId)
+
+            HomeEvent.NavigateToMyPoems -> onNavigateToMyPoems()
         }
     }
 
@@ -145,7 +149,9 @@ fun HomeScreen(
             HeroCard(state.isNewMemorization)
         }
         item {
-            QuickAccessMenu()
+            QuickAccessMenu(
+                onMyPoemsClick = { onAction(HomeAction.OnMyPoemsClick) },
+            )
         }
         item {
             Poets(
@@ -260,7 +266,9 @@ fun PoetItem(
 }
 
 @Composable
-fun QuickAccessMenu() {
+fun QuickAccessMenu(
+    onMyPoemsClick: () -> Unit,
+) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -268,10 +276,9 @@ fun QuickAccessMenu() {
     ) {
         QuickAccessItem(
             modifier = Modifier.weight(1f),
-            icon = Res.drawable.favorite,
-            title = Res.string.likes,
-            onItemClick = {
-            },
+            icon = Res.drawable.newsstand,
+            title = Res.string.my_poems,
+            onItemClick = onMyPoemsClick,
         )
 
         QuickAccessItem(
@@ -395,24 +402,11 @@ fun HeroCard(newMemorization: Boolean) {
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp),
-                    colors =
-                        ButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary,
-                            disabledContainerColor = MaterialTheme.colorScheme.primary,
-                            disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-                        ),
+                AzbarkonPrimaryButton(
+                    text = stringResource(resButton),
                     onClick = {},
-                ) {
-                    Text(
-                        text = stringResource(resButton),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                    )
-                }
+                    modifier = Modifier.fillMaxWidth(),
+                )
             }
         }
     }
@@ -541,12 +535,14 @@ fun TasvirNegarSlide() {
                 textAlign = TextAlign.End,
             )
 
-            Button(
+            AzbarkonButton(
+                text = stringResource(Res.string.slider_tasvir_negar_button),
+                onClick = {},
                 modifier =
                     Modifier
                         .fillMaxWidth(0.6f)
                         .height(36.dp),
-                shape = RoundedCornerShape(8.dp),
+                textStyle = MaterialTheme.typography.labelSmall,
                 colors =
                     ButtonColors(
                         containerColor = MaterialTheme.colorScheme.onSecondaryFixedVariant,
@@ -554,13 +550,7 @@ fun TasvirNegarSlide() {
                         disabledContainerColor = MaterialTheme.colorScheme.onSecondaryFixedVariant,
                         disabledContentColor = MaterialTheme.colorScheme.onSecondary,
                     ),
-                onClick = {},
-            ) {
-                Text(
-                    text = stringResource(Res.string.slider_tasvir_negar_button),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            }
+            )
         }
     }
 }
@@ -603,12 +593,14 @@ fun ChallengeSlide() {
                 textAlign = TextAlign.End,
             )
 
-            Button(
+            AzbarkonButton(
+                text = stringResource(Res.string.slider_challenge_button),
+                onClick = {},
                 modifier =
                     Modifier
                         .fillMaxWidth(0.6f)
                         .height(36.dp),
-                shape = RoundedCornerShape(8.dp),
+                textStyle = MaterialTheme.typography.labelSmall,
                 colors =
                     ButtonColors(
                         containerColor = MaterialTheme.colorScheme.onTertiaryFixedVariant,
@@ -616,13 +608,7 @@ fun ChallengeSlide() {
                         disabledContainerColor = MaterialTheme.colorScheme.onTertiaryFixedVariant,
                         disabledContentColor = MaterialTheme.colorScheme.onTertiaryFixed,
                     ),
-                onClick = {},
-            ) {
-                Text(
-                    text = stringResource(Res.string.slider_challenge_button),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            }
+            )
         }
     }
 }

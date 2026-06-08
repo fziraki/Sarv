@@ -4,6 +4,9 @@ import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.PoetCategoryNode
 import abkabk.azbarkon.domain.model.PoetWithCategories
+import abkabk.azbarkon.features.poets.details.PoetDetailAction
+import abkabk.azbarkon.features.poets.details.PoetDetailEvent
+import abkabk.azbarkon.features.poets.details.PoetDetailViewModel
 import abkabk.azbarkon.testing.FakePoetRepository
 import app.cash.turbine.test
 import assertk.assertThat

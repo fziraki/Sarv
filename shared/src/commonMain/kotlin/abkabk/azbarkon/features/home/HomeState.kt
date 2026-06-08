@@ -22,6 +22,8 @@ sealed interface HomeAction {
     data class OnPoetClick(
         val poetId: Int,
     ) : HomeAction
+
+    data object OnMyPoemsClick : HomeAction
 }
 
 sealed interface HomeEvent {
@@ -34,4 +36,6 @@ sealed interface HomeEvent {
     data class NavigateToPoetDetail(
         val poetId: Int,
     ) : HomeEvent
+
+    data object NavigateToMyPoems : HomeEvent
 }
