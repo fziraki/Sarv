@@ -9,8 +9,17 @@ import abkabk.azbarkon.domain.model.PoetCategoryNode
 import abkabk.azbarkon.domain.repository.PoetRepository
 import abkabk.azbarkon.domain.repository.SearchRepository
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map as pagingMap
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.search_empty_query
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -22,8 +31,23 @@ class SearchViewModel(
         initialState = SearchState(),
     ) {
     private var categoryTree: List<PoetCategoryNode> = emptyList()
-    private var currentOffset = 0
-    private var lastSubmittedQuery = ""
+    private val searchParams = MutableStateFlow<SearchParams?>(null)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val searchResults: Flow<PagingData<SearchResultUi>> =
+        searchParams
+            .flatMapLatest { params ->
+                if (params == null || params.query.isBlank()) {
+                    flowOf(PagingData.empty())
+                } else {
+                    searchRepository
+                        .searchVerses(
+                            query = params.query,
+                            poetId = params.poetId,
+                            categoryIds = params.categoryIds,
+                        ).map { pagingData -> pagingData.pagingMap { it.toSearchResultUi() } }
+                }
+            }.cachedIn(viewModelScope)
 
     init {
         initialize()
@@ -45,14 +69,12 @@ class SearchViewModel(
                         selectedCategoryId = null,
                     )
                 }
-                loadCategoriesForSelectedPoet(reloadSearch = lastSubmittedQuery.isNotBlank())
+                loadCategoriesForSelectedPoet(reloadSearch = state.value.submittedQuery.isNotBlank())
             }
 
             is SearchAction.OnCategorySelected -> {
                 setState { copy(selectedCategoryId = action.categoryId) }
-                if (lastSubmittedQuery.isNotBlank()) {
-                    loadFirstPage(lastSubmittedQuery)
-                }
+                refreshSearchIfActive()
             }
 
             is SearchAction.OnResultClick -> {
@@ -60,8 +82,6 @@ class SearchViewModel(
                     sendEvent(SearchEvent.NavigateToPoemDetail(poemId = action.poemId))
                 }
             }
-
-            SearchAction.OnLoadMore -> loadNextPage()
         }
     }
 
@@ -124,8 +144,8 @@ class SearchViewModel(
                     isCategoryPickerEnabled = false,
                 )
             }
-            if (reloadSearch && lastSubmittedQuery.isNotBlank()) {
-                loadFirstPage(lastSubmittedQuery)
+            if (reloadSearch) {
+                refreshSearchIfActive()
             }
             return
         }
@@ -151,8 +171,8 @@ class SearchViewModel(
                             isCategoryPickerEnabled = true,
                         )
                     }
-                    if (reloadSearch && lastSubmittedQuery.isNotBlank()) {
-                        loadFirstPage(lastSubmittedQuery)
+                    if (reloadSearch) {
+                        refreshSearchIfActive()
                     }
                 }
         }
@@ -170,72 +190,24 @@ class SearchViewModel(
             }
             return
         }
-        loadFirstPage(query)
+        setState { copy(submittedQuery = query) }
+        updateSearchParams(query)
     }
 
-    private fun loadFirstPage(query: String) {
-        lastSubmittedQuery = query
-        currentOffset = 0
-        viewModelScope.launch {
-            setState {
-                copy(
-                    isSearching = true,
-                    isLoadingMore = false,
-                    showNoResults = false,
-                )
-            }
-
-            searchRepository
-                .searchVerses(
-                    query = query,
-                    poetId = state.value.selectedPoetId,
-                    categoryIds = resolveCategoryFilterIds(),
-                    offset = 0,
-                    limit = PAGE_SIZE,
-                ).onSuccess { page ->
-                    currentOffset = page.hits.size
-                    setState {
-                        copy(
-                            isSearching = false,
-                            submittedQuery = query,
-                            results = page.hits.map { it.toSearchResultUi() },
-                            hasMore = currentOffset < page.totalCount,
-                            showNoResults = page.hits.isEmpty(),
-                        )
-                    }
-                }.onFailure {
-                    setState { copy(isSearching = false) }
-                }
+    private fun refreshSearchIfActive() {
+        val query = state.value.submittedQuery
+        if (query.isNotBlank()) {
+            updateSearchParams(query)
         }
     }
 
-    private fun loadNextPage() {
-        val currentState = state.value
-        if (currentState.isLoadingMore || currentState.isSearching || !currentState.hasMore) return
-
-        viewModelScope.launch {
-            setState { copy(isLoadingMore = true) }
-
-            searchRepository
-                .searchVerses(
-                    query = lastSubmittedQuery,
-                    poetId = currentState.selectedPoetId,
-                    categoryIds = resolveCategoryFilterIds(),
-                    offset = currentOffset,
-                    limit = PAGE_SIZE,
-                ).onSuccess { page ->
-                    currentOffset += page.hits.size
-                    setState {
-                        copy(
-                            isLoadingMore = false,
-                            results = results + page.hits.map { it.toSearchResultUi() },
-                            hasMore = currentOffset < page.totalCount,
-                        )
-                    }
-                }.onFailure {
-                    setState { copy(isLoadingMore = false) }
-                }
-        }
+    private fun updateSearchParams(query: String) {
+        searchParams.value =
+            SearchParams(
+                query = query,
+                poetId = state.value.selectedPoetId,
+                categoryIds = resolveCategoryFilterIds(),
+            )
     }
 
     private fun resolveCategoryFilterIds(): Set<Int>? {
@@ -244,7 +216,6 @@ class SearchViewModel(
     }
 
     private companion object {
-        const val PAGE_SIZE = 20
         const val ALL_POETS_LABEL = "همه"
         const val ALL_CATEGORIES_LABEL = "همه"
     }

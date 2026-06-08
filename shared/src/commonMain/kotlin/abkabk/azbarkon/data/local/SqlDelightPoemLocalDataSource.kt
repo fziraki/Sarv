@@ -17,12 +17,19 @@ class SqlDelightPoemLocalDataSource(
     private val poemQueries: PoemQueries,
     private val verseQueries: VerseQueries,
 ) : PoemLocalDataSource {
-    override suspend fun getPoemsByCatId(catId: Int): Result<List<PoemSummary>, DataError.Local> =
+    override suspend fun getPoemsByCatIdPage(
+        catId: Int,
+        offset: Int,
+        limit: Int,
+    ): Result<List<PoemSummary>, DataError.Local> =
         try {
             Result.Success(
                 poemQueries
-                    .selectByCatId(cat_id = catId.toLong())
-                    .executeAsList()
+                    .selectByCatIdPaged(
+                        cat_id = catId.toLong(),
+                        limit = limit.toLong(),
+                        offset = offset.toLong(),
+                    ).executeAsList()
                     .map { it.toPoemSummary() },
             )
         } catch (_: Exception) {

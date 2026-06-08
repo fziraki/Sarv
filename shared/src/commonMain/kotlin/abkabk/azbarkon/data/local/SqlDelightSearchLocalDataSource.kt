@@ -6,7 +6,7 @@ import abkabk.azbarkon.data.mapper.toCatNode
 import abkabk.azbarkon.data.mapper.toSearchHit
 import abkabk.azbarkon.domain.datasource.SearchLocalDataSource
 import abkabk.azbarkon.domain.model.CatNode
-import abkabk.azbarkon.domain.model.SearchPage
+import abkabk.azbarkon.domain.model.SearchHit
 import com.azbarkon.db.CatQueries
 import com.azbarkon.db.SearchQueries
 
@@ -26,33 +26,22 @@ class SqlDelightSearchLocalDataSource(
             Result.Error(DataError.Local.UNKNOWN)
         }
 
-    override suspend fun searchVerses(
+    override suspend fun searchVersesPage(
         query: String,
         poetId: Int?,
         categoryIds: Set<Int>?,
         offset: Int,
         limit: Int,
-    ): Result<SearchPage, DataError.Local> =
+    ): Result<List<SearchHit>, DataError.Local> =
         try {
             val trimmedQuery = query.trim()
             if (trimmedQuery.isEmpty()) {
-                return Result.Success(SearchPage(hits = emptyList(), totalCount = 0))
+                return Result.Success(emptyList())
             }
 
             val filterPoet = if (poetId != null) 1L else 0L
             val filterCat = if (!categoryIds.isNullOrEmpty()) 1L else 0L
             val catIds = categoryIds?.map { it.toLong() } ?: listOf(0L)
-
-            val totalCount =
-                searchQueries
-                    .countSearchVerses(
-                        query = trimmedQuery,
-                        filter_poet = filterPoet,
-                        poet_id = poetId?.toLong() ?: 0L,
-                        filter_cat = filterCat,
-                        cat_ids = catIds,
-                    ).executeAsOne()
-                    .toInt()
 
             val hits =
                 searchQueries
@@ -67,7 +56,7 @@ class SqlDelightSearchLocalDataSource(
                     ).executeAsList()
                     .map { it.toSearchHit() }
 
-            Result.Success(SearchPage(hits = hits, totalCount = totalCount))
+            Result.Success(hits)
         } catch (_: Exception) {
             Result.Error(DataError.Local.UNKNOWN)
         }

@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -38,7 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +48,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.all
 import azbarkoncmp.shared.generated.resources.search
@@ -71,6 +73,7 @@ fun SearchRoot(
     viewModel: SearchViewModel = koinViewModel { parametersOf(viewModelArgs) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val searchResults = viewModel.searchResults.collectAsLazyPagingItems()
     val appState = LocalAzbarkonAppState.current
     var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
@@ -91,6 +94,7 @@ fun SearchRoot(
 
     SearchScreen(
         state = state,
+        searchResults = searchResults,
         onAction = viewModel::onAction,
         onBackClick = onBackClick,
     )
@@ -100,6 +104,7 @@ fun SearchRoot(
 @Composable
 fun SearchScreen(
     state: SearchState,
+    searchResults: LazyPagingItems<SearchResultUi>,
     onAction: (SearchAction) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -122,17 +127,15 @@ fun SearchScreen(
             ?.let { option -> if (option.id == null) allLabel else option.title }
             ?: allLabel
 
-    LaunchedEffect(listState, state.hasMore, state.isLoadingMore, state.results.size) {
-        snapshotFlow {
-            val layoutInfo = listState.layoutInfo
-            val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            lastVisibleIndex >= layoutInfo.totalItemsCount - 3
-        }.collect { nearEnd ->
-            if (nearEnd && state.hasMore && !state.isLoadingMore && state.results.isNotEmpty()) {
-                onAction(SearchAction.OnLoadMore)
-            }
-        }
-    }
+    val isRefreshing = searchResults.loadState.refresh is LoadState.Loading
+    val showNoResults =
+        searchResults.loadState.refresh is LoadState.NotLoading &&
+            searchResults.itemCount == 0 &&
+            state.submittedQuery.isNotBlank()
+    val showInitialLoading =
+        isRefreshing &&
+            searchResults.itemCount == 0 &&
+            state.submittedQuery.isNotBlank()
 
     Column(
         modifier =
@@ -182,7 +185,7 @@ fun SearchScreen(
         }
 
         when {
-            state.isSearching -> {
+            showInitialLoading -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
@@ -191,7 +194,7 @@ fun SearchScreen(
                 }
             }
 
-            state.showNoResults -> {
+            showNoResults -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
@@ -212,17 +215,19 @@ fun SearchScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     items(
-                        items = state.results,
-                        key = { result -> result.key },
-                    ) { result ->
-                        SearchResultRow(
-                            result = result,
-                            submittedQuery = state.submittedQuery,
-                            onClick = { onAction(SearchAction.OnResultClick(result.poemId)) },
-                        )
+                        count = searchResults.itemCount,
+                        key = searchResults.itemKey { result -> result.key },
+                    ) { index ->
+                        searchResults[index]?.let { result ->
+                            SearchResultRow(
+                                result = result,
+                                submittedQuery = state.submittedQuery,
+                                onClick = { onAction(SearchAction.OnResultClick(result.poemId)) },
+                            )
+                        }
                     }
 
-                    if (state.isLoadingMore) {
+                    if (searchResults.loadState.append is LoadState.Loading) {
                         item {
                             Box(
                                 modifier =
@@ -491,6 +496,7 @@ private fun SearchScreenPreview() {
             state =
                 SearchState(
                     query = "زلف",
+                    submittedQuery = "زلف",
                     poetOptions =
                         listOf(
                             SearchPoetOptionUi(id = null, name = "همه"),
@@ -504,18 +510,23 @@ private fun SearchScreenPreview() {
                     selectedPoetId = 2,
                     selectedCategoryId = 24,
                     isCategoryPickerEnabled = true,
-                    results =
-                        listOf(
-                            SearchResultUi(
-                                poemId = 1,
-                                poemTitle = "غزل شماره ۱",
-                                poetName = "حافظ",
-                                categoryName = "غزلیات",
-                                verseText = "الا یا ایها الساقی",
-                                key = "1-1",
+                ),
+            searchResults =
+                kotlinx.coroutines.flow
+                    .flowOf(
+                        androidx.paging.PagingData.from(
+                            listOf(
+                                SearchResultUi(
+                                    poemId = 1,
+                                    poemTitle = "غزل شماره ۱",
+                                    poetName = "حافظ",
+                                    categoryName = "غزلیات",
+                                    verseText = "الا یا ایها الساقی",
+                                    key = "1-1",
+                                ),
                             ),
                         ),
-                ),
+                    ).collectAsLazyPagingItems(),
             onAction = {},
             onBackClick = {},
         )

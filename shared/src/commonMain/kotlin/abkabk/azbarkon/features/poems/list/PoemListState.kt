@@ -1,14 +1,11 @@
 package abkabk.azbarkon.features.poems.list
 
-import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.UiText
 import androidx.compose.runtime.Stable
 
 @Stable
 data class PoemListState(
-    val screenState: UiScreenState = UiScreenState.Idle,
     val title: String = "",
-    val poems: List<PoemListItemUi> = emptyList(),
 )
 
 @Stable
@@ -18,10 +15,6 @@ data class PoemListItemUi(
 )
 
 sealed interface PoemListAction {
-    data object OnLoad : PoemListAction
-
-    data object OnRetryClick : PoemListAction
-
     data class OnPoemClick(
         val poemId: Int,
     ) : PoemListAction

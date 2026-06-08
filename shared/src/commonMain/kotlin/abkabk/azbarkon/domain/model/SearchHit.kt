@@ -8,8 +8,3 @@ data class SearchHit(
     val verseText: String,
     val verseOrder: Int,
 )
-
-data class SearchPage(
-    val hits: List<SearchHit>,
-    val totalCount: Int,
-)

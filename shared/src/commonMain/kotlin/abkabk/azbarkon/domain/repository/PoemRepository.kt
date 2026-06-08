@@ -5,9 +5,11 @@ import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.domain.model.MyPoemSummary
 import abkabk.azbarkon.domain.model.PoemDetail
 import abkabk.azbarkon.domain.model.PoemSummary
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
 
 interface PoemRepository {
-    suspend fun getPoemsByCatId(catId: Int): Result<List<PoemSummary>, DataError.Local>
+    fun poemsByCatId(catId: Int): Flow<PagingData<PoemSummary>>
 
     suspend fun getPoemsByIds(ids: Set<Int>): Result<List<MyPoemSummary>, DataError.Local>
 

@@ -8,11 +8,11 @@ import abkabk.azbarkon.domain.model.PoetWithCategories
 import abkabk.azbarkon.domain.model.SearchHit
 import abkabk.azbarkon.testing.FakePoetRepository
 import abkabk.azbarkon.testing.FakeSearchRepository
+import androidx.paging.testing.asSnapshot
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.search_empty_query
@@ -164,40 +164,21 @@ class SearchViewModelTest {
             viewModel.onAction(SearchAction.OnQueryChange("بیت"))
             viewModel.onAction(SearchAction.OnSearchSubmit)
 
-            val state = viewModel.state.value
-            assertThat(state.results).hasSize(1)
-            assertThat(state.submittedQuery).isEqualTo("بیت")
-            assertThat(state.showNoResults).isFalse()
-            assertThat(state.hasMore).isFalse()
+            val results = viewModel.searchResults.asSnapshot()
+            assertThat(results).hasSize(1)
+            assertThat(viewModel.state.value.submittedQuery).isEqualTo("بیت")
         }
 
     @Test
     fun `result click navigates to poem detail`() =
         runTest {
-            val searchRepository =
-                FakeSearchRepository().apply {
-                    searchPages =
-                        listOf(
-                            SearchHit(
-                                poemId = 42,
-                                poemTitle = "غزل ۱",
-                                poetName = "حافظ",
-                                categoryName = "غزلیات",
-                                verseText = "بیت",
-                                verseOrder = 1,
-                            ),
-                        )
-                }
             val viewModel =
                 SearchViewModel(
-                    searchRepository = searchRepository,
+                    searchRepository = FakeSearchRepository(),
                     poetRepository = FakePoetRepository().apply { poets = listOf(samplePoet(id = 2)) },
                     initialPoetId = null,
                     initialCatId = null,
                 )
-
-            viewModel.onAction(SearchAction.OnQueryChange("بیت"))
-            viewModel.onAction(SearchAction.OnSearchSubmit)
 
             viewModel.events.test {
                 viewModel.onAction(SearchAction.OnResultClick(42))
@@ -209,7 +190,7 @@ class SearchViewModelTest {
         }
 
     @Test
-    fun `pagination appends results`() =
+    fun `pagination loads all pages`() =
         runTest {
             val searchRepository =
                 FakeSearchRepository().apply {
@@ -235,11 +216,12 @@ class SearchViewModelTest {
 
             viewModel.onAction(SearchAction.OnQueryChange("بیت"))
             viewModel.onAction(SearchAction.OnSearchSubmit)
-            viewModel.onAction(SearchAction.OnLoadMore)
 
-            val state = viewModel.state.value
-            assertThat(state.results).hasSize(25)
-            assertThat(state.hasMore).isFalse()
+            val results =
+                viewModel.searchResults.asSnapshot {
+                    scrollTo(index = 24)
+                }
+            assertThat(results).hasSize(25)
         }
 
     private fun samplePoet(

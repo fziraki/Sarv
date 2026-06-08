@@ -83,6 +83,8 @@ kotlin {
 
             implementation(libs.kamel.image)
             implementation(libs.sqldelight.runtime)
+            implementation(libs.paging.common)
+            implementation(libs.paging.compose)
         }
         val androidHostTest by getting {
             dependencies {
@@ -91,6 +93,7 @@ kotlin {
                 implementation(libs.assertk)
                 implementation(libs.turbine)
                 implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.paging.testing)
             }
         }
         commonTest.dependencies {
@@ -114,3 +117,4 @@ sqldelight {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
+

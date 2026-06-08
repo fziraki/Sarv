@@ -12,11 +12,6 @@ data class SearchState(
     val selectedPoetId: Int? = null,
     val selectedCategoryId: Int? = null,
     val isCategoryPickerEnabled: Boolean = false,
-    val results: List<SearchResultUi> = emptyList(),
-    val isSearching: Boolean = false,
-    val isLoadingMore: Boolean = false,
-    val hasMore: Boolean = false,
-    val showNoResults: Boolean = false,
     val isInitializing: Boolean = true,
 )
 
@@ -38,8 +33,6 @@ sealed interface SearchAction {
     data class OnResultClick(
         val poemId: Int,
     ) : SearchAction
-
-    data object OnLoadMore : SearchAction
 }
 
 sealed interface SearchEvent {
@@ -51,3 +44,9 @@ sealed interface SearchEvent {
         val message: UiText,
     ) : SearchEvent
 }
+
+internal data class SearchParams(
+    val query: String,
+    val poetId: Int?,
+    val categoryIds: Set<Int>?,
+)
