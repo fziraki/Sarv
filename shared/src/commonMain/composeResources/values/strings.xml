@@ -81,6 +81,7 @@
     <string name="poets_works_section">آثار</string>
     <string name="poets_works_summary_other">%1$s و %2$d اثر دیگر</string>
     <string name="cd_expand_category">باز کردن دسته</string>
+    <string name="poet_bio_read_more">بیشتر</string>
 
     <string name="poem_copy">کپی</string>
     <string name="poem_share">اشتراک</string>
