@@ -4,5 +4,7 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSUserNotificationUsageDescription</key>
+	<string>برای ارسال بیت روزانه به ساعت ۸ صبح به اجازه اعلان نیاز داریم.</string>
 </dict>
 </plist>

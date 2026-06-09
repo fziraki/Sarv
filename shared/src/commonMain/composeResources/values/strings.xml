@@ -81,6 +81,11 @@
     <string name="poets_works_section">آثار</string>
     <string name="poets_works_summary_other">%1$s و %2$d اثر دیگر</string>
     <string name="cd_expand_category">باز کردن دسته</string>
+
+    <string name="profile_daily_beyt_title">بیت روزانه</string>
+    <string name="profile_daily_beyt_subtitle">هر روز ساعت ۸ صبح یک بیت تصادفی</string>
+    <string name="daily_beyt_notification_title">بیت امروز</string>
+    <string name="daily_beyt_notification_channel_name">بیت روزانه</string>
     <string name="poet_bio_read_more">بیشتر</string>
 
     <string name="poem_copy">کپی</string>

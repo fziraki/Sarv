@@ -1,11 +1,18 @@
 package abkabk.azbarkon.core.di
 
 import abkabk.azbarkon.core.local.DatabaseDriverFactory
+import abkabk.azbarkon.core.notifications.DailyBeytNotificationPresenter
+import abkabk.azbarkon.core.notifications.DailyBeytWorker
 import abkabk.azbarkon.core.platform.ClipboardManager
 import abkabk.azbarkon.core.platform.KeyValueStore
 import abkabk.azbarkon.core.platform.ShareManager
+import abkabk.azbarkon.data.platform.AndroidDailyBeytNotificationScheduler
+import abkabk.azbarkon.data.platform.AndroidNotificationPermissionGateway
+import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
+import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
 import com.azbarkon.db.AzbarKonDatabase
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.dsl.module
 
 val androidPlatformModule =
@@ -33,4 +40,27 @@ val androidPlatformModule =
         single {
             ShareManager(context = androidContext())
         }
+
+        single<DailyBeytNotificationScheduler> {
+            AndroidDailyBeytNotificationScheduler(
+                context = androidContext(),
+                userPreferencesRepository = get(),
+                dailyBeytRepository = get(),
+                notificationPresenter = get(),
+            )
+        }
+
+        single<NotificationPermissionGateway> {
+            AndroidNotificationPermissionGateway(
+                context = androidContext(),
+            )
+        }
+
+        single {
+            DailyBeytNotificationPresenter(
+                context = androidContext(),
+            )
+        }
+
+        workerOf(::DailyBeytWorker)
     }

@@ -1,15 +1,31 @@
 package abkabk.azbarkon
 
 import abkabk.azbarkon.core.di.initKoin
+import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import android.app.Application
+import androidx.work.Configuration
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import org.koin.android.ext.android.inject
+import org.koin.androidx.workmanager.factory.KoinWorkerFactory
 
-class AzbarkonApp : Application() {
+class AzbarkonApp :
+    Application(),
+    Configuration.Provider {
+    private val dailyBeytNotificationScheduler: DailyBeytNotificationScheduler by inject()
+
     override fun onCreate() {
         super.onCreate()
 
         initKoin(this)
         Napier.base(DebugAntilog())
+        dailyBeytNotificationScheduler.rescheduleIfEnabled()
     }
+
+    override val workManagerConfiguration: Configuration
+        get() =
+            Configuration
+                .Builder()
+                .setWorkerFactory(KoinWorkerFactory())
+                .build()
 }

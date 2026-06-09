@@ -5,6 +5,7 @@ import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.asString
 import abkabk.azbarkon.domain.model.Badge
+import abkabk.azbarkon.features.profile.notifications.rememberDailyBeytNotificationPermissionRequester
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,6 +25,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -45,7 +47,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.palette
+import azbarkoncmp.shared.generated.resources.profile_daily_beyt_subtitle
+import azbarkoncmp.shared.generated.resources.profile_daily_beyt_title
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -55,11 +60,19 @@ fun ProfileRoot(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val appState = LocalAzbarkonAppState.current
     var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.ui_base.UiText?>(null) }
+    val requestNotificationPermission =
+        rememberDailyBeytNotificationPermissionRequester { granted ->
+            viewModel.onAction(ProfileAction.OnNotificationPermissionResult(granted))
+        }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is ProfileEvent.ShowSnackbar -> {
                 snackbarMessage = event.message
+            }
+
+            ProfileEvent.RequestNotificationPermission -> {
+                requestNotificationPermission()
             }
         }
     }
@@ -112,6 +125,59 @@ fun ProfileScreen(
         item {
             ProfileBadges(state.userInfo?.badges ?: emptyList())
         }
+
+        item {
+            ProfileDailyBeytSetting(
+                enabled = state.isDailyBeytNotificationEnabled,
+                onToggle = { enabled ->
+                    onAction(ProfileAction.OnDailyBeytNotificationToggle(enabled))
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProfileDailyBeytSetting(
+    enabled: Boolean,
+    onToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    shape = RoundedCornerShape(12.dp),
+                ).padding(horizontal = 16.dp, vertical = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = stringResource(Res.string.profile_daily_beyt_title),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.End,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Text(
+                text = stringResource(Res.string.profile_daily_beyt_subtitle),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.End,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
+        Switch(
+            checked = enabled,
+            onCheckedChange = onToggle,
+        )
     }
 }
 
