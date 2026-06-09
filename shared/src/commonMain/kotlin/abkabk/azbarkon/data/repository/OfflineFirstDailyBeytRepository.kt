@@ -10,8 +10,11 @@ import abkabk.azbarkon.domain.repository.DailyBeytRepository
 class OfflineFirstDailyBeytRepository(
     private val localDataSource: DailyBeytLocalDataSource,
 ) : DailyBeytRepository {
-    override suspend fun getRandomDistich(seed: Long): Result<RandomDistich, DataError.Local> =
-        localDataSource.getRandomDistich(seed)
+    override suspend fun getRandomDistich(
+        seed: Long,
+        poetId: Int,
+    ): Result<RandomDistich, DataError.Local> =
+        localDataSource.getRandomDistich(seed, poetId)
 
     override suspend fun getTodayDistich(): Result<RandomDistich, DataError.Local> =
         localDataSource.getRandomDistich(currentLocalDateSeed())

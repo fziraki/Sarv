@@ -6,4 +6,7 @@
     <color name="notification_poet">#5C665F</color>
     <color name="notification_accent">#3E5C49</color>
     <color name="notification_timestamp">#8A938C</color>
+    <color name="widget_background">#294B41</color>
+    <color name="widget_on_background">#FFFFFF</color>
+    <color name="widget_surface">#EDE4D3</color>
 </resources>

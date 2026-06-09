@@ -3,6 +3,9 @@ package abkabk.azbarkon.core.di
 import abkabk.azbarkon.core.local.DatabaseDriverFactory
 import abkabk.azbarkon.core.notifications.DailyBeytNotificationPresenter
 import abkabk.azbarkon.core.notifications.DailyBeytWorker
+import abkabk.azbarkon.core.widget.RandomDistichWidgetPreferences
+import abkabk.azbarkon.core.widget.RandomDistichWidgetRefresher
+import abkabk.azbarkon.core.widget.RandomDistichWidgetUpdater
 import abkabk.azbarkon.core.platform.ClipboardManager
 import abkabk.azbarkon.core.platform.KeyValueStore
 import abkabk.azbarkon.core.platform.ShareManager
@@ -60,6 +63,20 @@ val androidPlatformModule =
             DailyBeytNotificationPresenter(
                 context = androidContext(),
             )
+        }
+
+        single {
+            RandomDistichWidgetPreferences(
+                context = androidContext(),
+            )
+        }
+
+        single {
+            RandomDistichWidgetUpdater()
+        }
+
+        single {
+            RandomDistichWidgetRefresher()
         }
 
         workerOf(::DailyBeytWorker)

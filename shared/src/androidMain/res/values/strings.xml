@@ -5,4 +5,11 @@
     <string name="daily_beyt_notification_channel_description">اعلان بیت تصادفی هر روز ساعت ۸ صبح</string>
     <string name="daily_beyt_notification_app_name">ازبرکن</string>
     <string name="daily_beyt_notification_now">الان</string>
+    <string name="widget_random_distich_title">بیت تصادفی</string>
+    <string name="widget_random_distich_description">نمایش بیت تصادفی از شاعر دلخواه</string>
+    <string name="widget_random_distich_config_title">انتخاب شاعر</string>
+    <string name="widget_random_distich_all_poets">همه</string>
+    <string name="widget_random_distich_loading">در حال بارگذاری…</string>
+    <string name="widget_random_distich_error">بیت یافت نشد</string>
+    <string name="widget_refresh_content_description">بیت جدید</string>
 </resources>

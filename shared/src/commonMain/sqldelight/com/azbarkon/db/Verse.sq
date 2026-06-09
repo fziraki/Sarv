@@ -47,4 +47,41 @@ WHERE v1.position = 0
   AND poet.id NOT IN (0, 1, 36, 60, 68)
   AND cat.text != 'رباعیات'
 ORDER BY v1.poem_id, v1.vorder
-LIMIT 1 OFFSET ?;
+LIMIT 1 OFFSET :offset;
+
+selectRandomDistichCountByPoet:
+SELECT COUNT(*)
+FROM verse v1
+JOIN verse v2
+  ON v2.poem_id = v1.poem_id AND v2.vorder = v1.vorder + 1
+JOIN poem ON poem.id = v1.poem_id
+JOIN cat ON cat.id = poem.cat_id
+JOIN poet ON poet.id = cat.poet_id
+WHERE v1.position = 0
+  AND length(v1.text) <= 50
+  AND length(v2.text) <= 50
+  AND poet.id NOT IN (0, 1, 36, 60, 68)
+  AND cat.text != 'رباعیات'
+  AND (:filter_poet = 0 OR poet.id = :poet_id);
+
+selectRandomDistichAtOffsetByPoet:
+SELECT
+  v1.poem_id,
+  v1.vorder,
+  v1.text AS right_text,
+  v2.text AS left_text,
+  poet.name AS poet_name
+FROM verse v1
+JOIN verse v2
+  ON v2.poem_id = v1.poem_id AND v2.vorder = v1.vorder + 1
+JOIN poem ON poem.id = v1.poem_id
+JOIN cat ON cat.id = poem.cat_id
+JOIN poet ON poet.id = cat.poet_id
+WHERE v1.position = 0
+  AND length(v1.text) <= 50
+  AND length(v2.text) <= 50
+  AND poet.id NOT IN (0, 1, 36, 60, 68)
+  AND cat.text != 'رباعیات'
+  AND (:filter_poet = 0 OR poet.id = :poet_id)
+ORDER BY v1.poem_id, v1.vorder
+LIMIT 1 OFFSET :offset;
