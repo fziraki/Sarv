@@ -2,6 +2,7 @@ package abkabk.azbarkon.core.notifications
 
 import abkabk.azbarkon.AzbarkonApp
 import abkabk.azbarkon.core.di.initKoin
+import abkabk.azbarkon.core.widget.RandomDistichWidgetRefresher
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -22,5 +23,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
 
         val scheduler = GlobalContext.get().get<DailyBeytNotificationScheduler>()
         scheduler.rescheduleIfEnabled()
+
+        GlobalContext.get().get<RandomDistichWidgetRefresher>().updateAllWidgetsAsync(context.applicationContext)
     }
 }

@@ -7,8 +7,8 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App() {
+fun App(initialPoemId: Int? = null) {
     AzbarkonTheme {
-        AzbarkonNavigation()
+        AzbarkonNavigation(initialPoemId = initialPoemId)
     }
 }

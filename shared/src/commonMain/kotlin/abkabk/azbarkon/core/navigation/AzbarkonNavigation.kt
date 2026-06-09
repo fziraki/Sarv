@@ -38,6 +38,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,9 +68,17 @@ private fun NavDestination?.isRootTabDestination(): Boolean =
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AzbarkonNavigation() {
+fun AzbarkonNavigation(initialPoemId: Int? = null) {
     val navController = rememberNavController()
     val appState = rememberAzbarkonAppState()
+
+    LaunchedEffect(initialPoemId) {
+        initialPoemId?.let { poemId ->
+            navController.navigate(PoemDetailRoute(poemId = poemId)) {
+                launchSingleTop = true
+            }
+        }
+    }
 
     val items =
         listOf(

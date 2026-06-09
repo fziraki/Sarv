@@ -10,17 +10,30 @@ import com.azbarkon.db.VerseQueries
 class SqlDelightDailyBeytLocalDataSource(
     private val verseQueries: VerseQueries,
 ) : DailyBeytLocalDataSource {
-    override suspend fun getRandomDistich(seed: Long): Result<RandomDistich, DataError.Local> =
+    override suspend fun getRandomDistich(
+        seed: Long,
+        poetId: Int,
+    ): Result<RandomDistich, DataError.Local> =
         try {
-            val count = verseQueries.selectRandomDistichCount().executeAsOne()
+            val filterPoet = if (poetId == 0) 0L else 1L
+            val poetIdParam = poetId.toLong()
+            val count =
+                verseQueries
+                    .selectRandomDistichCountByPoet(
+                        filter_poet = filterPoet,
+                        poet_id = poetIdParam,
+                    ).executeAsOne()
             if (count == 0L) {
                 Result.Error(DataError.Local.UNKNOWN)
             } else {
                 val offset = (seed and Long.MAX_VALUE) % count
                 val distich =
                     verseQueries
-                        .selectRandomDistichAtOffset(offset)
-                        .executeAsOneOrNull()
+                        .selectRandomDistichAtOffsetByPoet(
+                            filter_poet = filterPoet,
+                            poet_id = poetIdParam,
+                            offset = offset,
+                        ).executeAsOneOrNull()
                         ?.toRandomDistich()
                 if (distich == null) {
                     Result.Error(DataError.Local.UNKNOWN)
