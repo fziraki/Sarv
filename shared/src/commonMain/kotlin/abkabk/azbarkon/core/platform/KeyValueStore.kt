@@ -9,4 +9,14 @@ expect class KeyValueStore {
         key: String,
         values: Set<Int>,
     )
+
+    fun getBoolean(
+        key: String,
+        default: Boolean = false,
+    ): Boolean
+
+    fun putBoolean(
+        key: String,
+        value: Boolean,
+    )
 }

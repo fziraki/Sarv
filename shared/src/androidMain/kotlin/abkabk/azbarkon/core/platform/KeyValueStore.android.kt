@@ -28,6 +28,20 @@ actual class KeyValueStore(
             }
     }
 
+    actual fun getBoolean(
+        key: String,
+        default: Boolean,
+    ): Boolean = preferences.getBoolean(key, default)
+
+    actual fun putBoolean(
+        key: String,
+        value: Boolean,
+    ) {
+        preferences.edit {
+            putBoolean(key, value)
+        }
+    }
+
     private companion object {
         const val PREFS_NAME = "azbarkon_prefs"
     }

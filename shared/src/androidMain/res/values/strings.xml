@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="daily_beyt_notification_title">بیت امروز</string>
+    <string name="daily_beyt_notification_channel_name">بیت روزانه</string>
+    <string name="daily_beyt_notification_channel_description">اعلان بیت تصادفی هر روز ساعت ۸ صبح</string>
+    <string name="daily_beyt_notification_app_name">ازبرکن</string>
+    <string name="daily_beyt_notification_now">الان</string>
+</resources>
