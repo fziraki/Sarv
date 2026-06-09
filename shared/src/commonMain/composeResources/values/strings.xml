@@ -12,6 +12,13 @@
 
     <string name="my_poems">شعرهای من</string>
     <string name="search">جستجو</string>
+    <string name="search_empty_query">عبارتی وارد نکرده‌اید</string>
+    <string name="search_no_results">نتیجه‌ای یافت نشد</string>
+    <string name="search_choose_poet">انتخاب شاعر</string>
+    <string name="search_choose_category">انتخاب دسته</string>
+    <string name="search_not_found_in_poem">این عبارت در این شعر یافت نشد</string>
+    <string name="find_in_poem_hint">جستجو در متن شعر</string>
+    <string name="cd_close_find_bar">بستن نوار جستجو</string>
     <string name="pic_negar">تصویر نگار</string>
     <string name="review">مرور شعر</string>
 
@@ -64,6 +71,7 @@
     <string name="error_not_found">مورد یافت نشد</string>
     <string name="error_disk_full">فضای ذخیره‌سازی کافی نیست</string>
     <string name="error_unknown">خطای ناشناخته</string>
+    <string name="list_load_error">خطا در بارگذاری. برای تلاش مجدد لمس کنید.</string>
     <string name="cd_back">بازگشت</string>
     <string name="cd_search">رفتن به صفحه جستجو</string>
 
@@ -73,6 +81,7 @@
     <string name="poets_works_section">آثار</string>
     <string name="poets_works_summary_other">%1$s و %2$d اثر دیگر</string>
     <string name="cd_expand_category">باز کردن دسته</string>
+    <string name="poet_bio_read_more">بیشتر</string>
 
     <string name="poem_copy">کپی</string>
     <string name="poem_share">اشتراک</string>

@@ -86,6 +86,7 @@ fun HomeRoot(
     onNavigateToPoetsList: () -> Unit,
     onNavigateToPoetDetail: (Int) -> Unit,
     onNavigateToMyPoems: () -> Unit,
+    onNavigateToSearch: () -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -103,6 +104,8 @@ fun HomeRoot(
             is HomeEvent.NavigateToPoetDetail -> onNavigateToPoetDetail(event.poetId)
 
             HomeEvent.NavigateToMyPoems -> onNavigateToMyPoems()
+
+            HomeEvent.NavigateToSearch -> onNavigateToSearch()
         }
     }
 
@@ -151,6 +154,7 @@ fun HomeScreen(
         item {
             QuickAccessMenu(
                 onMyPoemsClick = { onAction(HomeAction.OnMyPoemsClick) },
+                onSearchClick = { onAction(HomeAction.OnSearchClick) },
             )
         }
         item {
@@ -268,6 +272,7 @@ fun PoetItem(
 @Composable
 fun QuickAccessMenu(
     onMyPoemsClick: () -> Unit,
+    onSearchClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
@@ -285,8 +290,7 @@ fun QuickAccessMenu(
             modifier = Modifier.weight(1f),
             icon = Res.drawable.search,
             title = Res.string.search,
-            onItemClick = {
-            },
+            onItemClick = onSearchClick,
         )
 
         QuickAccessItem(

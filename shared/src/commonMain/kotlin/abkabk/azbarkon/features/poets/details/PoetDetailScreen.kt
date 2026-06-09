@@ -12,6 +12,7 @@ import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.chat_bubble
+import azbarkoncmp.shared.generated.resources.poet_bio_read_more
 import azbarkoncmp.shared.generated.resources.poets_works_section
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -212,14 +214,48 @@ private fun PoetDetailHero(
         }
 
         if (state.bio.isNotBlank()) {
-            Text(
+            PoetBioText(
+                bio = state.bio,
                 modifier = Modifier.fillMaxWidth(),
-                text = state.bio,
+            )
+        }
+    }
+}
+
+@Composable
+private fun PoetBioText(
+    bio: String,
+    modifier: Modifier = Modifier,
+) {
+    var isExpanded by remember { mutableStateOf(false) }
+    var isOverflowing by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = bio,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            maxLines = if (isExpanded) Int.MAX_VALUE else 4,
+            overflow = TextOverflow.Ellipsis,
+            onTextLayout = { layoutResult ->
+                if (!isExpanded) {
+                    isOverflowing = layoutResult.hasVisualOverflow
+                }
+            },
+        )
+
+        if (isOverflowing && !isExpanded) {
+            Text(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { isExpanded = true },
+                text = stringResource(Res.string.poet_bio_read_more),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.primaryContainer,
                 textAlign = TextAlign.Center,
-                maxLines = 4,
-                overflow = TextOverflow.Ellipsis,
             )
         }
     }
@@ -233,7 +269,12 @@ private fun PoetDetailScreenPreview() {
             state =
                 PoetDetailState(
                     name = "حافظ شیرازی",
-                    bio = "غزل‌سرای بزرگ ایران",
+                    bio =
+                        "خواجه شمس‌الدین محمد بن بهاءالدین حافظ شیرازی، " +
+                            "شاعر بزرگ ایرانی و غزل‌سرای نامدار سدهٔ هفتم هجری است. " +
+                            "دیوان اشعار او از مهم‌ترین آثار ادبی فارسی به‌شمار می‌رود " +
+                            "و بسیاری از اشعارش در میان مردم ایران و جهان فارسی‌زبان " +
+                            "شناخته‌شده و مورد استفاده قرار می‌گیرد.",
                     categories =
                         listOf(
                             PoetCategoryRowUi(

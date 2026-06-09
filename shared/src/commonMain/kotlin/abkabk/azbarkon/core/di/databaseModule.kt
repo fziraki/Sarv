@@ -4,6 +4,7 @@ import com.azbarkon.db.AzbarKonDatabase
 import com.azbarkon.db.CatQueries
 import com.azbarkon.db.PoemQueries
 import com.azbarkon.db.PoetQueries
+import com.azbarkon.db.SearchQueries
 import com.azbarkon.db.VerseQueries
 import org.koin.dsl.module
 
@@ -24,5 +25,9 @@ val databaseModule =
 
         single<VerseQueries> {
             get<AzbarKonDatabase>().verseQueries
+        }
+
+        single<SearchQueries> {
+            get<AzbarKonDatabase>().searchQueries
         }
     }

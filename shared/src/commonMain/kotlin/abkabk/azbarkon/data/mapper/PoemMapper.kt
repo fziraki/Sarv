@@ -11,6 +11,12 @@ fun com.azbarkon.db.SelectByCatId.toPoemSummary(): PoemSummary =
         title = title,
     )
 
+fun com.azbarkon.db.SelectByCatIdPaged.toPoemSummary(): PoemSummary =
+    PoemSummary(
+        id = id.toInt(),
+        title = title,
+    )
+
 fun com.azbarkon.db.SelectByIds.toMyPoemSummary(): MyPoemSummary =
     MyPoemSummary(
         id = id.toInt(),

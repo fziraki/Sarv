@@ -17,3 +17,8 @@ SELECT id, poet_id, text, parent_id, url
 FROM cat
 WHERE poet_id = ?
 ORDER BY id;
+
+selectById:
+SELECT id, poet_id, text, parent_id, url
+FROM cat
+WHERE id = ?;

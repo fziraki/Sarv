@@ -7,7 +7,11 @@ import abkabk.azbarkon.domain.model.PoemDetail
 import abkabk.azbarkon.domain.model.PoemSummary
 
 interface PoemLocalDataSource {
-    suspend fun getPoemsByCatId(catId: Int): Result<List<PoemSummary>, DataError.Local>
+    suspend fun getPoemsByCatIdPage(
+        catId: Int,
+        offset: Int,
+        limit: Int,
+    ): Result<List<PoemSummary>, DataError.Local>
 
     suspend fun getPoemsByIds(ids: Set<Int>): Result<List<MyPoemSummary>, DataError.Local>
 
