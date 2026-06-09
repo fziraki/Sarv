@@ -11,10 +11,12 @@ val sharedModules: List<Module> =
         dailyBeytDataModule,
         searchDataModule,
         savedPoemDataModule,
+        chatDataModule,
         userDataModule,
         userPreferencesDataModule,
         homePresentationModule,
         profilePresentationModule,
         poetsPresentationModule,
         searchPresentationModule,
+        chatPresentationModule,
     )

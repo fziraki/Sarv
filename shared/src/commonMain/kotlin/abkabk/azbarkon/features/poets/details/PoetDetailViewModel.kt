@@ -42,6 +42,12 @@ class PoetDetailViewModel(
                     )
                 }
             }
+
+            PoetDetailAction.OnChatClick -> {
+                viewModelScope.launch {
+                    sendEvent(PoetDetailEvent.NavigateToChat(poetId))
+                }
+            }
         }
     }
 

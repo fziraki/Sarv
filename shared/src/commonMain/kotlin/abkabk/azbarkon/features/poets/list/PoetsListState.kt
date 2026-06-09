@@ -30,10 +30,18 @@ sealed interface PoetsListAction {
     data object OnFeaturedPoetClick : PoetsListAction
 
     data object OnScreenEnter : PoetsListAction
+
+    data class OnChatClick(
+        val poetId: Int,
+    ) : PoetsListAction
 }
 
 sealed interface PoetsListEvent {
     data class NavigateToPoetDetail(
+        val poetId: Int,
+    ) : PoetsListEvent
+
+    data class NavigateToChat(
         val poetId: Int,
     ) : PoetsListEvent
 

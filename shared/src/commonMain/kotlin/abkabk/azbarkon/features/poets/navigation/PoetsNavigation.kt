@@ -1,5 +1,6 @@
 package abkabk.azbarkon.features.poets.navigation
 
+import abkabk.azbarkon.features.chat.ChatRoot
 import abkabk.azbarkon.features.poems.details.PoemDetailRoot
 import abkabk.azbarkon.features.poems.list.PoemListRoot
 import abkabk.azbarkon.features.poets.details.PoetDetailRoot
@@ -17,7 +18,10 @@ fun NavGraphBuilder.poetsGraph(
         PoetsListRoot(
             onNavigateToPoetDetail = { poetId ->
                 navController.navigate(PoetDetailRoute(poetId))
-            }
+            },
+            onNavigateToChat = { poetId ->
+                navController.navigate(ChatRoute(poetId))
+            },
         )
     }
 
@@ -31,7 +35,10 @@ fun NavGraphBuilder.poetsGraph(
             },
             onNavigateToSearch = {
                 navController.navigateToSearch(poetId = route.poetId)
-            }
+            },
+            onNavigateToChat = {
+                navController.navigate(ChatRoute(route.poetId))
+            },
         )
     }
 
@@ -54,6 +61,14 @@ fun NavGraphBuilder.poetsGraph(
         val route = backStackEntry.toRoute<PoemDetailRoute>()
         PoemDetailRoot(
             poemId = route.poemId,
+            onBackClick = navController::navigateUp,
+        )
+    }
+
+    composable<ChatRoute> { backStackEntry ->
+        val route = backStackEntry.toRoute<ChatRoute>()
+        ChatRoot(
+            poetId = route.poetId,
             onBackClick = navController::navigateUp,
         )
     }

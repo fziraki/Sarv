@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +44,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.chat_bubble
+import azbarkoncmp.shared.generated.resources.cd_chat
 import azbarkoncmp.shared.generated.resources.poets_filter_placeholder
 import azbarkoncmp.shared.generated.resources.poets_view_works
 import org.jetbrains.compose.resources.painterResource
@@ -52,6 +54,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun PoetsListRoot(
     onNavigateToPoetDetail: (Int) -> Unit,
+    onNavigateToChat: (Int) -> Unit,
     viewModel: PoetsListViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -61,6 +64,7 @@ fun PoetsListRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is PoetsListEvent.NavigateToPoetDetail -> onNavigateToPoetDetail(event.poetId)
+            is PoetsListEvent.NavigateToChat -> onNavigateToChat(event.poetId)
             is PoetsListEvent.ShowSnackbar -> snackbarMessage = event.message
         }
     }
@@ -119,6 +123,7 @@ fun PoetsListScreen(
                     FeaturedPoetCard(
                         poet = featured,
                         onClick = { onAction(PoetsListAction.OnFeaturedPoetClick) },
+                        onChatClick = { onAction(PoetsListAction.OnChatClick(featured.id)) },
                         modifier = Modifier.padding(horizontal = 16.dp),
                     )
                 }
@@ -131,6 +136,7 @@ fun PoetsListScreen(
                 PoetListRow(
                     poet = poet,
                     onClick = { onAction(PoetsListAction.OnPoetClick(poet.id)) },
+                    onChatClick = { onAction(PoetsListAction.OnChatClick(poet.id)) },
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )
             }
@@ -142,6 +148,7 @@ fun PoetsListScreen(
 private fun FeaturedPoetCard(
     poet: FeaturedPoetUi,
     onClick: () -> Unit,
+    onChatClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -150,13 +157,16 @@ private fun FeaturedPoetCard(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
                 .background(MaterialTheme.colorScheme.primaryContainer)
-                .clickable(onClick = onClick)
                 .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable(onClick = onClick),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -202,8 +212,13 @@ private fun FeaturedPoetCard(
 
             Icon(
                 painter = painterResource(Res.drawable.chat_bubble),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.surface
+                contentDescription = stringResource(Res.string.cd_chat),
+                tint = MaterialTheme.colorScheme.surface,
+                modifier =
+                    Modifier
+                        .clip(CircleShape)
+                        .clickable(onClick = onChatClick)
+                        .padding(4.dp),
             )
 
             AzbarkonSecondaryButton(
@@ -220,6 +235,7 @@ private fun FeaturedPoetCard(
 private fun PoetListRow(
     poet: PoetListItemUi,
     onClick: () -> Unit,
+    onChatClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -270,8 +286,13 @@ private fun PoetListRow(
 
         Icon(
             painter = painterResource(Res.drawable.chat_bubble),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
+            contentDescription = stringResource(Res.string.cd_chat),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier =
+                Modifier
+                    .clip(CircleShape)
+                    .clickable(onClick = onChatClick)
+                    .padding(4.dp),
         )
     }
 }
