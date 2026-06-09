@@ -41,7 +41,7 @@ class AndroidDailyBeytNotificationScheduler(
                 withContext(Dispatchers.IO) {
                     dailyBeytRepository.getTodayDistich()
                 }.onSuccess { distich ->
-                    notificationPresenter.showPreview(distich)
+                    notificationPresenter.show(distich)
                 }
             }
         }

@@ -15,30 +15,6 @@ import androidx.core.content.ContextCompat
 class DailyBeytNotificationPresenter(
     private val context: Context,
 ) {
-    fun showPreview(distich: RandomDistich) {
-        if (!canPostNotifications()) return
-
-        DailyBeytNotificationChannels.ensureCreated(context)
-
-        val notification =
-            NotificationCompat
-                .Builder(context, DailyBeytNotificationPayload.CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle(context.getString(R.string.daily_beyt_notification_title))
-                .setContentText(distichBody(distich))
-                .setSubText(distich.poetName)
-                .setContentIntent(contentIntent())
-                .setAutoCancel(true)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .build()
-
-        NotificationManagerCompat.from(context).notify(
-            DailyBeytNotificationPayload.PREVIEW_NOTIFICATION_ID,
-            notification,
-        )
-    }
-
     fun show(distich: RandomDistich) {
         if (!canPostNotifications()) return
 
