@@ -48,8 +48,6 @@ object HttpClientFactory {
                 provider = authProvider
             }
 
-            install(CachePlugin)
-
             defaultRequest {
                 url(Constants.BASE_URL)
                 header("Content-Type", "application/json")

@@ -15,6 +15,8 @@ import abkabk.azbarkon.features.profile.navigation.ProfileRoute
 import abkabk.azbarkon.features.profile.navigation.profileGraph
 import abkabk.azbarkon.features.search.navigation.navigateToSearch
 import abkabk.azbarkon.features.search.navigation.searchGraph
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -232,6 +234,10 @@ fun AzbarkonNavigation(initialPoemId: Int? = null) {
                 navController = navController,
                 startDestination = HomeRoute,
                 modifier = Modifier.padding(padding),
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = { ExitTransition.None },
             ) {
                 homeGraph(
                     onNavigateToPoetsList = {
