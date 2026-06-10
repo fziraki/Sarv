@@ -1,5 +1,6 @@
 package abkabk.azbarkon.ui.components
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -16,5 +17,8 @@ fun NetworkImage(
         resource = asyncPainterResource(imageUrl),
         contentDescription = null,
         contentScale = ContentScale.Crop,
+        onLoading = {
+            ShimmerPlaceholder(modifier = Modifier.fillMaxSize())
+        },
     )
 }

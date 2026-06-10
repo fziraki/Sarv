@@ -44,6 +44,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.chat_bubble
+import azbarkoncmp.shared.generated.resources.chat_with_poet
+import azbarkoncmp.shared.generated.resources.cd_chat
 import azbarkoncmp.shared.generated.resources.poet_bio_read_more
 import azbarkoncmp.shared.generated.resources.poets_works_section
 import org.jetbrains.compose.resources.painterResource
@@ -57,6 +59,7 @@ fun PoetDetailRoot(
     onBackClick: () -> Unit,
     onNavigateToPoemList: (catId: Int, title: String) -> Unit,
     onNavigateToSearch: () -> Unit,
+    onNavigateToChat: () -> Unit,
     viewModel: PoetDetailViewModel = koinViewModel { parametersOf(poetId) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -68,6 +71,8 @@ fun PoetDetailRoot(
             is PoetDetailEvent.NavigateToPoemList -> {
                 onNavigateToPoemList(event.catId, event.title)
             }
+
+            is PoetDetailEvent.NavigateToChat -> onNavigateToChat()
 
             is PoetDetailEvent.ShowSnackbar -> snackbarMessage = event.message
         }
@@ -121,6 +126,7 @@ fun PoetDetailScreen(
             item {
                 PoetDetailHero(
                     state = state,
+                    onAction = onAction,
                     modifier =
                         Modifier
                             .padding(horizontal = 16.dp)
@@ -172,6 +178,7 @@ fun PoetDetailScreen(
 @Composable
 private fun PoetDetailHero(
     state: PoetDetailState,
+    onAction: (PoetDetailAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -200,15 +207,22 @@ private fun PoetDetailHero(
             textAlign = TextAlign.Center,
         )
 
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)){
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier =
+                Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable { onAction(PoetDetailAction.OnChatClick) }
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+        ) {
             Text(
-                text = "گفتگو با شاعر",
+                text = stringResource(Res.string.chat_with_poet),
                 style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
                 color = MaterialTheme.colorScheme.primaryContainer
             )
             Icon(
                 painter = painterResource(Res.drawable.chat_bubble),
-                contentDescription = null,
+                contentDescription = stringResource(Res.string.cd_chat),
                 tint = MaterialTheme.colorScheme.primaryContainer
             )
         }

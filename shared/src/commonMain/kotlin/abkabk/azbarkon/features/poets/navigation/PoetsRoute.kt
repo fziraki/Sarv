@@ -3,6 +3,11 @@ package abkabk.azbarkon.features.poets.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class ChatRoute(
+    val poetId: Int,
+)
+
+@Serializable
 data object PoetsListRoute
 
 @Serializable

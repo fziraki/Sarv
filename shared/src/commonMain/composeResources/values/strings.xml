@@ -116,4 +116,14 @@
     <string name="cd_clear_liked">پاک کردن پسندیده</string>
     <string name="cd_clear_bookmarked">پاک کردن نشان</string>
 
+    <string name="chat_title">هم‌صحبتی با %1$s</string>
+    <string name="chat_subtitle">هر آنچه در دل داری بگو...</string>
+    <string name="chat_poet_says">: %1$s</string>
+    <string name="chat_poet_typing">%1$s در حال نوشتن...</string>
+    <string name="chat_footer">%1$s همیشه همراه توست...</string>
+    <string name="chat_input_hint">حرف دلت را بنویس...</string>
+    <string name="chat_with_poet">گفتگو با شاعر</string>
+    <string name="cd_chat">گفتگو با شاعر</string>
+    <string name="cd_send_message">ارسال پیام</string>
+
 </resources>
