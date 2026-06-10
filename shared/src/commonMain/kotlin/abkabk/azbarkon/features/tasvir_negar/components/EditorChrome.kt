@@ -1,24 +1,31 @@
 package abkabk.azbarkon.features.tasvir_negar.components
 
 import abkabk.azbarkon.core.designsystem.secondary
+import abkabk.azbarkon.core.designsystem.secondaryFixed
 import abkabk.azbarkon.features.tasvir_negar.TasvirNegarAction
 import abkabk.azbarkon.features.tasvir_negar.model.TasvirNegarColors
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,9 +34,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -183,92 +193,28 @@ private fun ToolbarIcon(
 }
 
 
-@Composable
-fun FontSizeSlider(
-    value: Float,
-    onValueChange: (Float) -> Unit,
-    modifier: Modifier = Modifier,
-    valueRange: ClosedFloatingPointRange<Float> = 12f..32f
-) {
-    val thumbRadius = 8.dp
-    val trackWidth = 2.dp
-
-    Canvas(
-        modifier = modifier
-            .width(32.dp)
-            .height(200.dp)
-            .pointerInput(Unit) {
-                detectVerticalDragGestures(
-                    onDragStart = { offset ->
-                        val ratio = 1f - (offset.y / size.height)
-                        onValueChange(
-                            (valueRange.start +
-                                    ratio * (valueRange.endInclusive - valueRange.start))
-                                .coerceIn(
-                                    valueRange.start,
-                                    valueRange.endInclusive
-                                )
-                        )
-                    }
-                ) { change, _ ->
-                    val ratio = 1f - (change.position.y / size.height)
-                    onValueChange(
-                        (valueRange.start +
-                                ratio * (valueRange.endInclusive - valueRange.start))
-                            .coerceIn(
-                                valueRange.start,
-                                valueRange.endInclusive
-                            )
-                    )
-                }
-            }
-    ) {
-        val trackX = size.width / 2
-
-        // Track
-        drawLine(
-            color = Color.Gray.copy(alpha = 0.4f),
-            start = Offset(trackX, 0f),
-            end = Offset(trackX, size.height),
-            strokeWidth = trackWidth.toPx()
-        )
-
-        val progress =
-            (value - valueRange.start) /
-                    (valueRange.endInclusive - valueRange.start)
-
-        val thumbY = size.height * (1f - progress)
-
-        // Active track
-        drawLine(
-            color = Color.White,
-            start = Offset(trackX, thumbY),
-            end = Offset(trackX, size.height),
-            strokeWidth = trackWidth.toPx()
-        )
-
-        // Bullet thumb
-        drawCircle(
-            color = Color.White,
-            radius = thumbRadius.toPx(),
-            center = Offset(trackX, thumbY)
-        )
-    }
-}
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VerticalSizeSlider(
     progress: Float,
     onProgressChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val valueRange = 12f..32f
+    val sliderLength = 200.dp
+    val touchWidth = 32.dp
+    val thumbSize = 16.dp
+    val thumbBorderWidth = 2.dp
+    val trackHeight = 4.dp
+    val sliderValue = progress.coerceIn(valueRange.start, valueRange.endInclusive)
     val samim = samimFontFamily()
+
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = progress.toString(),
+            text = sliderValue.toInt().toString(),
             style =
                 androidx.compose.ui.text.TextStyle(
                     fontFamily = samim,
@@ -276,22 +222,102 @@ fun VerticalSizeSlider(
                     color = Color.Black,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                 ),
-            modifier = Modifier,
         )
 
-        FontSizeSlider(
-            value = progress,
-            onValueChange = onProgressChange,
-            valueRange = 12f..32f
-        )
+        Box(
+            modifier =
+                Modifier
+                    .width(touchWidth)
+                    .height(sliderLength),
+            contentAlignment = Alignment.Center,
+        ) {
+            Slider(
+                value = sliderValue,
+                onValueChange = onProgressChange,
+                valueRange = valueRange,
+                modifier =
+                    Modifier
+                        .verticalSliderTransform()
+                        .width(sliderLength)
+                        .height(touchWidth),
+                colors =
+                    SliderDefaults.colors(
+                        thumbColor = Color.Transparent,
+                        activeTrackColor = Color.Transparent,
+                        inactiveTrackColor = Color.Transparent,
+                    ),
+                thumb = {
+                    Box(
+                        modifier =
+                            Modifier
+                                .size(thumbSize)
+                                .background(
+                                    color = secondaryFixed,
+                                    shape = CircleShape,
+                                ),
+                    )
+                },
+                track = { sliderState ->
+                    val trackProgress =
+                        (sliderState.value - valueRange.start) /
+                            (valueRange.endInclusive - valueRange.start).coerceAtLeast(0.001f)
+                    Row(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(trackHeight)
+                                .clip(RoundedCornerShape(percent = 50))
+                                .background(Color.Gray.copy(alpha = 0.25f)),
+                    ) {
+                        if (trackProgress > 0f) {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .weight(trackProgress)
+                                        .background(secondary),
+                            )
+                        }
+                        if (trackProgress < 1f) {
+                            Spacer(
+                                modifier =
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .weight(1f - trackProgress),
+                            )
+                        }
+                    }
+                },
+            )
+        }
     }
 }
+
+private fun Modifier.verticalSliderTransform(): Modifier =
+    this
+        .graphicsLayer {
+            rotationZ = 270f
+            transformOrigin = TransformOrigin(0f, 0f)
+        }.layout { measurable, constraints ->
+            val placeable =
+                measurable.measure(
+                    Constraints(
+                        minWidth = constraints.minHeight,
+                        maxWidth = constraints.maxHeight,
+                        minHeight = constraints.minWidth,
+                        maxHeight = constraints.maxHeight,
+                    ),
+                )
+            layout(placeable.height, placeable.width) {
+                placeable.place(-placeable.width, 0)
+            }
+        }
 
 @Preview
 @Composable
 private fun VerticalSizeSliderPreview() {
     AzbarkonTheme {
-        var progress by remember { mutableFloatStateOf(50f) }
+        var progress by remember { mutableFloatStateOf(22f) }
         VerticalSizeSlider(
             progress = progress,
             onProgressChange = { progress = it },

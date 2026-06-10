@@ -104,7 +104,7 @@ data class EditorDocument(
     val fontPreset: EditorFontPreset = EditorFontPreset.Yekan,
     val showAlignmentGrid: Boolean = false,
     val selectedLayer: LayerId? = null,
-    val sizeProgress: Float = 0f,
+    val sizeProgress: Float = 12f,
     val activeOptionPanel: OptionPanelMode = OptionPanelMode.None,
     val isEditPanelExpanded: Boolean = false,
 )
