@@ -1,5 +1,7 @@
 package abkabk.azbarkon.features.chat
 
+import abkabk.azbarkon.core.ui.keyboardAboveIme
+import abkabk.azbarkon.core.ui.rememberKeyboardLiftPx
 import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
@@ -16,18 +18,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -49,6 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,6 +63,7 @@ import azbarkoncmp.shared.generated.resources.chat_poet_typing
 import azbarkoncmp.shared.generated.resources.chat_subtitle
 import azbarkoncmp.shared.generated.resources.chat_title
 import azbarkoncmp.shared.generated.resources.send
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -147,17 +146,17 @@ fun ChatScreen(
 ) {
     val listState = rememberLazyListState()
     val colors = chatColors()
+    val keyboardLiftPx = rememberKeyboardLiftPx()
 
     LaunchedEffect(state.messages.size, state.isPoetTyping) {
-        val lastIndex =
-            state.messages.size +
-                if (state.isPoetTyping) {
-                    1
-                } else {
-                    0
-                } - 1
-        if (lastIndex >= 0) {
-            listState.animateScrollToItem(lastIndex)
+        listState.scrollToLastMessage(state.messages.size, state.isPoetTyping)
+    }
+
+    LaunchedEffect(keyboardLiftPx, state.messages.size, state.isPoetTyping) {
+        if (keyboardLiftPx > 0) {
+            listState.scrollToLastMessage(state.messages.size, state.isPoetTyping)
+            delay(100)
+            listState.scrollToLastMessage(state.messages.size, state.isPoetTyping)
         }
     }
 
@@ -166,7 +165,6 @@ fun ChatScreen(
             modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
-
         topBar = {
             ChatTopBar(
                 poetName = state.poetName,
@@ -182,18 +180,20 @@ fun ChatScreen(
                 value = state.inputText,
                 colors = colors,
                 onValueChange = { onAction(ChatAction.OnInputChange(it)) },
-                onSendClick = { onAction(ChatAction.OnSendClick) }
+                onSendClick = { onAction(ChatAction.OnSendClick) },
             )
         }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = listState,
-            contentPadding = PaddingValues(
-                start = 16.dp, end = 16.dp,
-                top = paddingValues.calculateTopPadding(),
-                bottom = paddingValues.calculateBottomPadding()
-            ),
+            contentPadding =
+                PaddingValues(
+                    top = paddingValues.calculateTopPadding() + 16.dp,
+                    bottom = paddingValues.calculateBottomPadding() + 16.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                ),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             items(
@@ -415,60 +415,82 @@ private fun ChatInputBar(
     onValueChange: (String) -> Unit,
     onSendClick: () -> Unit,
 ) {
-    Row(
+    val pillShape = RoundedCornerShape(28.dp)
+
+    Box(
         modifier =
-            Modifier.imePadding()
+            Modifier
                 .fillMaxWidth()
+                .keyboardAboveIme()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        IconButton(
-            onClick = onSendClick,
+        Row(
             modifier =
                 Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(colors.accent),
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.send),
-                contentDescription = stringResource(Res.string.cd_send_message),
-                tint = colors.onAccent,
-                modifier = Modifier.size(22.dp),
-            )
-        }
-
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier =
-                Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(28.dp))
+                    .fillMaxWidth()
+                    .clip(pillShape)
                     .background(colors.inputBackground)
-                    .border(1.dp, colors.inputBorder, RoundedCornerShape(28.dp))
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-            textStyle =
-                MaterialTheme.typography.bodyMedium.copy(
-                    color = colors.inputText,
-                ),
-            cursorBrush = SolidColor(colors.accent),
-            singleLine = true,
-            decorationBox = { innerTextField ->
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    if (value.isEmpty()) {
-                        Text(
-                            text = stringResource(Res.string.chat_input_hint),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = colors.inputPlaceholder.copy(alpha = 0.7f),
-                        )
+                    .border(1.dp, colors.inputBorder, pillShape)
+                    .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+
+            IconButton(
+                onClick = onSendClick,
+                modifier =
+                    Modifier
+                        .padding(start = 4.dp)
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(colors.accent),
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.send),
+                    contentDescription = stringResource(Res.string.cd_send_message),
+                    tint = colors.onAccent,
+                    modifier = Modifier.size(20.dp).rotate(180f),
+                )
+            }
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChange,
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(start = 16.dp, end = 4.dp, top = 12.dp, bottom = 12.dp),
+                textStyle =
+                    MaterialTheme.typography.bodyMedium.copy(
+                        color = colors.inputText,
+                    ),
+                cursorBrush = SolidColor(colors.accent),
+                singleLine = true,
+                decorationBox = { innerTextField ->
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        if (value.isEmpty()) {
+                            Text(
+                                text = stringResource(Res.string.chat_input_hint),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = colors.inputPlaceholder.copy(alpha = 0.7f),
+                            )
+                        }
+                        innerTextField()
                     }
-                    innerTextField()
-                }
-            },
-        )
+                },
+            )
+
+
+        }
+    }
+}
+
+private suspend fun LazyListState.scrollToLastMessage(
+    messageCount: Int,
+    isPoetTyping: Boolean,
+) {
+    val lastIndex = messageCount + if (isPoetTyping) 1 else 0 - 1
+    if (lastIndex >= 0) {
+        animateScrollToItem(lastIndex)
     }
 }
 
