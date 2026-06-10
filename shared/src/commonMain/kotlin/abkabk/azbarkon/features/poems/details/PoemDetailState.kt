@@ -50,4 +50,6 @@ sealed interface PoemDetailEvent {
     data class ShowSnackbar(
         val message: UiText,
     ) : PoemDetailEvent
+
+    data object NavigateToTasvirNegar : PoemDetailEvent
 }

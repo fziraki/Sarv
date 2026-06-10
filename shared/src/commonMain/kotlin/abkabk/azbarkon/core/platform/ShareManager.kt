@@ -7,4 +7,9 @@ expect class ShareManager {
         text: String,
         title: String?,
     )
+
+    fun shareImage(
+        imageBytes: ByteArray,
+        title: String?,
+    )
 }

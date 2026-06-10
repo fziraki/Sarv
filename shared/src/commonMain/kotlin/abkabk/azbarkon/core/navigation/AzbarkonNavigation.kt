@@ -13,6 +13,8 @@ import abkabk.azbarkon.features.poets.navigation.PoetsListRoute
 import abkabk.azbarkon.features.poets.navigation.poetsGraph
 import abkabk.azbarkon.features.profile.navigation.ProfileRoute
 import abkabk.azbarkon.features.profile.navigation.profileGraph
+import abkabk.azbarkon.features.tasvir_negar.navigation.TasvirNegarRoute
+import abkabk.azbarkon.features.tasvir_negar.navigation.tasvirNegarGraph
 import abkabk.azbarkon.features.search.navigation.navigateToSearch
 import abkabk.azbarkon.features.search.navigation.searchGraph
 import androidx.compose.animation.EnterTransition
@@ -256,7 +258,11 @@ fun AzbarkonNavigation(initialPoemId: Int? = null) {
                     onNavigateToPoemDetailFromMyPoems = { poemId ->
                         navController.navigate(PoemDetailRoute(poemId = poemId))
                     },
+                    onNavigateToTasvirNegar = {
+                        navController.navigate(TasvirNegarRoute(poemId = null))
+                    },
                 )
+                tasvirNegarGraph(onBackClick = navController::navigateUp)
                 gamesGraph()
                 profileGraph()
                 poetsGraph(navController)

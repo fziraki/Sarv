@@ -26,6 +26,8 @@ sealed interface HomeAction {
     data object OnMyPoemsClick : HomeAction
 
     data object OnSearchClick : HomeAction
+
+    data object OnTasvirNegarClick : HomeAction
 }
 
 sealed interface HomeEvent {
@@ -42,4 +44,6 @@ sealed interface HomeEvent {
     data object NavigateToMyPoems : HomeEvent
 
     data object NavigateToSearch : HomeEvent
+
+    data object NavigateToTasvirNegar : HomeEvent
 }

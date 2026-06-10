@@ -87,6 +87,7 @@ fun HomeRoot(
     onNavigateToPoetDetail: (Int) -> Unit,
     onNavigateToMyPoems: () -> Unit,
     onNavigateToSearch: () -> Unit,
+    onNavigateToTasvirNegar: () -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -106,6 +107,8 @@ fun HomeRoot(
             HomeEvent.NavigateToMyPoems -> onNavigateToMyPoems()
 
             HomeEvent.NavigateToSearch -> onNavigateToSearch()
+
+            HomeEvent.NavigateToTasvirNegar -> onNavigateToTasvirNegar()
         }
     }
 
@@ -146,6 +149,7 @@ fun HomeScreen(
                         SliderPage.Challenge,
                         SliderPage.TasvirNegar,
                     ),
+                onTasvirNegarClick = { onAction(HomeAction.OnTasvirNegarClick) },
             )
         }
         item {
@@ -155,6 +159,7 @@ fun HomeScreen(
             QuickAccessMenu(
                 onMyPoemsClick = { onAction(HomeAction.OnMyPoemsClick) },
                 onSearchClick = { onAction(HomeAction.OnSearchClick) },
+                onTasvirNegarClick = { onAction(HomeAction.OnTasvirNegarClick) },
             )
         }
         item {
@@ -273,6 +278,7 @@ fun PoetItem(
 fun QuickAccessMenu(
     onMyPoemsClick: () -> Unit,
     onSearchClick: () -> Unit,
+    onTasvirNegarClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
@@ -297,8 +303,7 @@ fun QuickAccessMenu(
             modifier = Modifier.weight(1f),
             icon = Res.drawable.palette,
             title = Res.string.pic_negar,
-            onItemClick = {
-            },
+            onItemClick = onTasvirNegarClick,
         )
 
         QuickAccessItem(
@@ -422,6 +427,7 @@ fun TopSlider(
     items: List<SliderPage>,
     modifier: Modifier = Modifier,
     autoPlayDuration: Long = 4000L,
+    onTasvirNegarClick: () -> Unit = {},
 ) {
     if (items.isEmpty()) return
 
@@ -468,7 +474,7 @@ fun TopSlider(
 
                 is SliderPage.Challenge -> ChallengeSlide()
 
-                is SliderPage.TasvirNegar -> TasvirNegarSlide()
+                is SliderPage.TasvirNegar -> TasvirNegarSlide(onClick = onTasvirNegarClick)
             }
         }
 
@@ -502,7 +508,7 @@ fun TopSlider(
 }
 
 @Composable
-fun TasvirNegarSlide() {
+fun TasvirNegarSlide(onClick: () -> Unit = {}) {
     Row(
         modifier =
             Modifier
@@ -541,7 +547,7 @@ fun TasvirNegarSlide() {
 
             AzbarkonButton(
                 text = stringResource(Res.string.slider_tasvir_negar_button),
-                onClick = {},
+                onClick = onClick,
                 modifier =
                     Modifier
                         .fillMaxWidth(0.6f)
