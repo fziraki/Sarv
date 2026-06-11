@@ -8,6 +8,7 @@ import abkabk.azbarkon.core.widget.RandomDistichWidgetRefresher
 import abkabk.azbarkon.core.widget.RandomDistichWidgetUpdater
 import abkabk.azbarkon.core.platform.ClipboardManager
 import abkabk.azbarkon.core.platform.KeyValueStore
+import abkabk.azbarkon.core.platform.ImageExportManager
 import abkabk.azbarkon.core.platform.ShareManager
 import abkabk.azbarkon.data.platform.AndroidDailyBeytNotificationScheduler
 import abkabk.azbarkon.data.platform.AndroidNotificationPermissionGateway
@@ -42,6 +43,10 @@ val androidPlatformModule =
 
         single {
             ShareManager(context = androidContext())
+        }
+
+        single {
+            ImageExportManager(context = androidContext())
         }
 
         single<DailyBeytNotificationScheduler> {

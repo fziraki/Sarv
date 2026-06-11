@@ -3,6 +3,7 @@ package abkabk.azbarkon.core.di
 import abkabk.azbarkon.core.local.DatabaseDriverFactory
 import abkabk.azbarkon.core.platform.ClipboardManager
 import abkabk.azbarkon.core.platform.KeyValueStore
+import abkabk.azbarkon.core.platform.ImageExportManager
 import abkabk.azbarkon.core.platform.ShareManager
 import abkabk.azbarkon.data.platform.IosDailyBeytNotificationScheduler
 import abkabk.azbarkon.data.platform.IosNotificationPermissionGateway
@@ -33,6 +34,10 @@ val iosPlatformModule =
 
         single {
             ShareManager()
+        }
+
+        single {
+            ImageExportManager()
         }
 
         single<DailyBeytNotificationScheduler> {

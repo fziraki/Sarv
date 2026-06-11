@@ -12,4 +12,11 @@ class PlatformShareService(
     ) {
         shareManager.shareText(text = text, title = title)
     }
+
+    override fun shareImage(
+        imageBytes: ByteArray,
+        title: String?,
+    ) {
+        shareManager.shareImage(imageBytes = imageBytes, title = title)
+    }
 }

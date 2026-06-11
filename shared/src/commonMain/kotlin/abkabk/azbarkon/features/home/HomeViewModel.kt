@@ -48,6 +48,12 @@ class HomeViewModel(
                     sendEvent(HomeEvent.NavigateToSearch)
                 }
             }
+
+            HomeAction.OnTasvirNegarClick -> {
+                viewModelScope.launch {
+                    sendEvent(HomeEvent.NavigateToTasvirNegar)
+                }
+            }
         }
     }
 

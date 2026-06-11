@@ -5,4 +5,9 @@ interface ShareService {
         text: String,
         title: String?,
     )
+
+    fun shareImage(
+        imageBytes: ByteArray,
+        title: String?,
+    )
 }

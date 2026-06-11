@@ -126,4 +126,27 @@
     <string name="cd_chat">گفتگو با شاعر</string>
     <string name="cd_send_message">ارسال پیام</string>
 
+    <string name="tasvir_negar_save">ذخیره</string>
+    <string name="tasvir_negar_saved">با موفقیت ذخیره شد</string>
+    <string name="tasvir_negar_save_failed">ذخیره تصویر ناموفق بود</string>
+    <string name="tasvir_negar_share_failed">اشتراک‌گذاری ناموفق بود</string>
+    <string name="tasvir_pick_color">انتخاب رنگ</string>
+    <string name="tasvir_edit">ویرایش</string>
+    <string name="tasvir_color">رنگ</string>
+    <string name="tasvir_shape">شکل</string>
+    <string name="tasvir_text">متن</string>
+    <string name="tasvir_grid">شبکه</string>
+    <string name="tasvir_texture">بافت</string>
+    <string name="tasvir_gallery">گالری</string>
+    <string name="tasvir_font">فونت</string>
+    <string name="tasvir_remove">حذف</string>
+    <string name="tasvir_eraser">پاک‌کن</string>
+    <string name="tasvir_align_start">راست</string>
+    <string name="tasvir_align_center">وسط</string>
+    <string name="tasvir_align_end">چپ</string>
+    <string name="tasvir_font_1">شکسته</string>
+    <string name="tasvir_font_2">یکان</string>
+    <string name="tasvir_font_3">تنها</string>
+    <string name="tasvir_help_explanation">با دکمه ویرایش در پایین صفحه، منوهای رنگ، شکل، متن، بافت و فونت را امتحان کنید. برای تغییر اندازه، نوار کناری را بکشید. برای جابه‌جایی هر عنصر، آن را لمس کرده و بکشید.</string>
+
 </resources>

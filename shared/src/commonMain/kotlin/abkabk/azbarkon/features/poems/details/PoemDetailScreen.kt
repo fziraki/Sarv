@@ -51,6 +51,7 @@ import org.koin.core.parameter.parametersOf
 fun PoemDetailRoot(
     poemId: Int,
     onBackClick: () -> Unit,
+    onNavigateToTasvirNegar: (Int) -> Unit,
     viewModel: PoemDetailViewModel = koinViewModel { parametersOf(poemId) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -60,6 +61,7 @@ fun PoemDetailRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is PoemDetailEvent.ShowSnackbar -> snackbarMessage = event.message
+            PoemDetailEvent.NavigateToTasvirNegar -> onNavigateToTasvirNegar(poemId)
         }
     }
 

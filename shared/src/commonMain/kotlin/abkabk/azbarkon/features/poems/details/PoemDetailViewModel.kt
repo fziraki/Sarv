@@ -54,7 +54,8 @@ class PoemDetailViewModel(
 
             PoemDetailAction.OnBookmarkClick -> toggleBookmark()
 
-            PoemDetailAction.OnImageCreatorClick,
+            PoemDetailAction.OnImageCreatorClick -> navigateToTasvirNegar()
+
             PoemDetailAction.OnMemorizeClick,
             -> showComingSoon()
         }
@@ -170,6 +171,12 @@ class PoemDetailViewModel(
     private fun toggleBookmark() {
         val isBookmarked = savedPoemRepository.toggleBookmark(poemId)
         setState { copy(isBookmarked = isBookmarked) }
+    }
+
+    private fun navigateToTasvirNegar() {
+        viewModelScope.launch {
+            sendEvent(PoemDetailEvent.NavigateToTasvirNegar)
+        }
     }
 
     private fun showComingSoon() {
