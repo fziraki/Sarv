@@ -1,37 +1,51 @@
 package abkabk.azbarkon.features.memorization.practice
 
+import abkabk.azbarkon.core.ui.keyboardAboveIme
+import abkabk.azbarkon.core.ui.rememberKeyboardLiftPx
 import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.asString
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
+import abkabk.azbarkon.domain.srs.CardGenerator
 import abkabk.azbarkon.domain.srs.DiffTokenType
 import abkabk.azbarkon.ui.components.AzbarkonButton
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
-import abkabk.azbarkon.ui.components.AzbarkonSecondaryButton
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,31 +54,47 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.keyboard
 import azbarkoncmp.shared.generated.resources.memorization_grade_again
 import azbarkoncmp.shared.generated.resources.memorization_grade_easy
-import azbarkoncmp.shared.generated.resources.memorization_button
 import azbarkoncmp.shared.generated.resources.memorization_grade_good
 import azbarkoncmp.shared.generated.resources.memorization_grade_hard
+import azbarkoncmp.shared.generated.resources.memorization_keyboard_content_description
+import azbarkoncmp.shared.generated.resources.memorization_keyboard_label
+import azbarkoncmp.shared.generated.resources.memorization_next_verse
 import azbarkoncmp.shared.generated.resources.memorization_practice_complete
 import azbarkoncmp.shared.generated.resources.memorization_practice_done
 import azbarkoncmp.shared.generated.resources.memorization_practice_progress
+import azbarkoncmp.shared.generated.resources.memorization_practice_stat_learned
+import azbarkoncmp.shared.generated.resources.memorization_practice_stat_mistakes
+import azbarkoncmp.shared.generated.resources.memorization_practice_stat_today
 import azbarkoncmp.shared.generated.resources.memorization_practice_title
-import azbarkoncmp.shared.generated.resources.memorization_reveal_hint
+import azbarkoncmp.shared.generated.resources.memorization_reveal_content_description
+import azbarkoncmp.shared.generated.resources.memorization_reveal_label
 import azbarkoncmp.shared.generated.resources.memorization_submit_typing
 import azbarkoncmp.shared.generated.resources.memorization_typing_hint
-import azbarkoncmp.shared.generated.resources.memorization_typing_mode
+import azbarkoncmp.shared.generated.resources.reveal_eye
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+
+private val PracticePrimaryButtonHeight = 52.dp
+private val PracticeModeIconSize = 48.dp
 
 @Composable
 fun MemorizationPracticeRoot(
@@ -107,18 +137,34 @@ fun MemorizationPracticeScreen(
     state: MemorizationPracticeState,
     onAction: (MemorizationPracticeAction) -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Header(
-            title = stringResource(Res.string.memorization_practice_title),
-            onBackClick = { onAction(MemorizationPracticeAction.OnBackClick) },
-        )
-
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            Header(
+                title = stringResource(Res.string.memorization_practice_title),
+                onBackClick = { onAction(MemorizationPracticeAction.OnBackClick) },
+            )
+        },
+        bottomBar = {
+            if (state.phase != PracticePhase.COMPLETE) {
+                PracticeBottomPanel(
+                    state = state,
+                    onAction = onAction,
+                    modifier =
+                        Modifier
+                            .padding(horizontal = 20.dp, vertical = 12.dp)
+                            .keyboardAboveIme(),
+                )
+            }
+        },
+    ) { paddingValues ->
         when (state.phase) {
             PracticePhase.COMPLETE -> {
                 Column(
                     modifier =
                         Modifier
                             .fillMaxSize()
+                            .padding(paddingValues)
                             .padding(24.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -132,49 +178,64 @@ fun MemorizationPracticeScreen(
                     AzbarkonPrimaryButton(
                         text = stringResource(Res.string.memorization_practice_done),
                         onClick = { onAction(MemorizationPracticeAction.OnBackClick) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().height(PracticePrimaryButtonHeight),
                     )
                 }
             }
 
             else -> {
-                Column(
+                BoxWithConstraints(
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 20.dp, vertical = 12.dp)
-                            .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                            .padding(top = paddingValues.calculateTopPadding()),
                 ) {
-                    state.currentCard?.let { card ->
-                        Text(
-                            text =
-                                stringResource(
-                                    Res.string.memorization_practice_progress,
-                                    state.cardIndex,
-                                    state.totalCards,
-                                ),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                    val density = LocalDensity.current
+                    val keyboardLift = with(density) { rememberKeyboardLiftPx().toDp() }
+                    val animatedKeyboardLift by animateDpAsState(keyboardLift, label = "keyboardLift")
+                    val bottomContentPadding = maxHeight / 2 + animatedKeyboardLift / 2
 
-                        AzbarkonSecondaryButton(
-                            text = stringResource(Res.string.memorization_typing_mode),
-                            onClick = { onAction(MemorizationPracticeAction.OnToggleTypingMode) },
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-
-                        AnimatedContent(
-                            targetState = card.id,
-                            transitionSpec = { fadeIn() togetherWith fadeOut() },
-                            label = "cardTransition",
-                        ) {
-                            PracticeCardContent(
-                                state = state,
-                                card = card,
-                                onAction = onAction,
+                    Column(
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 20.dp),
+                    ) {
+                        if (state.totalCards > 0) {
+                            PracticeProgressSection(
+                                cardIndex = state.cardIndex,
+                                totalCards = state.totalCards,
+                                modifier = Modifier.padding(top = 16.dp, bottom = 12.dp),
                             )
+                        }
+
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(bottom = bottomContentPadding),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            item {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .fillParentMaxWidth()
+                                            .fillParentMaxHeight(),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    state.currentCard?.let { card ->
+                                        AnimatedContent(
+                                            targetState = card.id,
+                                            transitionSpec = { fadeIn() togetherWith fadeOut() },
+                                            label = "cardTransition",
+                                        ) {
+                                            PracticeCardContent(
+                                                state = state,
+                                                card = card,
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -184,104 +245,75 @@ fun MemorizationPracticeScreen(
 }
 
 @Composable
+private fun PracticeProgressSection(
+    cardIndex: Int,
+    totalCards: Int,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text =
+                stringResource(
+                    Res.string.memorization_practice_progress,
+                    cardIndex,
+                    totalCards,
+                ),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        LinearProgressIndicator(
+            progress = { (cardIndex.toFloat() / totalCards.coerceAtLeast(1)).coerceIn(0f, 1f) },
+            modifier = Modifier.fillMaxWidth().rotate(180f),
+            gapSize = 0.dp,
+            drawStopIndicator = {}
+        )
+    }
+}
+
+@Composable
 private fun PracticeCardContent(
     state: MemorizationPracticeState,
     card: PracticeCardUi,
-    onAction: (MemorizationPracticeAction) -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         when (state.phase) {
             PracticePhase.SHOW_FRONT -> {
-                if (state.isTypingMode) {
-                    Text(
-                        text = card.front,
-                        style = MaterialTheme.typography.headlineMedium,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    BasicTextField(
-                        value = state.typedAnswer,
-                        onValueChange = { onAction(MemorizationPracticeAction.OnTypedAnswerChange(it)) },
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(12.dp),
-                        textStyle =
-                            MaterialTheme.typography.bodyLarge.copy(
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            ),
-                        decorationBox = { inner ->
-                            if (state.typedAnswer.isEmpty()) {
-                                Text(
-                                    text = stringResource(Res.string.memorization_typing_hint),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.fillMaxWidth(),
-                                )
-                            }
-                            inner()
-                        },
-                    )
-                    AzbarkonPrimaryButton(
-                        text = stringResource(Res.string.memorization_submit_typing),
-                        onClick = { onAction(MemorizationPracticeAction.OnSubmitTypedAnswer) },
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = state.typedAnswer.isNotBlank(),
-                    )
-                } else {
-                    Text(
-                        text = card.front,
-                        style = MaterialTheme.typography.headlineMedium,
-                        textAlign = TextAlign.Center,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable { onAction(MemorizationPracticeAction.OnRevealClick) }
-                                .padding(vertical = 32.dp),
-                    )
-                    Text(
-                        text = stringResource(Res.string.memorization_reveal_hint),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                    )
-                }
+                Text(
+                    text = card.front,
+                    style = MaterialTheme.typography.headlineLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                )
             }
 
             PracticePhase.REVEALED -> {
                 Text(
                     text = card.back,
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.headlineLarge,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                 )
-                GradeButtons(onAction = onAction)
             }
 
             PracticePhase.FEEDBACK -> {
+                RevealedFrontText(
+                    front = card.front,
+                    continuation = card.expectedContinuation,
+                    modifier = Modifier.fillMaxWidth(),
+                )
                 DiffText(
                     tokens = state.diffTokens,
-                    fallback = card.back,
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+                    fallback = state.typedAnswer,
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                 )
-                GradeButtons(
-                    onAction = onAction,
-                    selectedGrade = state.selectedGrade,
-                    suggestedGrade = state.suggestedGrade,
-                )
-                if (state.selectedGrade != null) {
-                    AzbarkonPrimaryButton(
-                        text = stringResource(Res.string.memorization_button),
-                        onClick = { onAction(MemorizationPracticeAction.OnNextCard) },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
             }
 
             PracticePhase.COMPLETE -> Unit
@@ -289,12 +321,325 @@ private fun PracticeCardContent(
     }
 }
 
+@Composable
+private fun TypingInputField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    BasicTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier.padding(12.dp),
+        textStyle =
+            MaterialTheme.typography.bodyLarge.copy(
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface,
+            ),
+        decorationBox = { inner ->
+            if (value.isEmpty()) {
+                Text(
+                    text = stringResource(Res.string.memorization_typing_hint),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+            inner()
+        },
+    )
+}
+
+@Composable
+private fun PracticeBottomPanel(
+    state: MemorizationPracticeState,
+    onAction: (MemorizationPracticeAction) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.CenterVertically),
+    ) {
+        if (state.phase == PracticePhase.SHOW_FRONT && state.isTypingMode) {
+            TypingInputField(
+                value = state.typedAnswer,
+                onValueChange = { onAction(MemorizationPracticeAction.OnTypedAnswerChange(it)) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
+        if (state.phase == PracticePhase.REVEALED || state.phase == PracticePhase.FEEDBACK) {
+            GradeButtons(
+                onAction = onAction,
+                selectedGrade = state.selectedGrade,
+                suggestedGrade = state.suggestedGrade,
+                enabled = !state.gradesLocked,
+            )
+        }
+
+        PracticeActionRow(
+            state = state,
+            onAction = onAction,
+        )
+
+        PracticeSessionStatsBar(state = state)
+    }
+}
+
+@Composable
+private fun RevealedFrontText(
+    front: String,
+    continuation: String,
+    modifier: Modifier = Modifier,
+) {
+    val parts = CardGenerator.revealedFrontParts(front, continuation)
+    val annotated =
+        buildAnnotatedString {
+            append(parts.prefix)
+            pushStyle(
+                SpanStyle(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                ),
+            )
+            append(parts.continuation)
+            pop()
+            append(parts.suffix)
+        }
+    Text(
+        text = annotated,
+        style = MaterialTheme.typography.headlineMedium,
+        textAlign = TextAlign.Center,
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun PracticeModeIconButton(
+    icon: Painter,
+    label: String,
+    contentDescription: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Box(
+            modifier =
+                Modifier
+                    .size(PracticeModeIconSize)
+                    .clip(RoundedCornerShape(48.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painter = icon,
+                contentDescription = contentDescription,
+                modifier = Modifier.size(24.dp),
+                tint =
+                    if (selected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+            )
+        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun PracticeActionRow(
+    state: MemorizationPracticeState,
+    onAction: (MemorizationPracticeAction) -> Unit,
+) {
+    val showModeIcons = state.phase == PracticePhase.SHOW_FRONT
+    val primaryButtonState = primaryButtonState(state)
+
+    if (!showModeIcons) {
+        AzbarkonPrimaryButton(
+            text = stringResource(primaryButtonState.labelRes),
+            onClick = { onAction(primaryButtonState.action) },
+            modifier = Modifier.fillMaxWidth().height(PracticePrimaryButtonHeight),
+            enabled = primaryButtonState.enabled,
+        )
+        return
+    }
+
+    val showPrimaryButton = primaryButtonState.visible
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        PracticeModeIconButton(
+            icon = painterResource(Res.drawable.reveal_eye),
+            label = stringResource(Res.string.memorization_reveal_label),
+            contentDescription = stringResource(Res.string.memorization_reveal_content_description),
+            selected = !state.isTypingMode,
+            onClick = { onAction(MemorizationPracticeAction.OnRevealClick) },
+        )
+
+        if (showPrimaryButton) {
+            Box(
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .height(PracticeModeIconSize),
+                contentAlignment = Alignment.Center,
+            ) {
+                AzbarkonPrimaryButton(
+                    text = stringResource(primaryButtonState.labelRes),
+                    onClick = { onAction(primaryButtonState.action) },
+                    modifier = Modifier.fillMaxWidth().height(PracticePrimaryButtonHeight),
+                    enabled = primaryButtonState.enabled,
+                )
+            }
+        } else {
+            Spacer(modifier = Modifier.weight(1f))
+        }
+
+        PracticeModeIconButton(
+            icon = painterResource(Res.drawable.keyboard),
+            label = stringResource(Res.string.memorization_keyboard_label),
+            contentDescription = stringResource(Res.string.memorization_keyboard_content_description),
+            selected = state.isTypingMode,
+            onClick = { onAction(MemorizationPracticeAction.OnTypingModeClick) },
+        )
+    }
+    }
+
+@Composable
+private fun PracticeSessionStatsBar(state: MemorizationPracticeState) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        PracticeStatItem(
+            value = state.sessionMistakes,
+            label = stringResource(Res.string.memorization_practice_stat_mistakes),
+            modifier = Modifier.weight(1f),
+        )
+        VerticalDivider(
+            modifier = Modifier.height(40.dp),
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
+        PracticeStatItem(
+            value = state.sessionReviewed,
+            label = stringResource(Res.string.memorization_practice_stat_today),
+            modifier = Modifier.weight(1f),
+        )
+        VerticalDivider(
+            modifier = Modifier.height(40.dp),
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
+        PracticeStatItem(
+            value = state.sessionLearned,
+            label = stringResource(Res.string.memorization_practice_stat_learned),
+            modifier = Modifier.weight(1f),
+        )
+    }
+}
+
+@Composable
+private fun PracticeStatItem(
+    value: Int,
+    label: String,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = value.toString(),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+private data class PrimaryButtonState(
+    val visible: Boolean,
+    val labelRes: org.jetbrains.compose.resources.StringResource,
+    val enabled: Boolean,
+    val action: MemorizationPracticeAction,
+)
+
+private fun primaryButtonState(state: MemorizationPracticeState): PrimaryButtonState =
+    when (state.phase) {
+        PracticePhase.SHOW_FRONT ->
+            if (state.isTypingMode) {
+                PrimaryButtonState(
+                    visible = true,
+                    labelRes = Res.string.memorization_submit_typing,
+                    enabled = state.typedAnswer.isNotBlank(),
+                    action = MemorizationPracticeAction.OnSubmitTypedAnswer,
+                )
+            } else {
+                PrimaryButtonState(
+                    visible = false,
+                    labelRes = Res.string.memorization_submit_typing,
+                    enabled = false,
+                    action = MemorizationPracticeAction.OnSubmitTypedAnswer,
+                )
+            }
+
+        PracticePhase.REVEALED ->
+            PrimaryButtonState(
+                visible = true,
+                labelRes = Res.string.memorization_next_verse,
+                enabled = state.selectedGrade != null,
+                action = MemorizationPracticeAction.OnNextCard,
+            )
+
+        PracticePhase.FEEDBACK ->
+            PrimaryButtonState(
+                visible = true,
+                labelRes = Res.string.memorization_next_verse,
+                enabled = state.selectedGrade != null,
+                action = MemorizationPracticeAction.OnNextCard,
+            )
+
+        PracticePhase.COMPLETE ->
+            PrimaryButtonState(
+                visible = false,
+                labelRes = Res.string.memorization_next_verse,
+                enabled = false,
+                action = MemorizationPracticeAction.OnNextCard,
+            )
+    }
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun GradeButtons(
     onAction: (MemorizationPracticeAction) -> Unit,
     selectedGrade: SrsGrade? = null,
     suggestedGrade: SrsGrade? = null,
+    enabled: Boolean = true,
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
@@ -306,6 +651,7 @@ private fun GradeButtons(
             grade = SrsGrade.AGAIN,
             isSelected = selectedGrade == SrsGrade.AGAIN,
             isSuggested = suggestedGrade == SrsGrade.AGAIN,
+            enabled = enabled,
             onAction = onAction,
         )
         GradeButton(
@@ -313,6 +659,7 @@ private fun GradeButtons(
             grade = SrsGrade.HARD,
             isSelected = selectedGrade == SrsGrade.HARD,
             isSuggested = suggestedGrade == SrsGrade.HARD,
+            enabled = enabled,
             onAction = onAction,
         )
         GradeButton(
@@ -320,6 +667,7 @@ private fun GradeButtons(
             grade = SrsGrade.GOOD,
             isSelected = selectedGrade == SrsGrade.GOOD,
             isSuggested = suggestedGrade == SrsGrade.GOOD,
+            enabled = enabled,
             onAction = onAction,
         )
         GradeButton(
@@ -327,6 +675,7 @@ private fun GradeButtons(
             grade = SrsGrade.EASY,
             isSelected = selectedGrade == SrsGrade.EASY,
             isSuggested = suggestedGrade == SrsGrade.EASY,
+            enabled = enabled,
             onAction = onAction,
         )
     }
@@ -338,6 +687,7 @@ private fun GradeButton(
     grade: SrsGrade,
     isSelected: Boolean,
     isSuggested: Boolean,
+    enabled: Boolean,
     onAction: (MemorizationPracticeAction) -> Unit,
 ) {
     val containerColor =
@@ -346,13 +696,22 @@ private fun GradeButton(
             isSuggested -> MaterialTheme.colorScheme.primaryContainer
             else -> MaterialTheme.colorScheme.surfaceVariant
         }
+    val contentColor =
+        when {
+            isSelected -> MaterialTheme.colorScheme.onPrimary
+            isSuggested -> MaterialTheme.colorScheme.onPrimaryContainer
+            else -> MaterialTheme.colorScheme.onSurface
+        }
     AzbarkonButton(
         text = label,
         onClick = { onAction(MemorizationPracticeAction.OnGradeClick(grade)) },
+        enabled = enabled,
         colors =
             ButtonDefaults.buttonColors(
                 containerColor = containerColor,
-                contentColor = MaterialTheme.colorScheme.onSurface,
+                contentColor = contentColor,
+                disabledContainerColor = containerColor,
+                disabledContentColor = contentColor,
             ),
     )
 }
@@ -384,7 +743,7 @@ private fun DiffText(
         }
     Text(
         text = annotated,
-        style = MaterialTheme.typography.headlineMedium,
+        style = MaterialTheme.typography.bodyLarge,
         textAlign = TextAlign.Center,
         modifier = modifier,
     )
@@ -403,6 +762,30 @@ private fun MemorizationPracticeScreenPreview() {
                             id = 1,
                             front = "که عشق آسان نمود اول\n...",
                             back = "که عشق آسان نمود اول\nولی افتاد مشکل‌ها",
+                            expectedContinuation = "ولی افتاد مشکل‌ها",
+                        ),
+                    cardIndex = 1,
+                    totalCards = 5,
+                ),
+            onAction = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun MemorizationPracticeScreenRevealedPreview() {
+    AzbarkonTheme {
+        MemorizationPracticeScreen(
+            state =
+                MemorizationPracticeState(
+                    phase = PracticePhase.REVEALED,
+                    currentCard =
+                        PracticeCardUi(
+                            id = 1,
+                            front = "که عشق آسان نمود اول\n...",
+                            back = "که عشق آسان نمود اول\nولی افتاد مشکل‌ها",
+                            expectedContinuation = "ولی افتاد مشکل‌ها",
                         ),
                     cardIndex = 1,
                     totalCards = 5,

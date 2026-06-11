@@ -26,7 +26,7 @@ fun azbarkonTypography(): Typography {
         headlineLarge =
             TextStyle(
                 fontFamily = fontFamily,
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
             ),
         bodySmall =
@@ -42,7 +42,7 @@ fun azbarkonTypography(): Typography {
         bodyLarge =
             TextStyle(
                 fontFamily = fontFamily,
-                fontSize = 20.sp,
+                fontSize = 16.sp,
             ),
         labelSmall =
             TextStyle(
@@ -59,7 +59,7 @@ fun azbarkonTypography(): Typography {
         labelLarge =
             TextStyle(
                 fontFamily = fontFamily,
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Thin,
             ),
     )

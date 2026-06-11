@@ -11,6 +11,7 @@ data class PracticeCardUi(
     val id: Long,
     val front: String,
     val back: String,
+    val expectedContinuation: String,
     val poemTitle: String = "",
 )
 
@@ -33,6 +34,10 @@ data class MemorizationPracticeState(
     val diffTokens: List<DiffToken> = emptyList(),
     val suggestedGrade: SrsGrade? = null,
     val selectedGrade: SrsGrade? = null,
+    val gradesLocked: Boolean = false,
+    val sessionMistakes: Int = 0,
+    val sessionReviewed: Int = 0,
+    val sessionLearned: Int = 0,
 )
 
 sealed interface MemorizationPracticeAction {
@@ -44,7 +49,7 @@ sealed interface MemorizationPracticeAction {
 
     data object OnRevealClick : MemorizationPracticeAction
 
-    data object OnToggleTypingMode : MemorizationPracticeAction
+    data object OnTypingModeClick : MemorizationPracticeAction
 
     data class OnTypedAnswerChange(
         val answer: String,

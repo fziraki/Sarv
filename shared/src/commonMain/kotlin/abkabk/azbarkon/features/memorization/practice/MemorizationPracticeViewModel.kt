@@ -10,8 +10,7 @@ import abkabk.azbarkon.domain.model.memorization.MemorizationError
 import abkabk.azbarkon.domain.model.memorization.SrsCard
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
 import abkabk.azbarkon.domain.repository.MemorizationRepository
-import abkabk.azbarkon.domain.srs.DiffToken
-import abkabk.azbarkon.domain.srs.DiffTokenType
+import abkabk.azbarkon.domain.srs.CardGenerator
 import abkabk.azbarkon.domain.srs.TextDiffHighlighter
 import androidx.lifecycle.viewModelScope
 import azbarkoncmp.shared.generated.resources.Res
@@ -43,9 +42,7 @@ class MemorizationPracticeViewModel(
 
             MemorizationPracticeAction.OnRevealClick -> revealCard()
 
-            MemorizationPracticeAction.OnToggleTypingMode -> {
-                setState { copy(isTypingMode = !isTypingMode, typedAnswer = "") }
-            }
+            MemorizationPracticeAction.OnTypingModeClick -> enableTypingMode()
 
             is MemorizationPracticeAction.OnTypedAnswerChange -> {
                 setState { copy(typedAnswer = action.answer) }
@@ -53,9 +50,9 @@ class MemorizationPracticeViewModel(
 
             MemorizationPracticeAction.OnSubmitTypedAnswer -> evaluateTypedAnswer()
 
-            is MemorizationPracticeAction.OnGradeClick -> submitGrade(action.grade)
+            is MemorizationPracticeAction.OnGradeClick -> selectGrade(action.grade)
 
-            MemorizationPracticeAction.OnNextCard -> advanceToNextCard()
+            MemorizationPracticeAction.OnNextCard -> submitAndAdvance()
         }
     }
 
@@ -74,9 +71,19 @@ class MemorizationPracticeViewModel(
                                 phase = PracticePhase.COMPLETE,
                                 currentCard = null,
                                 totalCards = 0,
+                                sessionMistakes = 0,
+                                sessionReviewed = 0,
+                                sessionLearned = 0,
                             )
                         }
                     } else {
+                        setState {
+                            copy(
+                                sessionMistakes = 0,
+                                sessionReviewed = 0,
+                                sessionLearned = 0,
+                            )
+                        }
                         showCardAt(currentQueueIndex)
                     }
                 }.onFailure { error ->
@@ -108,63 +115,116 @@ class MemorizationPracticeViewModel(
                         id = card.id,
                         front = card.front,
                         back = card.back,
+                        expectedContinuation =
+                            CardGenerator.expectedContinuation(
+                                front = card.front,
+                                back = card.back,
+                            ),
                     ),
                 cardIndex = index + 1,
                 totalCards = dueCards.size,
+                isTypingMode = false,
                 typedAnswer = "",
                 diffTokens = emptyList(),
                 suggestedGrade = null,
                 selectedGrade = null,
+                gradesLocked = false,
             )
         }
     }
 
     private fun revealCard() {
-        if (state.value.phase != PracticePhase.SHOW_FRONT || state.value.isTypingMode) return
-        setState { copy(phase = PracticePhase.REVEALED) }
+        if (state.value.phase != PracticePhase.SHOW_FRONT) return
+        setState {
+            copy(
+                phase = PracticePhase.REVEALED,
+                isTypingMode = false,
+                typedAnswer = "",
+                selectedGrade = null,
+                suggestedGrade = null,
+                gradesLocked = false,
+            )
+        }
+    }
+
+    private fun enableTypingMode() {
+        if (state.value.phase != PracticePhase.SHOW_FRONT) return
+        setState {
+            copy(
+                isTypingMode = true,
+                typedAnswer = "",
+                selectedGrade = null,
+                suggestedGrade = null,
+                gradesLocked = false,
+            )
+        }
     }
 
     private fun evaluateTypedAnswer() {
         val card = state.value.currentCard ?: return
-        val diff = TextDiffHighlighter.diff(card.back, state.value.typedAnswer)
-        val suggested = TextDiffHighlighter.suggestGrade(card.back, state.value.typedAnswer)
+        if (state.value.phase != PracticePhase.SHOW_FRONT || !state.value.isTypingMode) return
+        if (state.value.typedAnswer.isBlank()) return
+
+        val typedAnswer = state.value.typedAnswer.trim()
+        val continuation = card.expectedContinuation
+        val diff = TextDiffHighlighter.diffUserWords(continuation, typedAnswer)
+        val suggested = TextDiffHighlighter.suggestGradeFromChars(continuation, typedAnswer)
         setState {
             copy(
                 phase = PracticePhase.FEEDBACK,
                 diffTokens = diff,
                 suggestedGrade = suggested,
                 selectedGrade = suggested,
+                gradesLocked = true,
             )
         }
     }
 
-    private fun submitGrade(grade: SrsGrade) {
+    private fun selectGrade(grade: SrsGrade) {
+        if (state.value.phase != PracticePhase.REVEALED || state.value.gradesLocked) return
+        setState { copy(selectedGrade = grade) }
+    }
+
+    private fun submitAndAdvance() {
         val cardId = state.value.currentCard?.id ?: return
+        val grade = state.value.selectedGrade ?: return
+
+        when (state.value.phase) {
+            PracticePhase.REVEALED,
+            PracticePhase.FEEDBACK,
+            -> Unit
+            else -> return
+        }
+
         viewModelScope.launch {
             memorizationRepository
                 .submitReview(cardId, grade)
                 .onSuccess {
-                    when (state.value.phase) {
-                        PracticePhase.REVEALED -> {
-                            val back = state.value.currentCard?.back.orEmpty()
-                            setState {
-                                copy(
-                                    phase = PracticePhase.FEEDBACK,
-                                    diffTokens = allCorrectTokens(back),
-                                    selectedGrade = grade,
-                                    suggestedGrade = grade,
-                                )
-                            }
-                        }
-                        PracticePhase.FEEDBACK -> {
-                            setState { copy(selectedGrade = grade) }
-                            advanceToNextCard()
-                        }
-                        else -> Unit
-                    }
+                    recordSessionStats(grade)
+                    advanceToNextCard()
                 }.onFailure { error ->
                     sendEvent(MemorizationPracticeEvent.ShowSnackbar(error.toMemorizationUiText()))
                 }
+        }
+    }
+
+    private fun recordSessionStats(grade: SrsGrade) {
+        setState {
+            copy(
+                sessionReviewed = sessionReviewed + 1,
+                sessionMistakes =
+                    sessionMistakes +
+                        when (grade) {
+                            SrsGrade.AGAIN, SrsGrade.HARD -> 1
+                            SrsGrade.GOOD, SrsGrade.EASY -> 0
+                        },
+                sessionLearned =
+                    sessionLearned +
+                        when (grade) {
+                            SrsGrade.GOOD, SrsGrade.EASY -> 1
+                            SrsGrade.AGAIN, SrsGrade.HARD -> 0
+                        },
+            )
         }
     }
 
@@ -172,12 +232,6 @@ class MemorizationPracticeViewModel(
         currentQueueIndex += 1
         showCardAt(currentQueueIndex)
     }
-
-    private fun allCorrectTokens(text: String): List<DiffToken> =
-        text
-            .split(Regex("\\s+"))
-            .filter { it.isNotBlank() }
-            .map { DiffToken(it, DiffTokenType.CORRECT) }
 }
 
 private fun MemorizationError.toMemorizationUiText(): UiText =

@@ -49,13 +49,13 @@ fun NavGraphBuilder.memorizationGraph(
         val route = backStackEntry.toRoute<MemorizationPracticeRoute>()
         MemorizationPracticeRoot(
             poemId = route.poemId,
-            onBackClick = navController::popPracticeToMemorizationSelect,
+            onBackClick = navController::popPracticeToActiveMemorization,
         )
     }
 }
 
-fun NavController.popPracticeToMemorizationSelect() {
-    navigate(MemorizationSelectRoute) {
+fun NavController.popPracticeToActiveMemorization() {
+    navigate(ActiveMemorizationRoute) {
         popUpTo<MemorizationPracticeRoute> { inclusive = true }
         launchSingleTop = true
     }

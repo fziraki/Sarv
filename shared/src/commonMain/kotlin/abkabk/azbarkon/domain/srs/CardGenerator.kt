@@ -70,4 +70,38 @@ object CardGenerator {
         val visibleCount = (words.size / 2).coerceAtLeast(1)
         return words.take(visibleCount).joinToString(" ") + " ..."
     }
+
+    fun expectedContinuation(front: String, back: String): String {
+        if (front.contains("\n...")) {
+            val backLines = back.lines().map { it.trim() }.filter { it.isNotEmpty() }
+            if (backLines.size <= 1) return back.trim()
+            return backLines.drop(1).joinToString("\n")
+        }
+        if (front.trimEnd().endsWith("...")) {
+            val visiblePart = front.replace(Regex("\\s*\\.\\.\\.\\s*$"), "").trim()
+            val visibleWords = visiblePart.split(Regex("\\s+")).filter { it.isNotBlank() }
+            val allWords = back.split(Regex("\\s+")).filter { it.isNotBlank() }
+            return allWords.drop(visibleWords.size).joinToString(" ")
+        }
+        return back.trim()
+    }
+
+    data class RevealedFrontParts(
+        val prefix: String,
+        val continuation: String,
+        val suffix: String = "",
+    )
+
+    fun revealedFrontParts(front: String, continuation: String): RevealedFrontParts {
+        if (front.contains("\n...")) {
+            val prefix = front.substringBefore("\n...")
+            return RevealedFrontParts(prefix = "$prefix\n ", continuation = continuation)
+        }
+        if (front.trimEnd().endsWith("...")) {
+            val prefix = front.replace(Regex("\\s*\\.\\.\\.\\s*$"), "").trimEnd()
+            val separator = if (prefix.isEmpty()) "" else " "
+            return RevealedFrontParts(prefix = "$prefix$separator", continuation = continuation)
+        }
+        return RevealedFrontParts(prefix = "", continuation = continuation)
+    }
 }

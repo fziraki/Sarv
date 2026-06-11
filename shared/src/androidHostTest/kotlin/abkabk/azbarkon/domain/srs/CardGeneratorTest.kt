@@ -38,4 +38,45 @@ class CardGeneratorTest {
         assertThat(cards).hasSize(1)
         assertThat(cards[0].front.contains("...")).isTrue()
     }
+
+    @Test
+    fun `expectedContinuation returns hidden couplet line`() {
+        val front = "مصرع اول\n..."
+        val back = "مصرع اول\nمصرع دوم"
+
+        assertThat(CardGenerator.expectedContinuation(front, back)).isEqualTo("مصرع دوم")
+    }
+
+    @Test
+    fun `expectedContinuation returns hidden words for masked single line`() {
+        val front = "یک دو ..."
+        val back = "یک دو سه چهار"
+
+        assertThat(CardGenerator.expectedContinuation(front, back)).isEqualTo("سه چهار")
+    }
+
+    @Test
+    fun `revealedFrontParts replaces couplet ellipsis`() {
+        val parts =
+            CardGenerator.revealedFrontParts(
+                front = "مصرع اول\n...",
+                continuation = "مصرع دوم",
+            )
+
+        assertThat(parts.prefix).isEqualTo("مصرع اول\n ")
+        assertThat(parts.continuation).isEqualTo("مصرع دوم")
+    }
+
+    @Test
+    fun `revealedFrontParts replaces masked ellipsis`() {
+        val parts =
+            CardGenerator.revealedFrontParts(
+                front = "یک دو ...",
+                continuation = "سه چهار",
+            )
+
+        assertThat(parts.prefix).isEqualTo("یک دو ")
+        assertThat(parts.continuation).isEqualTo("سه چهار")
+        assertThat(parts.suffix).isEqualTo("")
+    }
 }

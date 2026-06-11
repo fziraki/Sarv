@@ -52,6 +52,14 @@
     <string name="memorization_typing_mode">حالت تایپ</string>
     <string name="memorization_typing_hint">ادامه شعر را بنویسید...</string>
     <string name="memorization_submit_typing">بررسی پاسخ</string>
+    <string name="memorization_next_verse">مصرع بعدی</string>
+    <string name="memorization_reveal_content_description">نمایش پاسخ</string>
+    <string name="memorization_keyboard_content_description">حالت تایپ</string>
+    <string name="memorization_reveal_label">نمایش</string>
+    <string name="memorization_keyboard_label">صفحه کلید</string>
+    <string name="memorization_practice_stat_mistakes">اشتباه</string>
+    <string name="memorization_practice_stat_today">تا امروز</string>
+    <string name="memorization_practice_stat_learned">یادگرفته‌ام</string>
     <string name="memorization_grade_again">دوباره</string>
     <string name="memorization_grade_hard">سخت</string>
     <string name="memorization_grade_good">خوب</string>
