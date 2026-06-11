@@ -5,8 +5,9 @@ import abkabk.azbarkon.features.poems.details.PoemDetailRoot
 import abkabk.azbarkon.features.poems.list.PoemListRoot
 import abkabk.azbarkon.features.poets.details.PoetDetailRoot
 import abkabk.azbarkon.features.poets.list.PoetsListRoot
-import abkabk.azbarkon.features.tasvir_negar.navigation.TasvirNegarRoute
+import abkabk.azbarkon.features.memorization.navigation.navigateToMemorizationPractice
 import abkabk.azbarkon.features.search.navigation.navigateToSearch
+import abkabk.azbarkon.features.tasvir_negar.navigation.TasvirNegarRoute
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -65,6 +66,9 @@ fun NavGraphBuilder.poetsGraph(
             onBackClick = navController::navigateUp,
             onNavigateToTasvirNegar = { poemId ->
                 navController.navigate(TasvirNegarRoute(poemId = poemId))
+            },
+            onNavigateToMemorizationPractice = { poemId ->
+                navController.navigateToMemorizationPractice(poemId = poemId)
             },
         )
     }

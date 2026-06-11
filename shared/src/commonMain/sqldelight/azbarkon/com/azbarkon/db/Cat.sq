@@ -22,3 +22,10 @@ selectById:
 SELECT id, poet_id, text, parent_id, url
 FROM cat
 WHERE id = ?;
+
+selectIdByPoetIdAndText:
+SELECT id, text
+FROM cat
+WHERE poet_id = ?
+  AND text LIKE ?
+LIMIT 1;

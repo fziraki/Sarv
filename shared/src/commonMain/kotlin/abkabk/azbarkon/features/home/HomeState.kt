@@ -6,10 +6,17 @@ import abkabk.azbarkon.domain.model.Poet
 import androidx.compose.runtime.Stable
 
 @Stable
+data class MemorizationHeroUi(
+    val hasActivePoems: Boolean = false,
+    val activePoemCount: Int = 0,
+    val dueCardsToday: Int = 0,
+)
+
+@Stable
 data class HomeState(
     val screenState: UiScreenState = UiScreenState.Idle,
     val poets: List<Poet> = emptyList(),
-    val isNewMemorization: Boolean = true,
+    val memorizationHero: MemorizationHeroUi = MemorizationHeroUi(),
 )
 
 sealed interface HomeAction {
@@ -28,6 +35,10 @@ sealed interface HomeAction {
     data object OnSearchClick : HomeAction
 
     data object OnTasvirNegarClick : HomeAction
+
+    data object OnMemorizationClick : HomeAction
+
+    data object OnReviewClick : HomeAction
 }
 
 sealed interface HomeEvent {
@@ -46,4 +57,10 @@ sealed interface HomeEvent {
     data object NavigateToSearch : HomeEvent
 
     data object NavigateToTasvirNegar : HomeEvent
+
+    data object NavigateToMemorizationSelect : HomeEvent
+
+    data object NavigateToMemorizationPractice : HomeEvent
+
+    data object NavigateToActiveMemorization : HomeEvent
 }

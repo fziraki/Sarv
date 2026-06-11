@@ -1,0 +1,12 @@
+CREATE TABLE review_log (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    card_id INTEGER NOT NULL,
+    grade TEXT NOT NULL,
+    previous_interval INTEGER NOT NULL,
+    new_interval INTEGER NOT NULL,
+    review_time INTEGER NOT NULL
+);
+
+insertReviewLog:
+INSERT INTO review_log(card_id, grade, previous_interval, new_interval, review_time)
+VALUES (?, ?, ?, ?, ?);

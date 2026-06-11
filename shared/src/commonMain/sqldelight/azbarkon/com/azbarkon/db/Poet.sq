@@ -25,3 +25,9 @@ SELECT
     cat.url AS cat_url
 FROM poet
 LEFT JOIN cat ON cat.id = poet.cat_id;
+
+selectIdByNameLike:
+SELECT id
+FROM poet
+WHERE name LIKE ?
+LIMIT 1;

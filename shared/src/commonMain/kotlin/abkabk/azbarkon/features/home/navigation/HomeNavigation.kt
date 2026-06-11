@@ -13,6 +13,9 @@ fun NavGraphBuilder.homeGraph(
     onBackFromMyPoems: () -> Unit,
     onNavigateToPoemDetailFromMyPoems: (Int) -> Unit,
     onNavigateToTasvirNegar: () -> Unit,
+    onNavigateToMemorizationSelect: () -> Unit,
+    onNavigateToMemorizationPractice: () -> Unit,
+    onNavigateToActiveMemorization: () -> Unit,
 ) {
     composable<HomeRoute> {
         HomeRoot(
@@ -21,6 +24,9 @@ fun NavGraphBuilder.homeGraph(
             onNavigateToMyPoems = onNavigateToMyPoems,
             onNavigateToSearch = onNavigateToSearch,
             onNavigateToTasvirNegar = onNavigateToTasvirNegar,
+            onNavigateToMemorizationSelect = onNavigateToMemorizationSelect,
+            onNavigateToMemorizationPractice = onNavigateToMemorizationPractice,
+            onNavigateToActiveMemorization = onNavigateToActiveMemorization,
         )
     }
 

@@ -12,6 +12,7 @@ data class PoemDetailState(
     val verses: List<PoemVerseUi> = emptyList(),
     val isLiked: Boolean = false,
     val isBookmarked: Boolean = false,
+    val isMemorizing: Boolean = false,
     val highlightQuery: String = "",
     val findInput: String = "",
     val isFindBarVisible: Boolean = false,
@@ -52,4 +53,6 @@ sealed interface PoemDetailEvent {
     ) : PoemDetailEvent
 
     data object NavigateToTasvirNegar : PoemDetailEvent
+
+    data object NavigateToMemorizationPractice : PoemDetailEvent
 }
