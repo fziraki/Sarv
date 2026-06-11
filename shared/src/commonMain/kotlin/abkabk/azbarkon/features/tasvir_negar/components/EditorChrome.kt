@@ -7,7 +7,6 @@ import abkabk.azbarkon.features.tasvir_negar.model.TasvirNegarColors
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,23 +42,24 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.arrow_back
 import azbarkoncmp.shared.generated.resources.cd_back
+import azbarkoncmp.shared.generated.resources.download
 import azbarkoncmp.shared.generated.resources.ic_color
 import azbarkoncmp.shared.generated.resources.ic_delete
 import azbarkoncmp.shared.generated.resources.ic_edit
 import azbarkoncmp.shared.generated.resources.ic_grid
-import azbarkoncmp.shared.generated.resources.ic_help
 import azbarkoncmp.shared.generated.resources.ic_sticker
 import azbarkoncmp.shared.generated.resources.ic_text_format
 import azbarkoncmp.shared.generated.resources.ic_texture
 import azbarkoncmp.shared.generated.resources.ic_wallpaper
+import azbarkoncmp.shared.generated.resources.reset_image
 import azbarkoncmp.shared.generated.resources.share
+import azbarkoncmp.shared.generated.resources.tasvir_eraser
 import azbarkoncmp.shared.generated.resources.tasvir_negar_save
 import azbarkoncmp.shared.generated.resources.text_fields
 import org.jetbrains.compose.resources.painterResource
@@ -67,8 +67,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun EditorHeader(
-    onSaveClick: () -> Unit,
-    onHelpClick: () -> Unit,
+    onResetClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -77,8 +76,7 @@ fun EditorHeader(
             modifier
                 .fillMaxWidth()
                 .height(54.dp)
-                .background(TasvirNegarColors.brown)
-                .padding(horizontal = 16.dp),
+                .background(TasvirNegarColors.brown),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onBackClick) {
@@ -91,33 +89,23 @@ fun EditorHeader(
 
         Box(modifier = Modifier.weight(1f))
 
-        IconButton(
-            onClick = onHelpClick,
-            modifier = Modifier.padding(end = 8.dp).size(24.dp),
-        ) {
+        IconButton(onClick = onResetClick) {
             Icon(
-                painter = painterResource(Res.drawable.ic_help),
+                painter = painterResource(Res.drawable.reset_image),
                 contentDescription = null,
-                tint = secondary,
+                tint = Color.Unspecified,
                 modifier = Modifier.size(24.dp),
             )
         }
-
-        Text(
-            text = stringResource(Res.string.tasvir_negar_save),
-            modifier = Modifier.clickable(onClick = onSaveClick),
-            color = secondary,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
-        )
     }
 }
 
 @Composable
 fun EditorFooter(
-    onShareClick: () -> Unit,
+    onEraserClick: () -> Unit,
+    onDownloadClick: () -> Unit,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit,
+    onShareClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -129,10 +117,19 @@ fun EditorFooter(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        IconButton(onClick = onDeleteClick) {
+
+        IconButton(onClick = onDownloadClick) {
+            Icon(
+                painter = painterResource(Res.drawable.download),
+                contentDescription = stringResource(Res.string.tasvir_negar_save),
+                tint = Color.Unspecified,
+            )
+        }
+
+        IconButton(onClick = onEraserClick) {
             Icon(
                 painter = painterResource(Res.drawable.ic_delete),
-                contentDescription = null,
+                contentDescription = stringResource(Res.string.tasvir_eraser),
                 tint = Color.Unspecified,
             )
         }
@@ -141,7 +138,7 @@ fun EditorFooter(
             Icon(
                 painter = painterResource(Res.drawable.ic_edit),
                 contentDescription = null,
-                tint = secondary,
+                tint = Color.Unspecified,
             )
         }
 

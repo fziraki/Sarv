@@ -15,7 +15,6 @@ data class TasvirNegarState(
     val document: EditorDocument = EditorDocument(),
     val isExporting: Boolean = false,
     val exportForShare: Boolean = false,
-    val showHelpDialog: Boolean = false,
 )
 
 sealed interface TasvirNegarAction {
@@ -31,6 +30,8 @@ sealed interface TasvirNegarAction {
 
     data object OnResetCanvas : TasvirNegarAction
 
+    data object OnEraserClick : TasvirNegarAction
+
     data object OnToggleEditPanel : TasvirNegarAction
 
     data object OnShowColorOptions : TasvirNegarAction
@@ -44,10 +45,6 @@ sealed interface TasvirNegarAction {
     data object OnToggleGrid : TasvirNegarAction
 
     data object OnGalleryClick : TasvirNegarAction
-
-    data object OnShowHelp : TasvirNegarAction
-
-    data object OnDismissHelp : TasvirNegarAction
 
     data class OnLayerSelect(
         val layerId: LayerId?,

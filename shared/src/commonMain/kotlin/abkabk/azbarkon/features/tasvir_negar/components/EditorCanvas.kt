@@ -15,7 +15,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +49,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -60,15 +58,12 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.close
 import azbarkoncmp.shared.generated.resources.ic_align_center
 import azbarkoncmp.shared.generated.resources.ic_align_left
 import azbarkoncmp.shared.generated.resources.ic_align_right
 import azbarkoncmp.shared.generated.resources.ic_bold
-import azbarkoncmp.shared.generated.resources.ic_pan
 import abkabk.azbarkon.features.tasvir_negar.util.tasvirNegarPainter
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.max
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -78,7 +73,6 @@ fun EditorCanvas(
     onLayerDrag: (LayerId, abkabk.azbarkon.features.tasvir_negar.model.LayerOffset) -> Unit,
     onPoemTextChange: (String) -> Unit,
     onPoetNameChange: (String) -> Unit,
-    onRemoveSelectedLayer: () -> Unit,
     onTextGravityChange: (TextGravity) -> Unit,
     onToggleTextBold: () -> Unit,
     onCaptureReady: (suspend () -> ByteArray?) -> Unit,
@@ -95,6 +89,14 @@ fun EditorCanvas(
         val canvasSize = minOf(maxWidth, maxHeight)
         val minLayerWidth = canvasSize * 0.2f
         val maxLayerWidth = canvasSize * 0.95f
+        val isPoemEditing =
+            showEditChrome &&
+                document.isEditPanelExpanded &&
+                document.selectedLayer == LayerId.PoemText
+        val isPoetEditing =
+            showEditChrome &&
+                document.isEditPanelExpanded &&
+                document.selectedLayer == LayerId.PoetName
 
         Box(
             modifier =
@@ -119,127 +121,122 @@ fun EditorCanvas(
                 }
 
                 if (document.poemText.visible) {
-                DraggableLayer(
-                    offset = document.poemText.offset,
-                    selected = document.selectedLayer == LayerId.PoemText,
-                    showChrome = showEditChrome,
-                    onSelect = { onLayerSelect(LayerId.PoemText) },
-                    onDrag = { onLayerDrag(LayerId.PoemText, it) },
-                    onRemove = onRemoveSelectedLayer,
-                    showTextControls = showEditChrome && document.selectedLayer == LayerId.PoemText,
-                    isBold = document.poemText.isBold,
-                    onTextGravityChange = onTextGravityChange,
-                    onToggleBold = onToggleTextBold,
-                    minWidth = minLayerWidth,
-                ) {
-                    DirectionalTextField(
-                        value = document.poemText.text,
-                        onValueChange = onPoemTextChange,
-                        readOnly = !showEditChrome,
-                        textStyle =
-                            TextStyle(
-                                color = document.poemText.color,
-                                fontSize = (document.poemText.baseFontSizeSp + document.sizeProgress).sp,
-                                fontWeight =
-                                    if (document.poemText.isBold) {
-                                        FontWeight.Bold
-                                    } else {
-                                        FontWeight.Normal
-                                    },
-                                textAlign = textAlignForGravity(document.poemText.gravity),
-                                fontFamily = fontFamily,
-                            ),
-                        modifier =
-                            Modifier
-                                .widthIn(min = minLayerWidth, max = maxLayerWidth)
-                                .wrapContentWidth(align = Alignment.CenterHorizontally),
-                    )
+                    DraggableLayer(
+                        offset = document.poemText.offset,
+                        selected = document.selectedLayer == LayerId.PoemText,
+                        showChrome = showEditChrome,
+                        onSelect = { onLayerSelect(LayerId.PoemText) },
+                        onDrag = { onLayerDrag(LayerId.PoemText, it) },
+                        showTextControls = showEditChrome && document.selectedLayer == LayerId.PoemText,
+                        isBold = document.poemText.isBold,
+                        onTextGravityChange = onTextGravityChange,
+                        onToggleBold = onToggleTextBold,
+                        minWidth = minLayerWidth,
+                    ) {
+                        DirectionalTextField(
+                            value = document.poemText.text,
+                            onValueChange = onPoemTextChange,
+                            readOnly = !isPoemEditing,
+                            textStyle =
+                                TextStyle(
+                                    color = document.poemText.color,
+                                    fontSize = (document.poemText.baseFontSizeSp + document.sizeProgress).sp,
+                                    fontWeight =
+                                        if (document.poemText.isBold) {
+                                            FontWeight.Bold
+                                        } else {
+                                            FontWeight.Normal
+                                        },
+                                    textAlign = textAlignForGravity(document.poemText.gravity),
+                                    fontFamily = fontFamily,
+                                ),
+                            modifier =
+                                Modifier
+                                    .widthIn(min = minLayerWidth, max = maxLayerWidth)
+                                    .wrapContentWidth(align = Alignment.CenterHorizontally),
+                        )
+                    }
                 }
-            }
 
-            if (document.topDivider.visible && document.topDivider.assetId != null) {
-                DraggableLayer(
-                    offset = document.topDivider.offset,
-                    selected = document.selectedLayer == LayerId.TopDivider,
-                    showChrome = showEditChrome,
-                    onSelect = { onLayerSelect(LayerId.TopDivider) },
-                    onDrag = { onLayerDrag(LayerId.TopDivider, it) },
-                    onRemove = onRemoveSelectedLayer,
-                    alignment = Alignment.TopCenter,
-                    minWidth = minLayerWidth,
-                ) {
-                    DividerImage(
-                        assetId = document.topDivider.assetId,
-                        width = document.topDivider.baseWidthDp + (document.sizeProgress * 4).dp,
-                        colorFilter = document.topDivider.colorFilter,
-                        flipVertical = false,
-                    )
+                if (document.topDivider.visible && document.topDivider.assetId != null) {
+                    DraggableLayer(
+                        offset = document.topDivider.offset,
+                        selected = document.selectedLayer == LayerId.TopDivider,
+                        showChrome = showEditChrome,
+                        onSelect = { onLayerSelect(LayerId.TopDivider) },
+                        onDrag = { onLayerDrag(LayerId.TopDivider, it) },
+                        alignment = Alignment.TopCenter,
+                        minWidth = minLayerWidth,
+                    ) {
+                        DividerImage(
+                            assetId = document.topDivider.assetId,
+                            width = document.topDivider.baseWidthDp + (document.sizeProgress * 4).dp,
+                            colorFilter = document.topDivider.colorFilter,
+                            flipVertical = false,
+                        )
+                    }
                 }
-            }
 
-            if (document.bottomDivider.visible && document.bottomDivider.assetId != null) {
-                DraggableLayer(
-                    offset = document.bottomDivider.offset,
-                    selected = document.selectedLayer == LayerId.BottomDivider,
-                    showChrome = showEditChrome,
-                    onSelect = { onLayerSelect(LayerId.BottomDivider) },
-                    onDrag = { onLayerDrag(LayerId.BottomDivider, it) },
-                    onRemove = onRemoveSelectedLayer,
-                    alignment = Alignment.BottomCenter,
-                    minWidth = minLayerWidth,
-                ) {
-                    DividerImage(
-                        assetId = document.bottomDivider.assetId,
-                        width = document.bottomDivider.baseWidthDp + (document.sizeProgress * 4).dp,
-                        colorFilter = document.bottomDivider.colorFilter,
-                        flipVertical = true,
-                    )
+                if (document.bottomDivider.visible && document.bottomDivider.assetId != null) {
+                    DraggableLayer(
+                        offset = document.bottomDivider.offset,
+                        selected = document.selectedLayer == LayerId.BottomDivider,
+                        showChrome = showEditChrome,
+                        onSelect = { onLayerSelect(LayerId.BottomDivider) },
+                        onDrag = { onLayerDrag(LayerId.BottomDivider, it) },
+                        alignment = Alignment.BottomCenter,
+                        minWidth = minLayerWidth,
+                    ) {
+                        DividerImage(
+                            assetId = document.bottomDivider.assetId,
+                            width = document.bottomDivider.baseWidthDp + (document.sizeProgress * 4).dp,
+                            colorFilter = document.bottomDivider.colorFilter,
+                            flipVertical = true,
+                        )
+                    }
                 }
-            }
 
-            if (document.poetName.visible) {
-                DraggableLayer(
-                    offset = document.poetName.offset,
-                    selected = document.selectedLayer == LayerId.PoetName,
-                    showChrome = showEditChrome,
-                    onSelect = { onLayerSelect(LayerId.PoetName) },
-                    onDrag = { onLayerDrag(LayerId.PoetName, it) },
-                    onRemove = onRemoveSelectedLayer,
-                    alignment = Alignment.Center,
-                    minWidth = minLayerWidth,
-                ) {
-                    DirectionalTextField(
-                        value = document.poetName.text,
-                        onValueChange = onPoetNameChange,
-                        readOnly = !showEditChrome,
-                        textStyle =
-                            TextStyle(
-                                color = document.poetName.color,
-                                fontSize = (document.poetName.baseFontSizeSp + document.sizeProgress).sp,
-                                textAlign = TextAlign.Center,
-                                fontFamily = fontFamily,
-                            ),
-                        modifier =
-                            Modifier
-                                .widthIn(min = minLayerWidth, max = maxLayerWidth)
-                                .wrapContentWidth(align = Alignment.CenterHorizontally),
-                    )
+                if (document.poetName.visible) {
+                    DraggableLayer(
+                        offset = document.poetName.offset,
+                        selected = document.selectedLayer == LayerId.PoetName,
+                        showChrome = showEditChrome,
+                        onSelect = { onLayerSelect(LayerId.PoetName) },
+                        onDrag = { onLayerDrag(LayerId.PoetName, it) },
+                        alignment = Alignment.Center,
+                        minWidth = minLayerWidth,
+                    ) {
+                        DirectionalTextField(
+                            value = document.poetName.text,
+                            onValueChange = onPoetNameChange,
+                            readOnly = !isPoetEditing,
+                            textStyle =
+                                TextStyle(
+                                    color = document.poetName.color,
+                                    fontSize = (document.poetName.baseFontSizeSp + document.sizeProgress).sp,
+                                    textAlign = TextAlign.Center,
+                                    fontFamily = fontFamily,
+                                ),
+                            modifier =
+                                Modifier
+                                    .widthIn(min = minLayerWidth, max = maxLayerWidth)
+                                    .wrapContentWidth(align = Alignment.CenterHorizontally),
+                        )
+                    }
                 }
-            }
 
-            if (document.sticker.visible) {
-                DraggableLayer(
-                    offset = document.sticker.offset,
-                    selected = document.selectedLayer == LayerId.Sticker,
-                    showChrome = showEditChrome,
-                    onSelect = { onLayerSelect(LayerId.Sticker) },
-                    onDrag = { onLayerDrag(LayerId.Sticker, it) },
-                    onRemove = onRemoveSelectedLayer,
-                    minWidth = minLayerWidth,
-                ) {
-                    StickerContent(document = document)
+                if (document.sticker.visible) {
+                    DraggableLayer(
+                        offset = document.sticker.offset,
+                        selected = document.selectedLayer == LayerId.Sticker,
+                        showChrome = showEditChrome,
+                        onSelect = { onLayerSelect(LayerId.Sticker) },
+                        onDrag = { onLayerDrag(LayerId.Sticker, it) },
+                        minWidth = minLayerWidth,
+                    ) {
+                        StickerContent(document = document)
+                    }
                 }
-            }
             }
         }
     }
@@ -272,7 +269,6 @@ private fun DraggableLayer(
     showChrome: Boolean,
     onSelect: () -> Unit,
     onDrag: (abkabk.azbarkon.features.tasvir_negar.model.LayerOffset) -> Unit,
-    onRemove: () -> Unit,
     alignment: Alignment = Alignment.Center,
     showTextControls: Boolean = false,
     isBold: Boolean = false,
@@ -313,8 +309,6 @@ private fun DraggableLayer(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = alignment,
     ) {
-        var contentWidth by remember(minWidth) { mutableStateOf(minWidth) }
-
         Column(
             modifier =
                 Modifier
@@ -322,16 +316,7 @@ private fun DraggableLayer(
                         translationX = displayOffset.x.toPx()
                         translationY = displayOffset.y.toPx()
                     }
-                    .wrapContentWidth()
-                    .then(
-                        if (showChrome) {
-                            Modifier.pointerInput(Unit) {
-                                detectTapGestures { onSelect() }
-                            }
-                        } else {
-                            Modifier
-                        },
-                    ),
+                    .wrapContentWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(
@@ -339,15 +324,31 @@ private fun DraggableLayer(
                     Modifier
                         .widthIn(min = minWidth)
                         .wrapContentWidth()
-                        .onSizeChanged { size ->
-                            contentWidth =
-                                maxOf(
-                                    with(density) { size.width.toDp() },
-                                    minWidth,
-                                )
-                        }.padding(4.dp)
+                        .padding(4.dp)
                         .then(if (displaySelected) Modifier.border(1.dp, Color.White) else Modifier)
-                        .padding(8.dp),
+                        .padding(8.dp)
+                        .then(
+                            if (showChrome) {
+                                Modifier
+                                    .pointerInput(Unit) {
+                                        detectTapGestures { onSelect() }
+                                    }.pointerInput(Unit) {
+                                        detectDragGestures(
+                                            onDragStart = {
+                                                onSelect()
+                                                dragDeltaPx = Offset.Zero
+                                            },
+                                            onDragEnd = { commitDrag() },
+                                            onDragCancel = { dragDeltaPx = Offset.Zero },
+                                        ) { change, dragAmount ->
+                                            change.consume()
+                                            dragDeltaPx += dragAmount
+                                        }
+                                    }
+                            } else {
+                                Modifier
+                            },
+                        ),
             ) {
                 content()
             }
@@ -355,108 +356,38 @@ private fun DraggableLayer(
             if (displaySelected) {
                 val showFormattingControls =
                     showTextControls && onTextGravityChange != null && onToggleBold != null
-                val controlBarWidth =
-                    maxOf(
-                        contentWidth,
-                        layerControlBarMinWidth(showFormattingControls),
+                if (showFormattingControls) {
+                    TextFormattingBar(
+                        isBold = isBold,
+                        onTextGravityChange = onTextGravityChange ?: {},
+                        onToggleBold = onToggleBold ?: {},
                     )
-                LayerControlBar(
-                    showTextControls = showFormattingControls,
-                    isBold = isBold,
-                    onTextGravityChange = onTextGravityChange ?: {},
-                    onToggleBold = onToggleBold ?: {},
-                    onRemove = onRemove,
-                    onDragStart = { dragDeltaPx = Offset.Zero },
-                    onDragEnd = { commitDrag() },
-                    onDragCancel = { dragDeltaPx = Offset.Zero },
-                    onDrag = { dragDeltaPx += it },
-                    modifier = Modifier.width(controlBarWidth),
-                )
+                }
             }
         }
     }
 }
 
-// close(24) + 4×format button(28) + 3×gap(2) + pan(32)
-private val LayerControlBarMinWidthWithTextControls = 174.dp
-
-// close(24) + pan(32)
-private val LayerControlBarMinWidthCompact = 56.dp
-
-private fun layerControlBarMinWidth(showTextControls: Boolean): Dp =
-    if (showTextControls) {
-        LayerControlBarMinWidthWithTextControls
-    } else {
-        LayerControlBarMinWidthCompact
-    }
-
 @Composable
-private fun LayerControlBar(
-    showTextControls: Boolean,
+private fun TextFormattingBar(
     isBold: Boolean,
     onTextGravityChange: (TextGravity) -> Unit,
     onToggleBold: () -> Unit,
-    onRemove: () -> Unit,
-    onDragStart: () -> Unit,
-    onDragEnd: () -> Unit,
-    onDragCancel: () -> Unit,
-    onDrag: (Offset) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.padding(top = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Icon(
-            painter = painterResource(Res.drawable.close),
-            contentDescription = null,
-            tint = Color.Red,
-            modifier =
-                Modifier
-                    .size(24.dp)
-                    .clickable { onRemove() },
+        FormattingIcon(
+            drawable = Res.drawable.ic_bold,
+            tint = if (isBold) secondary else Color.White,
+            onClick = onToggleBold,
         )
-
-        if (showTextControls) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                FormattingIcon(
-                    drawable = Res.drawable.ic_bold,
-                    tint = if (isBold) secondary else Color.White,
-                    onClick = onToggleBold,
-                )
-                FormattingIcon(Res.drawable.ic_align_left) { onTextGravityChange(TextGravity.Start) }
-                FormattingIcon(Res.drawable.ic_align_center) { onTextGravityChange(TextGravity.Center) }
-                FormattingIcon(Res.drawable.ic_align_right) { onTextGravityChange(TextGravity.End) }
-            }
-        }
-
-        Box(
-            modifier =
-                Modifier
-                    .size(32.dp)
-                    .pointerInput(Unit) {
-                        detectDragGestures(
-                            onDragStart = { onDragStart() },
-                            onDragEnd = { onDragEnd() },
-                            onDragCancel = { onDragCancel() },
-                        ) { change, dragAmount ->
-                            change.consume()
-                            onDrag(dragAmount)
-                        }
-                    },
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_pan),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(20.dp),
-            )
-        }
+        FormattingIcon(Res.drawable.ic_align_left) { onTextGravityChange(TextGravity.Start) }
+        FormattingIcon(Res.drawable.ic_align_center) { onTextGravityChange(TextGravity.Center) }
+        FormattingIcon(Res.drawable.ic_align_right) { onTextGravityChange(TextGravity.End) }
     }
 }
 

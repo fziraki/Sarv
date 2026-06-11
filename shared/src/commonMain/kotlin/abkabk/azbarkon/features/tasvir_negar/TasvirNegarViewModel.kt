@@ -55,6 +55,12 @@ class TasvirNegarViewModel(
 
             TasvirNegarAction.OnResetCanvas -> resetCanvas()
 
+            TasvirNegarAction.OnEraserClick -> {
+                if (state.value.document.selectedLayer != null) {
+                    removeSelectedLayer()
+                }
+            }
+
             TasvirNegarAction.OnToggleEditPanel -> toggleEditPanel()
             TasvirNegarAction.OnShowColorOptions -> showOptionPanel(OptionPanelMode.Color)
             TasvirNegarAction.OnShowShapeOptions -> showOptionPanel(OptionPanelMode.Shape)
@@ -62,8 +68,6 @@ class TasvirNegarViewModel(
             TasvirNegarAction.OnEnterText -> enterText()
             TasvirNegarAction.OnToggleGrid -> toggleGrid()
             TasvirNegarAction.OnGalleryClick -> requestGalleryPick()
-            TasvirNegarAction.OnShowHelp -> setState { copy(showHelpDialog = true) }
-            TasvirNegarAction.OnDismissHelp -> setState { copy(showHelpDialog = false) }
 
             is TasvirNegarAction.OnLayerSelect -> selectLayer(action.layerId)
             is TasvirNegarAction.OnLayerDrag -> updateLayerOffset(action.layerId, action.offset)

@@ -20,11 +20,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,10 +36,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.clear_cancel
-import azbarkoncmp.shared.generated.resources.tasvir_help_explanation
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -119,30 +112,18 @@ fun TasvirNegarScreen(
     onCaptureReady: (suspend () -> ByteArray?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (state.showHelpDialog) {
-        AlertDialog(
-            onDismissRequest = { onAction(TasvirNegarAction.OnDismissHelp) },
-            text = { Text(stringResource(Res.string.tasvir_help_explanation)) },
-            confirmButton = {
-                TextButton(onClick = { onAction(TasvirNegarAction.OnDismissHelp) }) {
-                    Text(stringResource(Res.string.clear_cancel))
-                }
-            },
-        )
-    }
-
-        Scaffold(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(Color.Black),
-            topBar = {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    EditorHeader(
-                        onSaveClick = { onAction(TasvirNegarAction.OnSaveClick) },
-                        onHelpClick = { onAction(TasvirNegarAction.OnShowHelp) },
-                        onBackClick = onBackClick,
-                    )
+    Scaffold(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black),
+        topBar = {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                EditorHeader(
+                    onResetClick = { onAction(TasvirNegarAction.OnResetCanvas) },
+                    onBackClick = onBackClick,
+                )
+                if (!state.isExporting) {
                     OptionsRow(
                         mode = state.document.activeOptionPanel,
                         onColorClick = { onAction(TasvirNegarAction.OnColorOptionClick(it)) },
@@ -150,58 +131,54 @@ fun TasvirNegarScreen(
                         onFontClick = { onAction(TasvirNegarAction.OnFontOptionClick(it)) },
                     )
                 }
-            },
-            bottomBar = {
-
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    if (!state.isExporting && state.document.isEditPanelExpanded) {
-                        EditToolbar(onAction = onAction)
-                    }
-
-                    EditorFooter(
-                        onShareClick = { onAction(TasvirNegarAction.OnShareClick) },
-                        onEditClick = { onAction(TasvirNegarAction.OnToggleEditPanel) },
-                        onDeleteClick = { onAction(TasvirNegarAction.OnResetCanvas) },
-                    )
-                }
             }
-        ) {
-
-            Box(
-                modifier = Modifier.fillMaxSize().padding(vertical = 128.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                EditorCanvas(
-                    document = state.document,
-                    onLayerSelect = { onAction(TasvirNegarAction.OnLayerSelect(it)) },
-                    onLayerDrag = { layerId, offset ->
-                        onAction(TasvirNegarAction.OnLayerDrag(layerId, offset))
-                    },
-                    onPoemTextChange = { onAction(TasvirNegarAction.OnPoemTextChange(it)) },
-                    onPoetNameChange = { onAction(TasvirNegarAction.OnPoetNameChange(it)) },
-                    onRemoveSelectedLayer = { onAction(TasvirNegarAction.OnRemoveSelectedLayer) },
-                    onTextGravityChange = { onAction(TasvirNegarAction.OnTextGravityChange(it)) },
-                    onToggleTextBold = { onAction(TasvirNegarAction.OnToggleTextBold) },
-                    onCaptureReady = onCaptureReady,
-                    showEditChrome = !state.isExporting,
-                    modifier = Modifier.fillMaxSize(),
-                )
-
+        },
+        bottomBar = {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 if (!state.isExporting && state.document.isEditPanelExpanded) {
-                    VerticalSizeSlider(
-                        progress = state.document.sizeProgress,
-                        onProgressChange = { onAction(TasvirNegarAction.OnSizeProgressChange(it)) },
-                        modifier =
-                            Modifier
-                                .align(Alignment.CenterEnd)
-                                .padding(end = 4.dp),
-                    )
+                    EditToolbar(onAction = onAction)
                 }
 
+                EditorFooter(
+                    onEraserClick = { onAction(TasvirNegarAction.OnEraserClick) },
+                    onDownloadClick = { onAction(TasvirNegarAction.OnSaveClick) },
+                    onEditClick = { onAction(TasvirNegarAction.OnToggleEditPanel) },
+                    onShareClick = { onAction(TasvirNegarAction.OnShareClick) },
+                )
             }
+        },
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize().padding(vertical = 128.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            EditorCanvas(
+                document = state.document,
+                onLayerSelect = { onAction(TasvirNegarAction.OnLayerSelect(it)) },
+                onLayerDrag = { layerId, offset ->
+                    onAction(TasvirNegarAction.OnLayerDrag(layerId, offset))
+                },
+                onPoemTextChange = { onAction(TasvirNegarAction.OnPoemTextChange(it)) },
+                onPoetNameChange = { onAction(TasvirNegarAction.OnPoetNameChange(it)) },
+                onTextGravityChange = { onAction(TasvirNegarAction.OnTextGravityChange(it)) },
+                onToggleTextBold = { onAction(TasvirNegarAction.OnToggleTextBold) },
+                onCaptureReady = onCaptureReady,
+                showEditChrome = !state.isExporting,
+                modifier = Modifier.fillMaxSize(),
+            )
 
+            if (!state.isExporting && state.document.isEditPanelExpanded) {
+                VerticalSizeSlider(
+                    progress = state.document.sizeProgress,
+                    onProgressChange = { onAction(TasvirNegarAction.OnSizeProgressChange(it)) },
+                    modifier =
+                        Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(end = 4.dp),
+                )
+            }
         }
-
+    }
 }
 
 @Preview
