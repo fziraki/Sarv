@@ -76,7 +76,10 @@ private fun NavDestination?.isRootTabDestination(): Boolean =
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AzbarkonNavigation(initialPoemId: Int? = null) {
+fun AzbarkonNavigation(
+    initialPoemId: Int? = null,
+    openMemorizationPractice: Boolean = false,
+) {
     val navController = rememberNavController()
     val appState = rememberAzbarkonAppState()
 
@@ -85,6 +88,12 @@ fun AzbarkonNavigation(initialPoemId: Int? = null) {
             navController.navigate(PoemDetailRoute(poemId = poemId)) {
                 launchSingleTop = true
             }
+        }
+    }
+
+    LaunchedEffect(openMemorizationPractice) {
+        if (openMemorizationPractice) {
+            navController.navigateToMemorizationPractice(poemId = null)
         }
     }
 

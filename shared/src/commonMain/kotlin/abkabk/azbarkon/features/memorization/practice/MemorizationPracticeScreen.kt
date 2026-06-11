@@ -5,7 +5,11 @@ import abkabk.azbarkon.core.ui.rememberKeyboardLiftPx
 import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
+import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.asString
+import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
+import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
+import abkabk.azbarkon.features.memorization.practice.notifications.rememberMemorizationReviewNotificationPermissionRequester
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
 import abkabk.azbarkon.domain.srs.CardGenerator
 import abkabk.azbarkon.domain.srs.DiffTokenType
@@ -51,6 +55,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -83,6 +88,7 @@ import azbarkoncmp.shared.generated.resources.memorization_practice_stat_learned
 import azbarkoncmp.shared.generated.resources.memorization_practice_stat_mistakes
 import azbarkoncmp.shared.generated.resources.memorization_practice_stat_today
 import azbarkoncmp.shared.generated.resources.memorization_practice_title
+import azbarkoncmp.shared.generated.resources.memorization_review_notification_enabled
 import azbarkoncmp.shared.generated.resources.memorization_reveal_content_description
 import azbarkoncmp.shared.generated.resources.memorization_reveal_label
 import azbarkoncmp.shared.generated.resources.memorization_submit_typing
@@ -90,8 +96,10 @@ import azbarkoncmp.shared.generated.resources.memorization_typing_hint
 import azbarkoncmp.shared.generated.resources.reveal_eye
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import kotlinx.coroutines.launch
 
 private val PracticePrimaryButtonHeight = 52.dp
 private val PracticeModeIconSize = 48.dp
@@ -104,7 +112,26 @@ fun MemorizationPracticeRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.ui_base.UiText?>(null) }
+    val permissionGateway: NotificationPermissionGateway = koinInject()
+    val reviewNotificationCoordinator: MemorizationReviewNotificationCoordinator = koinInject()
+    val scope = rememberCoroutineScope()
+    var notificationsEnabled by remember { mutableStateOf(permissionGateway.areNotificationsEnabled()) }
+    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
+
+    val requestNotificationPermission =
+        rememberMemorizationReviewNotificationPermissionRequester { granted ->
+            notificationsEnabled = granted
+            if (granted) {
+                scope.launch {
+                    reviewNotificationCoordinator.sync()
+                }
+                snackbarMessage = UiText.Resource(Res.string.memorization_review_notification_enabled)
+            }
+        }
+
+    LaunchedEffect(Unit) {
+        notificationsEnabled = permissionGateway.areNotificationsEnabled()
+    }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -128,6 +155,8 @@ fun MemorizationPracticeRoot(
         MemorizationPracticeScreen(
             state = state,
             onAction = viewModel::onAction,
+            notificationsEnabled = notificationsEnabled,
+            onAlarmClick = requestNotificationPermission,
         )
     }
 }
@@ -136,6 +165,8 @@ fun MemorizationPracticeRoot(
 fun MemorizationPracticeScreen(
     state: MemorizationPracticeState,
     onAction: (MemorizationPracticeAction) -> Unit,
+    notificationsEnabled: Boolean = false,
+    onAlarmClick: (() -> Unit)? = null,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -143,6 +174,8 @@ fun MemorizationPracticeScreen(
             Header(
                 title = stringResource(Res.string.memorization_practice_title),
                 onBackClick = { onAction(MemorizationPracticeAction.OnBackClick) },
+                onAlarmClick = onAlarmClick,
+                isAlarmEnabled = notificationsEnabled,
             )
         },
         bottomBar = {

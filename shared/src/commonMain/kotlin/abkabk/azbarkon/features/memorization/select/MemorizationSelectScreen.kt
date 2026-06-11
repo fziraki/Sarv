@@ -2,18 +2,17 @@ package abkabk.azbarkon.features.memorization.select
 
 import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
-import abkabk.azbarkon.ui.components.AzbarkonSecondaryButton
+import abkabk.azbarkon.features.memorization.MemorizationHeroSection
+import abkabk.azbarkon.features.memorization.MemorizationOptionRow
+import abkabk.azbarkon.features.memorization.QuickStartCard
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,12 +20,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.maktab
+import azbarkoncmp.shared.generated.resources.memorization_active_empty
 import azbarkoncmp.shared.generated.resources.memorization_active_poems
-import azbarkoncmp.shared.generated.resources.memorization_quick_start
-import azbarkoncmp.shared.generated.resources.memorization_quick_start_baba_taher
-import azbarkoncmp.shared.generated.resources.memorization_quick_start_hafez
-import azbarkoncmp.shared.generated.resources.memorization_quick_start_treasury
-import azbarkoncmp.shared.generated.resources.memorization_select_title
+import azbarkoncmp.shared.generated.resources.memorization_option_active_desc
+import azbarkoncmp.shared.generated.resources.memorization_option_library_desc
+import azbarkoncmp.shared.generated.resources.memorization_option_library_title
+import azbarkoncmp.shared.generated.resources.memorization_option_search_desc
+import azbarkoncmp.shared.generated.resources.memorization_option_search_title
+import azbarkoncmp.shared.generated.resources.new_memorization_title
+import azbarkoncmp.shared.generated.resources.review
 import azbarkoncmp.shared.generated.resources.search
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -58,19 +61,23 @@ fun MemorizationSelectRoot(
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(MemorizationSelectAction.OnLoad) },
+        onRetry = {},
     ) {
-        MemorizationSelectScreen(onAction = viewModel::onAction)
+        MemorizationSelectScreen(
+            state = state,
+            onAction = viewModel::onAction,
+        )
     }
 }
 
 @Composable
 fun MemorizationSelectScreen(
+    state: MemorizationSelectState,
     onAction: (MemorizationSelectAction) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Header(
-            title = stringResource(Res.string.memorization_select_title),
+            title = stringResource(Res.string.new_memorization_title),
             onBackClick = { onAction(MemorizationSelectAction.OnBackClick) },
         )
 
@@ -80,55 +87,59 @@ fun MemorizationSelectScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text(
-                text = stringResource(Res.string.memorization_quick_start),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            MemorizationHeroSection()
+
+            QuickStartCard(
+                onShortCoupletsClick = { onAction(MemorizationSelectAction.OnBabaTaherClick) },
+                onFamousGhazalClick = { onAction(MemorizationSelectAction.OnHafezGhazalsClick) },
+                onSimplePoemClick = { onAction(MemorizationSelectAction.OnSimplePoemClick) },
             )
 
-            QuickStartItem(
-                text = stringResource(Res.string.memorization_quick_start_baba_taher),
-                onClick = { onAction(MemorizationSelectAction.OnBabaTaherClick) },
+            MemorizationOptionRow(
+                title = stringResource(Res.string.memorization_option_search_title),
+                description = stringResource(Res.string.memorization_option_search_desc),
+                icon = Res.drawable.search,
+                onClick = { onAction(MemorizationSelectAction.OnSearchClick) },
             )
-            QuickStartItem(
-                text = stringResource(Res.string.memorization_quick_start_hafez),
-                onClick = { onAction(MemorizationSelectAction.OnHafezGhazalsClick) },
-            )
-            QuickStartItem(
-                text = stringResource(Res.string.memorization_quick_start_treasury),
+
+            MemorizationOptionRow(
+                title = stringResource(Res.string.memorization_option_library_title),
+                description = stringResource(Res.string.memorization_option_library_desc),
+                icon = Res.drawable.maktab,
                 onClick = { onAction(MemorizationSelectAction.OnTreasuryClick) },
             )
 
-            QuickStartItem(
-                text = stringResource(Res.string.search),
-                onClick = { onAction(MemorizationSelectAction.OnSearchClick) },
-            )
-            QuickStartItem(
-                text = stringResource(Res.string.memorization_active_poems),
+            val activeDescription =
+                if (state.activePoemCount > 0) {
+                    stringResource(
+                        Res.string.memorization_option_active_desc,
+                        state.activePoemCount,
+                    )
+                } else {
+                    stringResource(Res.string.memorization_active_empty)
+                }
+            MemorizationOptionRow(
+                title = stringResource(Res.string.memorization_active_poems),
+                description = activeDescription,
+                icon = Res.drawable.review,
                 onClick = { onAction(MemorizationSelectAction.OnActivePoemsClick) },
             )
         }
     }
 }
 
-@Composable
-private fun QuickStartItem(
-    text: String,
-    onClick: () -> Unit,
-) {
-    AzbarkonSecondaryButton(
-        text = text,
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-    )
-}
-
 @Preview
 @Composable
 private fun MemorizationSelectScreenPreview() {
     AzbarkonTheme {
-        MemorizationSelectScreen(onAction = {})
+        MemorizationSelectScreen(
+            state =
+                MemorizationSelectState(
+                    activePoemCount = 2,
+                ),
+            onAction = {},
+        )
     }
 }

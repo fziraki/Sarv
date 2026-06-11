@@ -5,6 +5,11 @@
     <string name="daily_beyt_notification_channel_description">اعلان بیت تصادفی هر روز ساعت ۸ صبح</string>
     <string name="daily_beyt_notification_app_name">ازبرکن</string>
     <string name="daily_beyt_notification_now">الان</string>
+    <string name="memorization_review_notification_title">مرور امروز</string>
+    <string name="memorization_review_notification_body">%1$d بیت</string>
+    <string name="memorization_review_notification_action">شروع مرور</string>
+    <string name="memorization_review_notification_channel_name">مرور حفظ شعر</string>
+    <string name="memorization_review_notification_channel_description">یادآوری مرور کارت‌های حفظ هر روز ساعت ۱۰ صبح</string>
     <string name="widget_random_distich_title">بیت تصادفی</string>
     <string name="widget_random_distich_description">نمایش بیت تصادفی از شاعر دلخواه</string>
     <string name="widget_random_distich_config_title">انتخاب شاعر</string>

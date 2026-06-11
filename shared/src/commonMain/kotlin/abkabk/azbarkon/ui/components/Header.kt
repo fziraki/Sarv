@@ -28,8 +28,10 @@ import azbarkoncmp.shared.generated.resources.bookmark
 import azbarkoncmp.shared.generated.resources.bookmark_filled
 import azbarkoncmp.shared.generated.resources.cd_back
 import azbarkoncmp.shared.generated.resources.cd_bookmark
+import azbarkoncmp.shared.generated.resources.cd_memorization_review_alarm
 import azbarkoncmp.shared.generated.resources.cd_search
 import azbarkoncmp.shared.generated.resources.clear_all_title
+import azbarkoncmp.shared.generated.resources.notifications
 import azbarkoncmp.shared.generated.resources.search
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -43,6 +45,8 @@ fun Header(
     onBookmarkClick: (() -> Unit)? = null,
     onClearAllClick: (() -> Unit)? = null,
     onSearchClick: (() -> Unit)? = null,
+    onAlarmClick: (() -> Unit)? = null,
+    isAlarmEnabled: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -92,6 +96,28 @@ fun Header(
         }
 
         when {
+            onAlarmClick != null -> {
+                Box(
+                    modifier =
+                        Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .clickable(onClick = onAlarmClick),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.notifications),
+                        contentDescription = stringResource(Res.string.cd_memorization_review_alarm),
+                        tint =
+                            if (isAlarmEnabled) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                    )
+                }
+            }
+
             onClearAllClick != null -> {
                 Text(
                     text = stringResource(Res.string.clear_all_title),

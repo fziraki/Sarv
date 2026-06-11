@@ -42,6 +42,22 @@
     <string name="memorization_quick_start_hafez">غزل‌های حافظ</string>
     <string name="memorization_quick_start_treasury">گنجینه</string>
     <string name="memorization_active_poems">شعرهای در حال حفظ</string>
+    <string name="memorization_select_hero_title">اولین شعر خود را از بر کن</string>
+    <string name="memorization_select_hero_subtitle">مسیر حفظ شما از همین‌جا آغاز می‌شود</string>
+    <string name="memorization_quick_start_desc">یک شعر کوتاه و مناسب برای شروع انتخاب کنید</string>
+    <string name="memorization_quick_start_short_couplets">دوبیتی باباطاهر</string>
+    <string name="memorization_quick_start_famous_ghazal">غزلیات حافظ</string>
+    <string name="memorization_quick_start_simple_poem">شعر ساده</string>
+    <string name="memorization_option_search_title">جستجوی شعر</string>
+    <string name="memorization_option_search_desc">شاعر، بیت یا نام شعر را جستجو کنید</string>
+    <string name="memorization_option_library_title">انتخاب از گنجینه</string>
+    <string name="memorization_option_library_desc">از میان شاعران و آثار موجود انتخاب کنید</string>
+    <string name="memorization_option_today_title">پیشنهاد امروز</string>
+    <string name="memorization_option_today_desc">شعری متناسب با سلیقه و سطح شما</string>
+    <string name="memorization_status_format">جعبه %1$d · سطح %2$d</string>
+    <string name="memorization_active_count_format">%1$d از ۳ شعر فعال</string>
+    <string name="memorization_active_add_poem">افزودن شعر جدید</string>
+    <string name="memorization_option_active_desc">%1$d شعر در حال حفظ</string>
     <string name="memorization_active_empty">هنوز شعری برای حفظ انتخاب نکرده‌اید</string>
     <string name="memorization_max_active_error">حداکثر ۳ شعر را هم‌زمان می‌توانید حفظ کنید. یکی را تمام یا حذف کنید.</string>
     <string name="memorization_practice_title">تمرین حفظ</string>
@@ -68,6 +84,12 @@
     <string name="memorization_remove_confirm_title">حذف از حفظ</string>
     <string name="memorization_remove_confirm_body">این شعر از فهرست حفظ حذف شود؟ پیشرفت حفظ پاک می‌شود.</string>
     <string name="memorization_already_active">در حال حفظ</string>
+    <string name="memorization_review_notification_title">مرور امروز</string>
+    <string name="memorization_review_notification_body">%1$d بیت</string>
+    <string name="memorization_review_notification_action">شروع مرور</string>
+    <string name="memorization_review_notification_enabled">یادآور مرور روزانه فعال شد</string>
+    <string name="memorization_review_notification_channel_name">مرور حفظ شعر</string>
+    <string name="cd_memorization_review_alarm">یادآور مرور</string>
 
     <string name="next_line_title">مصرع بعدی</string>
     <string name="next_line_desc">مصرع بعدی را از بین گزینه ها انتخاب کن</string>

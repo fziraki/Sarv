@@ -7,8 +7,10 @@ import abkabk.azbarkon.core.platform.KeyValueStore
 import abkabk.azbarkon.core.platform.ImageExportManager
 import abkabk.azbarkon.core.platform.ShareManager
 import abkabk.azbarkon.data.platform.IosDailyBeytNotificationScheduler
+import abkabk.azbarkon.data.platform.IosMemorizationReviewNotificationScheduler
 import abkabk.azbarkon.data.platform.IosNotificationPermissionGateway
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
+import abkabk.azbarkon.domain.platform.MemorizationReviewNotificationScheduler
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
 import com.azbarkon.db.AzbarKonDatabase
 import com.azbarkon.memorization.MemorizationDatabase
@@ -56,6 +58,12 @@ val iosPlatformModule =
             IosDailyBeytNotificationScheduler(
                 dailyBeytRepository = get(),
                 userPreferencesRepository = get(),
+            )
+        }
+
+        single<MemorizationReviewNotificationScheduler> {
+            IosMemorizationReviewNotificationScheduler(
+                localDataSource = get(),
             )
         }
 

@@ -7,10 +7,10 @@ import androidx.compose.runtime.Stable
 @Stable
 data class MemorizationSelectState(
     val screenState: UiScreenState = UiScreenState.Idle,
+    val activePoemCount: Int = 0,
 )
 
 sealed interface MemorizationSelectAction {
-    data object OnLoad : MemorizationSelectAction
 
     data object OnBackClick : MemorizationSelectAction
 
@@ -18,10 +18,11 @@ sealed interface MemorizationSelectAction {
 
     data object OnHafezGhazalsClick : MemorizationSelectAction
 
+    data object OnSimplePoemClick : MemorizationSelectAction
+
     data object OnTreasuryClick : MemorizationSelectAction
 
     data object OnSearchClick : MemorizationSelectAction
-
     data object OnActivePoemsClick : MemorizationSelectAction
 }
 

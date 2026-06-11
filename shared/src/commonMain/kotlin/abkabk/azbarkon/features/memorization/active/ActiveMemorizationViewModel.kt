@@ -31,6 +31,10 @@ class ActiveMemorizationViewModel(
                 viewModelScope.launch { sendEvent(ActiveMemorizationEvent.NavigateBack) }
             }
 
+            ActiveMemorizationAction.OnAddPoemClick -> {
+                viewModelScope.launch { sendEvent(ActiveMemorizationEvent.NavigateToSelect) }
+            }
+
             is ActiveMemorizationAction.OnPoemClick -> {
                 viewModelScope.launch {
                     sendEvent(ActiveMemorizationEvent.NavigateToPractice(action.poemId))
@@ -91,7 +95,8 @@ private fun ActiveMemorizationPoem.toUi(): ActiveMemorizationPoemUi {
         poemId = poemId,
         title = title,
         poetName = poetName,
-        statusLabel = "Box $boxLevel / Level $level",
+        boxLevel = boxLevel,
+        level = level,
         progress = progress,
         dueCards = dueCards,
     )

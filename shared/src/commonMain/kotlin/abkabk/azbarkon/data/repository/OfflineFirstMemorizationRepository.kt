@@ -5,6 +5,7 @@ import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.core.domain.result.onFailure
 import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.domain.datasource.MemorizationLocalDataSource
+import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.model.memorization.ActiveMemorizationPoem
 import abkabk.azbarkon.domain.model.memorization.ActiveMemorizationStatus
 import abkabk.azbarkon.domain.model.memorization.MemorizationError
@@ -17,16 +18,22 @@ import abkabk.azbarkon.domain.repository.PoemRepository
 import abkabk.azbarkon.domain.srs.CardGenerator
 import abkabk.azbarkon.domain.srs.SrsScheduler
 import abkabk.azbarkon.core.util.currentTimeMillis
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 
 class OfflineFirstMemorizationRepository(
     private val localDataSource: MemorizationLocalDataSource,
     private val poemRepository: PoemRepository,
+    private val reviewNotificationCoordinator: MemorizationReviewNotificationCoordinator,
 ) : MemorizationRepository {
     private val summaryRefresh = MutableSharedFlow<Unit>(replay = 1).apply { tryEmit(Unit) }
+    private val notificationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     override fun observeActiveSummary(): Flow<MemorizationSummary> =
         summaryRefresh
@@ -71,6 +78,7 @@ class OfflineFirstMemorizationRepository(
                     )
                     localDataSource.insertCards(cards)
                     notifySummaryChanged()
+                    syncReviewNotifications()
                     Result.Success(Unit)
                 }
             }
@@ -81,6 +89,7 @@ class OfflineFirstMemorizationRepository(
         try {
             localDataSource.deleteActivePoem(poemId)
             notifySummaryChanged()
+            syncReviewNotifications()
             Result.Success(Unit)
         } catch (_: Exception) {
             Result.Error(MemorizationError.Unknown)
@@ -119,6 +128,7 @@ class OfflineFirstMemorizationRepository(
                 reviewTimeMillis = now,
             )
             notifySummaryChanged()
+            syncReviewNotifications()
             Result.Success(updated)
         } catch (_: Exception) {
             Result.Error(MemorizationError.Unknown)
@@ -198,6 +208,12 @@ class OfflineFirstMemorizationRepository(
 
     private fun notifySummaryChanged() {
         summaryRefresh.tryEmit(Unit)
+    }
+
+    private fun syncReviewNotifications() {
+        notificationScope.launch {
+            reviewNotificationCoordinator.sync()
+        }
     }
 
     private companion object {

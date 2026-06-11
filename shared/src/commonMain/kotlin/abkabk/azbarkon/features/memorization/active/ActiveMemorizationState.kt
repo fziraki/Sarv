@@ -9,7 +9,8 @@ data class ActiveMemorizationPoemUi(
     val poemId: Int,
     val title: String,
     val poetName: String,
-    val statusLabel: String,
+    val boxLevel: Int,
+    val level: Int,
     val progress: Float,
     val dueCards: Int,
 )
@@ -28,6 +29,8 @@ sealed interface ActiveMemorizationAction {
 
     data object OnBackClick : ActiveMemorizationAction
 
+    data object OnAddPoemClick : ActiveMemorizationAction
+
     data class OnPoemClick(
         val poemId: Int,
     ) : ActiveMemorizationAction
@@ -43,6 +46,8 @@ sealed interface ActiveMemorizationAction {
 
 sealed interface ActiveMemorizationEvent {
     data object NavigateBack : ActiveMemorizationEvent
+
+    data object NavigateToSelect : ActiveMemorizationEvent
 
     data class NavigateToPractice(
         val poemId: Int,

@@ -2,6 +2,7 @@ package abkabk.azbarkon
 
 import abkabk.azbarkon.core.di.initKoin
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
+import abkabk.azbarkon.domain.platform.MemorizationReviewNotificationScheduler
 import android.app.Application
 import androidx.work.Configuration
 import io.github.aakira.napier.DebugAntilog
@@ -13,6 +14,7 @@ class AzbarkonApp :
     Application(),
     Configuration.Provider {
     private val dailyBeytNotificationScheduler: DailyBeytNotificationScheduler by inject()
+    private val memorizationReviewNotificationScheduler: MemorizationReviewNotificationScheduler by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -20,6 +22,7 @@ class AzbarkonApp :
         initKoin(this)
         Napier.base(DebugAntilog())
         dailyBeytNotificationScheduler.rescheduleIfEnabled()
+        memorizationReviewNotificationScheduler.rescheduleIfActive()
     }
 
     override val workManagerConfiguration: Configuration

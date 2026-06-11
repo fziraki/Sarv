@@ -1,9 +1,10 @@
 package abkabk.azbarkon.features.memorization.select
 
 import abkabk.azbarkon.core.ui_base.BaseViewModel
-import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.domain.repository.MemorizationRepository
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class MemorizationSelectViewModel(
@@ -12,14 +13,11 @@ class MemorizationSelectViewModel(
         initialState = MemorizationSelectState(),
     ) {
     init {
-        onAction(MemorizationSelectAction.OnLoad)
+        observeActiveSummary()
     }
 
     override fun onAction(action: MemorizationSelectAction) {
         when (action) {
-            MemorizationSelectAction.OnLoad -> {
-                setState { copy(screenState = UiScreenState.Success) }
-            }
 
             MemorizationSelectAction.OnBackClick -> {
                 viewModelScope.launch { sendEvent(MemorizationSelectEvent.NavigateBack) }
@@ -47,6 +45,17 @@ class MemorizationSelectViewModel(
                 }
             }
 
+            MemorizationSelectAction.OnSimplePoemClick -> {
+                viewModelScope.launch {
+                    val target =
+                        memorizationRepository.resolveQuickStart(
+                            poetNameFragment = "سعدی",
+                            categoryTextFragment = "غزلیات",
+                        )
+                    navigateQuickStart(target)
+                }
+            }
+
             MemorizationSelectAction.OnTreasuryClick -> {
                 viewModelScope.launch { sendEvent(MemorizationSelectEvent.NavigateToTreasury) }
             }
@@ -59,6 +68,14 @@ class MemorizationSelectViewModel(
                 viewModelScope.launch { sendEvent(MemorizationSelectEvent.NavigateToActivePoems) }
             }
         }
+    }
+
+    private fun observeActiveSummary() {
+        memorizationRepository
+            .observeActiveSummary()
+            .onEach { summary ->
+                setState { copy(activePoemCount = summary.activePoemCount) }
+            }.launchIn(viewModelScope)
     }
 
     private suspend fun navigateQuickStart(

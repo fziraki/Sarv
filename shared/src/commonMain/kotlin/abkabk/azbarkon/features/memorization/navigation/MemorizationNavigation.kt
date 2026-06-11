@@ -3,8 +3,8 @@ package abkabk.azbarkon.features.memorization.navigation
 import abkabk.azbarkon.features.memorization.active.ActiveMemorizationRoot
 import abkabk.azbarkon.features.memorization.practice.MemorizationPracticeRoot
 import abkabk.azbarkon.features.memorization.select.MemorizationSelectRoot
-import abkabk.azbarkon.features.poets.navigation.PoetDetailRoute
 import abkabk.azbarkon.features.poets.navigation.PoemListRoute
+import abkabk.azbarkon.features.poets.navigation.PoetDetailRoute
 import abkabk.azbarkon.features.poets.navigation.PoetsListRoute
 import abkabk.azbarkon.features.search.navigation.navigateToSearch
 import androidx.navigation.NavController
@@ -41,6 +41,9 @@ fun NavGraphBuilder.memorizationGraph(
             onBackClick = navController::navigateUp,
             onNavigateToPractice = { poemId ->
                 navController.navigate(MemorizationPracticeRoute(poemId = poemId))
+            },
+            onNavigateToSelect = {
+                navController.navigate(MemorizationSelectRoute)
             },
         )
     }

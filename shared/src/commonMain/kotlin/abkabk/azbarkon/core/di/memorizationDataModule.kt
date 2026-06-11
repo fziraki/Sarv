@@ -3,6 +3,7 @@ package abkabk.azbarkon.core.di
 import abkabk.azbarkon.data.local.SqlDelightMemorizationLocalDataSource
 import abkabk.azbarkon.data.repository.OfflineFirstMemorizationRepository
 import abkabk.azbarkon.domain.datasource.MemorizationLocalDataSource
+import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.repository.MemorizationRepository
 import com.azbarkon.memorization.ActiveSrsPoemQueries
 import com.azbarkon.memorization.MemorizationDatabase
@@ -39,6 +40,14 @@ val memorizationDataModule =
             OfflineFirstMemorizationRepository(
                 localDataSource = get(),
                 poemRepository = get(),
+                reviewNotificationCoordinator = get(),
+            )
+        }
+
+        single {
+            MemorizationReviewNotificationCoordinator(
+                localDataSource = get(),
+                scheduler = get(),
             )
         }
     }
