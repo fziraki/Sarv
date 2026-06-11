@@ -28,6 +28,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +37,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
@@ -78,17 +81,19 @@ fun EditorHeader(
                 .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = stringResource(Res.string.tasvir_negar_save),
-            modifier = Modifier.clickable(onClick = onSaveClick),
-            color = secondary,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
-        )
+        IconButton(onClick = onBackClick) {
+            Icon(
+                painter = painterResource(Res.drawable.arrow_back),
+                contentDescription = stringResource(Res.string.cd_back),
+                tint = Color.Unspecified,
+            )
+        }
+
+        Box(modifier = Modifier.weight(1f))
 
         IconButton(
             onClick = onHelpClick,
-            modifier = Modifier.padding(start = 8.dp).size(24.dp),
+            modifier = Modifier.padding(end = 8.dp).size(24.dp),
         ) {
             Icon(
                 painter = painterResource(Res.drawable.ic_help),
@@ -98,15 +103,13 @@ fun EditorHeader(
             )
         }
 
-        Box(modifier = Modifier.weight(1f))
-
-        IconButton(onClick = onBackClick) {
-            Icon(
-                painter = painterResource(Res.drawable.arrow_back),
-                contentDescription = stringResource(Res.string.cd_back),
-                tint = Color.Unspecified,
-            )
-        }
+        Text(
+            text = stringResource(Res.string.tasvir_negar_save),
+            modifier = Modifier.clickable(onClick = onSaveClick),
+            color = secondary,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+        )
     }
 }
 
@@ -126,9 +129,9 @@ fun EditorFooter(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        IconButton(onClick = onShareClick) {
+        IconButton(onClick = onDeleteClick) {
             Icon(
-                painter = painterResource(Res.drawable.share),
+                painter = painterResource(Res.drawable.ic_delete),
                 contentDescription = null,
                 tint = Color.Unspecified,
             )
@@ -142,9 +145,9 @@ fun EditorFooter(
             )
         }
 
-        IconButton(onClick = onDeleteClick) {
+        IconButton(onClick = onShareClick) {
             Icon(
-                painter = painterResource(Res.drawable.ic_delete),
+                painter = painterResource(Res.drawable.share),
                 contentDescription = null,
                 tint = Color.Unspecified,
             )
@@ -167,13 +170,13 @@ fun EditToolbar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        ToolbarIcon(Res.drawable.ic_wallpaper, iconTint) { onAction(TasvirNegarAction.OnGalleryClick) }
-        ToolbarIcon(Res.drawable.ic_grid, iconTint) { onAction(TasvirNegarAction.OnToggleGrid) }
-        ToolbarIcon(Res.drawable.ic_texture, iconTint) { onAction(TasvirNegarAction.OnLayerSelect(null)) }
-        ToolbarIcon(Res.drawable.ic_color, iconTint) { onAction(TasvirNegarAction.OnShowColorOptions) }
-        ToolbarIcon(Res.drawable.ic_sticker, iconTint) { onAction(TasvirNegarAction.OnShowShapeOptions) }
-        ToolbarIcon(Res.drawable.text_fields, iconTint) { onAction(TasvirNegarAction.OnEnterText) }
         ToolbarIcon(Res.drawable.ic_text_format, iconTint) { onAction(TasvirNegarAction.OnShowFontOptions) }
+        ToolbarIcon(Res.drawable.text_fields, iconTint) { onAction(TasvirNegarAction.OnEnterText) }
+        ToolbarIcon(Res.drawable.ic_sticker, iconTint) { onAction(TasvirNegarAction.OnShowShapeOptions) }
+        ToolbarIcon(Res.drawable.ic_color, iconTint) { onAction(TasvirNegarAction.OnShowColorOptions) }
+        ToolbarIcon(Res.drawable.ic_texture, iconTint) { onAction(TasvirNegarAction.OnLayerSelect(null)) }
+        ToolbarIcon(Res.drawable.ic_grid, iconTint) { onAction(TasvirNegarAction.OnToggleGrid) }
+        ToolbarIcon(Res.drawable.ic_wallpaper, iconTint) { onAction(TasvirNegarAction.OnGalleryClick) }
     }
 }
 
@@ -231,64 +234,67 @@ fun VerticalSizeSlider(
                     .height(sliderLength),
             contentAlignment = Alignment.Center,
         ) {
-            Slider(
-                value = sliderValue,
-                onValueChange = onProgressChange,
-                valueRange = valueRange,
-                modifier =
-                    Modifier
-                        .verticalSliderTransform()
-                        .width(sliderLength)
-                        .height(touchWidth),
-                colors =
-                    SliderDefaults.colors(
-                        thumbColor = Color.Transparent,
-                        activeTrackColor = Color.Transparent,
-                        inactiveTrackColor = Color.Transparent,
-                    ),
-                thumb = {
-                    Box(
-                        modifier =
-                            Modifier
-                                .size(thumbSize)
-                                .background(
-                                    color = secondaryFixed,
-                                    shape = CircleShape,
-                                ),
-                    )
-                },
-                track = { sliderState ->
-                    val trackProgress =
-                        (sliderState.value - valueRange.start) /
-                            (valueRange.endInclusive - valueRange.start).coerceAtLeast(0.001f)
-                    Row(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(trackHeight)
-                                .clip(RoundedCornerShape(percent = 50))
-                                .background(Color.Gray.copy(alpha = 0.25f)),
-                    ) {
-                        if (trackProgress > 0f) {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .fillMaxHeight()
-                                        .weight(trackProgress)
-                                        .background(secondary),
-                            )
+            // Keep LTR for the rotated horizontal Slider so vertical drag maps correctly in RTL screens.
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                Slider(
+                    value = sliderValue,
+                    onValueChange = onProgressChange,
+                    valueRange = valueRange,
+                    modifier =
+                        Modifier
+                            .verticalSliderTransform()
+                            .width(sliderLength)
+                            .height(touchWidth),
+                    colors =
+                        SliderDefaults.colors(
+                            thumbColor = Color.Transparent,
+                            activeTrackColor = Color.Transparent,
+                            inactiveTrackColor = Color.Transparent,
+                        ),
+                    thumb = {
+                        Box(
+                            modifier =
+                                Modifier
+                                    .size(thumbSize)
+                                    .background(
+                                        color = secondaryFixed,
+                                        shape = CircleShape,
+                                    ),
+                        )
+                    },
+                    track = { sliderState ->
+                        val trackProgress =
+                            (sliderState.value - valueRange.start) /
+                                (valueRange.endInclusive - valueRange.start).coerceAtLeast(0.001f)
+                        Row(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(trackHeight)
+                                    .clip(RoundedCornerShape(percent = 50))
+                                    .background(Color.Gray.copy(alpha = 0.25f)),
+                        ) {
+                            if (trackProgress > 0f) {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxHeight()
+                                            .weight(trackProgress)
+                                            .background(secondary),
+                                )
+                            }
+                            if (trackProgress < 1f) {
+                                Spacer(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxHeight()
+                                            .weight(1f - trackProgress),
+                                )
+                            }
                         }
-                        if (trackProgress < 1f) {
-                            Spacer(
-                                modifier =
-                                    Modifier
-                                        .fillMaxHeight()
-                                        .weight(1f - trackProgress),
-                            )
-                        }
-                    }
-                },
-            )
+                    },
+                )
+            }
         }
     }
 }

@@ -14,6 +14,7 @@ data class TasvirNegarState(
     val screenState: UiScreenState = UiScreenState.Idle,
     val document: EditorDocument = EditorDocument(),
     val isExporting: Boolean = false,
+    val exportForShare: Boolean = false,
     val showHelpDialog: Boolean = false,
 )
 
@@ -27,6 +28,8 @@ sealed interface TasvirNegarAction {
     data object OnSaveClick : TasvirNegarAction
 
     data object OnShareClick : TasvirNegarAction
+
+    data object OnResetCanvas : TasvirNegarAction
 
     data object OnToggleEditPanel : TasvirNegarAction
 
@@ -104,10 +107,6 @@ sealed interface TasvirNegarEvent {
     data object NavigateBack : TasvirNegarEvent
 
     data object RequestGalleryPick : TasvirNegarEvent
-
-    data object RequestExportForSave : TasvirNegarEvent
-
-    data object RequestExportForShare : TasvirNegarEvent
 
     data object RequestCustomColorPicker : TasvirNegarEvent
 }

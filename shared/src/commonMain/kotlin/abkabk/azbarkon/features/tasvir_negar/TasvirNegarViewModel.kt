@@ -10,13 +10,16 @@ import abkabk.azbarkon.core.util.currentTimeMillis
 import abkabk.azbarkon.domain.platform.ImageExportService
 import abkabk.azbarkon.domain.platform.ShareService
 import abkabk.azbarkon.domain.repository.PoemRepository
+import abkabk.azbarkon.features.tasvir_negar.model.DividerLayer
 import abkabk.azbarkon.features.tasvir_negar.model.EditorBackground
 import abkabk.azbarkon.features.tasvir_negar.model.EditorDocument
 import abkabk.azbarkon.features.tasvir_negar.model.EditorFontPreset
 import abkabk.azbarkon.features.tasvir_negar.model.LayerId
 import abkabk.azbarkon.features.tasvir_negar.model.LayerOffset
 import abkabk.azbarkon.features.tasvir_negar.model.OptionPanelMode
+import abkabk.azbarkon.features.tasvir_negar.model.StickerLayer
 import abkabk.azbarkon.features.tasvir_negar.model.TasvirNegarCatalog
+import abkabk.azbarkon.features.tasvir_negar.model.TasvirNegarColors
 import abkabk.azbarkon.features.tasvir_negar.model.TextGravity
 import abkabk.azbarkon.features.tasvir_negar.model.TextLayer
 import androidx.compose.ui.graphics.Color
@@ -49,6 +52,8 @@ class TasvirNegarViewModel(
             TasvirNegarAction.OnBackClick -> emitNavigateBack()
             TasvirNegarAction.OnSaveClick -> requestExport(forShare = false)
             TasvirNegarAction.OnShareClick -> requestExport(forShare = true)
+
+            TasvirNegarAction.OnResetCanvas -> resetCanvas()
 
             TasvirNegarAction.OnToggleEditPanel -> toggleEditPanel()
             TasvirNegarAction.OnShowColorOptions -> showOptionPanel(OptionPanelMode.Color)
@@ -170,9 +175,44 @@ class TasvirNegarViewModel(
     private fun toggleEditPanel() {
         updateDocument {
             val expanded = !isEditPanelExpanded
+            if (expanded) {
+                copy(isEditPanelExpanded = true)
+            } else {
+                copy(
+                    isEditPanelExpanded = false,
+                    activeOptionPanel = OptionPanelMode.None,
+                    selectedLayer = null,
+                )
+            }
+        }
+    }
+
+    private fun resetCanvas() {
+        updateDocument {
             copy(
-                isEditPanelExpanded = expanded,
-                activeOptionPanel = if (expanded) activeOptionPanel else OptionPanelMode.None,
+                poemText =
+                    poemText.copy(
+                        offset = LayerOffset(),
+                        color = Color.White,
+                        gravity = TextGravity.Center,
+                        isBold = false,
+                        visible = poemText.text.isNotBlank(),
+                    ),
+                poetName =
+                    poetName.copy(
+                        offset = LayerOffset(y = 120.dp),
+                        color = Color.White,
+                        visible = poetName.text.isNotBlank(),
+                    ),
+                sticker = StickerLayer(),
+                topDivider = DividerLayer(),
+                bottomDivider = DividerLayer(),
+                background = EditorBackground.SolidColor(TasvirNegarColors.canvasDefault),
+                fontPreset = EditorFontPreset.Yekan,
+                showAlignmentGrid = false,
+                selectedLayer = null,
+                sizeProgress = 12f,
+                activeOptionPanel = OptionPanelMode.None,
             )
         }
     }
@@ -332,8 +372,15 @@ class TasvirNegarViewModel(
     }
 
     private fun requestExport(forShare: Boolean) {
-        setState { copy(isExporting = true) }
-        emitEvent(if (forShare) TasvirNegarEvent.RequestExportForShare else TasvirNegarEvent.RequestExportForSave)
+        updateDocument {
+            copy(
+                selectedLayer = null,
+                isEditPanelExpanded = false,
+                activeOptionPanel = OptionPanelMode.None,
+                showAlignmentGrid = false,
+            )
+        }
+        setState { copy(isExporting = true, exportForShare = forShare) }
     }
 
     private fun updateDocument(reducer: EditorDocument.() -> EditorDocument) {

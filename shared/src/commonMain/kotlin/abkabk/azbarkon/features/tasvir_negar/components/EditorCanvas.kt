@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -57,6 +56,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import azbarkoncmp.shared.generated.resources.Res
@@ -82,13 +82,14 @@ fun EditorCanvas(
     onTextGravityChange: (TextGravity) -> Unit,
     onToggleTextBold: () -> Unit,
     onCaptureReady: (suspend () -> ByteArray?) -> Unit,
+    showEditChrome: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     val captureModifier = rememberCanvasCaptureModifier(onCaptureReady = onCaptureReady)
     val fontFamily = editorFontFamily(document.fontPreset)
 
     BoxWithConstraints(
-        modifier = modifier.padding(horizontal = 8.dp),
+        modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
         val canvasSize = minOf(maxWidth, maxHeight)
@@ -102,23 +103,30 @@ fun EditorCanvas(
                     .then(captureModifier)
                     .clipToBounds(),
         ) {
-            CanvasBackground(
-                document = document,
-                onBackgroundTap = { onLayerSelect(null) },
-            )
+            // Canvas uses physical LTR coordinates so pan/drag matches finger movement on RTL screens.
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                CanvasBackground(
+                    document = document,
+                    onBackgroundTap = {
+                        if (showEditChrome) {
+                            onLayerSelect(null)
+                        }
+                    },
+                )
 
-            if (document.showAlignmentGrid) {
-                AlignmentGrid(modifier = Modifier.fillMaxSize())
-            }
+                if (document.showAlignmentGrid && showEditChrome) {
+                    AlignmentGrid(modifier = Modifier.fillMaxSize())
+                }
 
-            if (document.poemText.visible) {
+                if (document.poemText.visible) {
                 DraggableLayer(
                     offset = document.poemText.offset,
                     selected = document.selectedLayer == LayerId.PoemText,
+                    showChrome = showEditChrome,
                     onSelect = { onLayerSelect(LayerId.PoemText) },
                     onDrag = { onLayerDrag(LayerId.PoemText, it) },
                     onRemove = onRemoveSelectedLayer,
-                    showTextControls = document.selectedLayer == LayerId.PoemText,
+                    showTextControls = showEditChrome && document.selectedLayer == LayerId.PoemText,
                     isBold = document.poemText.isBold,
                     onTextGravityChange = onTextGravityChange,
                     onToggleBold = onToggleTextBold,
@@ -127,6 +135,7 @@ fun EditorCanvas(
                     DirectionalTextField(
                         value = document.poemText.text,
                         onValueChange = onPoemTextChange,
+                        readOnly = !showEditChrome,
                         textStyle =
                             TextStyle(
                                 color = document.poemText.color,
@@ -152,6 +161,7 @@ fun EditorCanvas(
                 DraggableLayer(
                     offset = document.topDivider.offset,
                     selected = document.selectedLayer == LayerId.TopDivider,
+                    showChrome = showEditChrome,
                     onSelect = { onLayerSelect(LayerId.TopDivider) },
                     onDrag = { onLayerDrag(LayerId.TopDivider, it) },
                     onRemove = onRemoveSelectedLayer,
@@ -171,6 +181,7 @@ fun EditorCanvas(
                 DraggableLayer(
                     offset = document.bottomDivider.offset,
                     selected = document.selectedLayer == LayerId.BottomDivider,
+                    showChrome = showEditChrome,
                     onSelect = { onLayerSelect(LayerId.BottomDivider) },
                     onDrag = { onLayerDrag(LayerId.BottomDivider, it) },
                     onRemove = onRemoveSelectedLayer,
@@ -190,6 +201,7 @@ fun EditorCanvas(
                 DraggableLayer(
                     offset = document.poetName.offset,
                     selected = document.selectedLayer == LayerId.PoetName,
+                    showChrome = showEditChrome,
                     onSelect = { onLayerSelect(LayerId.PoetName) },
                     onDrag = { onLayerDrag(LayerId.PoetName, it) },
                     onRemove = onRemoveSelectedLayer,
@@ -199,6 +211,7 @@ fun EditorCanvas(
                     DirectionalTextField(
                         value = document.poetName.text,
                         onValueChange = onPoetNameChange,
+                        readOnly = !showEditChrome,
                         textStyle =
                             TextStyle(
                                 color = document.poetName.color,
@@ -218,6 +231,7 @@ fun EditorCanvas(
                 DraggableLayer(
                     offset = document.sticker.offset,
                     selected = document.selectedLayer == LayerId.Sticker,
+                    showChrome = showEditChrome,
                     onSelect = { onLayerSelect(LayerId.Sticker) },
                     onDrag = { onLayerDrag(LayerId.Sticker, it) },
                     onRemove = onRemoveSelectedLayer,
@@ -225,6 +239,7 @@ fun EditorCanvas(
                 ) {
                     StickerContent(document = document)
                 }
+            }
             }
         }
     }
@@ -236,12 +251,14 @@ private fun DirectionalTextField(
     onValueChange: (String) -> Unit,
     textStyle: TextStyle,
     modifier: Modifier = Modifier,
+    readOnly: Boolean = false,
 ) {
     val layoutDirection = textLayoutDirectionFor(value)
     CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
+            readOnly = readOnly,
             textStyle = textStyle.copy(textDirection = textDirectionFor(value)),
             modifier = modifier,
         )
@@ -252,6 +269,7 @@ private fun DirectionalTextField(
 private fun DraggableLayer(
     offset: abkabk.azbarkon.features.tasvir_negar.model.LayerOffset,
     selected: Boolean,
+    showChrome: Boolean,
     onSelect: () -> Unit,
     onDrag: (abkabk.azbarkon.features.tasvir_negar.model.LayerOffset) -> Unit,
     onRemove: () -> Unit,
@@ -267,6 +285,7 @@ private fun DraggableLayer(
     var dragDeltaPx by remember { mutableStateOf(Offset.Zero) }
     val currentOffset by rememberUpdatedState(offset)
     val currentOnDrag by rememberUpdatedState(onDrag)
+    val displaySelected = selected && showChrome
 
     LaunchedEffect(offset) {
         dragDeltaPx = Offset.Zero
@@ -299,11 +318,20 @@ private fun DraggableLayer(
         Column(
             modifier =
                 Modifier
-                    .offset(x = displayOffset.x, y = displayOffset.y)
+                    .graphicsLayer {
+                        translationX = displayOffset.x.toPx()
+                        translationY = displayOffset.y.toPx()
+                    }
                     .wrapContentWidth()
-                    .pointerInput(Unit) {
-                        detectTapGestures { onSelect() }
-                    },
+                    .then(
+                        if (showChrome) {
+                            Modifier.pointerInput(Unit) {
+                                detectTapGestures { onSelect() }
+                            }
+                        } else {
+                            Modifier
+                        },
+                    ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(
@@ -318,13 +346,13 @@ private fun DraggableLayer(
                                     minWidth,
                                 )
                         }.padding(4.dp)
-                        .then(if (selected) Modifier.border(1.dp, Color.White) else Modifier)
+                        .then(if (displaySelected) Modifier.border(1.dp, Color.White) else Modifier)
                         .padding(8.dp),
             ) {
                 content()
             }
 
-            if (selected) {
+            if (displaySelected) {
                 val showFormattingControls =
                     showTextControls && onTextGravityChange != null && onToggleBold != null
                 val controlBarWidth =

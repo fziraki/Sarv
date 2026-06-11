@@ -68,7 +68,7 @@ private fun ColorOptionsRow(
     onColorClick: (Int) -> Unit,
 ) {
     LazyRow(
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = Modifier.padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         itemsIndexed(TasvirNegarCatalog.colorOptions) { index, option ->
@@ -108,7 +108,7 @@ private fun ShapeOptionsRow(
     onShapeClick: (Int) -> Unit,
 ) {
     LazyRow(
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = Modifier.padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         itemsIndexed(TasvirNegarCatalog.shapeOptions) { index, item ->
@@ -156,7 +156,7 @@ private fun FontOptionsRow(
         modifier =
             Modifier
                 .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         labels.forEachIndexed { index, (label, preset) ->
