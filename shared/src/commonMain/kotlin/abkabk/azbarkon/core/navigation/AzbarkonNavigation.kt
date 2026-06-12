@@ -286,7 +286,7 @@ fun AzbarkonNavigation(
                 )
                 tasvirNegarGraph(onBackClick = navController::navigateUp)
                 memorizationGraph(navController)
-                gamesGraph()
+                gamesGraph(navController)
                 profileGraph()
                 poetsGraph(navController)
                 searchGraph(navController)

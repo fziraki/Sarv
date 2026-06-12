@@ -42,6 +42,20 @@ actual class KeyValueStore(
         }
     }
 
+    actual fun getInt(
+        key: String,
+        default: Int,
+    ): Int = preferences.getInt(key, default)
+
+    actual fun putInt(
+        key: String,
+        value: Int,
+    ) {
+        preferences.edit {
+            putInt(key, value)
+        }
+    }
+
     private companion object {
         const val PREFS_NAME = "azbarkon_prefs"
     }

@@ -1,7 +1,9 @@
 package abkabk.azbarkon.features.poems.list
 
+import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
+import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.asString
 import abkabk.azbarkon.ui.components.Header
@@ -42,7 +44,6 @@ import androidx.paging.compose.itemKey
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.list_load_error
 import kotlinx.coroutines.flow.flowOf
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -75,13 +76,30 @@ fun PoemListRoot(
         }
     }
 
-    PoemListScreen(
-        state = state,
-        poems = poems,
-        onBackClick = onBackClick,
-        onPoemClick = { poemId -> viewModel.onAction(PoemListAction.OnPoemClick(poemId)) },
-        onSearchClick = onNavigateToSearch,
-    )
+    val screenState =
+        when {
+            poems.loadState.refresh is LoadState.Loading && poems.itemCount == 0 ->
+                UiScreenState.Loading
+            poems.loadState.refresh is LoadState.Error ->
+                UiScreenState.Error(
+                    message = UiText.Resource(Res.string.list_load_error),
+                    retryable = true,
+                )
+            else -> UiScreenState.Success
+        }
+
+    BaseScreen(
+        screenState = screenState,
+        onRetry = { poems.retry() },
+    ) {
+        PoemListScreen(
+            state = state,
+            poems = poems,
+            onBackClick = onBackClick,
+            onPoemClick = { poemId -> viewModel.onAction(PoemListAction.OnPoemClick(poemId)) },
+            onSearchClick = onNavigateToSearch,
+        )
+    }
 }
 
 @Composable
@@ -93,9 +111,6 @@ fun PoemListScreen(
     onSearchClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isInitialLoading = poems.loadState.refresh is LoadState.Loading && poems.itemCount == 0
-    val hasRefreshError = poems.loadState.refresh is LoadState.Error
-
     Column(
         modifier =
             modifier
@@ -108,81 +123,46 @@ fun PoemListScreen(
             onSearchClick = onSearchClick,
         )
 
-        when {
-            isInitialLoading -> {
-                Box(
-                    modifier =
-                        Modifier
-                            .weight(1f)
-                            .fillMaxWidth(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-
-            hasRefreshError -> {
-                Box(
-                    modifier =
-                        Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .clickable { poems.retry() },
-                    contentAlignment = Alignment.Center,
-                ) {
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            items(
+                count = poems.itemCount,
+                key = poems.itemKey { poem -> poem.id },
+            ) { index ->
+                poems[index]?.let { poem ->
                     Text(
-                        text = stringResource(Res.string.list_load_error),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(16.dp))
+                                .clickable { onPoemClick(poem.id) }
+                                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.outlineVariant,
+                                    shape = RoundedCornerShape(16.dp),
+                                ).padding(14.dp),
+                        text = poem.title,
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(24.dp),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Start,
                     )
                 }
             }
 
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    items(
-                        count = poems.itemCount,
-                        key = poems.itemKey { poem -> poem.id },
-                    ) { index ->
-                        poems[index]?.let { poem ->
-                            Text(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .clip(RoundedCornerShape(16.dp))
-                                        .clickable { onPoemClick(poem.id) }
-                                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                                        .border(
-                                            width = 1.dp,
-                                            color = MaterialTheme.colorScheme.outlineVariant,
-                                            shape = RoundedCornerShape(16.dp),
-                                        ).padding(14.dp),
-                                text = poem.title,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                textAlign = TextAlign.Start,
-                            )
-                        }
-                    }
-
-                    if (poems.loadState.append is LoadState.Loading) {
-                        item {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 16.dp),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                CircularProgressIndicator()
-                            }
-                        }
+            if (poems.loadState.append is LoadState.Loading) {
+                item {
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 16.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
                     }
                 }
             }

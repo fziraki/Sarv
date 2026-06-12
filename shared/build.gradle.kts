@@ -87,6 +87,7 @@ kotlin {
             implementation(libs.sqldelight.runtime)
             implementation(libs.paging.common)
             implementation(libs.paging.compose)
+            implementation(libs.reorderable)
         }
         val androidHostTest by getting {
             dependencies {
@@ -96,6 +97,8 @@ kotlin {
                 implementation(libs.turbine)
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.paging.testing)
+                implementation("org.xerial:sqlite-jdbc:3.49.1.0")
+                implementation("app.cash.sqldelight:sqlite-driver:2.3.2")
             }
         }
         commonTest.dependencies {

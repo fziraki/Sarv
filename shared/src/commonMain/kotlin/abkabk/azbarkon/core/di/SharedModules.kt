@@ -15,6 +15,7 @@ val sharedModules: List<Module> =
         userDataModule,
         userPreferencesDataModule,
         memorizationDataModule,
+        gamesDataModule,
         homePresentationModule,
         profilePresentationModule,
         poetsPresentationModule,
@@ -22,4 +23,5 @@ val sharedModules: List<Module> =
         chatPresentationModule,
         tasvirNegarPresentationModule,
         memorizationPresentationModule,
+        gamesPresentationModule,
     )

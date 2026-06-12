@@ -28,6 +28,15 @@ JOIN cat ON cat.id = poem.cat_id
 JOIN poet ON poet.id = cat.poet_id
 WHERE poem.id = ?;
 
+selectPoetForPoemId:
+SELECT
+    poet.id AS poet_id,
+    poet.name AS poet_name
+FROM poem
+JOIN cat ON cat.id = poem.cat_id
+JOIN poet ON poet.id = cat.poet_id
+WHERE poem.id = ?;
+
 selectByIds:
 SELECT
     poem.id,

@@ -1,8 +1,10 @@
 package abkabk.azbarkon.features.search
 
 import abkabk.azbarkon.core.ui.HighlightedText
+import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
+import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.asString
 import abkabk.azbarkon.ui.components.Header
@@ -54,6 +56,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.all
+import azbarkoncmp.shared.generated.resources.list_load_error
 import azbarkoncmp.shared.generated.resources.search
 import azbarkoncmp.shared.generated.resources.search_choose_category
 import azbarkoncmp.shared.generated.resources.search_choose_poet
@@ -92,12 +95,28 @@ fun SearchRoot(
         }
     }
 
-    SearchScreen(
-        state = state,
-        searchResults = searchResults,
-        onAction = viewModel::onAction,
-        onBackClick = onBackClick,
-    )
+    val screenState =
+        when {
+            state.isInitializing -> UiScreenState.Loading
+            searchResults.loadState.refresh is LoadState.Error && state.submittedQuery.isNotBlank() ->
+                UiScreenState.Error(
+                    message = UiText.Resource(Res.string.list_load_error),
+                    retryable = true,
+                )
+            else -> UiScreenState.Success
+        }
+
+    BaseScreen(
+        screenState = screenState,
+        onRetry = { searchResults.retry() },
+    ) {
+        SearchScreen(
+            state = state,
+            searchResults = searchResults,
+            onAction = viewModel::onAction,
+            onBackClick = onBackClick,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -127,13 +146,8 @@ fun SearchScreen(
             ?.let { option -> if (option.id == null) allLabel else option.title }
             ?: allLabel
 
-    val isRefreshing = searchResults.loadState.refresh is LoadState.Loading
     val showNoResults =
         searchResults.loadState.refresh is LoadState.NotLoading &&
-            searchResults.itemCount == 0 &&
-            state.submittedQuery.isNotBlank()
-    val showInitialLoading =
-        isRefreshing &&
             searchResults.itemCount == 0 &&
             state.submittedQuery.isNotBlank()
 
@@ -185,15 +199,6 @@ fun SearchScreen(
         }
 
         when {
-            showInitialLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-
             showNoResults -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),

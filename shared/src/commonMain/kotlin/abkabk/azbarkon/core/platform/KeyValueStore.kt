@@ -19,4 +19,14 @@ expect class KeyValueStore {
         key: String,
         value: Boolean,
     )
+
+    fun getInt(
+        key: String,
+        default: Int = 0,
+    ): Int
+
+    fun putInt(
+        key: String,
+        value: Int,
+    )
 }

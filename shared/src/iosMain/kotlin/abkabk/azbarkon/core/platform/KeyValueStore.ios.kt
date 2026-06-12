@@ -38,4 +38,21 @@ actual class KeyValueStore {
     ) {
         defaults.setBool(value, key)
     }
+
+    actual fun getInt(
+        key: String,
+        default: Int,
+    ): Int =
+        if (defaults.objectForKey(key) == null) {
+            default
+        } else {
+            defaults.integerForKey(key).toInt()
+        }
+
+    actual fun putInt(
+        key: String,
+        value: Int,
+    ) {
+        defaults.setInteger(value.toLong(), key)
+    }
 }
