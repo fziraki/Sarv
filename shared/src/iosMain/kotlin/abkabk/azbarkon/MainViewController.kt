@@ -1,20 +1,30 @@
 package abkabk.azbarkon
 
 import abkabk.azbarkon.core.di.initKoinIfNeeded
+import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import androidx.compose.ui.window.ComposeUIViewController
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 private object IosAppBootstrap : KoinComponent {
     private val dailyBeytNotificationScheduler: DailyBeytNotificationScheduler by inject()
+    private val reviewNotificationCoordinator: MemorizationReviewNotificationCoordinator by inject()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     fun onLaunch() {
         initKoinIfNeeded()
         Napier.base(DebugAntilog())
         dailyBeytNotificationScheduler.rescheduleIfEnabled()
+        scope.launch {
+            reviewNotificationCoordinator.sync()
+        }
     }
 }
 

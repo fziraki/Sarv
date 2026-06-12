@@ -1,0 +1,88 @@
+CREATE TABLE srs_poem_card (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    poem_id INTEGER NOT NULL,
+    card_index INTEGER NOT NULL,
+    front TEXT NOT NULL,
+    back TEXT NOT NULL,
+    interval INTEGER NOT NULL,
+    ease REAL NOT NULL,
+    due_date INTEGER NOT NULL,
+    consecutive_correct INTEGER NOT NULL
+);
+
+insertCard:
+INSERT INTO srs_poem_card(
+    poem_id,
+    card_index,
+    front,
+    back,
+    interval,
+    ease,
+    due_date,
+    consecutive_correct
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+selectCardById:
+SELECT id, poem_id, card_index, front, back, interval, ease, due_date, consecutive_correct
+FROM srs_poem_card
+WHERE id = ?;
+
+selectCardsByPoemId:
+SELECT id, poem_id, card_index, front, back, interval, ease, due_date, consecutive_correct
+FROM srs_poem_card
+WHERE poem_id = ?
+ORDER BY card_index;
+
+selectDueCards:
+SELECT id, poem_id, card_index, front, back, interval, ease, due_date, consecutive_correct
+FROM srs_poem_card
+WHERE due_date <= ?
+  AND poem_id IN (
+    SELECT poem_id FROM active_srs_poem WHERE status = 'ACTIVE'
+  )
+ORDER BY due_date ASC, card_index ASC;
+
+selectDueCardsByPoemId:
+SELECT id, poem_id, card_index, front, back, interval, ease, due_date, consecutive_correct
+FROM srs_poem_card
+WHERE poem_id = ?
+  AND due_date <= ?
+ORDER BY card_index ASC;
+
+countDueCards:
+SELECT COUNT(*)
+FROM srs_poem_card
+WHERE due_date <= ?
+  AND poem_id IN (
+    SELECT poem_id FROM active_srs_poem WHERE status = 'ACTIVE'
+  );
+
+countDueCardsByPoemId:
+SELECT COUNT(*)
+FROM srs_poem_card
+WHERE poem_id = ?
+  AND due_date <= ?;
+
+updateCard:
+UPDATE srs_poem_card
+SET interval = ?,
+    ease = ?,
+    due_date = ?,
+    consecutive_correct = ?
+WHERE id = ?;
+
+deleteCardsByPoemId:
+DELETE FROM srs_poem_card
+WHERE poem_id = ?;
+
+countCardsByPoemId:
+SELECT COUNT(*)
+FROM srs_poem_card
+WHERE poem_id = ?;
+
+countReviewedCardsByPoemId:
+SELECT COUNT(*)
+FROM srs_poem_card
+WHERE poem_id = ?
+  AND consecutive_correct > 0;

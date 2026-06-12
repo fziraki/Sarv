@@ -52,6 +52,7 @@ fun PoemDetailRoot(
     poemId: Int,
     onBackClick: () -> Unit,
     onNavigateToTasvirNegar: (Int) -> Unit,
+    onNavigateToMemorizationPractice: (Int) -> Unit,
     viewModel: PoemDetailViewModel = koinViewModel { parametersOf(poemId) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -62,6 +63,7 @@ fun PoemDetailRoot(
         when (event) {
             is PoemDetailEvent.ShowSnackbar -> snackbarMessage = event.message
             PoemDetailEvent.NavigateToTasvirNegar -> onNavigateToTasvirNegar(poemId)
+            PoemDetailEvent.NavigateToMemorizationPractice -> onNavigateToMemorizationPractice(poemId)
         }
     }
 

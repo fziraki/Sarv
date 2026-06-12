@@ -10,10 +10,16 @@ import io.kamel.image.config.LocalKamelConfig
 
 @Composable
 @Preview
-fun App(initialPoemId: Int? = null) {
+fun App(
+    initialPoemId: Int? = null,
+    openMemorizationPractice: Boolean = false,
+) {
     CompositionLocalProvider(LocalKamelConfig provides AzbarkonKamelConfig) {
         AzbarkonTheme {
-            AzbarkonNavigation(initialPoemId = initialPoemId)
+            AzbarkonNavigation(
+                initialPoemId = initialPoemId,
+                openMemorizationPractice = openMemorizationPractice,
+            )
         }
     }
 }

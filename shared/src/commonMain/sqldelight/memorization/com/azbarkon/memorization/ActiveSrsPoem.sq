@@ -1,0 +1,39 @@
+CREATE TABLE active_srs_poem (
+    poem_id INTEGER NOT NULL PRIMARY KEY,
+    added_at INTEGER NOT NULL,
+    status TEXT NOT NULL
+);
+
+insertActivePoem:
+INSERT INTO active_srs_poem(poem_id, added_at, status)
+VALUES (?, ?, ?);
+
+deleteActivePoem:
+DELETE FROM active_srs_poem
+WHERE poem_id = ?;
+
+selectActivePoem:
+SELECT poem_id, added_at, status
+FROM active_srs_poem
+WHERE poem_id = ?;
+
+selectAllActive:
+SELECT poem_id, added_at, status
+FROM active_srs_poem
+WHERE status = 'ACTIVE'
+ORDER BY added_at ASC;
+
+countActive:
+SELECT COUNT(*)
+FROM active_srs_poem
+WHERE status = 'ACTIVE';
+
+selectActivePoemIds:
+SELECT poem_id
+FROM active_srs_poem
+WHERE status = 'ACTIVE';
+
+isPoemActive:
+SELECT COUNT(*) > 0
+FROM active_srs_poem
+WHERE poem_id = ? AND status = 'ACTIVE';

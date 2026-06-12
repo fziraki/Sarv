@@ -8,6 +8,7 @@ import abkabk.azbarkon.features.poems.details.PoemDetailAction
 import abkabk.azbarkon.features.poems.details.PoemDetailEvent
 import abkabk.azbarkon.features.poems.details.PoemDetailViewModel
 import abkabk.azbarkon.features.poems.details.PoemVersePositionType
+import abkabk.azbarkon.testing.FakeMemorizationRepository
 import abkabk.azbarkon.testing.FakeSavedPoemRepository
 import abkabk.azbarkon.testing.FakePoemRepository
 import abkabk.azbarkon.testing.FakeShareService
@@ -58,6 +59,7 @@ class PoemDetailViewModelTest {
                 PoemDetailViewModel(
                     poemRepository = repository,
                     savedPoemRepository = FakeSavedPoemRepository(),
+                    memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
                 )
@@ -84,6 +86,7 @@ class PoemDetailViewModelTest {
                 PoemDetailViewModel(
                     poemRepository = repository,
                     savedPoemRepository = FakeSavedPoemRepository(),
+                    memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
                 )
@@ -104,6 +107,7 @@ class PoemDetailViewModelTest {
                 PoemDetailViewModel(
                     poemRepository = repository,
                     savedPoemRepository = FakeSavedPoemRepository(),
+                    memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
                 )
@@ -124,6 +128,7 @@ class PoemDetailViewModelTest {
                 PoemDetailViewModel(
                     poemRepository = repository,
                     savedPoemRepository = FakeSavedPoemRepository(),
+                    memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
                 )
@@ -147,6 +152,7 @@ class PoemDetailViewModelTest {
                 PoemDetailViewModel(
                     poemRepository = repository,
                     savedPoemRepository = FakeSavedPoemRepository(),
+                    memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
                 )
@@ -177,6 +183,7 @@ class PoemDetailViewModelTest {
                 PoemDetailViewModel(
                     poemRepository = repository,
                     savedPoemRepository = FakeSavedPoemRepository(),
+                    memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
                 )
@@ -199,6 +206,7 @@ class PoemDetailViewModelTest {
                 PoemDetailViewModel(
                     poemRepository = repository,
                     savedPoemRepository = FakeSavedPoemRepository(),
+                    memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
                 )
@@ -229,6 +237,7 @@ class PoemDetailViewModelTest {
                 PoemDetailViewModel(
                     poemRepository = repository,
                     savedPoemRepository = FakeSavedPoemRepository(),
+                    memorizationRepository = FakeMemorizationRepository(),
                     shareService = shareService,
                     poemId = 77,
                 )

@@ -1,0 +1,107 @@
+package abkabk.azbarkon.domain.srs
+
+import abkabk.azbarkon.core.util.currentTimeMillis
+import abkabk.azbarkon.domain.model.PoemVerse
+import abkabk.azbarkon.domain.model.memorization.SrsCard
+import abkabk.azbarkon.domain.srs.SrsScheduler.DEFAULT_EASE
+
+data class GeneratedCard(
+    val cardIndex: Int,
+    val front: String,
+    val back: String,
+)
+
+object CardGenerator {
+    fun generateCards(
+        poemId: Int,
+        verses: List<PoemVerse>,
+        nowMillis: Long = currentTimeMillis(),
+    ): List<SrsCard> {
+        val generated = buildGeneratedCards(verses)
+        return generated.map { card ->
+            SrsCard(
+                id = 0,
+                poemId = poemId,
+                cardIndex = card.cardIndex,
+                front = card.front,
+                back = card.back,
+                interval = 0,
+                ease = DEFAULT_EASE,
+                dueDateMillis = nowMillis,
+                consecutiveCorrect = 0,
+            )
+        }
+    }
+
+    fun buildGeneratedCards(verses: List<PoemVerse>): List<GeneratedCard> {
+        if (verses.isEmpty()) return emptyList()
+
+        val grouped =
+            verses
+                .sortedWith(compareBy({ it.vorder }, { it.position }))
+                .groupBy { it.vorder }
+
+        return grouped.entries
+            .sortedBy { it.key }
+            .mapIndexed { index, (_, coupletVerses) ->
+                val sortedCouplet = coupletVerses.sortedBy { it.position }
+                val firstLine = sortedCouplet.firstOrNull()?.text.orEmpty()
+                val fullBack =
+                    sortedCouplet.joinToString("\n") { it.text }.trim()
+
+                val front =
+                    if (sortedCouplet.size > 1) {
+                        "$firstLine\n..."
+                    } else {
+                        maskWords(firstLine)
+                    }
+
+                GeneratedCard(
+                    cardIndex = index,
+                    front = front,
+                    back = fullBack,
+                )
+            }
+    }
+
+    private fun maskWords(line: String): String {
+        val words = line.split(Regex("\\s+")).filter { it.isNotBlank() }
+        if (words.size <= 2) return line
+        val visibleCount = (words.size / 2).coerceAtLeast(1)
+        return words.take(visibleCount).joinToString(" ") + " ..."
+    }
+
+    fun expectedContinuation(front: String, back: String): String {
+        if (front.contains("\n...")) {
+            val backLines = back.lines().map { it.trim() }.filter { it.isNotEmpty() }
+            if (backLines.size <= 1) return back.trim()
+            return backLines.drop(1).joinToString("\n")
+        }
+        if (front.trimEnd().endsWith("...")) {
+            val visiblePart = front.replace(Regex("\\s*\\.\\.\\.\\s*$"), "").trim()
+            val visibleWords = visiblePart.split(Regex("\\s+")).filter { it.isNotBlank() }
+            val allWords = back.split(Regex("\\s+")).filter { it.isNotBlank() }
+            return allWords.drop(visibleWords.size).joinToString(" ")
+        }
+        return back.trim()
+    }
+
+    data class RevealedFrontParts(
+        val prefix: String,
+        val continuation: String,
+        val suffix: String = "",
+    )
+
+    fun revealedFrontParts(front: String, continuation: String): RevealedFrontParts {
+        if (front.contains("\n...")) {
+            val prefix = front.substringBefore("\n...")
+            return RevealedFrontParts(prefix = "$prefix\n ", continuation = continuation)
+        }
+        if (front.trimEnd().endsWith("...")) {
+            val prefix = front.replace(Regex("\\s*\\.\\.\\.\\s*$"), "").trimEnd()
+            val separator = if (prefix.isEmpty()) "" else " "
+            return RevealedFrontParts(prefix = "$prefix$separator", continuation = continuation)
+        }
+        return RevealedFrontParts(prefix = "", continuation = continuation)
+    }
+}

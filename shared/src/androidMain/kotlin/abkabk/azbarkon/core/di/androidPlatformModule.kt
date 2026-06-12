@@ -1,8 +1,11 @@
 package abkabk.azbarkon.core.di
 
 import abkabk.azbarkon.core.local.DatabaseDriverFactory
+import abkabk.azbarkon.core.local.MemorizationDatabaseDriverFactory
 import abkabk.azbarkon.core.notifications.DailyBeytNotificationPresenter
 import abkabk.azbarkon.core.notifications.DailyBeytWorker
+import abkabk.azbarkon.core.notifications.MemorizationReviewNotificationPresenter
+import abkabk.azbarkon.core.notifications.MemorizationReviewWorker
 import abkabk.azbarkon.core.widget.RandomDistichWidgetPreferences
 import abkabk.azbarkon.core.widget.RandomDistichWidgetRefresher
 import abkabk.azbarkon.core.widget.RandomDistichWidgetUpdater
@@ -11,10 +14,13 @@ import abkabk.azbarkon.core.platform.KeyValueStore
 import abkabk.azbarkon.core.platform.ImageExportManager
 import abkabk.azbarkon.core.platform.ShareManager
 import abkabk.azbarkon.data.platform.AndroidDailyBeytNotificationScheduler
+import abkabk.azbarkon.data.platform.AndroidMemorizationReviewNotificationScheduler
 import abkabk.azbarkon.data.platform.AndroidNotificationPermissionGateway
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
+import abkabk.azbarkon.domain.platform.MemorizationReviewNotificationScheduler
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
 import com.azbarkon.db.AzbarKonDatabase
+import com.azbarkon.memorization.MemorizationDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.dsl.module
@@ -30,6 +36,18 @@ val androidPlatformModule =
         single {
             AzbarKonDatabase(
                 driver = get<DatabaseDriverFactory>().createDriver(),
+            )
+        }
+
+        single {
+            MemorizationDatabaseDriverFactory(
+                context = androidContext(),
+            )
+        }
+
+        single {
+            MemorizationDatabase(
+                driver = get<MemorizationDatabaseDriverFactory>().createDriver(),
             )
         }
 
@@ -64,6 +82,19 @@ val androidPlatformModule =
             )
         }
 
+        single<MemorizationReviewNotificationScheduler> {
+            AndroidMemorizationReviewNotificationScheduler(
+                context = androidContext(),
+                localDataSource = get(),
+            )
+        }
+
+        single {
+            MemorizationReviewNotificationPresenter(
+                context = androidContext(),
+            )
+        }
+
         single {
             DailyBeytNotificationPresenter(
                 context = androidContext(),
@@ -85,4 +116,5 @@ val androidPlatformModule =
         }
 
         workerOf(::DailyBeytWorker)
+        workerOf(::MemorizationReviewWorker)
     }

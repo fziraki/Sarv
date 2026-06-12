@@ -6,12 +6,14 @@ import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.toUiText
+import abkabk.azbarkon.domain.model.memorization.MemorizationError
 import abkabk.azbarkon.domain.platform.ShareService
+import abkabk.azbarkon.domain.repository.MemorizationRepository
 import abkabk.azbarkon.domain.repository.PoemRepository
 import abkabk.azbarkon.domain.repository.SavedPoemRepository
 import androidx.lifecycle.viewModelScope
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.coming_soon
+import azbarkoncmp.shared.generated.resources.memorization_max_active_error
 import azbarkoncmp.shared.generated.resources.search_empty_query
 import azbarkoncmp.shared.generated.resources.search_not_found_in_poem
 import kotlinx.coroutines.launch
@@ -19,6 +21,7 @@ import kotlinx.coroutines.launch
 class PoemDetailViewModel(
     private val poemRepository: PoemRepository,
     private val savedPoemRepository: SavedPoemRepository,
+    private val memorizationRepository: MemorizationRepository,
     private val shareService: ShareService,
     private val poemId: Int,
 ) : BaseViewModel<PoemDetailAction, PoemDetailState, PoemDetailEvent>(
@@ -56,8 +59,7 @@ class PoemDetailViewModel(
 
             PoemDetailAction.OnImageCreatorClick -> navigateToTasvirNegar()
 
-            PoemDetailAction.OnMemorizeClick,
-            -> showComingSoon()
+            PoemDetailAction.OnMemorizeClick -> startMemorization()
         }
     }
 
@@ -65,9 +67,10 @@ class PoemDetailViewModel(
         viewModelScope.launch {
             setState { copy(screenState = UiScreenState.Loading) }
 
-            poemRepository
-                .getPoemDetail(poemId)
-                .onSuccess { detail ->
+            when (val result = poemRepository.getPoemDetail(poemId)) {
+                is abkabk.azbarkon.core.domain.result.Result.Success -> {
+                    val detail = result.data
+                    val isMemorizing = memorizationRepository.isPoemActive(poemId)
                     setState {
                         copy(
                             screenState = UiScreenState.Success,
@@ -76,13 +79,40 @@ class PoemDetailViewModel(
                             verses = detail.verses.map { it.toPoemVerseUi() },
                             isLiked = savedPoemRepository.isLiked(poemId),
                             isBookmarked = savedPoemRepository.isBookmarked(poemId),
+                            isMemorizing = isMemorizing,
                         )
                     }
-                }.onFailure { error ->
-                    val message = error.toUiText()
+                }
+                is abkabk.azbarkon.core.domain.result.Result.Error -> {
+                    val message = result.error.toUiText()
                     setState {
                         copy(screenState = UiScreenState.Error(message = message))
                     }
+                    sendEvent(PoemDetailEvent.ShowSnackbar(message))
+                }
+            }
+        }
+    }
+
+    private fun startMemorization() {
+        viewModelScope.launch {
+            if (memorizationRepository.isPoemActive(poemId)) {
+                sendEvent(PoemDetailEvent.NavigateToMemorizationPractice)
+                return@launch
+            }
+
+            memorizationRepository
+                .addPoem(poemId)
+                .onSuccess {
+                    setState { copy(isMemorizing = true) }
+                    sendEvent(PoemDetailEvent.NavigateToMemorizationPractice)
+                }.onFailure { error ->
+                    val message =
+                        when (error) {
+                            MemorizationError.MaxActivePoemsReached ->
+                                UiText.Resource(Res.string.memorization_max_active_error)
+                            else -> error.toUiText()
+                        }
                     sendEvent(PoemDetailEvent.ShowSnackbar(message))
                 }
         }
@@ -179,16 +209,6 @@ class PoemDetailViewModel(
         }
     }
 
-    private fun showComingSoon() {
-        viewModelScope.launch {
-            sendEvent(
-                PoemDetailEvent.ShowSnackbar(
-                    UiText.Resource(Res.string.coming_soon),
-                ),
-            )
-        }
-    }
-
     private fun buildShareText(): String {
         val currentState = state.value
         if (currentState.verses.isEmpty()) return ""
@@ -206,3 +226,13 @@ class PoemDetailViewModel(
         }
     }
 }
+
+private fun MemorizationError.toUiText(): UiText =
+    when (this) {
+        MemorizationError.MaxActivePoemsReached ->
+            UiText.Resource(Res.string.memorization_max_active_error)
+        MemorizationError.PoemNotFound,
+        MemorizationError.CardNotFound,
+        MemorizationError.Unknown,
+        -> UiText.DynamicString(toString())
+    }

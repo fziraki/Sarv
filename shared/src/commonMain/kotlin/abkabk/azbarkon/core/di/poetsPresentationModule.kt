@@ -34,6 +34,7 @@ val poetsPresentationModule =
             PoemDetailViewModel(
                 poemRepository = get(),
                 savedPoemRepository = get(),
+                memorizationRepository = get(),
                 shareService = get(),
                 poemId = parameters.get(),
             )

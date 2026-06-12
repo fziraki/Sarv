@@ -14,10 +14,12 @@ val sharedModules: List<Module> =
         chatDataModule,
         userDataModule,
         userPreferencesDataModule,
+        memorizationDataModule,
         homePresentationModule,
         profilePresentationModule,
         poetsPresentationModule,
         searchPresentationModule,
         chatPresentationModule,
         tasvirNegarPresentationModule,
+        memorizationPresentationModule,
     )

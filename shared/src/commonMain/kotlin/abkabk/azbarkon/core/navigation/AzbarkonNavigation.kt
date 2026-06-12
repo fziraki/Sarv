@@ -15,6 +15,10 @@ import abkabk.azbarkon.features.profile.navigation.ProfileRoute
 import abkabk.azbarkon.features.profile.navigation.profileGraph
 import abkabk.azbarkon.features.tasvir_negar.navigation.TasvirNegarRoute
 import abkabk.azbarkon.features.tasvir_negar.navigation.tasvirNegarGraph
+import abkabk.azbarkon.features.memorization.navigation.memorizationGraph
+import abkabk.azbarkon.features.memorization.navigation.navigateToActiveMemorization
+import abkabk.azbarkon.features.memorization.navigation.navigateToMemorizationPractice
+import abkabk.azbarkon.features.memorization.navigation.navigateToMemorizationSelect
 import abkabk.azbarkon.features.search.navigation.navigateToSearch
 import abkabk.azbarkon.features.search.navigation.searchGraph
 import androidx.compose.animation.EnterTransition
@@ -72,7 +76,10 @@ private fun NavDestination?.isRootTabDestination(): Boolean =
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AzbarkonNavigation(initialPoemId: Int? = null) {
+fun AzbarkonNavigation(
+    initialPoemId: Int? = null,
+    openMemorizationPractice: Boolean = false,
+) {
     val navController = rememberNavController()
     val appState = rememberAzbarkonAppState()
 
@@ -81,6 +88,12 @@ fun AzbarkonNavigation(initialPoemId: Int? = null) {
             navController.navigate(PoemDetailRoute(poemId = poemId)) {
                 launchSingleTop = true
             }
+        }
+    }
+
+    LaunchedEffect(openMemorizationPractice) {
+        if (openMemorizationPractice) {
+            navController.navigateToMemorizationPractice(poemId = null)
         }
     }
 
@@ -261,8 +274,18 @@ fun AzbarkonNavigation(initialPoemId: Int? = null) {
                     onNavigateToTasvirNegar = {
                         navController.navigate(TasvirNegarRoute(poemId = null))
                     },
+                    onNavigateToMemorizationSelect = {
+                        navController.navigateToMemorizationSelect()
+                    },
+                    onNavigateToMemorizationPractice = {
+                        navController.navigateToMemorizationPractice()
+                    },
+                    onNavigateToActiveMemorization = {
+                        navController.navigateToActiveMemorization()
+                    },
                 )
                 tasvirNegarGraph(onBackClick = navController::navigateUp)
+                memorizationGraph(navController)
                 gamesGraph()
                 profileGraph()
                 poetsGraph(navController)

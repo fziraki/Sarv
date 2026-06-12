@@ -54,6 +54,8 @@ import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.all
 import azbarkoncmp.shared.generated.resources.my_poems
 import azbarkoncmp.shared.generated.resources.memorization_button
+import azbarkoncmp.shared.generated.resources.continue_memorization_desc
+import azbarkoncmp.shared.generated.resources.continue_memorization_title
 import azbarkoncmp.shared.generated.resources.new_memorization_button
 import azbarkoncmp.shared.generated.resources.new_memorization_desc
 import azbarkoncmp.shared.generated.resources.new_memorization_title
@@ -88,6 +90,9 @@ fun HomeRoot(
     onNavigateToMyPoems: () -> Unit,
     onNavigateToSearch: () -> Unit,
     onNavigateToTasvirNegar: () -> Unit,
+    onNavigateToMemorizationSelect: () -> Unit,
+    onNavigateToMemorizationPractice: () -> Unit,
+    onNavigateToActiveMemorization: () -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -109,6 +114,12 @@ fun HomeRoot(
             HomeEvent.NavigateToSearch -> onNavigateToSearch()
 
             HomeEvent.NavigateToTasvirNegar -> onNavigateToTasvirNegar()
+
+            HomeEvent.NavigateToMemorizationSelect -> onNavigateToMemorizationSelect()
+
+            HomeEvent.NavigateToMemorizationPractice -> onNavigateToMemorizationPractice()
+
+            HomeEvent.NavigateToActiveMemorization -> onNavigateToActiveMemorization()
         }
     }
 
@@ -153,13 +164,17 @@ fun HomeScreen(
             )
         }
         item {
-            HeroCard(state.isNewMemorization)
+            HeroCard(
+                hero = state.memorizationHero,
+                onClick = { onAction(HomeAction.OnMemorizationClick) },
+            )
         }
         item {
             QuickAccessMenu(
                 onMyPoemsClick = { onAction(HomeAction.OnMyPoemsClick) },
                 onSearchClick = { onAction(HomeAction.OnSearchClick) },
                 onTasvirNegarClick = { onAction(HomeAction.OnTasvirNegarClick) },
+                onReviewClick = { onAction(HomeAction.OnReviewClick) },
             )
         }
         item {
@@ -279,6 +294,7 @@ fun QuickAccessMenu(
     onMyPoemsClick: () -> Unit,
     onSearchClick: () -> Unit,
     onTasvirNegarClick: () -> Unit,
+    onReviewClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
@@ -310,8 +326,7 @@ fun QuickAccessMenu(
             modifier = Modifier.weight(1f),
             icon = Res.drawable.review,
             title = Res.string.review,
-            onItemClick = {
-            },
+            onItemClick = onReviewClick,
         )
     }
 }
@@ -349,25 +364,31 @@ fun QuickAccessItem(
 }
 
 @Composable
-fun HeroCard(newMemorization: Boolean) {
-    val res1 = Res.string.poetry_memorization
-    val res2 =
-        if (newMemorization) {
+fun HeroCard(
+    hero: MemorizationHeroUi,
+    onClick: () -> Unit,
+) {
+    val titleText =
+        if (hero.hasActivePoems) {
+            stringResource(Res.string.continue_memorization_title)
+        } else {
             stringResource(Res.string.new_memorization_title)
-        } else {
-            ""
         }
-    val res3 =
-        if (newMemorization) {
+    val descText =
+        if (hero.hasActivePoems) {
+            stringResource(
+                Res.string.continue_memorization_desc,
+                hero.activePoemCount,
+                hero.dueCardsToday,
+            )
+        } else {
             stringResource(Res.string.new_memorization_desc)
-        } else {
-            ""
         }
-    val resButton =
-        if (newMemorization) {
-            Res.string.new_memorization_button
+    val buttonText =
+        if (hero.hasActivePoems) {
+            stringResource(Res.string.memorization_button)
         } else {
-            Res.string.memorization_button
+            stringResource(Res.string.new_memorization_button)
         }
 
     Box(
@@ -397,23 +418,23 @@ fun HeroCard(newMemorization: Boolean) {
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(
-                    text = stringResource(res1),
+                    text = stringResource(Res.string.poetry_memorization),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Text(
-                    text = res2,
+                    text = titleText,
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Text(
-                    text = res3,
+                    text = descText,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 AzbarkonPrimaryButton(
-                    text = stringResource(resButton),
-                    onClick = {},
+                    text = buttonText,
+                    onClick = onClick,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }

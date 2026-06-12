@@ -112,6 +112,11 @@ sqldelight {
     databases {
         create("AzbarKonDatabase") {
             packageName.set("com.azbarkon.db")
+            srcDirs.from("src/commonMain/sqldelight/azbarkon")
+        }
+        create("MemorizationDatabase") {
+            packageName.set("com.azbarkon.memorization")
+            srcDirs.from("src/commonMain/sqldelight/memorization")
         }
     }
 }
