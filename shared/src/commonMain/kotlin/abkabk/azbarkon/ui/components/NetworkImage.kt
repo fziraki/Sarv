@@ -4,20 +4,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
+import coil3.compose.SubcomposeAsyncImage
 
 @Composable
 fun NetworkImage(
     imageUrl: String,
     modifier: Modifier = Modifier,
 ) {
-    KamelImage(
-        modifier = modifier,
-        resource = asyncPainterResource(imageUrl),
+    SubcomposeAsyncImage(
+        model = imageUrl,
         contentDescription = null,
+        modifier = modifier,
         contentScale = ContentScale.Crop,
-        onLoading = {
+        loading = {
+            ShimmerPlaceholder(modifier = Modifier.fillMaxSize())
+        },
+        error = {
             ShimmerPlaceholder(modifier = Modifier.fillMaxSize())
         },
     )

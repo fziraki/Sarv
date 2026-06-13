@@ -16,6 +16,8 @@ import abkabk.azbarkon.core.platform.ShareManager
 import abkabk.azbarkon.data.platform.AndroidDailyBeytNotificationScheduler
 import abkabk.azbarkon.data.platform.AndroidMemorizationReviewNotificationScheduler
 import abkabk.azbarkon.data.platform.AndroidNotificationPermissionGateway
+import abkabk.azbarkon.data.cache.CoilPoetImagePrefetcher
+import abkabk.azbarkon.domain.datasource.PoetImagePrefetcher
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import abkabk.azbarkon.domain.platform.MemorizationReviewNotificationScheduler
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
@@ -53,6 +55,10 @@ val androidPlatformModule =
 
         single {
             KeyValueStore(context = androidContext())
+        }
+
+        single<PoetImagePrefetcher> {
+            CoilPoetImagePrefetcher(platformContext = androidContext())
         }
 
         single {

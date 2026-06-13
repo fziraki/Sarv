@@ -208,12 +208,17 @@ fun AzbarkonNavigation(
                                             BottomNavItem.Games -> GamesRoute
                                             BottomNavItem.Profile -> ProfileRoute
                                         }
-                                    navController.navigate(route) {
-                                        popUpTo(navController.graph.startDestinationId) {
-                                            saveState = true
+                                    if (item == BottomNavItem.Home) {
+                                        navController.navigate(HomeRoute) {
+                                            popUpTo(HomeRoute) { inclusive = true }
+                                            launchSingleTop = true
                                         }
-                                        launchSingleTop = true
-                                        restoreState = true
+                                    } else {
+                                        navController.navigate(route) {
+                                            popUpTo(HomeRoute) { saveState = true }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     }
                                 },
                                 icon = {
@@ -255,7 +260,11 @@ fun AzbarkonNavigation(
             ) {
                 homeGraph(
                     onNavigateToPoetsList = {
-                        navController.navigate(PoetsListRoute)
+                        navController.navigate(PoetsListRoute) {
+                            popUpTo(HomeRoute) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     },
                     onNavigateToPoetDetail = { poetId ->
                         navController.navigate(PoetDetailRoute(poetId))

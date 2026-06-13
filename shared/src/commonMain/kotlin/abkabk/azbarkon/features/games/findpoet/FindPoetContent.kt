@@ -9,10 +9,13 @@ import abkabk.azbarkon.features.games.components.gameOptionStyle
 import abkabk.azbarkon.features.games.components.optionStateForIndex
 import abkabk.azbarkon.features.games.session.QuizAnswerPhase
 import abkabk.azbarkon.ui.components.NetworkImage
+import abkabk.azbarkon.ui.components.ShimmerPlaceholder
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.game_find_poet_instruction
@@ -82,7 +86,7 @@ fun FindPoetContent(
                                 disabledIndices = disabledOptionIndices,
                                 answerPhase = answerPhase,
                             )
-                        val (background, contentColor) = gameOptionColors(state)
+                        val (_, contentColor) = gameOptionColors(state)
                         val clickable =
                             enabled &&
                                 state != GameOptionState.Disabled &&
@@ -99,25 +103,36 @@ fun FindPoetContent(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            if (poetOption.imageUrl != null) {
-                                NetworkImage(
-                                    imageUrl = poetOption.imageUrl,
-                                    modifier =
-                                        Modifier
-                                            .size(36.dp)
-                                            .clip(CircleShape),
-                                )
-                            }
+                            FindPoetOptionAvatar(imageUrl = poetOption.imageUrl)
                             Text(
                                 modifier = Modifier.weight(1f),
                                 text = poetOption.name,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = contentColor,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun FindPoetOptionAvatar(
+    imageUrl: String?,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier = modifier.size(36.dp).clip(CircleShape)) {
+        if (imageUrl.isNullOrBlank()) {
+            ShimmerPlaceholder(modifier = Modifier.fillMaxSize())
+        } else {
+            NetworkImage(
+                imageUrl = imageUrl,
+                modifier = Modifier.fillMaxSize(),
+            )
         }
     }
 }

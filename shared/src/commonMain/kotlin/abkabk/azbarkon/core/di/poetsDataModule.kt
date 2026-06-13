@@ -17,6 +17,7 @@ val poetsDataModule =
         single<PoetRepository> {
             OfflineFirstPoetRepository(
                 localDataSource = get(),
+                poetImagePrefetcher = get(),
             )
         }
     }
