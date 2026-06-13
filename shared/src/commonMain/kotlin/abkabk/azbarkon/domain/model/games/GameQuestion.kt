@@ -42,6 +42,6 @@ sealed interface GameQuestion {
 data class GameSessionSummary(
     val correctCount: Int,
     val wrongCount: Int,
-    val totalSeconds: Int,
+    val noAnswerCount: Int,
     val scoreDelta: Int,
 )

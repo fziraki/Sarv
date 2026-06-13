@@ -73,6 +73,45 @@ class GameSessionViewModelTest {
         }
 
     @Test
+    fun `skip without selection counts as no answer without deducting coins`() =
+        runTest {
+            val preferences = FakeUserPreferencesRepository()
+            val viewModel =
+                GameSessionViewModel(
+                    gameType = GameType.NEXT_VERSE,
+                    gamesRepository = FakeGamesRepository(),
+                    userPreferencesRepository = preferences,
+                )
+
+            val balanceBefore = preferences.getCoinBalance()
+            assertThat(viewModel.state.value.hasSelection).isFalse()
+            assertThat(viewModel.state.value.canPressPrimaryAction).isTrue()
+
+            viewModel.onAction(GameSessionAction.OnCheckAnswerClick)
+
+            assertThat(viewModel.state.value.answerPhase).isEqualTo(QuizAnswerPhase.Wrong)
+            assertThat(viewModel.state.value.noAnswerCount).isEqualTo(1)
+            assertThat(viewModel.state.value.wrongCount).isEqualTo(0)
+            assertThat(preferences.getCoinBalance()).isEqualTo(balanceBefore)
+            assertThat(viewModel.state.value.sessionScoreDelta).isEqualTo(0)
+        }
+
+    @Test
+    fun `hasSelection becomes true after option is selected`() =
+        runTest {
+            val viewModel =
+                GameSessionViewModel(
+                    gameType = GameType.NEXT_VERSE,
+                    gamesRepository = FakeGamesRepository(),
+                    userPreferencesRepository = FakeUserPreferencesRepository(),
+                )
+
+            assertThat(viewModel.state.value.hasSelection).isFalse()
+            viewModel.onAction(GameSessionAction.OnOptionSelected(1))
+            assertThat(viewModel.state.value.hasSelection).isTrue()
+        }
+
+    @Test
     fun `wrong answer increments wrong count immediately`() =
         runTest {
             val viewModel =
@@ -87,6 +126,7 @@ class GameSessionViewModelTest {
 
             assertThat(viewModel.state.value.answerPhase).isEqualTo(QuizAnswerPhase.Wrong)
             assertThat(viewModel.state.value.wrongCount).isEqualTo(1)
+            assertThat(viewModel.state.value.noAnswerCount).isEqualTo(0)
         }
 
     @Test

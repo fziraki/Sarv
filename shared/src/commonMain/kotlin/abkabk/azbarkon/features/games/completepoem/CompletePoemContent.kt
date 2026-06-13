@@ -5,21 +5,19 @@ import abkabk.azbarkon.features.games.components.GameInstructionText
 import abkabk.azbarkon.features.games.components.GameOptionState
 import abkabk.azbarkon.features.games.components.GamePoemCard
 import abkabk.azbarkon.features.games.components.gameOptionColors
+import abkabk.azbarkon.features.games.components.gameOptionStyle
 import abkabk.azbarkon.features.games.components.optionStateForIndex
 import abkabk.azbarkon.features.games.session.QuizAnswerPhase
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
@@ -43,7 +41,6 @@ fun CompletePoemContent(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        GameInstructionText(text = stringResource(Res.string.game_complete_poem_instruction))
 
         GamePoemCard {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -61,6 +58,8 @@ fun CompletePoemContent(
                 )
             }
         }
+
+        GameInstructionText(text = stringResource(Res.string.game_complete_poem_instruction))
 
         question.options.chunked(2).forEach { rowWords ->
             Row(
@@ -88,26 +87,13 @@ fun CompletePoemContent(
                                     -1
                                 }
 
-                            QuizAnswerPhase.Timeout ->
-                                if (word == question.correctWords.first) {
-                                    firstCorrectIndex
-                                } else if (word == question.correctWords.second) {
-                                    secondCorrectIndex
-                                } else {
-                                    -1
-                                }
-
                             QuizAnswerPhase.Answering -> -1
                         }
                     val effectiveCorrectIndex =
                         if (revealCorrectIndex >= 0) revealCorrectIndex else firstCorrectIndex
                     val state =
                         if (answerPhase != QuizAnswerPhase.Answering && index == revealCorrectIndex) {
-                            if (answerPhase == QuizAnswerPhase.Timeout) {
-                                GameOptionState.TimeoutReveal
-                            } else {
-                                GameOptionState.Correct
-                            }
+                            GameOptionState.Correct
                         } else {
                             optionStateForIndex(
                                 index = index,
@@ -130,8 +116,7 @@ fun CompletePoemContent(
                         modifier =
                             Modifier
                                 .weight(1f)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(background)
+                                .gameOptionStyle(state)
                                 .clickable(enabled = clickable) { onWordSelected(word) }
                                 .padding(horizontal = 12.dp, vertical = 14.dp),
                         text = word,

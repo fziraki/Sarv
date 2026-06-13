@@ -5,13 +5,14 @@ import abkabk.azbarkon.domain.model.games.GameType
 import abkabk.azbarkon.features.games.session.QuizAnswerPhase
 import abkabk.azbarkon.ui.components.AzbarkonButtonDefaults
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
-import abkabk.azbarkon.ui.components.Header
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,24 +20,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.arrow_back_left
+import azbarkoncmp.shared.generated.resources.cd_back
 import azbarkoncmp.shared.generated.resources.coin
 import azbarkoncmp.shared.generated.resources.complete_poem_title
-import azbarkoncmp.shared.generated.resources.game_check_answer
 import azbarkoncmp.shared.generated.resources.game_check_arrangement
-import azbarkoncmp.shared.generated.resources.game_confirm_answer
 import azbarkoncmp.shared.generated.resources.game_hint
 import azbarkoncmp.shared.generated.resources.game_hint_cost
-import azbarkoncmp.shared.generated.resources.game_stage_format
-import azbarkoncmp.shared.generated.resources.lightbulb
+import azbarkoncmp.shared.generated.resources.game_next
+import azbarkoncmp.shared.generated.resources.game_quiz_progress_format
+import azbarkoncmp.shared.generated.resources.game_review
 import azbarkoncmp.shared.generated.resources.next_line_title
 import azbarkoncmp.shared.generated.resources.poetry_arrangement_title
 import azbarkoncmp.shared.generated.resources.whois_poet_title
@@ -44,101 +46,156 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun GameChrome(
+fun GameSessionTopBar(
     gameType: GameType,
     coinBalance: Int,
     currentQuizIndex: Int,
-    timeRemainingSeconds: Int,
-    canUseHint: Boolean,
-    canCheckAnswer: Boolean,
     onBackClick: () -> Unit,
-    onHintClick: () -> Unit,
-    onCheckAnswerClick: () -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Header(
-                title = gameTitle(gameType),
-                onBackClick = onBackClick,
-                modifier = Modifier.weight(1f),
-            )
-            GameCoinBadge(balance = coinBalance)
-        }
-
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text =
-                stringResource(
-                    Res.string.game_stage_format,
-                    currentQuizIndex + 1,
-                    GameConstants.QUIZ_COUNT,
-                ),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+    Column(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        GameSessionTitleRow(
+            title = gameTitle(gameType),
+            onBackClick = onBackClick,
         )
 
-        val progress =
-            timeRemainingSeconds.toFloat() / GameConstants.TIME_LIMIT_SECONDS.toFloat()
-        LinearProgressIndicator(
-            progress = { progress.coerceIn(0f, 1f) },
+        GameQuizProgressSection(
+            currentQuizIndex = currentQuizIndex,
+            coinBalance = coinBalance,
+        )
+    }
+}
+
+@Composable
+private fun GameSessionTitleRow(
+    title: String,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+        )
+
+        Icon(
             modifier =
                 Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-            color = MaterialTheme.colorScheme.primary,
-            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+                    .align(Alignment.CenterEnd)
+                    .clickable(onClick = onBackClick),
+            painter = painterResource(Res.drawable.arrow_back_left),
+            contentDescription = stringResource(Res.string.cd_back),
+            tint = MaterialTheme.colorScheme.onBackground,
+        )
+    }
+}
+
+@Composable
+fun GameQuizProgressSection(
+    currentQuizIndex: Int,
+    coinBalance: Int,
+    modifier: Modifier = Modifier,
+) {
+    val quizNumber = currentQuizIndex + 1
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            GameCoinBadge(balance = coinBalance)
+
+            Text(
+                text =
+                    stringResource(
+                        Res.string.game_quiz_progress_format,
+                        quizNumber,
+                        GameConstants.QUIZ_COUNT,
+                    ),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.End,
+            )
+        }
+
+        LinearProgressIndicator(
+            progress = { (quizNumber.toFloat() / GameConstants.QUIZ_COUNT).coerceIn(0f, 1f) },
+            modifier = Modifier.fillMaxWidth().rotate(180f),
             gapSize = 0.dp,
             drawStopIndicator = {},
         )
+    }
+}
+
+@Composable
+private fun GameCoinBadge(balance: Int) {
+    Row(
+        modifier =
+            Modifier
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                    shape = RoundedCornerShape(16.dp),
+                ).padding(horizontal = 10.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Image(
+            painter = painterResource(Res.drawable.coin),
+            contentDescription = null,
+            modifier = Modifier.size(18.dp),
+        )
         Text(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-            text = timeRemainingSeconds.toString(),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.End,
+            text = balance.toString(),
+            style = MaterialTheme.typography.labelMedium,
+        )
+    }
+}
+
+@Composable
+fun GameSessionBottomBar(
+    gameType: GameType,
+    canUseHint: Boolean,
+    hasSelection: Boolean,
+    canPressPrimaryAction: Boolean,
+    onHintClick: () -> Unit,
+    onCheckAnswerClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        AzbarkonPrimaryButton(
+            text = checkAnswerLabel(gameType, hasSelection),
+            onClick = onCheckAnswerClick,
+            enabled = canPressPrimaryAction,
+            modifier = Modifier.weight(0.6f),
         )
 
-        Column(
-            modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            content()
-        }
-
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            GameHintButton(
-                enabled = canUseHint,
-                onClick = onHintClick,
-                modifier = Modifier.weight(0.4f),
-            )
-
-            AzbarkonPrimaryButton(
-                text = checkAnswerLabel(gameType),
-                onClick = onCheckAnswerClick,
-                enabled = canCheckAnswer,
-                modifier = Modifier.weight(0.6f),
-            )
-        }
+        GameHintButton(
+            enabled = canUseHint,
+            onClick = onHintClick,
+            modifier = Modifier.weight(0.4f),
+        )
     }
 }
 
@@ -164,7 +221,7 @@ private fun GameHintButton(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                painter = painterResource(Res.drawable.lightbulb),
+                painter = painterResource(Res.drawable.coin),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier.size(18.dp),
@@ -182,32 +239,6 @@ private fun GameHintButton(
 }
 
 @Composable
-private fun GameCoinBadge(balance: Int) {
-    Row(
-        modifier =
-            Modifier
-                .padding(end = 16.dp)
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outline,
-                    shape = RoundedCornerShape(20.dp),
-                ).padding(horizontal = 10.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Image(
-            painter = painterResource(Res.drawable.coin),
-            contentDescription = null,
-            modifier = Modifier.size(18.dp),
-        )
-        Text(
-            text = balance.toString(),
-            style = MaterialTheme.typography.labelMedium,
-        )
-    }
-}
-
-@Composable
 private fun gameTitle(gameType: GameType): String =
     when (gameType) {
         GameType.NEXT_VERSE -> stringResource(Res.string.next_line_title)
@@ -217,11 +248,18 @@ private fun gameTitle(gameType: GameType): String =
     }
 
 @Composable
-private fun checkAnswerLabel(gameType: GameType): String =
+private fun checkAnswerLabel(
+    gameType: GameType,
+    hasSelection: Boolean,
+): String =
     when (gameType) {
-        GameType.NEXT_VERSE -> stringResource(Res.string.game_confirm_answer)
         GameType.ORGANIZE_POEM -> stringResource(Res.string.game_check_arrangement)
-        else -> stringResource(Res.string.game_check_answer)
+        else ->
+            if (hasSelection) {
+                stringResource(Res.string.game_review)
+            } else {
+                stringResource(Res.string.game_next)
+            }
     }
 
 enum class GameOptionState {
@@ -229,7 +267,6 @@ enum class GameOptionState {
     Selected,
     Correct,
     Wrong,
-    TimeoutReveal,
     Disabled,
 }
 
@@ -249,6 +286,7 @@ fun GamePoemCard(
                     MaterialTheme.colorScheme.outlineVariant,
                     RoundedCornerShape(16.dp),
                 ).padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         poetName?.let {
             Text(
@@ -256,7 +294,7 @@ fun GamePoemCard(
                 text = it,
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.End,
+                textAlign = TextAlign.Start,
             )
         }
         content()
@@ -269,11 +307,11 @@ fun GameInstructionText(
     modifier: Modifier = Modifier,
 ) {
     Text(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(top = 16.dp),
         text = text,
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        textAlign = TextAlign.Start,
+        textAlign = TextAlign.Center,
     )
 }
 
@@ -302,12 +340,6 @@ fun optionStateForIndex(
                 index == selectedIndex -> GameOptionState.Wrong
                 else -> GameOptionState.Default
             }
-
-        QuizAnswerPhase.Timeout ->
-            when {
-                index == correctIndex -> GameOptionState.TimeoutReveal
-                else -> GameOptionState.Default
-            }
     }
 }
 
@@ -320,14 +352,30 @@ fun gameOptionColors(state: GameOptionState): Pair<androidx.compose.ui.graphics.
         GameOptionState.Disabled ->
             MaterialTheme.colorScheme.surfaceDim to MaterialTheme.colorScheme.onSurfaceVariant
 
-        GameOptionState.Selected,
-        GameOptionState.Correct,
-        ->
+        GameOptionState.Selected ->
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) to MaterialTheme.colorScheme.onSurface
+
+        GameOptionState.Correct ->
             MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
 
         GameOptionState.Wrong ->
             MaterialTheme.colorScheme.error to MaterialTheme.colorScheme.onError
-
-        GameOptionState.TimeoutReveal ->
-            MaterialTheme.colorScheme.tertiary to MaterialTheme.colorScheme.onTertiary
     }
+
+@Composable
+fun Modifier.gameOptionStyle(state: GameOptionState): Modifier {
+    val shape = RoundedCornerShape(12.dp)
+    val (background, _) = gameOptionColors(state)
+    val primary = MaterialTheme.colorScheme.primary
+    return this
+        .clip(shape)
+        .then(
+            when (state) {
+                GameOptionState.Selected,
+                GameOptionState.Correct,
+                -> Modifier.border(2.dp, primary, shape)
+
+                else -> Modifier
+            },
+        ).background(background)
+}

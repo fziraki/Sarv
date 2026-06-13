@@ -8,7 +8,9 @@ import abkabk.azbarkon.features.games.session.QuizAnswerPhase
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -57,6 +59,7 @@ fun OrganizePoemContent(
     ) {
         item {
             GameInstructionText(text = stringResource(Res.string.game_organize_poem_instruction))
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
         itemsIndexed(orderedLineIds, key = { _, lineId -> lineId }) { index, lineId ->
@@ -72,9 +75,6 @@ fun OrganizePoemContent(
 
             val state =
                 when {
-                    answerPhase == QuizAnswerPhase.Timeout && isCorrectPosition ->
-                        GameOptionState.TimeoutReveal
-
                     answerPhase != QuizAnswerPhase.Answering && isCorrectPosition ->
                         GameOptionState.Correct
 
@@ -108,7 +108,6 @@ fun OrganizePoemContent(
                             painter = painterResource(Res.drawable.drag_handle),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.outline,
-                            modifier = Modifier.padding(end = 4.dp),
                         )
                     }
                     Text(

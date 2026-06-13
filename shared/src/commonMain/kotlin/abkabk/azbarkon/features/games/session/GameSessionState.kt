@@ -10,7 +10,6 @@ enum class QuizAnswerPhase {
     Answering,
     Correct,
     Wrong,
-    Timeout,
 }
 
 @Stable
@@ -19,7 +18,6 @@ data class GameSessionState(
     val gameType: GameType = GameType.NEXT_VERSE,
     val coinBalance: Int = 0,
     val currentQuizIndex: Int = 0,
-    val timeRemainingSeconds: Int = GameConstants.TIME_LIMIT_SECONDS,
     val questions: List<GameQuestion> = emptyList(),
     val selectedOptionIndex: Int? = null,
     val selectedPoetId: Int? = null,
@@ -31,8 +29,8 @@ data class GameSessionState(
     val hintUsedThisQuiz: Boolean = false,
     val correctCount: Int = 0,
     val wrongCount: Int = 0,
+    val noAnswerCount: Int = 0,
     val sessionScoreDelta: Int = 0,
-    val totalElapsedSeconds: Int = 0,
 ) {
     val currentQuestion: GameQuestion?
         get() = questions.getOrNull(currentQuizIndex)
@@ -49,14 +47,30 @@ data class GameSessionState(
     val isAnswering: Boolean
         get() = answerPhase == QuizAnswerPhase.Answering
 
+    val hasSelection: Boolean
+        get() =
+            when (val question = currentQuestion) {
+                is GameQuestion.NextVerse -> selectedOptionIndex != null
+                is GameQuestion.FindPoet -> selectedPoetId != null
+                is GameQuestion.CompletePoem -> filledWords.isNotEmpty()
+                is GameQuestion.OrganizePoem,
+                null,
+                -> false
+            }
+
     val canCheckAnswer: Boolean
         get() =
             isAnswering &&
                 when (val question = currentQuestion) {
-                    is GameQuestion.NextVerse -> selectedOptionIndex != null
-                    is GameQuestion.FindPoet -> selectedPoetId != null
-                    is GameQuestion.CompletePoem -> filledWords.size == 2
                     is GameQuestion.OrganizePoem -> orderedLineIds.isNotEmpty()
-                    null -> false
+                    else -> false
                 }
+
+    val canPressPrimaryAction: Boolean
+        get() =
+            when (val question = currentQuestion) {
+                is GameQuestion.OrganizePoem -> canCheckAnswer
+                null -> false
+                else -> isAnswering
+            }
 }

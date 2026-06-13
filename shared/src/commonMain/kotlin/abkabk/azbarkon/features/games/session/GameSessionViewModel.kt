@@ -27,7 +27,6 @@ class GameSessionViewModel(
 ) : BaseViewModel<GameSessionAction, GameSessionState, GameSessionEvent>(
         initialState = GameSessionState(gameType = gameType),
     ) {
-    private var timerJob: Job? = null
     private var revealJob: Job? = null
     private var prefetchJob: Job? = null
     private val sessionSeed = Random.nextLong()
@@ -45,7 +44,7 @@ class GameSessionViewModel(
 
             GameSessionAction.OnHintClick -> applyHint()
 
-            GameSessionAction.OnCheckAnswerClick -> checkAnswer()
+            GameSessionAction.OnCheckAnswerClick -> onPrimaryActionClick()
 
             GameSessionAction.OnRetryClick -> loadSession()
 
@@ -113,7 +112,6 @@ class GameSessionViewModel(
                         )
                     }
                     resetQuizState()
-                    startTimer()
                     prefetchRemainingQuestions(cache, questions)
                 }
 
@@ -171,7 +169,6 @@ class GameSessionViewModel(
         val question = state.value.currentQuestion
         setState {
             copy(
-                timeRemainingSeconds = GameConstants.TIME_LIMIT_SECONDS,
                 selectedOptionIndex = null,
                 selectedPoetId = null,
                 filledWords = emptyList(),
@@ -188,34 +185,26 @@ class GameSessionViewModel(
         }
     }
 
-    private fun startTimer() {
-        timerJob?.cancel()
-        timerJob =
-            viewModelScope.launch {
-                while (state.value.timeRemainingSeconds > 0 && state.value.isAnswering) {
-                    delay(1_000)
-                    if (!state.value.isAnswering) return@launch
-                    val remaining = state.value.timeRemainingSeconds - 1
-                    setState {
-                        copy(
-                            timeRemainingSeconds = remaining,
-                            totalElapsedSeconds = totalElapsedSeconds + 1,
-                        )
-                    }
-                    if (remaining == 0) {
-                        handleTimeout()
-                    }
-                }
-            }
-    }
-
-    private fun handleTimeout() {
+    private fun onPrimaryActionClick() {
         if (!state.value.isAnswering) return
-        applyOutcome(isCorrect = false, phase = QuizAnswerPhase.Timeout)
+        when (val question = state.value.currentQuestion) {
+            is GameQuestion.OrganizePoem -> {
+                if (!state.value.canCheckAnswer) return
+                checkAnswer()
+            }
+
+            null -> Unit
+
+            else ->
+                if (state.value.hasSelection) {
+                    checkAnswer()
+                } else {
+                    applySkipOutcome()
+                }
+        }
     }
 
     private fun checkAnswer() {
-        if (!state.value.canCheckAnswer) return
         val isCorrect = evaluateAnswer()
         val phase = if (isCorrect) QuizAnswerPhase.Correct else QuizAnswerPhase.Wrong
         applyOutcome(isCorrect = isCorrect, phase = phase)
@@ -242,13 +231,27 @@ class GameSessionViewModel(
         }
     }
 
+    private fun applySkipOutcome() {
+        setState {
+            copy(
+                answerPhase = QuizAnswerPhase.Wrong,
+                noAnswerCount = noAnswerCount + 1,
+            )
+        }
+
+        revealJob?.cancel()
+        revealJob =
+            viewModelScope.launch {
+                delay(REVEAL_DELAY_MS)
+                advanceQuiz()
+            }
+    }
+
     private fun applyOutcome(
         isCorrect: Boolean,
         phase: QuizAnswerPhase,
     ) {
-        timerJob?.cancel()
-        val baseScore = gameType.baseScore()
-        val scoreDelta = if (isCorrect) baseScore else -baseScore
+        val scoreDelta = if (isCorrect) gameType.baseScore() else 0
         val updatedCoinBalance = userPreferencesRepository.adjustCoinBalance(scoreDelta)
 
         setState {
@@ -291,7 +294,6 @@ class GameSessionViewModel(
             }
             setState { copy(currentQuizIndex = nextIndex) }
             resetQuizState()
-            startTimer()
         }
     }
 
@@ -306,7 +308,7 @@ class GameSessionViewModel(
                         GameSessionSummary(
                             correctCount = currentState.correctCount,
                             wrongCount = currentState.wrongCount,
-                            totalSeconds = currentState.totalElapsedSeconds,
+                            noAnswerCount = currentState.noAnswerCount,
                             scoreDelta = currentState.sessionScoreDelta,
                         ),
                 ),
@@ -413,7 +415,6 @@ class GameSessionViewModel(
     }
 
     private fun cancelJobs() {
-        timerJob?.cancel()
         revealJob?.cancel()
         prefetchJob?.cancel()
     }

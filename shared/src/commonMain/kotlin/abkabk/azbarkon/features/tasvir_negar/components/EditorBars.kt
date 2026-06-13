@@ -6,7 +6,6 @@ import abkabk.azbarkon.features.tasvir_negar.TasvirNegarAction
 import abkabk.azbarkon.features.tasvir_negar.model.TasvirNegarColors
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -46,7 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.arrow_back
+import azbarkoncmp.shared.generated.resources.arrow_back_right
 import azbarkoncmp.shared.generated.resources.cd_back
 import azbarkoncmp.shared.generated.resources.download
 import azbarkoncmp.shared.generated.resources.ic_color
@@ -81,7 +79,7 @@ fun EditorHeader(
     ) {
         IconButton(onClick = onBackClick) {
             Icon(
-                painter = painterResource(Res.drawable.arrow_back),
+                painter = painterResource(Res.drawable.arrow_back_right),
                 contentDescription = stringResource(Res.string.cd_back),
                 tint = Color.Unspecified,
             )

@@ -40,7 +40,7 @@ fun NavGraphBuilder.gamesGraph(
             gameType = route.type.toDomain(),
             correctCount = route.correct,
             wrongCount = route.wrong,
-            totalSeconds = route.totalSeconds,
+            noAnswerCount = route.noAnswer,
             scoreDelta = route.scoreDelta,
             onReplayClick = {
                 navController.navigate(GamePlayRoute(type = route.type)) {
@@ -62,7 +62,7 @@ private fun GameSessionSummary.toResultRoute(gameType: GameType): GameResultRout
         type = gameType.toRoute(),
         correct = correctCount,
         wrong = wrongCount,
-        totalSeconds = totalSeconds,
+        noAnswer = noAnswerCount,
         scoreDelta = scoreDelta,
     )
 

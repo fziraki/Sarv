@@ -5,10 +5,10 @@ import abkabk.azbarkon.features.games.components.GameInstructionText
 import abkabk.azbarkon.features.games.components.GameOptionState
 import abkabk.azbarkon.features.games.components.GamePoemCard
 import abkabk.azbarkon.features.games.components.gameOptionColors
+import abkabk.azbarkon.features.games.components.gameOptionStyle
 import abkabk.azbarkon.features.games.components.optionStateForIndex
 import abkabk.azbarkon.features.games.session.QuizAnswerPhase
 import abkabk.azbarkon.ui.components.NetworkImage
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,7 +46,6 @@ fun FindPoetContent(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        GameInstructionText(text = stringResource(Res.string.game_find_poet_instruction))
 
         GamePoemCard {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -65,6 +63,8 @@ fun FindPoetContent(
                 )
             }
         }
+
+        GameInstructionText(text = stringResource(Res.string.game_find_poet_instruction))
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             question.options.chunked(2).forEach { rowOptions ->
@@ -92,20 +92,13 @@ fun FindPoetContent(
                             modifier =
                                 Modifier
                                     .weight(1f)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(background)
+                                    .gameOptionStyle(state)
                                     .clickable(enabled = clickable) {
                                         onPoetSelected(poetOption.id)
                                     }.padding(12.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Text(
-                                modifier = Modifier.weight(1f),
-                                text = poetOption.name,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = contentColor,
-                            )
                             if (poetOption.imageUrl != null) {
                                 NetworkImage(
                                     imageUrl = poetOption.imageUrl,
@@ -115,6 +108,12 @@ fun FindPoetContent(
                                             .clip(CircleShape),
                                 )
                             }
+                            Text(
+                                modifier = Modifier.weight(1f),
+                                text = poetOption.name,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = contentColor,
+                            )
                         }
                     }
                 }

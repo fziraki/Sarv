@@ -100,11 +100,14 @@
     <string name="complete_poem_score">15</string>
 
     <string name="game_stage_format">مرحله %1$d از %2$d</string>
+    <string name="game_quiz_progress_format">%1$d از %2$d</string>
     <string name="game_hint">راهنما</string>
     <string name="game_hint_cost">50</string>
     <string name="game_check_answer">بررسی پاسخ</string>
     <string name="game_check_arrangement">بررسی چینش</string>
     <string name="game_confirm_answer">تأیید پاسخ</string>
+    <string name="game_next">بعدی</string>
+    <string name="game_review">بررسی</string>
     <string name="game_next_verse_instruction">مصرع بعدی را انتخاب کنید</string>
     <string name="game_find_poet_instruction">این بیت از کدام شاعر است؟</string>
     <string name="game_complete_poem_instruction">جای خالی‌ها را با گزینه‌های مناسب پر کنید</string>
@@ -112,8 +115,16 @@
     <string name="game_result_title">نتیجه بازی</string>
     <string name="game_result_correct">پاسخ درست</string>
     <string name="game_result_wrong">پاسخ نادرست</string>
+    <string name="game_result_no_answer">بدون پاسخ</string>
     <string name="game_result_time">زمان کل</string>
     <string name="game_result_score">امتیاز</string>
+    <string name="game_result_progress_title">پیشرفت شما</string>
+    <string name="game_result_progress_questions_format">%1$d از %2$d سؤال</string>
+    <string name="game_result_progress_percent_format">%1$d%</string>
+    <string name="game_result_progress_completed">تکمیل شده</string>
+    <string name="game_result_progress_question_count_label">تعداد سؤال‌ها</string>
+    <string name="game_result_progress_total_questions_format">%1$d سؤال</string>
+    <string name="game_result_progress_answered_format">%1$d از %2$d پاسخ داده شده</string>
     <string name="game_result_time_format">%1$d ثانیه</string>
     <string name="game_replay">بازی دوباره</string>
     <string name="game_back_to_list">بازگشت به بازی‌ها</string>

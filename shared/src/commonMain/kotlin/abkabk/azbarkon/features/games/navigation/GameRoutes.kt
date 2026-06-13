@@ -24,7 +24,7 @@ data class GameResultRoute(
     val type: GameTypeRoute,
     val correct: Int,
     val wrong: Int,
-    val totalSeconds: Int,
+    val noAnswer: Int,
     val scoreDelta: Int,
 )
 
