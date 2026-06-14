@@ -48,12 +48,14 @@ class GameQuestionGeneratorTest {
             GameQuestionGenerator.buildOrganizePoemQuestion(
                 poemId = 1,
                 startVorder = 3,
+                poetName = "حافظ",
                 lines = listOf("a", "b", "c", "d"),
                 seed = 99L,
             )
 
         assertThat(question).isNotNull()
-        assertThat(question!!.lines.map { it.id }).isNotEqualTo(question.correctOrder)
+        assertThat(question!!.poetName).isEqualTo("حافظ")
+        assertThat(question.lines.map { it.id }).isNotEqualTo(question.correctOrder)
     }
 
     @Test

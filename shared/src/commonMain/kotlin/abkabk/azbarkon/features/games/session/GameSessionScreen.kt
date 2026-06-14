@@ -80,6 +80,7 @@ fun GameSessionScreen(
                 gameType = state.gameType,
                 canUseHint = state.canUseHint,
                 hasSelection = state.hasSelection,
+                isRevealing = state.isRevealing,
                 canPressPrimaryAction = state.canPressPrimaryAction,
                 onHintClick = { onAction(GameSessionAction.OnHintClick) },
                 onCheckAnswerClick = { onAction(GameSessionAction.OnCheckAnswerClick) },

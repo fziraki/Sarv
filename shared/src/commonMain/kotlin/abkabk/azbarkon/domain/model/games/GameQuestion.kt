@@ -34,6 +34,7 @@ sealed interface GameQuestion {
     ) : GameQuestion
 
     data class OrganizePoem(
+        val poetName: String,
         val lines: List<OrganizeLine>,
         val correctOrder: List<String>,
     ) : GameQuestion

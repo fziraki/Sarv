@@ -88,7 +88,6 @@ kotlin {
             implementation(libs.sqldelight.runtime)
             implementation(libs.paging.common)
             implementation(libs.paging.compose)
-            implementation(libs.reorderable)
         }
         val androidHostTest by getting {
             dependencies {

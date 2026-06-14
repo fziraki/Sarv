@@ -111,6 +111,7 @@ internal object GameQuestionGenerator {
     fun buildOrganizePoemQuestion(
         poemId: Int,
         startVorder: Int,
+        poetName: String,
         lines: List<String>,
         seed: Long,
     ): GameQuestion.OrganizePoem? {
@@ -134,6 +135,7 @@ internal object GameQuestionGenerator {
                     }
                 }
         return GameQuestion.OrganizePoem(
+            poetName = poetName,
             lines = shuffled,
             correctOrder = correctOrder,
         )

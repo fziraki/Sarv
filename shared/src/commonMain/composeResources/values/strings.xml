@@ -104,9 +104,9 @@
     <string name="game_hint">راهنما</string>
     <string name="game_hint_cost">50</string>
     <string name="game_check_answer">بررسی پاسخ</string>
-    <string name="game_check_arrangement">بررسی چینش</string>
     <string name="game_confirm_answer">تأیید پاسخ</string>
-    <string name="game_next">بعدی</string>
+    <string name="game_next">نمی دانم</string>
+    <string name="game_continue">ادامه</string>
     <string name="game_review">بررسی</string>
     <string name="game_next_verse_instruction">مصرع بعدی را انتخاب کنید</string>
     <string name="game_find_poet_instruction">این بیت از کدام شاعر است؟</string>

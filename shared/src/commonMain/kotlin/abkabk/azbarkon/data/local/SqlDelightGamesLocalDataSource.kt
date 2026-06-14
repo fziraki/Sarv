@@ -204,6 +204,7 @@ class SqlDelightGamesLocalDataSource(
         return GameQuestionGenerator.buildOrganizePoemQuestion(
             poemId = window.poemId,
             startVorder = window.startVorder,
+            poetName = bundle.poetName,
             lines = window.lines,
             seed = seed,
         )

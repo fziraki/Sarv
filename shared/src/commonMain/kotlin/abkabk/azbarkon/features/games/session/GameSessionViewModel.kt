@@ -27,7 +27,6 @@ class GameSessionViewModel(
 ) : BaseViewModel<GameSessionAction, GameSessionState, GameSessionEvent>(
         initialState = GameSessionState(gameType = gameType),
     ) {
-    private var revealJob: Job? = null
     private var prefetchJob: Job? = null
     private val sessionSeed = Random.nextLong()
 
@@ -71,10 +70,19 @@ class GameSessionViewModel(
                 if (!state.value.isAnswering) return
                 val pinnedId = state.value.pinnedLineId
                 val current = state.value.orderedLineIds.toMutableList()
-                if (action.fromIndex !in current.indices || action.toIndex !in current.indices) return
-                if (current[action.fromIndex] == pinnedId || current[action.toIndex] == pinnedId) return
-                val item = current.removeAt(action.fromIndex)
-                current.add(action.toIndex, item)
+                val fromIndex = action.fromIndex
+                val toIndex = action.toIndex
+                if (fromIndex !in current.indices || toIndex !in current.indices) return
+                if (pinnedId != null) {
+                    val pinnedIndex = state.value.pinnedLineIndex ?: return
+                    if (fromIndex == pinnedIndex || toIndex == pinnedIndex) return
+                    val dragged = current[fromIndex]
+                    current[fromIndex] = current[toIndex]
+                    current[toIndex] = dragged
+                } else {
+                    val item = current.removeAt(fromIndex)
+                    current.add(toIndex, item)
+                }
                 setState { copy(orderedLineIds = current) }
             }
         }
@@ -167,17 +175,20 @@ class GameSessionViewModel(
 
     private fun resetQuizState() {
         val question = state.value.currentQuestion
+        val organizeInitialOrder =
+            when (question) {
+                is GameQuestion.OrganizePoem -> question.lines.map { it.id }
+                else -> emptyList()
+            }
         setState {
             copy(
                 selectedOptionIndex = null,
                 selectedPoetId = null,
                 filledWords = emptyList(),
-                orderedLineIds =
-                    when (question) {
-                        is GameQuestion.OrganizePoem -> question.lines.map { it.id }
-                        else -> emptyList()
-                    },
+                orderedLineIds = organizeInitialOrder,
+                initialOrderedLineIds = organizeInitialOrder,
                 pinnedLineId = null,
+                pinnedLineIndex = null,
                 disabledOptionIndices = emptySet(),
                 answerPhase = QuizAnswerPhase.Answering,
                 hintUsedThisQuiz = false,
@@ -186,16 +197,10 @@ class GameSessionViewModel(
     }
 
     private fun onPrimaryActionClick() {
-        if (!state.value.isAnswering) return
-        when (val question = state.value.currentQuestion) {
-            is GameQuestion.OrganizePoem -> {
-                if (!state.value.canCheckAnswer) return
-                checkAnswer()
-            }
-
-            null -> Unit
-
-            else ->
+        if (state.value.currentQuestion == null) return
+        when {
+            state.value.isRevealing -> advanceQuiz()
+            state.value.isAnswering ->
                 if (state.value.hasSelection) {
                     checkAnswer()
                 } else {
@@ -232,19 +237,18 @@ class GameSessionViewModel(
     }
 
     private fun applySkipOutcome() {
+        val question = state.value.currentQuestion
         setState {
             copy(
                 answerPhase = QuizAnswerPhase.Wrong,
                 noAnswerCount = noAnswerCount + 1,
+                orderedLineIds =
+                    when (question) {
+                        is GameQuestion.OrganizePoem -> question.correctOrder
+                        else -> orderedLineIds
+                    },
             )
         }
-
-        revealJob?.cancel()
-        revealJob =
-            viewModelScope.launch {
-                delay(REVEAL_DELAY_MS)
-                advanceQuiz()
-            }
     }
 
     private fun applyOutcome(
@@ -263,13 +267,6 @@ class GameSessionViewModel(
                 wrongCount = if (isCorrect) wrongCount else wrongCount + 1,
             )
         }
-
-        revealJob?.cancel()
-        revealJob =
-            viewModelScope.launch {
-                delay(REVEAL_DELAY_MS)
-                advanceQuiz()
-            }
     }
 
     private fun advanceQuiz() {
@@ -297,23 +294,21 @@ class GameSessionViewModel(
         }
     }
 
-    private fun finishSession() {
+    private suspend fun finishSession() {
         cancelJobs()
         val currentState = state.value
-        viewModelScope.launch {
-            sendEvent(
-                GameSessionEvent.NavigateToResult(
-                    gameType = gameType,
-                    summary =
-                        GameSessionSummary(
-                            correctCount = currentState.correctCount,
-                            wrongCount = currentState.wrongCount,
-                            noAnswerCount = currentState.noAnswerCount,
-                            scoreDelta = currentState.sessionScoreDelta,
-                        ),
-                ),
-            )
-        }
+        sendEvent(
+            GameSessionEvent.NavigateToResult(
+                gameType = gameType,
+                summary =
+                    GameSessionSummary(
+                        correctCount = currentState.correctCount,
+                        wrongCount = currentState.wrongCount,
+                        noAnswerCount = currentState.noAnswerCount,
+                        scoreDelta = currentState.sessionScoreDelta,
+                    ),
+            ),
+        )
     }
 
     private fun applyHint() {
@@ -408,6 +403,7 @@ class GameSessionViewModel(
                         hintUsedThisQuiz = true,
                         orderedLineIds = reordered,
                         pinnedLineId = lineId,
+                        pinnedLineIndex = targetIndex,
                     )
                 }
             }
@@ -415,7 +411,6 @@ class GameSessionViewModel(
     }
 
     private fun cancelJobs() {
-        revealJob?.cancel()
         prefetchJob?.cancel()
     }
 
@@ -425,7 +420,6 @@ class GameSessionViewModel(
     }
 
     private companion object {
-        const val REVEAL_DELAY_MS = 1_500L
         const val PREFETCH_POLL_MS = 50L
     }
 }

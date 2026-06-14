@@ -33,7 +33,7 @@ import azbarkoncmp.shared.generated.resources.arrow_back_left
 import azbarkoncmp.shared.generated.resources.cd_back
 import azbarkoncmp.shared.generated.resources.coin
 import azbarkoncmp.shared.generated.resources.complete_poem_title
-import azbarkoncmp.shared.generated.resources.game_check_arrangement
+import azbarkoncmp.shared.generated.resources.game_continue
 import azbarkoncmp.shared.generated.resources.game_hint
 import azbarkoncmp.shared.generated.resources.game_hint_cost
 import azbarkoncmp.shared.generated.resources.game_next
@@ -171,6 +171,7 @@ fun GameSessionBottomBar(
     gameType: GameType,
     canUseHint: Boolean,
     hasSelection: Boolean,
+    isRevealing: Boolean,
     canPressPrimaryAction: Boolean,
     onHintClick: () -> Unit,
     onCheckAnswerClick: () -> Unit,
@@ -185,7 +186,7 @@ fun GameSessionBottomBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         AzbarkonPrimaryButton(
-            text = checkAnswerLabel(gameType, hasSelection),
+            text = checkAnswerLabel(hasSelection = hasSelection, isRevealing = isRevealing),
             onClick = onCheckAnswerClick,
             enabled = canPressPrimaryAction,
             modifier = Modifier.weight(0.6f),
@@ -249,17 +250,13 @@ private fun gameTitle(gameType: GameType): String =
 
 @Composable
 private fun checkAnswerLabel(
-    gameType: GameType,
     hasSelection: Boolean,
+    isRevealing: Boolean,
 ): String =
-    when (gameType) {
-        GameType.ORGANIZE_POEM -> stringResource(Res.string.game_check_arrangement)
-        else ->
-            if (hasSelection) {
-                stringResource(Res.string.game_review)
-            } else {
-                stringResource(Res.string.game_next)
-            }
+    when {
+        isRevealing -> stringResource(Res.string.game_continue)
+        hasSelection -> stringResource(Res.string.game_review)
+        else -> stringResource(Res.string.game_next)
     }
 
 enum class GameOptionState {

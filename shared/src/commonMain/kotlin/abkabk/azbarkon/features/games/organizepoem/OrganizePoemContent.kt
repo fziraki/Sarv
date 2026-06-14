@@ -1,20 +1,18 @@
 package abkabk.azbarkon.features.games.organizepoem
 
 import abkabk.azbarkon.domain.model.games.GameQuestion
+import abkabk.azbarkon.domain.model.games.OrganizeLine
 import abkabk.azbarkon.features.games.components.GameInstructionText
 import abkabk.azbarkon.features.games.components.GameOptionState
+import abkabk.azbarkon.features.games.components.GamePoemCard
 import abkabk.azbarkon.features.games.components.gameOptionColors
 import abkabk.azbarkon.features.games.session.QuizAnswerPhase
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,15 +21,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.cd_drag_handle
 import azbarkoncmp.shared.generated.resources.drag_handle
 import azbarkoncmp.shared.generated.resources.game_organize_poem_instruction
+import azbarkoncmp.shared.generated.resources.keep
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import sh.calvin.reorderable.ReorderableItem
-import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
 fun OrganizePoemContent(
@@ -44,26 +42,30 @@ fun OrganizePoemContent(
     modifier: Modifier = Modifier,
 ) {
     val lineById = question.lines.associateBy { it.id }
-    val lazyListState = rememberLazyListState()
-    val reorderableState =
-        rememberReorderableLazyListState(lazyListState) { from, to ->
-            if (enabled && answerPhase == QuizAnswerPhase.Answering) {
-                onReorder(from.index, to.index)
-            }
-        }
+    val reorderEnabled = enabled && answerPhase == QuizAnswerPhase.Answering
 
-    LazyColumn(
+    Column(
         modifier = modifier,
-        state = lazyListState,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        item {
-            GameInstructionText(text = stringResource(Res.string.game_organize_poem_instruction))
-            Spacer(modifier = Modifier.height(16.dp))
+        GamePoemCard(poetName = question.poetName) {
+            OrganizePoemCardContent(
+                question = question,
+                lineById = lineById,
+                answerPhase = answerPhase,
+            )
         }
 
-        itemsIndexed(orderedLineIds, key = { _, lineId -> lineId }) { index, lineId ->
-            val line = lineById[lineId] ?: return@itemsIndexed
+        GameInstructionText(text = stringResource(Res.string.game_organize_poem_instruction))
+
+        ReorderablePoemLines(
+            items = orderedLineIds,
+            pinnedItemId = pinnedLineId,
+            enabled = reorderEnabled,
+            onReorder = onReorder,
+            modifier = Modifier.fillMaxWidth(),
+        ) { index, lineId ->
+            val line = lineById[lineId] ?: return@ReorderablePoemLines
             val isPinned = lineId == pinnedLineId
             val isCorrectPosition =
                 answerPhase != QuizAnswerPhase.Answering &&
@@ -83,40 +85,71 @@ fun OrganizePoemContent(
                 }
             val (background, contentColor) = gameOptionColors(state)
 
-            ReorderableItem(reorderableState, key = lineId) { isDragging ->
-                Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(background)
-                            .padding(12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    if (!isPinned && enabled && answerPhase == QuizAnswerPhase.Answering) {
-                        Icon(
-                            painter = painterResource(Res.drawable.drag_handle),
-                            contentDescription = stringResource(Res.string.cd_drag_handle),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier =
-                                Modifier
-                                    .draggableHandle(),
-                        )
-                    } else {
-                        Icon(
-                            painter = painterResource(Res.drawable.drag_handle),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.outline,
-                        )
-                    }
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = line.text,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = contentColor,
-                    )
-                }
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(background)
+                        .padding(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    painter =
+                        painterResource(
+                            if (isPinned && reorderEnabled) Res.drawable.keep else Res.drawable.drag_handle,
+                        ),
+                    contentDescription =
+                        if (!isPinned && reorderEnabled) {
+                            stringResource(Res.string.cd_drag_handle)
+                        } else {
+                            null
+                        },
+                    tint =
+                        if (reorderEnabled) {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        } else {
+                            MaterialTheme.colorScheme.outline
+                        },
+                )
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = line.text,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = contentColor,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun OrganizePoemCardContent(
+    question: GameQuestion.OrganizePoem,
+    lineById: Map<String, OrganizeLine>,
+    answerPhase: QuizAnswerPhase,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        if (answerPhase == QuizAnswerPhase.Answering) {
+            repeat(2) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "…",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        } else {
+            question.correctOrder.forEach { lineId ->
+                val line = lineById[lineId] ?: return@forEach
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = line.text,
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                )
             }
         }
     }

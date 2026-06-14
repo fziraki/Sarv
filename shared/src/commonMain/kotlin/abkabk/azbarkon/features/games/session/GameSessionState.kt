@@ -23,7 +23,9 @@ data class GameSessionState(
     val selectedPoetId: Int? = null,
     val filledWords: List<String> = emptyList(),
     val orderedLineIds: List<String> = emptyList(),
+    val initialOrderedLineIds: List<String> = emptyList(),
     val pinnedLineId: String? = null,
+    val pinnedLineIndex: Int? = null,
     val disabledOptionIndices: Set<Int> = emptySet(),
     val answerPhase: QuizAnswerPhase = QuizAnswerPhase.Answering,
     val hintUsedThisQuiz: Boolean = false,
@@ -47,30 +49,20 @@ data class GameSessionState(
     val isAnswering: Boolean
         get() = answerPhase == QuizAnswerPhase.Answering
 
+    val isRevealing: Boolean
+        get() = currentQuestion != null && !isAnswering
+
     val hasSelection: Boolean
         get() =
             when (val question = currentQuestion) {
                 is GameQuestion.NextVerse -> selectedOptionIndex != null
                 is GameQuestion.FindPoet -> selectedPoetId != null
                 is GameQuestion.CompletePoem -> filledWords.isNotEmpty()
-                is GameQuestion.OrganizePoem,
-                null,
-                -> false
+                is GameQuestion.OrganizePoem ->
+                    orderedLineIds.isNotEmpty() && orderedLineIds != initialOrderedLineIds
+                null -> false
             }
-
-    val canCheckAnswer: Boolean
-        get() =
-            isAnswering &&
-                when (val question = currentQuestion) {
-                    is GameQuestion.OrganizePoem -> orderedLineIds.isNotEmpty()
-                    else -> false
-                }
 
     val canPressPrimaryAction: Boolean
-        get() =
-            when (val question = currentQuestion) {
-                is GameQuestion.OrganizePoem -> canCheckAnswer
-                null -> false
-                else -> isAnswering
-            }
+        get() = currentQuestion != null && (isAnswering || isRevealing)
 }
