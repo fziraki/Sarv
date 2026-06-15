@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.arrow_back
+import azbarkoncmp.shared.generated.resources.arrow_back_right
 import azbarkoncmp.shared.generated.resources.cd_back
 import azbarkoncmp.shared.generated.resources.cd_send_message
 import azbarkoncmp.shared.generated.resources.chat_input_hint
@@ -237,7 +237,7 @@ private fun ChatTopBar(
 
         Icon(
             modifier = Modifier.clickable(onClick = onBackClick),
-            painter = painterResource(Res.drawable.arrow_back),
+            painter = painterResource(Res.drawable.arrow_back_right),
             contentDescription = stringResource(Res.string.cd_back),
             tint = MaterialTheme.colorScheme.onBackground,
         )

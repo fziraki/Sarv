@@ -76,7 +76,7 @@ fun EditorCanvas(
     onTextGravityChange: (TextGravity) -> Unit,
     onToggleTextBold: () -> Unit,
     onCaptureReady: (suspend () -> ByteArray?) -> Unit,
-    showEditChrome: Boolean = true,
+    showEditOverlays: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     val captureModifier = rememberCanvasCaptureModifier(onCaptureReady = onCaptureReady)
@@ -90,11 +90,11 @@ fun EditorCanvas(
         val minLayerWidth = canvasSize * 0.2f
         val maxLayerWidth = canvasSize * 0.95f
         val isPoemEditing =
-            showEditChrome &&
+            showEditOverlays &&
                 document.isEditPanelExpanded &&
                 document.selectedLayer == LayerId.PoemText
         val isPoetEditing =
-            showEditChrome &&
+            showEditOverlays &&
                 document.isEditPanelExpanded &&
                 document.selectedLayer == LayerId.PoetName
 
@@ -110,13 +110,13 @@ fun EditorCanvas(
                 CanvasBackground(
                     document = document,
                     onBackgroundTap = {
-                        if (showEditChrome) {
+                        if (showEditOverlays) {
                             onLayerSelect(null)
                         }
                     },
                 )
 
-                if (document.showAlignmentGrid && showEditChrome) {
+                if (document.showAlignmentGrid && showEditOverlays) {
                     AlignmentGrid(modifier = Modifier.fillMaxSize())
                 }
 
@@ -124,10 +124,10 @@ fun EditorCanvas(
                     DraggableLayer(
                         offset = document.poemText.offset,
                         selected = document.selectedLayer == LayerId.PoemText,
-                        showChrome = showEditChrome,
+                        showLayerControls = showEditOverlays,
                         onSelect = { onLayerSelect(LayerId.PoemText) },
                         onDrag = { onLayerDrag(LayerId.PoemText, it) },
-                        showTextControls = showEditChrome && document.selectedLayer == LayerId.PoemText,
+                        showTextControls = showEditOverlays && document.selectedLayer == LayerId.PoemText,
                         isBold = document.poemText.isBold,
                         onTextGravityChange = onTextGravityChange,
                         onToggleBold = onToggleTextBold,
@@ -162,7 +162,7 @@ fun EditorCanvas(
                     DraggableLayer(
                         offset = document.topDivider.offset,
                         selected = document.selectedLayer == LayerId.TopDivider,
-                        showChrome = showEditChrome,
+                        showLayerControls = showEditOverlays,
                         onSelect = { onLayerSelect(LayerId.TopDivider) },
                         onDrag = { onLayerDrag(LayerId.TopDivider, it) },
                         alignment = Alignment.TopCenter,
@@ -181,7 +181,7 @@ fun EditorCanvas(
                     DraggableLayer(
                         offset = document.bottomDivider.offset,
                         selected = document.selectedLayer == LayerId.BottomDivider,
-                        showChrome = showEditChrome,
+                        showLayerControls = showEditOverlays,
                         onSelect = { onLayerSelect(LayerId.BottomDivider) },
                         onDrag = { onLayerDrag(LayerId.BottomDivider, it) },
                         alignment = Alignment.BottomCenter,
@@ -200,7 +200,7 @@ fun EditorCanvas(
                     DraggableLayer(
                         offset = document.poetName.offset,
                         selected = document.selectedLayer == LayerId.PoetName,
-                        showChrome = showEditChrome,
+                        showLayerControls = showEditOverlays,
                         onSelect = { onLayerSelect(LayerId.PoetName) },
                         onDrag = { onLayerDrag(LayerId.PoetName, it) },
                         alignment = Alignment.Center,
@@ -229,7 +229,7 @@ fun EditorCanvas(
                     DraggableLayer(
                         offset = document.sticker.offset,
                         selected = document.selectedLayer == LayerId.Sticker,
-                        showChrome = showEditChrome,
+                        showLayerControls = showEditOverlays,
                         onSelect = { onLayerSelect(LayerId.Sticker) },
                         onDrag = { onLayerDrag(LayerId.Sticker, it) },
                         minWidth = minLayerWidth,
@@ -266,7 +266,7 @@ private fun DirectionalTextField(
 private fun DraggableLayer(
     offset: abkabk.azbarkon.features.tasvir_negar.model.LayerOffset,
     selected: Boolean,
-    showChrome: Boolean,
+    showLayerControls: Boolean,
     onSelect: () -> Unit,
     onDrag: (abkabk.azbarkon.features.tasvir_negar.model.LayerOffset) -> Unit,
     alignment: Alignment = Alignment.Center,
@@ -281,7 +281,7 @@ private fun DraggableLayer(
     var dragDeltaPx by remember { mutableStateOf(Offset.Zero) }
     val currentOffset by rememberUpdatedState(offset)
     val currentOnDrag by rememberUpdatedState(onDrag)
-    val displaySelected = selected && showChrome
+    val displaySelected = selected && showLayerControls
 
     LaunchedEffect(offset) {
         dragDeltaPx = Offset.Zero
@@ -328,7 +328,7 @@ private fun DraggableLayer(
                         .then(if (displaySelected) Modifier.border(1.dp, Color.White) else Modifier)
                         .padding(8.dp)
                         .then(
-                            if (showChrome) {
+                            if (showLayerControls) {
                                 Modifier
                                     .pointerInput(Unit) {
                                         detectTapGestures { onSelect() }

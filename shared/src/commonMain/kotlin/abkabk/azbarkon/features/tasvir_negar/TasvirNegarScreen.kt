@@ -163,7 +163,7 @@ fun TasvirNegarScreen(
                 onTextGravityChange = { onAction(TasvirNegarAction.OnTextGravityChange(it)) },
                 onToggleTextBold = { onAction(TasvirNegarAction.OnToggleTextBold) },
                 onCaptureReady = onCaptureReady,
-                showEditChrome = !state.isExporting,
+                showEditOverlays = !state.isExporting,
                 modifier = Modifier.fillMaxSize(),
             )
 

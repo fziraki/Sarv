@@ -1,5 +1,9 @@
 package abkabk.azbarkon.features.games
 
+import abkabk.azbarkon.domain.model.games.GameType
+import abkabk.azbarkon.core.ui_base.BaseScreen
+import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.features.games.navigation.toRoute
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,12 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.complete_poem_desc
+import azbarkoncmp.shared.generated.resources.complete_poem_score
+import azbarkoncmp.shared.generated.resources.complete_poem_title
 import azbarkoncmp.shared.generated.resources.games
-import azbarkoncmp.shared.generated.resources.missed_word_desc
-import azbarkoncmp.shared.generated.resources.missed_word_score
-import azbarkoncmp.shared.generated.resources.missed_word_title
 import azbarkoncmp.shared.generated.resources.next_line_desc
 import azbarkoncmp.shared.generated.resources.next_line_score
 import azbarkoncmp.shared.generated.resources.next_line_title
@@ -38,20 +43,25 @@ import azbarkoncmp.shared.generated.resources.poetry_arrangement_title
 import azbarkoncmp.shared.generated.resources.whois_poet_desc
 import azbarkoncmp.shared.generated.resources.whois_poet_score
 import azbarkoncmp.shared.generated.resources.whois_poet_title
+import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun GamesRoot() {
-    GamesScreen()
+fun GamesRoot(
+    onNavigateToGame: (GameType) -> Unit,
+) {
+    BaseScreen(screenState = UiScreenState.Success) {
+        GamesScreen(onNavigateToGame = onNavigateToGame)
+    }
 }
 
 @Composable
-fun GamesScreen() {
+fun GamesScreen(
+    onNavigateToGame: (GameType) -> Unit,
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -63,17 +73,17 @@ fun GamesScreen() {
                 desc = Res.string.next_line_desc,
                 score = Res.string.next_line_score,
                 icon = Res.drawable.games,
-                onClick = {},
+                onClick = { onNavigateToGame(GameType.NEXT_VERSE) },
             )
         }
 
         item {
             GameItem(
-                title = Res.string.missed_word_title,
-                desc = Res.string.missed_word_desc,
-                score = Res.string.missed_word_score,
+                title = Res.string.complete_poem_title,
+                desc = Res.string.complete_poem_desc,
+                score = Res.string.complete_poem_score,
                 icon = Res.drawable.games,
-                onClick = {},
+                onClick = { onNavigateToGame(GameType.COMPLETE_POEM) },
             )
         }
 
@@ -83,7 +93,7 @@ fun GamesScreen() {
                 desc = Res.string.poetry_arrangement_desc,
                 score = Res.string.poetry_arrangement_score,
                 icon = Res.drawable.games,
-                onClick = {},
+                onClick = { onNavigateToGame(GameType.ORGANIZE_POEM) },
             )
         }
 
@@ -93,7 +103,7 @@ fun GamesScreen() {
                 desc = Res.string.whois_poet_desc,
                 score = Res.string.whois_poet_score,
                 icon = Res.drawable.games,
-                onClick = {},
+                onClick = { onNavigateToGame(GameType.FIND_POET) },
             )
         }
     }
@@ -180,6 +190,6 @@ fun GameItem(
 @Composable
 private fun GamesScreenPreview() {
     AzbarkonTheme {
-        GamesScreen()
+        GamesScreen(onNavigateToGame = {})
     }
 }

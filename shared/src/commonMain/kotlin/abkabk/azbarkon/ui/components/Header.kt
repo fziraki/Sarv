@@ -6,12 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -23,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.arrow_back
+import azbarkoncmp.shared.generated.resources.arrow_back_right
 import azbarkoncmp.shared.generated.resources.bookmark
 import azbarkoncmp.shared.generated.resources.bookmark_filled
 import azbarkoncmp.shared.generated.resources.cd_back
@@ -67,7 +64,7 @@ fun Header(
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    painter = painterResource(Res.drawable.arrow_back),
+                    painter = painterResource(Res.drawable.arrow_back_right),
                     contentDescription = stringResource(Res.string.cd_back),
                     tint = MaterialTheme.colorScheme.onBackground,
                 )

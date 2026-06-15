@@ -4,4 +4,8 @@ interface UserPreferencesRepository {
     fun isDailyBeytNotificationEnabled(): Boolean
 
     fun setDailyBeytNotificationEnabled(enabled: Boolean)
+
+    suspend fun getCoinBalance(): Int
+
+    fun adjustCoinBalance(delta: Int): Int
 }

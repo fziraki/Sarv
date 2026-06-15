@@ -32,7 +32,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -58,7 +57,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.arrow_back
+import azbarkoncmp.shared.generated.resources.arrow_back_right
 import azbarkoncmp.shared.generated.resources.cd_back
 import azbarkoncmp.shared.generated.resources.cd_search
 import azbarkoncmp.shared.generated.resources.search
@@ -140,7 +139,7 @@ fun AzbarkonNavigation(
                                 onClick = { navController.navigateUp() },
                             ) {
                                 Icon(
-                                    painter = painterResource(Res.drawable.arrow_back),
+                                    painter = painterResource(Res.drawable.arrow_back_right),
                                     contentDescription = stringResource(Res.string.cd_back),
                                 )
                             }
@@ -209,12 +208,17 @@ fun AzbarkonNavigation(
                                             BottomNavItem.Games -> GamesRoute
                                             BottomNavItem.Profile -> ProfileRoute
                                         }
-                                    navController.navigate(route) {
-                                        popUpTo(navController.graph.startDestinationId) {
-                                            saveState = true
+                                    if (item == BottomNavItem.Home) {
+                                        navController.navigate(HomeRoute) {
+                                            popUpTo(HomeRoute) { inclusive = true }
+                                            launchSingleTop = true
                                         }
-                                        launchSingleTop = true
-                                        restoreState = true
+                                    } else {
+                                        navController.navigate(route) {
+                                            popUpTo(HomeRoute) { saveState = true }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     }
                                 },
                                 icon = {
@@ -256,7 +260,11 @@ fun AzbarkonNavigation(
             ) {
                 homeGraph(
                     onNavigateToPoetsList = {
-                        navController.navigate(PoetsListRoute)
+                        navController.navigate(PoetsListRoute) {
+                            popUpTo(HomeRoute) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     },
                     onNavigateToPoetDetail = { poetId ->
                         navController.navigate(PoetDetailRoute(poetId))
@@ -286,7 +294,7 @@ fun AzbarkonNavigation(
                 )
                 tasvirNegarGraph(onBackClick = navController::navigateUp)
                 memorizationGraph(navController)
-                gamesGraph()
+                gamesGraph(navController)
                 profileGraph()
                 poetsGraph(navController)
                 searchGraph(navController)

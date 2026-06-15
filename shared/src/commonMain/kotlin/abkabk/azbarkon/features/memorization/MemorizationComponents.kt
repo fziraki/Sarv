@@ -28,7 +28,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.arrow_back
 import azbarkoncmp.shared.generated.resources.forward
 import azbarkoncmp.shared.generated.resources.heart
 import azbarkoncmp.shared.generated.resources.ic_delete
