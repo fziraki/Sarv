@@ -26,6 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
@@ -271,6 +273,7 @@ enum class GameOptionState {
 fun GamePoemCard(
     modifier: Modifier = Modifier,
     poetName: String? = null,
+    poetNameColor: Color? = null,
     content: @Composable () -> Unit,
 ) {
     Column(
@@ -290,12 +293,34 @@ fun GamePoemCard(
                 modifier = Modifier.fillMaxWidth(),
                 text = it,
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = poetNameColor ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Start,
             )
         }
         content()
     }
+}
+
+@Composable
+fun gamePoemUserAnswerTextColor(): Color = MaterialTheme.colorScheme.tertiaryFixedDim
+
+@Composable
+fun gamePoemCorrectAnswerTextColor(): Color = MaterialTheme.colorScheme.primary
+
+@Composable
+fun GamePoemCorrectRevealText(
+    text: String,
+    modifier: Modifier = Modifier,
+    style: TextStyle = MaterialTheme.typography.bodyLarge,
+    textAlign: TextAlign = TextAlign.Center,
+) {
+    Text(
+        modifier = modifier.fillMaxWidth(),
+        text = text,
+        style = style,
+        color = gamePoemCorrectAnswerTextColor(),
+        textAlign = textAlign,
+    )
 }
 
 @Composable

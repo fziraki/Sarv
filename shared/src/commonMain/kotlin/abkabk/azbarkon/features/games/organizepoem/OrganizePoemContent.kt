@@ -5,7 +5,9 @@ import abkabk.azbarkon.domain.model.games.OrganizeLine
 import abkabk.azbarkon.features.games.components.GameInstructionText
 import abkabk.azbarkon.features.games.components.GameOptionState
 import abkabk.azbarkon.features.games.components.GamePoemCard
+import abkabk.azbarkon.features.games.components.GamePoemCorrectRevealText
 import abkabk.azbarkon.features.games.components.gameOptionColors
+import abkabk.azbarkon.features.games.components.gamePoemUserAnswerTextColor
 import abkabk.azbarkon.features.games.session.QuizAnswerPhase
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +37,7 @@ import org.jetbrains.compose.resources.stringResource
 fun OrganizePoemContent(
     question: GameQuestion.OrganizePoem,
     orderedLineIds: List<String>,
+    initialOrderedLineIds: List<String>,
     pinnedLineId: String?,
     answerPhase: QuizAnswerPhase,
     enabled: Boolean,
@@ -52,6 +55,8 @@ fun OrganizePoemContent(
             OrganizePoemCardContent(
                 question = question,
                 lineById = lineById,
+                orderedLineIds = orderedLineIds,
+                initialOrderedLineIds = initialOrderedLineIds,
                 answerPhase = answerPhase,
             )
         }
@@ -128,28 +133,38 @@ fun OrganizePoemContent(
 private fun OrganizePoemCardContent(
     question: GameQuestion.OrganizePoem,
     lineById: Map<String, OrganizeLine>,
+    orderedLineIds: List<String>,
+    initialOrderedLineIds: List<String>,
     answerPhase: QuizAnswerPhase,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         if (answerPhase == QuizAnswerPhase.Answering) {
-            repeat(2) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "…",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                )
+            if (orderedLineIds == initialOrderedLineIds) {
+                repeat(4) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "…",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            } else {
+                orderedLineIds.forEach { lineId ->
+                    val line = lineById[lineId] ?: return@forEach
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = line.text,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = gamePoemUserAnswerTextColor(),
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
         } else {
             question.correctOrder.forEach { lineId ->
                 val line = lineById[lineId] ?: return@forEach
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = line.text,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                )
+                GamePoemCorrectRevealText(text = line.text)
             }
         }
     }

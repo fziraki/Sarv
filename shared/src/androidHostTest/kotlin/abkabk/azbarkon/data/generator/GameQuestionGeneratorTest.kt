@@ -32,11 +32,13 @@ class GameQuestionGeneratorTest {
             GameQuestionGenerator.buildCompletePoemQuestion(
                 line1 = "ز خاک کوی تو",
                 line2 = "نسیم سحر است و عطر جانان",
+                poetName = "حافظ",
                 poemWords = listOf("نسیم", "سحر", "است", "و", "عطر", "جانان", "ز", "خاک"),
                 seed = 7L,
             )
 
         assertThat(question).isNotNull()
+        assertThat(question!!.poetName).isEqualTo("حافظ")
         assertThat(question!!.options).hasSize(4)
         assertThat(question.options).contains(question.correctWords.first)
         assertThat(question.options).contains(question.correctWords.second)

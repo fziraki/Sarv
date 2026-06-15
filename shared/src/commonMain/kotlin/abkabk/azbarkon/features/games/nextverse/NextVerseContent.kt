@@ -4,6 +4,8 @@ import abkabk.azbarkon.domain.model.games.GameQuestion
 import abkabk.azbarkon.features.games.components.GameInstructionText
 import abkabk.azbarkon.features.games.components.GameOptionState
 import abkabk.azbarkon.features.games.components.GamePoemCard
+import abkabk.azbarkon.features.games.components.gamePoemCorrectAnswerTextColor
+import abkabk.azbarkon.features.games.components.gamePoemUserAnswerTextColor
 import abkabk.azbarkon.features.games.components.gameOptionColors
 import abkabk.azbarkon.features.games.components.gameOptionStyle
 import abkabk.azbarkon.features.games.components.optionStateForIndex
@@ -45,6 +47,34 @@ fun NextVerseContent(
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
             )
+            when {
+                answerPhase != QuizAnswerPhase.Answering ->
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = question.options[question.correctIndex],
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = gamePoemCorrectAnswerTextColor(),
+                        textAlign = TextAlign.Center,
+                    )
+
+                selectedOptionIndex != null ->
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = question.options[selectedOptionIndex],
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = gamePoemUserAnswerTextColor(),
+                        textAlign = TextAlign.Center,
+                    )
+
+                else ->
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "…",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+            }
         }
 
         GameInstructionText(text = stringResource(Res.string.game_next_verse_instruction))

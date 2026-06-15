@@ -229,6 +229,44 @@ class GameSessionViewModelTest {
         }
 
     @Test
+    fun `complete poem word selection adds word to filledWords`() =
+        runTest {
+            val viewModel = createCompletePoemViewModel()
+
+            viewModel.onAction(GameSessionAction.OnWordSelected("word1"))
+
+            assertThat(viewModel.state.value.filledWords).isEqualTo(listOf("word1"))
+        }
+
+    @Test
+    fun `complete poem word selection toggles off when same word tapped again`() =
+        runTest {
+            val viewModel = createCompletePoemViewModel()
+
+            viewModel.onAction(GameSessionAction.OnWordSelected("word1"))
+            viewModel.onAction(GameSessionAction.OnWordSelected("word1"))
+
+            assertThat(viewModel.state.value.filledWords).isEqualTo(emptyList())
+        }
+
+    @Test
+    fun `complete poem ignores third word until one selection is cleared`() =
+        runTest {
+            val viewModel = createCompletePoemViewModel()
+
+            viewModel.onAction(GameSessionAction.OnWordSelected("word1"))
+            viewModel.onAction(GameSessionAction.OnWordSelected("word2"))
+            viewModel.onAction(GameSessionAction.OnWordSelected("wrong1"))
+
+            assertThat(viewModel.state.value.filledWords).isEqualTo(listOf("word1", "word2"))
+
+            viewModel.onAction(GameSessionAction.OnWordSelected("word1"))
+            viewModel.onAction(GameSessionAction.OnWordSelected("wrong1"))
+
+            assertThat(viewModel.state.value.filledWords).isEqualTo(listOf("word2", "wrong1"))
+        }
+
+    @Test
     fun `reorder lines updates orderedLineIds`() =
         runTest {
             val viewModel = createOrganizePoemViewModel()
@@ -449,6 +487,43 @@ class GameSessionViewModelTest {
 
     private fun reorderOrganizePoemToCorrect(viewModel: GameSessionViewModel) {
         viewModel.onAction(GameSessionAction.OnReorderLines(fromIndex = 0, toIndex = 1))
+    }
+
+    private fun createCompletePoemViewModel(
+        userPreferencesRepository: FakeUserPreferencesRepository = FakeUserPreferencesRepository(),
+    ): GameSessionViewModel =
+        GameSessionViewModel(
+            gameType = GameType.COMPLETE_POEM,
+            gamesRepository = CompletePoemGamesRepository(),
+            userPreferencesRepository = userPreferencesRepository,
+        )
+
+    private class CompletePoemGamesRepository : GamesRepository {
+        override fun createGenerationCache() = GameGenerationCache()
+
+        override suspend fun generateQuestion(
+            gameType: GameType,
+            sessionSeed: Long,
+            quizIndex: Int,
+            cache: GameGenerationCache,
+        ): Result<GameQuestion, abkabk.azbarkon.core.domain.result.DataError.Local> =
+            Result.Success(createQuestion())
+
+        override suspend fun generateQuizBatch(
+            gameType: GameType,
+            seed: Long,
+            count: Int,
+        ): Result<List<GameQuestion>, abkabk.azbarkon.core.domain.result.DataError.Local> =
+            Result.Success(List(count) { createQuestion() })
+
+        private fun createQuestion() =
+            GameQuestion.CompletePoem(
+                line1 = "بیت اول",
+                blankedLine2 = "شروع ____ وسط ____ پایان",
+                poetName = "حافظ",
+                options = listOf("word1", "word2", "wrong1", "wrong2"),
+                correctWords = "word1" to "word2",
+            )
     }
 
     private fun createOrganizePoemViewModel(

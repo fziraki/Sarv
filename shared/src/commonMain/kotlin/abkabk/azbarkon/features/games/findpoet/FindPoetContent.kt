@@ -6,6 +6,8 @@ import abkabk.azbarkon.features.games.components.GameOptionState
 import abkabk.azbarkon.features.games.components.GamePoemCard
 import abkabk.azbarkon.features.games.components.gameOptionColors
 import abkabk.azbarkon.features.games.components.gameOptionStyle
+import abkabk.azbarkon.features.games.components.gamePoemCorrectAnswerTextColor
+import abkabk.azbarkon.features.games.components.gamePoemUserAnswerTextColor
 import abkabk.azbarkon.features.games.components.optionStateForIndex
 import abkabk.azbarkon.features.games.session.QuizAnswerPhase
 import abkabk.azbarkon.ui.components.NetworkImage
@@ -45,13 +47,27 @@ fun FindPoetContent(
 ) {
     val correctIndex = question.options.indexOfFirst { it.id == question.correctPoetId }
     val selectedIndex = question.options.indexOfFirst { it.id == selectedPoetId }.takeIf { it >= 0 }
+    val correctPoet = question.options.first { it.id == question.correctPoetId }
+    val selectedPoet = selectedPoetId?.let { id -> question.options.firstOrNull { it.id == id } }
+    val poetName =
+        when {
+            answerPhase != QuizAnswerPhase.Answering -> correctPoet.name
+            selectedPoet != null -> selectedPoet.name
+            else -> "???"
+        }
+    val poetNameColor =
+        when {
+            answerPhase != QuizAnswerPhase.Answering -> gamePoemCorrectAnswerTextColor()
+            selectedPoet != null -> gamePoemUserAnswerTextColor()
+            else -> null
+        }
 
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
 
-        GamePoemCard {
+        GamePoemCard(poetName = poetName, poetNameColor = poetNameColor) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),

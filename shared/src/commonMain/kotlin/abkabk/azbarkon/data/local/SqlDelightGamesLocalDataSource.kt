@@ -186,6 +186,7 @@ class SqlDelightGamesLocalDataSource(
         return GameQuestionGenerator.buildCompletePoemQuestion(
             line1 = distich.firstHemistich,
             line2 = distich.secondHemistich,
+            poetName = bundle.poetName,
             poemWords = bundle.poemWords,
             seed = seed,
         )

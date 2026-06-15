@@ -2,10 +2,12 @@ package abkabk.azbarkon.features.games.session
 
 import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
+import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.domain.model.games.GameQuestion
 import abkabk.azbarkon.domain.model.games.GameSessionSummary
 import abkabk.azbarkon.domain.model.games.GameType
 import abkabk.azbarkon.features.games.completepoem.CompletePoemContent
+import abkabk.azbarkon.features.games.components.GameContentShimmer
 import abkabk.azbarkon.features.games.components.GameSessionBottomBar
 import abkabk.azbarkon.features.games.components.GameSessionTopBar
 import abkabk.azbarkon.features.games.findpoet.FindPoetContent
@@ -137,6 +139,7 @@ fun GameSessionScreen(
                     OrganizePoemContent(
                         question = question,
                         orderedLineIds = state.orderedLineIds,
+                        initialOrderedLineIds = state.initialOrderedLineIds,
                         pinnedLineId = state.pinnedLineId,
                         answerPhase = state.answerPhase,
                         enabled = state.isAnswering,
@@ -146,7 +149,13 @@ fun GameSessionScreen(
                         modifier = Modifier.fillMaxSize(),
                     )
 
-                null -> Unit
+                null ->
+                    if (state.screenState == UiScreenState.Loading) {
+                        GameContentShimmer(
+                            gameType = state.gameType,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
             }
         }
     }

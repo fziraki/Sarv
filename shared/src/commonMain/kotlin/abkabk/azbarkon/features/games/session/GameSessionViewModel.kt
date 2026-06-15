@@ -60,10 +60,18 @@ class GameSessionViewModel(
             is GameSessionAction.OnWordSelected -> {
                 if (!state.value.isAnswering) return
                 val question = state.value.currentQuestion as? GameQuestion.CompletePoem ?: return
-                if (state.value.filledWords.size >= 2) return
                 if (action.word !in question.options) return
-                if (action.word in state.value.filledWords) return
-                setState { copy(filledWords = filledWords + action.word) }
+                val current = state.value.filledWords
+                setState {
+                    copy(
+                        filledWords =
+                            when {
+                                action.word in current -> current - action.word
+                                current.size < 2 -> current + action.word
+                                else -> current
+                            },
+                    )
+                }
             }
 
             is GameSessionAction.OnReorderLines -> {

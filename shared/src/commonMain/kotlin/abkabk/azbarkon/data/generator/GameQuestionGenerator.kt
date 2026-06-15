@@ -61,6 +61,7 @@ internal object GameQuestionGenerator {
     fun buildCompletePoemQuestion(
         line1: String,
         line2: String,
+        poetName: String,
         poemWords: List<String>,
         seed: Long,
     ): GameQuestion.CompletePoem? {
@@ -103,6 +104,7 @@ internal object GameQuestionGenerator {
         return GameQuestion.CompletePoem(
             line1 = line1,
             blankedLine2 = blankedLine2,
+            poetName = poetName,
             options = options,
             correctWords = word1 to word2,
         )

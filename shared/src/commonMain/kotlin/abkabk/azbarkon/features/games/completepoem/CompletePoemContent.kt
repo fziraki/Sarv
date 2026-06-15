@@ -6,6 +6,8 @@ import abkabk.azbarkon.features.games.components.GameOptionState
 import abkabk.azbarkon.features.games.components.GamePoemCard
 import abkabk.azbarkon.features.games.components.gameOptionColors
 import abkabk.azbarkon.features.games.components.gameOptionStyle
+import abkabk.azbarkon.features.games.components.gamePoemCorrectAnswerTextColor
+import abkabk.azbarkon.features.games.components.gamePoemUserAnswerTextColor
 import abkabk.azbarkon.features.games.components.optionStateForIndex
 import abkabk.azbarkon.features.games.session.QuizAnswerPhase
 import androidx.compose.foundation.clickable
@@ -18,7 +20,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.game_complete_poem_instruction
@@ -42,7 +47,7 @@ fun CompletePoemContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
 
-        GamePoemCard {
+        GamePoemCard(poetName = question.poetName) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
@@ -50,11 +55,11 @@ fun CompletePoemContent(
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
                 )
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = renderBlankedLine(question.blankedLine2, filledWords),
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
+                CompletePoemBlankedLine(
+                    blankedLine = question.blankedLine2,
+                    filledWords = filledWords,
+                    answerPhase = answerPhase,
+                    correctWords = question.correctWords,
                 )
             }
         }
@@ -104,13 +109,11 @@ fun CompletePoemContent(
                             )
                         }
                     val (background, contentColor) = gameOptionColors(state)
-                    val alreadyUsed = word in filledWords
                     val clickable =
                         enabled &&
-                            !alreadyUsed &&
-                            state != GameOptionState.Disabled &&
                             answerPhase == QuizAnswerPhase.Answering &&
-                            filledWords.size < 2
+                            state != GameOptionState.Disabled &&
+                            (word in filledWords || filledWords.size < 2)
 
                     Text(
                         modifier =
@@ -119,7 +122,13 @@ fun CompletePoemContent(
                                 .gameOptionStyle(state)
                                 .clickable(enabled = clickable) { onWordSelected(word) }
                                 .padding(horizontal = 12.dp, vertical = 14.dp),
-                        text = word,
+                        text =
+                            completePoemOptionLabel(
+                                word = word,
+                                filledWords = filledWords,
+                                answerPhase = answerPhase,
+                                correctWords = question.correctWords,
+                            ),
                         style = MaterialTheme.typography.bodyMedium,
                         color = contentColor,
                         textAlign = TextAlign.Center,
@@ -130,13 +139,94 @@ fun CompletePoemContent(
     }
 }
 
-private fun renderBlankedLine(
+private fun completePoemOptionLabel(
+    word: String,
+    filledWords: List<String>,
+    answerPhase: QuizAnswerPhase,
+    correctWords: Pair<String, String>,
+): String {
+    val order =
+        when {
+            answerPhase == QuizAnswerPhase.Answering ->
+                filledWords.indexOf(word).takeIf { it >= 0 }?.plus(1)
+
+            word == correctWords.first -> 1
+            word == correctWords.second -> 2
+            else -> null
+        }
+    return order?.let { "($it) $word" } ?: word
+}
+
+@Composable
+private fun CompletePoemBlankedLine(
     blankedLine: String,
     filledWords: List<String>,
-): String {
+    answerPhase: QuizAnswerPhase,
+    correctWords: Pair<String, String>,
+) {
     val parts = blankedLine.split("____")
-    if (parts.size < 3) return blankedLine
-    val first = filledWords.getOrElse(0) { "____" }
-    val second = filledWords.getOrElse(1) { "____" }
-    return parts[0] + first + parts[1] + second + parts[2]
+    if (parts.size < 3) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = blankedLine,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+        )
+        return
+    }
+
+    val userAnswerColor = gamePoemUserAnswerTextColor()
+    val correctAnswerColor = gamePoemCorrectAnswerTextColor()
+    val firstBlank =
+        if (answerPhase == QuizAnswerPhase.Answering) {
+            filledWords.getOrElse(0) { "____" }
+        } else {
+            correctWords.first
+        }
+    val secondBlank =
+        if (answerPhase == QuizAnswerPhase.Answering) {
+            filledWords.getOrElse(1) { "____" }
+        } else {
+            correctWords.second
+        }
+    val firstStyle =
+        SpanStyle(
+            color =
+                if (answerPhase == QuizAnswerPhase.Answering && filledWords.isNotEmpty()) {
+                    userAnswerColor
+                } else if (answerPhase != QuizAnswerPhase.Answering) {
+                    correctAnswerColor
+                } else {
+                    MaterialTheme.colorScheme.onBackground
+                },
+        )
+    val secondStyle =
+        SpanStyle(
+            color =
+                if (answerPhase == QuizAnswerPhase.Answering && filledWords.size > 1) {
+                    userAnswerColor
+                } else if (answerPhase != QuizAnswerPhase.Answering) {
+                    correctAnswerColor
+                } else {
+                    MaterialTheme.colorScheme.onBackground
+                },
+        )
+
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text =
+            buildAnnotatedString {
+                append(parts[0])
+                withStyle(firstStyle) {
+                    append(firstBlank)
+                }
+                append(parts[1])
+                withStyle(secondStyle) {
+                    append(secondBlank)
+                }
+                append(parts[2])
+            },
+        style = MaterialTheme.typography.bodyLarge,
+        textAlign = TextAlign.Center,
+    )
 }

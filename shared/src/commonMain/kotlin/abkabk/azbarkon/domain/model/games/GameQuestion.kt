@@ -29,6 +29,7 @@ sealed interface GameQuestion {
     data class CompletePoem(
         val line1: String,
         val blankedLine2: String,
+        val poetName: String,
         val options: List<String>,
         val correctWords: Pair<String, String>,
     ) : GameQuestion
