@@ -54,6 +54,10 @@ interface MemorizationLocalDataSource {
         reviewTimeMillis: Long,
     )
 
+    suspend fun getReviewDayKeys(): List<Int>
+
+    suspend fun countReviewedVerses(): Int
+
     suspend fun findPoetIdByName(nameFragment: String): Result<Int, DataError.Local>
 
     suspend fun findCategoryByPoetAndText(

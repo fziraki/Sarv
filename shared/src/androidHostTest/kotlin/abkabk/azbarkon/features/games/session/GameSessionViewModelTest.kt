@@ -18,7 +18,7 @@ import assertk.assertions.isNotEmpty
 import assertk.assertions.isTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -168,6 +168,92 @@ class GameSessionViewModelTest {
 
             assertThat(preferences.getCoinBalance()).isEqualTo(balanceBefore - GameConstants.HINT_COST)
             assertThat(viewModel.state.value.hintUsedThisQuiz).isTrue()
+        }
+
+    @Test
+    fun `perfect session increments perfectGameSessions`() =
+        runTest {
+            val preferences = FakeUserPreferencesRepository()
+            val viewModel =
+                GameSessionViewModel(
+                    gameType = GameType.NEXT_VERSE,
+                    gamesRepository =
+                        object : GamesRepository {
+                            override fun createGenerationCache() = GameGenerationCache()
+
+                            override suspend fun generateQuestion(
+                                gameType: GameType,
+                                sessionSeed: Long,
+                                quizIndex: Int,
+                                cache: GameGenerationCache,
+                            ): Result<GameQuestion, abkabk.azbarkon.core.domain.result.DataError.Local> =
+                                Result.Success(
+                                    GameQuestion.NextVerse(
+                                        promptLine = "prompt",
+                                        poetName = "حافظ",
+                                        options = listOf("correct", "wrong1", "wrong2", "wrong3"),
+                                        correctIndex = 0,
+                                    ),
+                                )
+
+                            override suspend fun generateQuizBatch(
+                                gameType: GameType,
+                                seed: Long,
+                                count: Int,
+                            ): Result<List<GameQuestion>, abkabk.azbarkon.core.domain.result.DataError.Local> =
+                                Result.Success(
+                                    List(count) {
+                                        GameQuestion.NextVerse(
+                                            promptLine = "prompt",
+                                            poetName = "حافظ",
+                                            options = listOf("correct", "wrong1", "wrong2", "wrong3"),
+                                            correctIndex = 0,
+                                        )
+                                    },
+                                )
+                        },
+                    userPreferencesRepository = preferences,
+                )
+
+            viewModel.events.test {
+                repeat(GameConstants.QUIZ_COUNT) {
+                    viewModel.onAction(GameSessionAction.OnOptionSelected(0))
+                    viewModel.onAction(GameSessionAction.OnCheckAnswerClick)
+                    viewModel.onAction(GameSessionAction.OnCheckAnswerClick)
+                }
+                awaitItem()
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            assertThat(preferences.observeGameStats().first().perfectGameSessions).isEqualTo(1)
+        }
+
+    @Test
+    fun `session with wrong answer does not increment perfectGameSessions`() =
+        runTest {
+            val preferences = FakeUserPreferencesRepository()
+            val viewModel =
+                GameSessionViewModel(
+                    gameType = GameType.NEXT_VERSE,
+                    gamesRepository = FakeGamesRepository(),
+                    userPreferencesRepository = preferences,
+                )
+
+            viewModel.events.test {
+                viewModel.onAction(GameSessionAction.OnOptionSelected(1))
+                viewModel.onAction(GameSessionAction.OnCheckAnswerClick)
+                viewModel.onAction(GameSessionAction.OnCheckAnswerClick)
+
+                repeat(GameConstants.QUIZ_COUNT - 1) {
+                    viewModel.onAction(GameSessionAction.OnOptionSelected(0))
+                    viewModel.onAction(GameSessionAction.OnCheckAnswerClick)
+                    viewModel.onAction(GameSessionAction.OnCheckAnswerClick)
+                }
+                awaitItem()
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            assertThat(preferences.observeGameStats().first().perfectGameSessions).isEqualTo(0)
         }
 
     @Test

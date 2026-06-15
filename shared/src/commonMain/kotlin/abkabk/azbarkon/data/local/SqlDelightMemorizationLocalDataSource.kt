@@ -7,7 +7,8 @@ import abkabk.azbarkon.data.mapper.toStorageValue
 import abkabk.azbarkon.domain.datasource.MemorizationLocalDataSource
 import abkabk.azbarkon.domain.model.memorization.SrsCard
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
-import abkabk.azbarkon.core.util.currentTimeMillis
+import abkabk.azbarkon.core.util.consecutiveDayStreak
+import abkabk.azbarkon.core.util.dayKeyFromMillis
 import com.azbarkon.db.CatQueries
 import com.azbarkon.db.PoetQueries
 import com.azbarkon.memorization.ActiveSrsPoemQueries
@@ -160,6 +161,15 @@ class SqlDelightMemorizationLocalDataSource(
             review_time = reviewTimeMillis,
         )
     }
+
+    override suspend fun getReviewDayKeys(): List<Int> =
+        reviewLogQueries
+            .selectReviewDayKeys()
+            .executeAsList()
+            .map { dayKeyFromMillis(it) }
+
+    override suspend fun countReviewedVerses(): Int =
+        reviewLogQueries.countReviewedVerses().executeAsOne().toInt()
 
     override suspend fun findPoetIdByName(nameFragment: String): Result<Int, DataError.Local> =
         try {

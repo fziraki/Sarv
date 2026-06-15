@@ -4,8 +4,8 @@ import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.UiText
-import abkabk.azbarkon.domain.model.games.GameGenerationCache
 import abkabk.azbarkon.domain.model.games.GameConstants
+import abkabk.azbarkon.domain.model.games.GameGenerationCache
 import abkabk.azbarkon.domain.model.games.GameQuestion
 import abkabk.azbarkon.domain.model.games.GameSessionSummary
 import abkabk.azbarkon.domain.model.games.GameType
@@ -305,6 +305,16 @@ class GameSessionViewModel(
     private suspend fun finishSession() {
         cancelJobs()
         val currentState = state.value
+        val isPerfect =
+            currentState.wrongCount == 0 &&
+                currentState.noAnswerCount == 0 &&
+                currentState.correctCount == GameConstants.QUIZ_COUNT
+        userPreferencesRepository.recordCompletedSession(
+            correct = currentState.correctCount,
+            wrong = currentState.wrongCount,
+            playedAtMillis = abkabk.azbarkon.core.util.currentTimeMillis(),
+            isPerfect = isPerfect,
+        )
         sendEvent(
             GameSessionEvent.NavigateToResult(
                 gameType = gameType,

@@ -7,12 +7,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.launch
 
 class AzbarkonAppState(
     val snackbarHostState: SnackbarHostState,
     private val scope: CoroutineScope,
 ) {
+    var onProfileSettingsClick: (() -> Unit)? = null
+
     fun showSnackbar(message: String) {
         scope.launch {
             snackbarHostState.showSnackbar(message)

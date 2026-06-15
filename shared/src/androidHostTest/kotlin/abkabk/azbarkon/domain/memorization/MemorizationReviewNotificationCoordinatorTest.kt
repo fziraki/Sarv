@@ -1,11 +1,12 @@
 package abkabk.azbarkon.domain.memorization
 
+import abkabk.azbarkon.core.domain.result.DataError
+import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.domain.datasource.MemorizationLocalDataSource
 import abkabk.azbarkon.domain.model.memorization.SrsCard
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
-import abkabk.azbarkon.core.domain.result.Result
-import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.testing.FakeMemorizationReviewNotificationScheduler
+import abkabk.azbarkon.testing.FakeUserPreferencesRepository
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
@@ -18,10 +19,12 @@ class MemorizationReviewNotificationCoordinatorTest {
     fun `sync disables scheduler when no active poems`() = runTest {
         val localDataSource = FakeMemorizationLocalDataSource(activePoemCount = 0)
         val scheduler = FakeMemorizationReviewNotificationScheduler()
+        val preferences = FakeUserPreferencesRepository()
         val coordinator =
             MemorizationReviewNotificationCoordinator(
                 localDataSource = localDataSource,
                 scheduler = scheduler,
+                userPreferencesRepository = preferences,
             )
 
         coordinator.sync()
@@ -34,10 +37,12 @@ class MemorizationReviewNotificationCoordinatorTest {
     fun `sync enables scheduler when active poems exist`() = runTest {
         val localDataSource = FakeMemorizationLocalDataSource(activePoemCount = 2)
         val scheduler = FakeMemorizationReviewNotificationScheduler()
+        val preferences = FakeUserPreferencesRepository()
         val coordinator =
             MemorizationReviewNotificationCoordinator(
                 localDataSource = localDataSource,
                 scheduler = scheduler,
+                userPreferencesRepository = preferences,
             )
 
         coordinator.sync()
@@ -46,6 +51,27 @@ class MemorizationReviewNotificationCoordinatorTest {
         assertThat(scheduler.isEnabled).isTrue()
         assertThat(scheduler.lastDeliveryHour).isEqualTo(10)
         assertThat(scheduler.lastDeliveryMinute).isEqualTo(0)
+    }
+
+    @Test
+    fun `sync disables scheduler when reminder preference is off`() = runTest {
+        val localDataSource = FakeMemorizationLocalDataSource(activePoemCount = 2)
+        val scheduler = FakeMemorizationReviewNotificationScheduler()
+        val preferences =
+            FakeUserPreferencesRepository().apply {
+                setMemorizationReminderEnabled(false)
+            }
+        val coordinator =
+            MemorizationReviewNotificationCoordinator(
+                localDataSource = localDataSource,
+                scheduler = scheduler,
+                userPreferencesRepository = preferences,
+            )
+
+        coordinator.sync()
+
+        assertThat(scheduler.disableCallCount).isEqualTo(1)
+        assertThat(scheduler.isEnabled).isFalse()
     }
 
     private class FakeMemorizationLocalDataSource(
@@ -98,6 +124,10 @@ class MemorizationReviewNotificationCoordinatorTest {
             newInterval: Int,
             reviewTimeMillis: Long,
         ) = Unit
+
+        override suspend fun getReviewDayKeys(): List<Int> = emptyList()
+
+        override suspend fun countReviewedVerses(): Int = 0
 
         override suspend fun findPoetIdByName(nameFragment: String): Result<Int, DataError.Local> =
             Result.Error(DataError.Local.UNKNOWN)

@@ -9,7 +9,6 @@ val userPreferencesDataModule =
         single<UserPreferencesRepository> {
             LocalUserPreferencesRepository(
                 keyValueStore = get(),
-                userRepository = get(),
             )
         }
     }

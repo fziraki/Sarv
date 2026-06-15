@@ -10,3 +10,9 @@ CREATE TABLE review_log (
 insertReviewLog:
 INSERT INTO review_log(card_id, grade, previous_interval, new_interval, review_time)
 VALUES (?, ?, ?, ?, ?);
+
+selectReviewDayKeys:
+SELECT review_time FROM review_log ORDER BY review_time DESC;
+
+countReviewedVerses:
+SELECT COUNT(*) FROM review_log;

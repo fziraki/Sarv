@@ -48,6 +48,7 @@ val memorizationDataModule =
             MemorizationReviewNotificationCoordinator(
                 localDataSource = get(),
                 scheduler = get(),
+                userPreferencesRepository = get(),
             )
         }
     }

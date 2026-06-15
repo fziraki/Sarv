@@ -11,6 +11,7 @@ import azbarkoncmp.shared.generated.resources.games_subtitle
 import azbarkoncmp.shared.generated.resources.home
 import azbarkoncmp.shared.generated.resources.treasure
 import azbarkoncmp.shared.generated.resources.profile
+import azbarkoncmp.shared.generated.resources.profile_title
 import azbarkoncmp.shared.generated.resources.treasure_subtitle
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -50,6 +51,6 @@ sealed class BottomNavItem(
         route = ProfileRoute::class,
         title = Res.string.profile,
         icon = Res.drawable.profile,
-        headerTitle = Res.string.profile,
+        headerTitle = Res.string.profile_title,
     )
 }

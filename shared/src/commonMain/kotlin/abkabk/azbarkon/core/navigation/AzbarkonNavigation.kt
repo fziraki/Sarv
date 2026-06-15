@@ -60,7 +60,9 @@ import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.arrow_back_right
 import azbarkoncmp.shared.generated.resources.cd_back
 import azbarkoncmp.shared.generated.resources.cd_search
+import azbarkoncmp.shared.generated.resources.cd_settings
 import azbarkoncmp.shared.generated.resources.search
+import azbarkoncmp.shared.generated.resources.settings
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -159,6 +161,18 @@ fun AzbarkonNavigation(
                                     text = stringResource(it),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+
+                        if (currentDestination?.hasRoute<ProfileRoute>() == true) {
+                            IconButton(
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                onClick = { appState.onProfileSettingsClick?.invoke() },
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.settings),
+                                    contentDescription = stringResource(Res.string.cd_settings),
                                 )
                             }
                         }
