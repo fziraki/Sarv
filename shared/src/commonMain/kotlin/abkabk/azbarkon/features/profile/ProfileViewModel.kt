@@ -6,9 +6,7 @@ import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordin
 import abkabk.azbarkon.domain.model.ThemeMode
 import abkabk.azbarkon.domain.model.profile.BadgeCatalog
 import abkabk.azbarkon.domain.model.profile.GameLevelCatalog
-import abkabk.azbarkon.domain.model.profile.GameLevelDetail
 import abkabk.azbarkon.domain.model.profile.LevelListItemUi
-import abkabk.azbarkon.domain.model.profile.LevelRowState
 import abkabk.azbarkon.domain.model.profile.MemorizationProfileStats
 import abkabk.azbarkon.domain.model.profile.ProfileSheet
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
@@ -51,13 +49,7 @@ class ProfileViewModel(
             }
 
             ProfileAction.OnDismissSheet -> {
-                setState {
-                    copy(
-                        activeSheet = null,
-                        selectedLevelId = null,
-                        levelDetail = null,
-                    )
-                }
+                setState { copy(activeSheet = null) }
             }
 
             ProfileAction.OnViewAllBadgesClick -> {
@@ -67,8 +59,6 @@ class ProfileViewModel(
             ProfileAction.OnLevelsIconClick -> {
                 setState { copy(activeSheet = ProfileSheet.Levels) }
             }
-
-            is ProfileAction.OnLevelClick -> openLevelDetail(action.levelId)
 
             is ProfileAction.OnDailyBeytNotificationToggle -> {
                 if (action.enabled) {
@@ -123,11 +113,11 @@ class ProfileViewModel(
                     is abkabk.azbarkon.core.domain.result.Result.Error -> emptyList()
                 }
             }
-        val poetsCount = activePoems.map { it.poetName }.distinct().size
-        val hasCompletedPoem =
-            activePoems.any { poem ->
+        val completedPoemCount =
+            activePoems.count { poem ->
                 poem.totalCards > 0 && poem.reviewedCards >= poem.totalCards
             }
+        val hasCompletedPoem = completedPoemCount > 0
         setState {
             copy(
                 screenState = UiScreenState.Success,
@@ -140,8 +130,7 @@ class ProfileViewModel(
                 memorizationStats =
                     MemorizationProfileStats(
                         practiceStreak = snapshot.practiceStreak,
-                        memorizingPoetsCount = poetsCount,
-                        inProgressPoemCount = snapshot.summary.activePoemCount,
+                        completedPoemCount = completedPoemCount,
                     ),
                 gameStats = snapshot.gameStats,
                 reviewedVersesCount = reviewedVerses,
@@ -167,7 +156,6 @@ class ProfileViewModel(
             GameLevelCatalog.levels.map { level ->
                 LevelListItemUi(
                     level = GameLevelCatalog.toGameLevel(level),
-                    description = level.description,
                     state =
                         GameLevelCatalog.levelRowState(
                             levelId = level.id,
@@ -180,40 +168,8 @@ class ProfileViewModel(
                 previewBadges = badges.take(4),
                 allBadges = badges,
                 allLevels = levels,
-                levelDetail = selectedLevelId?.let { buildLevelDetail(it) },
             )
         }
-    }
-
-    private fun openLevelDetail(levelId: Int) {
-        val row = state.value.allLevels.firstOrNull { it.level.id == levelId } ?: return
-        if (row.state == LevelRowState.Locked) return
-
-        setState {
-            copy(
-                activeSheet = ProfileSheet.LevelDetail,
-                selectedLevelId = levelId,
-                levelDetail = buildLevelDetail(levelId),
-            )
-        }
-    }
-
-    private fun buildLevelDetail(levelId: Int): GameLevelDetail? {
-        val catalogLevel = GameLevelCatalog.levelById(levelId) ?: return null
-        val current = state.value
-        return GameLevelDetail(
-            level = GameLevelCatalog.toGameLevel(catalogLevel),
-            description = catalogLevel.description,
-            currentXp = current.levelProgress.currentXp,
-            targetXp = current.levelProgress.targetXp,
-            upgradeRequirements =
-                GameLevelCatalog.upgradeRequirements(
-                    levelId = levelId,
-                    memorizingPoetsCount = current.memorizationStats.memorizingPoetsCount,
-                    reviewedVersesCount = current.reviewedVersesCount,
-                    gameVisitStreak = current.gameStats.visitStreak,
-                ),
-        )
     }
 
     private fun setMemorizationReminder(enabled: Boolean) {

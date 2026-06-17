@@ -2,7 +2,7 @@ package abkabk.azbarkon.features.profile
 
 import abkabk.azbarkon.domain.model.ThemeMode
 import abkabk.azbarkon.domain.model.profile.BadgeUi
-import abkabk.azbarkon.domain.model.profile.GameLevelDetail
+import abkabk.azbarkon.domain.model.profile.GameLevelCatalog
 import abkabk.azbarkon.domain.model.profile.LevelListItemUi
 import abkabk.azbarkon.domain.model.profile.LevelRowState
 import abkabk.azbarkon.domain.model.profile.ProfileSheet
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,31 +20,26 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.check_circle
 import azbarkoncmp.shared.generated.resources.lock
-import azbarkoncmp.shared.generated.resources.palette
 import azbarkoncmp.shared.generated.resources.profile_badges_title
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_subtitle
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_title
 import azbarkoncmp.shared.generated.resources.profile_level_format
+import azbarkoncmp.shared.generated.resources.profile_level_score_required
+import azbarkoncmp.shared.generated.resources.profile_level_start
 import azbarkoncmp.shared.generated.resources.profile_levels_title
 import azbarkoncmp.shared.generated.resources.profile_memorization_reminder_subtitle
 import azbarkoncmp.shared.generated.resources.profile_memorization_reminder_title
@@ -54,8 +48,6 @@ import azbarkoncmp.shared.generated.resources.profile_theme_dark
 import azbarkoncmp.shared.generated.resources.profile_theme_light
 import azbarkoncmp.shared.generated.resources.profile_theme_system
 import azbarkoncmp.shared.generated.resources.profile_theme_title
-import azbarkoncmp.shared.generated.resources.profile_upgrade_title
-import azbarkoncmp.shared.generated.resources.profile_xp_format
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -87,15 +79,7 @@ fun ProfileSheets(
                 ProfileBadgesSheetContent(badges = state.allBadges)
 
             ProfileSheet.Levels ->
-                ProfileLevelsSheetContent(
-                    levels = state.allLevels,
-                    onLevelClick = { onAction(ProfileAction.OnLevelClick(it)) },
-                )
-
-            ProfileSheet.LevelDetail ->
-                state.levelDetail?.let { detail ->
-                    ProfileLevelDetailSheetContent(detail = detail)
-                }
+                ProfileLevelsSheetContent(levels = state.allLevels)
         }
     }
 }
@@ -269,10 +253,7 @@ private fun ProfileBadgesSheetContent(badges: List<BadgeUi>) {
 }
 
 @Composable
-private fun ProfileLevelsSheetContent(
-    levels: List<LevelListItemUi>,
-    onLevelClick: (Int) -> Unit,
-) {
+private fun ProfileLevelsSheetContent(levels: List<LevelListItemUi>) {
     Column(
         modifier =
             Modifier
@@ -289,25 +270,27 @@ private fun ProfileLevelsSheetContent(
         )
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(levels, key = { it.level.id }) { item ->
-                ProfileLevelRow(
-                    item = item,
-                    onClick = { onLevelClick(item.level.id) },
-                )
+                ProfileLevelRow(item = item)
             }
         }
     }
 }
 
 @Composable
-private fun ProfileLevelRow(
-    item: LevelListItemUi,
-    onClick: () -> Unit,
-) {
-    val isLocked = item.state == LevelRowState.Locked
+private fun ProfileLevelRow(item: LevelListItemUi) {
     val backgroundColor =
         when (item.state) {
             LevelRowState.Current -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f)
             else -> MaterialTheme.colorScheme.surfaceContainerHigh
+        }
+    val subtitle =
+        if (item.level.id == 1) {
+            stringResource(Res.string.profile_level_start)
+        } else {
+            stringResource(
+                Res.string.profile_level_score_required,
+                GameLevelCatalog.requiredScoreForLevel(item.level.id),
+            )
         }
 
     Row(
@@ -316,7 +299,6 @@ private fun ProfileLevelRow(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
                 .background(backgroundColor)
-                .clickable(enabled = !isLocked, onClick = onClick)
                 .padding(horizontal = 12.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -337,7 +319,7 @@ private fun ProfileLevelRow(
                 textAlign = TextAlign.Center,
             )
             Text(
-                text = item.description,
+                text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -362,142 +344,6 @@ private fun ProfileLevelRow(
                     modifier = Modifier.size(20.dp),
                     tint = MaterialTheme.colorScheme.primary,
                 )
-        }
-    }
-}
-
-@Composable
-private fun ProfileLevelDetailSheetContent(detail: GameLevelDetail) {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Icon(
-            painter = painterResource(Res.drawable.palette),
-            contentDescription = null,
-            modifier = Modifier.size(72.dp),
-            tint = MaterialTheme.colorScheme.primary,
-        )
-
-        Text(
-            text = detail.level.name,
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center,
-        )
-
-        Text(
-            text = stringResource(Res.string.profile_level_format, detail.level.id),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-
-        Text(
-            text = detail.description,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-        )
-
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-            LinearProgressIndicator(
-                progress = {
-                    if (detail.targetXp == 0) {
-                        0f
-                    } else {
-                        detail.currentXp.toFloat() / detail.targetXp.toFloat()
-                    }
-                },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(8.dp),
-                color = ProgressIndicatorDefaults.linearColor,
-                trackColor = ProgressIndicatorDefaults.linearTrackColor,
-                strokeCap = StrokeCap.Round,
-                drawStopIndicator = {},
-                gapSize = (-4).dp,
-            )
-        }
-
-        Text(
-            text =
-                stringResource(
-                    Res.string.profile_xp_format,
-                    detail.currentXp,
-                    detail.targetXp,
-                ),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-
-        if (detail.upgradeRequirements.isNotEmpty()) {
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                        .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Text(
-                    text = stringResource(Res.string.profile_upgrade_title),
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.End,
-                )
-
-                detail.upgradeRequirements.forEach { requirement ->
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Text(
-                                text = "${requirement.current}/${requirement.target} ${requirement.label}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.weight(1f),
-                                textAlign = TextAlign.End,
-                            )
-                            if (requirement.isComplete) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.check_circle),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
-                                    tint = MaterialTheme.colorScheme.primary,
-                                )
-                            }
-                        }
-                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                            LinearProgressIndicator(
-                                progress = {
-                                    if (requirement.target == 0) {
-                                        0f
-                                    } else {
-                                        requirement.current
-                                            .toFloat()
-                                            .coerceAtMost(requirement.target.toFloat()) /
-                                            requirement.target.toFloat()
-                                    }
-                                },
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .height(6.dp),
-                                strokeCap = StrokeCap.Round,
-                                drawStopIndicator = {},
-                                gapSize = (-4).dp,
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 }

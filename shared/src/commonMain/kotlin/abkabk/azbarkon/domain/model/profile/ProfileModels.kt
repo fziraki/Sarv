@@ -4,8 +4,7 @@ import abkabk.azbarkon.domain.model.GameLevel
 
 data class MemorizationProfileStats(
     val practiceStreak: Int = 0,
-    val memorizingPoetsCount: Int = 0,
-    val inProgressPoemCount: Int = 0,
+    val completedPoemCount: Int = 0,
 )
 
 data class GameProfileStats(
@@ -17,28 +16,10 @@ data class GameProfileStats(
     val perfectGameSessions: Int = 0,
 )
 
-data class LevelRequirement(
-    val label: String,
-    val current: Int,
-    val target: Int,
-) {
-    val isComplete: Boolean
-        get() = current >= target
-}
-
-data class GameLevelDetail(
-    val level: GameLevel,
-    val description: String,
-    val currentXp: Int,
-    val targetXp: Int,
-    val upgradeRequirements: List<LevelRequirement>,
-)
-
 enum class ProfileSheet {
     Settings,
     Badges,
     Levels,
-    LevelDetail,
 }
 
 enum class LevelRowState {
@@ -49,7 +30,6 @@ enum class LevelRowState {
 
 data class LevelListItemUi(
     val level: GameLevel,
-    val description: String,
     val state: LevelRowState,
 )
 

@@ -46,8 +46,7 @@ import azbarkoncmp.shared.generated.resources.profile_game_status_title
 import azbarkoncmp.shared.generated.resources.profile_game_streak
 import azbarkoncmp.shared.generated.resources.profile_game_total_points
 import azbarkoncmp.shared.generated.resources.profile_level_format
-import azbarkoncmp.shared.generated.resources.profile_mem_poems
-import azbarkoncmp.shared.generated.resources.profile_mem_poets
+import azbarkoncmp.shared.generated.resources.profile_mem_completed_poems
 import azbarkoncmp.shared.generated.resources.profile_mem_streak
 import azbarkoncmp.shared.generated.resources.profile_memorization_status_title
 import azbarkoncmp.shared.generated.resources.profile_view_all_badges
@@ -150,8 +149,7 @@ fun MemorizationStatusCard(
         items =
             listOf(
                 stats.practiceStreak to stringResource(Res.string.profile_mem_streak),
-                stats.memorizingPoetsCount to stringResource(Res.string.profile_mem_poets),
-                stats.inProgressPoemCount to stringResource(Res.string.profile_mem_poems),
+                stats.completedPoemCount to stringResource(Res.string.profile_mem_completed_poems),
             ),
     )
 }
@@ -310,6 +308,7 @@ fun BadgeListRow(
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.Start
         ) {
             Text(
                 text = item.name,

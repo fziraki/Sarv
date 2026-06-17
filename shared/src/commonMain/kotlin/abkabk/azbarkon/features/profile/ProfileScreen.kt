@@ -96,11 +96,11 @@ fun ProfileScreen(
         }
 
         item {
-            MemorizationStatusCard(stats = state.memorizationStats)
+            GameStatusCard(stats = state.gameStats)
         }
 
         item {
-            GameStatusCard(stats = state.gameStats)
+            MemorizationStatusCard(stats = state.memorizationStats)
         }
 
         item {
