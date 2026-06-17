@@ -1,0 +1,33 @@
+CREATE TABLE poet (
+    id INTEGER NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    cat_id INTEGER NOT NULL,
+    description TEXT NOT NULL
+);
+
+selectByIdWithCatUrl:
+SELECT
+    poet.id,
+    poet.name,
+    poet.cat_id,
+    poet.description,
+    cat.url AS cat_url
+FROM poet
+LEFT JOIN cat ON cat.id = poet.cat_id
+WHERE poet.id = ?;
+
+selectAllWithCatUrl:
+SELECT
+    poet.id,
+    poet.name,
+    poet.cat_id,
+    poet.description,
+    cat.url AS cat_url
+FROM poet
+LEFT JOIN cat ON cat.id = poet.cat_id;
+
+selectIdByNameLike:
+SELECT id
+FROM poet
+WHERE name LIKE ?
+LIMIT 1;

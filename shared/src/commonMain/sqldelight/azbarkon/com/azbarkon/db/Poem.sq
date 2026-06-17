@@ -1,0 +1,50 @@
+CREATE TABLE poem (
+    id INTEGER NOT NULL PRIMARY KEY,
+    cat_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    url TEXT NOT NULL
+);
+
+selectByCatId:
+SELECT id, title
+FROM poem
+WHERE cat_id = ?
+ORDER BY id;
+
+selectByCatIdPaged:
+SELECT id, title
+FROM poem
+WHERE cat_id = ?
+ORDER BY id
+LIMIT :limit OFFSET :offset;
+
+selectDetailById:
+SELECT
+    poem.title,
+    poet.name AS poet_name,
+    cat.text AS category_name
+FROM poem
+JOIN cat ON cat.id = poem.cat_id
+JOIN poet ON poet.id = cat.poet_id
+WHERE poem.id = ?;
+
+selectPoetForPoemId:
+SELECT
+    poet.id AS poet_id,
+    poet.name AS poet_name
+FROM poem
+JOIN cat ON cat.id = poem.cat_id
+JOIN poet ON poet.id = cat.poet_id
+WHERE poem.id = ?;
+
+selectByIds:
+SELECT
+    poem.id,
+    poem.title,
+    poet.name AS poet_name,
+    cat.text AS category_name
+FROM poem
+JOIN cat ON cat.id = poem.cat_id
+JOIN poet ON poet.id = cat.poet_id
+WHERE poem.id IN ?
+ORDER BY poet.name, cat.text, poem.id;

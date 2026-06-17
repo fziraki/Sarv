@@ -1,0 +1,209 @@
+package abkabk.azbarkon.data.local
+
+import abkabk.azbarkon.core.domain.result.DataError
+import abkabk.azbarkon.core.domain.result.Result
+import abkabk.azbarkon.data.mapper.toSrsCard
+import abkabk.azbarkon.data.mapper.toStorageValue
+import abkabk.azbarkon.domain.datasource.MemorizationLocalDataSource
+import abkabk.azbarkon.domain.model.memorization.SrsCard
+import abkabk.azbarkon.domain.model.memorization.SrsGrade
+import abkabk.azbarkon.core.util.consecutiveDayStreak
+import abkabk.azbarkon.core.util.dayKeyFromMillis
+import com.azbarkon.db.CatQueries
+import com.azbarkon.db.PoetQueries
+import com.azbarkon.memorization.ActiveSrsPoemQueries
+import com.azbarkon.memorization.MemorizationDatabase
+import com.azbarkon.memorization.ReviewLogQueries
+import com.azbarkon.memorization.SrsPoemCardQueries
+
+class SqlDelightMemorizationLocalDataSource(
+    private val activePoemQueries: ActiveSrsPoemQueries,
+    private val cardQueries: SrsPoemCardQueries,
+    private val reviewLogQueries: ReviewLogQueries,
+    private val poetQueries: PoetQueries,
+    private val catQueries: CatQueries,
+    private val database: MemorizationDatabase,
+) : MemorizationLocalDataSource {
+    override suspend fun countActivePoems(): Int =
+        activePoemQueries.countActive().executeAsOne().toInt()
+
+    override suspend fun isPoemActive(poemId: Int): Boolean =
+        activePoemQueries.isPoemActive(poem_id = poemId.toLong()).executeAsOne()
+
+    override suspend fun insertActivePoem(
+        poemId: Int,
+        addedAtMillis: Long,
+        status: String,
+    ) {
+        activePoemQueries.insertActivePoem(
+            poem_id = poemId.toLong(),
+            added_at = addedAtMillis,
+            status = status,
+        )
+    }
+
+    override suspend fun deleteActivePoem(poemId: Int) {
+        database.transaction {
+            cardQueries.deleteCardsByPoemId(poem_id = poemId.toLong())
+            activePoemQueries.deleteActivePoem(poem_id = poemId.toLong())
+        }
+    }
+
+    override suspend fun getActivePoemIds(): List<Int> =
+        activePoemQueries
+            .selectActivePoemIds()
+            .executeAsList()
+            .map { it.toInt() }
+
+    override suspend fun getActivePoemAddedAt(poemId: Int): Long? =
+        activePoemQueries
+            .selectActivePoem(poem_id = poemId.toLong())
+            .executeAsOneOrNull()
+            ?.added_at
+
+    override suspend fun insertCards(cards: List<SrsCard>) {
+        database.transaction {
+            cards.forEach { card ->
+                cardQueries.insertCard(
+                    poem_id = card.poemId.toLong(),
+                    card_index = card.cardIndex.toLong(),
+                    front = card.front,
+                    back = card.back,
+                    interval = card.interval.toLong(),
+                    ease = card.ease,
+                    due_date = card.dueDateMillis,
+                    consecutive_correct = card.consecutiveCorrect.toLong(),
+                )
+            }
+        }
+    }
+
+    override suspend fun getCardById(cardId: Long): SrsCard? =
+        cardQueries.selectCardById(id = cardId).executeAsOneOrNull()?.toSrsCard()
+
+    override suspend fun getDueCards(
+        nowMillis: Long,
+        poemId: Int?,
+    ): List<SrsCard> =
+        if (poemId != null) {
+            cardQueries
+                .selectDueCardsByPoemId(
+                    poem_id = poemId.toLong(),
+                    due_date = nowMillis,
+                ).executeAsList()
+        } else {
+            cardQueries
+                .selectDueCards(due_date = nowMillis)
+                .executeAsList()
+        }.map { it.toSrsCard() }
+
+    override suspend fun countDueCards(
+        nowMillis: Long,
+        poemId: Int?,
+    ): Int =
+        if (poemId != null) {
+            cardQueries
+                .countDueCardsByPoemId(
+                    poem_id = poemId.toLong(),
+                    due_date = nowMillis,
+                ).executeAsOne()
+        } else {
+            cardQueries.countDueCards(due_date = nowMillis).executeAsOne()
+        }.toInt()
+
+    override suspend fun updateCard(card: SrsCard) {
+        cardQueries.updateCard(
+            interval = card.interval.toLong(),
+            ease = card.ease,
+            due_date = card.dueDateMillis,
+            consecutive_correct = card.consecutiveCorrect.toLong(),
+            id = card.id,
+        )
+    }
+
+    override suspend fun countCardsByPoemId(poemId: Int): Int =
+        cardQueries.countCardsByPoemId(poem_id = poemId.toLong()).executeAsOne().toInt()
+
+    override suspend fun countReviewedCardsByPoemId(poemId: Int): Int =
+        cardQueries
+            .countReviewedCardsByPoemId(poem_id = poemId.toLong())
+            .executeAsOne()
+            .toInt()
+
+    override suspend fun getAverageInterval(poemId: Int): Int {
+        val cards =
+            cardQueries
+                .selectCardsByPoemId(poem_id = poemId.toLong())
+                .executeAsList()
+        if (cards.isEmpty()) return 0
+        return cards.map { it.interval.toInt() }.average().toInt()
+    }
+
+    override suspend fun getMaxConsecutiveCorrect(poemId: Int): Int =
+        cardQueries
+            .selectCardsByPoemId(poem_id = poemId.toLong())
+            .executeAsList()
+            .maxOfOrNull { it.consecutive_correct.toInt() }
+            ?: 0
+
+    override suspend fun insertReviewLog(
+        cardId: Long,
+        grade: SrsGrade,
+        previousInterval: Int,
+        newInterval: Int,
+        reviewTimeMillis: Long,
+    ) {
+        reviewLogQueries.insertReviewLog(
+            card_id = cardId,
+            grade = grade.toStorageValue(),
+            previous_interval = previousInterval.toLong(),
+            new_interval = newInterval.toLong(),
+            review_time = reviewTimeMillis,
+        )
+    }
+
+    override suspend fun getReviewDayKeys(): List<Int> =
+        reviewLogQueries
+            .selectReviewDayKeys()
+            .executeAsList()
+            .map { dayKeyFromMillis(it) }
+
+    override suspend fun countReviewedVerses(): Int =
+        reviewLogQueries.countReviewedVerses().executeAsOne().toInt()
+
+    override suspend fun findPoetIdByName(nameFragment: String): Result<Int, DataError.Local> =
+        try {
+            val id =
+                poetQueries
+                    .selectIdByNameLike(nameFragment)
+                    .executeAsOneOrNull()
+                    ?.toInt()
+            if (id == null) {
+                Result.Error(DataError.Local.NOT_FOUND)
+            } else {
+                Result.Success(id)
+            }
+        } catch (_: Exception) {
+            Result.Error(DataError.Local.UNKNOWN)
+        }
+
+    override suspend fun findCategoryByPoetAndText(
+        poetId: Int,
+        textFragment: String,
+    ): Result<Pair<Int, String>, DataError.Local> =
+        try {
+            val row =
+                catQueries
+                    .selectIdByPoetIdAndText(
+                        poet_id = poetId.toLong(),
+                        textFragment,
+                    ).executeAsOneOrNull()
+            if (row == null) {
+                Result.Error(DataError.Local.NOT_FOUND)
+            } else {
+                Result.Success(row.id.toInt() to row.text)
+            }
+        } catch (_: Exception) {
+            Result.Error(DataError.Local.UNKNOWN)
+        }
+}

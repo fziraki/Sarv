@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Grant permission
+        run: chmod +x gradlew
+
+      - name: Decode Keystore
+        run: |
+          echo -n "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > androidApp/azbarkon.jks
+
+      - name: Build Release APK
+        env:
+          # Resolved by androidApp/build.gradle.kts file() relative to the androidApp module
+          KEYSTORE_PATH: azbarkon.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: ./gradlew :androidApp:assembleRelease
+
+      - name: Verify release outputs
+        run: |
+          echo "Keystore:" && ls -la androidApp/azbarkon.jks
+          echo "APK (release dir):" && ls -la androidApp/release/*.apk 2>/dev/null || echo "none in androidApp/release"
+          echo "APK (build outputs):" && ls -la androidApp/build/outputs/apk/release/*.apk 2>/dev/null || echo "none in build/outputs"
+
+      - name: Cleanup
+        run: rm -f androidApp/azbarkon.jks
+
+#      - name: Build Release AAB (optional for Play Store)
+#        env:
+#          KEYSTORE_PATH: keystore.jks
+#          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+#          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+#          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+#        run: ./gradlew bundleRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-release-apk
+          path: |
+            androidApp/release/*.apk
+            androidApp/build/outputs/apk/release/*.apk
+
+#      - name: Upload AAB
+#        uses: actions/upload-artifact@v7
+#        with:
+#          name: app-release-aab
+#          path: androidApp/build/outputs/bundle/release/*.aab

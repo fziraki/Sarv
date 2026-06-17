@@ -1,0 +1,31 @@
+CREATE TABLE cat (
+    id INTEGER NOT NULL PRIMARY KEY,
+    poet_id INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    parent_id INTEGER NOT NULL,
+    url TEXT NOT NULL
+);
+
+selectChildrenByParentId:
+SELECT id, poet_id, text, parent_id, url
+FROM cat
+WHERE parent_id = ? AND poet_id = ?
+ORDER BY id;
+
+selectAllByPoetId:
+SELECT id, poet_id, text, parent_id, url
+FROM cat
+WHERE poet_id = ?
+ORDER BY id;
+
+selectById:
+SELECT id, poet_id, text, parent_id, url
+FROM cat
+WHERE id = ?;
+
+selectIdByPoetIdAndText:
+SELECT id, text
+FROM cat
+WHERE poet_id = ?
+  AND text LIKE ?
+LIMIT 1;

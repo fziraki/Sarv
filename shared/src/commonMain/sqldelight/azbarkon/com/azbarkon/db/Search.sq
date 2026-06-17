@@ -1,0 +1,27 @@
+searchVerses:
+SELECT
+    verse.poem_id AS poem_id,
+    verse.text AS verse_text,
+    verse.vorder AS verse_order,
+    poem.title AS poem_title,
+    poet.name AS poet_name,
+    cat.text AS category_name
+FROM verse
+INNER JOIN poem ON poem.id = verse.poem_id
+INNER JOIN cat ON cat.id = poem.cat_id
+INNER JOIN poet ON poet.id = cat.poet_id
+WHERE verse.text LIKE '%' || :query || '%'
+AND (:filter_poet = 0 OR poet.id = :poet_id)
+AND (:filter_cat = 0 OR poem.cat_id IN :cat_ids)
+ORDER BY poet.name, poem.id, verse.vorder, verse.position
+LIMIT :limit OFFSET :offset;
+
+countSearchVerses:
+SELECT COUNT(*)
+FROM verse
+INNER JOIN poem ON poem.id = verse.poem_id
+INNER JOIN cat ON cat.id = poem.cat_id
+INNER JOIN poet ON poet.id = cat.poet_id
+WHERE verse.text LIKE '%' || :query || '%'
+AND (:filter_poet = 0 OR poet.id = :poet_id)
+AND (:filter_cat = 0 OR poem.cat_id IN :cat_ids);
