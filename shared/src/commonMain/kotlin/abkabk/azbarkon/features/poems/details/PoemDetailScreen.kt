@@ -1,5 +1,7 @@
 package abkabk.azbarkon.features.poems.details
 
+import abkabk.azbarkon.core.designsystem.secondary
+import abkabk.azbarkon.core.designsystem.secondaryFixed
 import abkabk.azbarkon.core.ui.FindTextField
 import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
@@ -13,9 +15,12 @@ import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,13 +29,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,18 +49,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.cd_close_find_bar
 import azbarkoncmp.shared.generated.resources.close
 import azbarkoncmp.shared.generated.resources.find_in_poem_hint
-import azbarkoncmp.shared.generated.resources.pause_circle
-import azbarkoncmp.shared.generated.resources.play_circle
+import azbarkoncmp.shared.generated.resources.pause
+import azbarkoncmp.shared.generated.resources.play
 import azbarkoncmp.shared.generated.resources.poem_memorize_practice
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -230,9 +238,12 @@ fun AudioTracksList(
     onSeekFinished: (PoemAudioTrack, Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
         tracks.forEach { trackState ->
-            TrackPlayerRow(
+            TrackPlayerCard(
                 state = trackState,
                 onPlayPauseClick = { onPlayPauseClick(trackState.track) },
                 onSeekChanged = { onSeekChanged(trackState.track, it) },
@@ -242,8 +253,9 @@ fun AudioTracksList(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TrackPlayerRow(
+private fun TrackPlayerCard(
     state: TrackPlaybackUiState,
     onPlayPauseClick: () -> Unit,
     onSeekChanged: (Float) -> Unit,
@@ -251,43 +263,43 @@ private fun TrackPlayerRow(
 ) {
     var dragProgress by remember { mutableStateOf<Float?>(null) }
     val displayedProgress = dragProgress ?: state.progress
+    val isActive = state.isPlaying || state.isLoading
 
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            text = state.track.title?:"",
-            style = MaterialTheme.typography.labelMedium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(start = 4.dp, bottom = 2.dp),
+        PlayPauseButton(
+            isPlaying = state.isPlaying,
+            isLoading = state.isLoading,
+            isActive = isActive,
+            onClick = onPlayPauseClick,
         )
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(
-                onClick = onPlayPauseClick,
-                modifier = Modifier.size(36.dp),
+        Column(modifier = Modifier.weight(1f)) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                when {
-                    state.isLoading -> CircularProgressIndicator(
-                        modifier = Modifier.size(18.dp),
-                        strokeWidth = 2.dp,
-                    )
-                    state.isPlaying -> Icon(
-                        painterResource(Res.drawable.pause_circle),
-                        contentDescription = "توقف",
-                        modifier = Modifier.size(20.dp),
-                    )
-                    else -> Icon(
-                        painterResource(Res.drawable.play_circle),
-                        contentDescription = "پخش",
-                        modifier = Modifier.size(20.dp),
-                    )
-                }
+                Text(
+                    text = state.track.title ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    text = "${formatMs(state.positionMs)} / ${formatMs(state.durationMs)}",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
-
             Slider(
                 value = displayedProgress.coerceIn(0f, 1f),
                 onValueChange = {
@@ -299,12 +311,100 @@ private fun TrackPlayerRow(
                     onSeekFinished(finalValue)
                     dragProgress = null
                 },
-                modifier = Modifier.weight(1f).padding(horizontal = 4.dp),
-            )
+                modifier = Modifier.fillMaxWidth(),
+                colors = SliderDefaults.colors(
+                    thumbColor = Color.Transparent,
+                    activeTrackColor = Color.Transparent,
+                    inactiveTrackColor = Color.Transparent,
+                ),
+                thumb = {
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = CircleShape,
+                            ),
+                    )
+                },
+                track = { sliderState ->
+                    val trackProgress =
+                        (sliderState.value - sliderState.valueRange.start) /
+                                (sliderState.valueRange.endInclusive - sliderState.valueRange.start).coerceAtLeast(0.001f)
 
-            Text(
-                text = "${formatMs(state.positionMs)} / ${formatMs(state.durationMs)}",
-                style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(4.dp)
+                            .clip(RoundedCornerShape(percent = 50))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+                    ) {
+                        if (trackProgress > 0f) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .weight(trackProgress)
+                                    .background(MaterialTheme.colorScheme.primary),
+                            )
+                        }
+                        if (trackProgress < 1f) {
+                            Spacer(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .weight(1f - trackProgress),
+                            )
+                        }
+                    }
+                },
+            )
+        }
+    }
+
+}
+
+@Composable
+private fun PlayPauseButton(
+    isPlaying: Boolean,
+    isLoading: Boolean,
+    isActive: Boolean,
+    onClick: () -> Unit,
+) {
+    val backgroundColor = if (isActive) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerHighest
+    }
+    val iconTint = if (isActive) {
+        MaterialTheme.colorScheme.onPrimary
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(backgroundColor)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        when {
+            isLoading -> CircularProgressIndicator(
+                modifier = Modifier.size(18.dp),
+                strokeWidth = 2.dp,
+                color = iconTint,
+            )
+            isPlaying -> Icon(
+                painter = painterResource(Res.drawable.pause),
+                contentDescription = "توقف",
+                tint = iconTint,
+                modifier = Modifier.size(20.dp),
+            )
+            else -> Icon(
+                painter = painterResource(Res.drawable.play),
+                contentDescription = "پخش",
+                tint = iconTint,
+                modifier = Modifier.size(20.dp),
             )
         }
     }
