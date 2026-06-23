@@ -8,7 +8,7 @@ import org.koin.core.context.startKoin
 fun initKoin(application: Application) {
     startKoin {
         androidContext(application)
-        modules(sharedModules + androidPlatformModule)
+        modules(sharedModules + androidPlatformModule )
         workManagerFactory()
     }
 }

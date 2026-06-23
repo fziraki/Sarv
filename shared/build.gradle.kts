@@ -51,6 +51,8 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.androidx.work.runtime.ktx)
             implementation(libs.koin.androidx.workmanager)
+            implementation(libs.androidx.media3.exoplayer)
+            implementation(libs.androidx.media3.common)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
