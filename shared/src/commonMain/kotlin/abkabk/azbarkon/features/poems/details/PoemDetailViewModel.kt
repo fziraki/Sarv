@@ -2,10 +2,14 @@ package abkabk.azbarkon.features.poems.details
 
 import abkabk.azbarkon.core.domain.result.onFailure
 import abkabk.azbarkon.core.domain.result.onSuccess
+import abkabk.azbarkon.core.player.AudioPlaybackState
+import abkabk.azbarkon.core.player.AudioPlayer
+import abkabk.azbarkon.core.player.AudioPlayerListener
 import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.toUiText
+import abkabk.azbarkon.domain.model.PoemAudioTrack
 import abkabk.azbarkon.domain.model.memorization.MemorizationError
 import abkabk.azbarkon.domain.platform.ShareService
 import abkabk.azbarkon.domain.repository.MemorizationRepository
@@ -16,7 +20,13 @@ import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.memorization_max_active_error
 import azbarkoncmp.shared.generated.resources.search_empty_query
 import azbarkoncmp.shared.generated.resources.search_not_found_in_poem
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class PoemDetailViewModel(
     private val poemRepository: PoemRepository,
@@ -24,18 +34,85 @@ class PoemDetailViewModel(
     private val memorizationRepository: MemorizationRepository,
     private val shareService: ShareService,
     private val poemId: Int,
+    private val player: AudioPlayer,
 ) : BaseViewModel<PoemDetailAction, PoemDetailState, PoemDetailEvent>(
-        initialState = PoemDetailState(),
-    ) {
+    initialState = PoemDetailState(),
+) {
+
+    private val _audioState = MutableStateFlow(AudioPlayerUiState())
+    val audioState: StateFlow<AudioPlayerUiState> = _audioState.asStateFlow()
+
+    private val playerListener = object : AudioPlayerListener {
+
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            val activeUrl = _audioState.value.activeTrackUrl ?: return
+            updateTrack(activeUrl) { it.copy(isPlaying = isPlaying) }
+        }
+
+        override fun onStateChanged(state: AudioPlaybackState) {
+            val activeUrl = _audioState.value.activeTrackUrl ?: return
+            when (state) {
+                AudioPlaybackState.BUFFERING -> updateTrack(activeUrl) { it.copy(isLoading = true) }
+                AudioPlaybackState.READY -> updateTrack(activeUrl) { it.copy(isLoading = false) }
+                AudioPlaybackState.ENDED -> updateTrack(activeUrl) {
+                    it.copy(isPlaying = false, progress = 1f)
+                }
+                AudioPlaybackState.IDLE -> Unit
+                AudioPlaybackState.ERROR -> {
+                    updateTrack(activeUrl) { it.copy(isLoading = false, isPlaying = false) }
+                    viewModelScope.launch {
+                        sendEvent(PoemDetailEvent.ShowSnackbar(UiText.DynamicString("پخش صدا با خطا مواجه شد")))
+                    }
+                }
+            }
+        }
+    }
+
     init {
+        player.addListener(playerListener)
+        startProgressTicker()
         onAction(PoemDetailAction.OnLoad)
+        loadTracks()
+    }
+
+    override fun onCleared() {
+        player.removeListener(playerListener)
+        if (player.isPlaying) player.pause()
+        player.release()
+        super.onCleared()
+    }
+
+    private fun startProgressTicker() {
+        viewModelScope.launch {
+            while (true) {
+                val audio = _audioState.value
+                val activeUrl = audio.activeTrackUrl
+                if (activeUrl != null && player.isPlaying && player.duration > 0) {
+                    val activeState = audio.tracks.firstOrNull { it.track.url == activeUrl }
+                    if (activeState != null && !activeState.isSeeking) {
+                        updateTrack(activeUrl) {
+                            it.copy(
+                                progress = player.currentPosition.toFloat() / player.duration,
+                                positionMs = player.currentPosition,
+                                durationMs = player.duration,
+                            )
+                        }
+                    }
+                }
+                delay(500.milliseconds)
+            }
+        }
     }
 
     override fun onAction(action: PoemDetailAction) {
         when (action) {
             PoemDetailAction.OnLoad,
             PoemDetailAction.OnRetryClick,
-            -> loadPoemDetail()
+                -> loadPoemDetail()
+
+            is PoemDetailAction.OnTrackPlayPauseClick -> togglePlayPause(action.track)
+            is PoemDetailAction.OnTrackSeekChanged -> onSeekChanged(action.track, action.progress)
+            is PoemDetailAction.OnTrackSeekFinished -> onSeekFinished(action.track, action.progress)
 
             PoemDetailAction.OnSearchClick -> toggleFindBar()
 
@@ -60,6 +137,115 @@ class PoemDetailViewModel(
             PoemDetailAction.OnImageCreatorClick -> navigateToTasvirNegar()
 
             PoemDetailAction.OnMemorizeClick -> startMemorization()
+        }
+    }
+
+    private fun loadTracks() {
+        viewModelScope.launch {
+            poemRepository.getPoemRecitations(poemId)
+                .onSuccess { tracks ->
+                    _audioState.update {
+                        it.copy(tracks = tracks.map { track -> TrackPlaybackUiState(track = track) })
+                    }
+                }
+                .onFailure { error ->
+                    sendEvent(PoemDetailEvent.ShowSnackbar(error.toUiText()))
+                }
+        }
+    }
+
+    private fun togglePlayPause(track: PoemAudioTrack) {
+        val audio = _audioState.value
+        val isThisTrackActive = audio.activeTrackUrl == track.url
+
+        when {
+            isThisTrackActive && player.isPlaying -> {
+                player.pause()
+                updateTrack(track.url) { it.copy(isPlaying = false) }
+            }
+
+            isThisTrackActive && !player.isPlaying -> {
+                player.play()
+                updateTrack(track.url) { it.copy(isPlaying = true) }
+            }
+
+            else -> switchToTrack(track)
+        }
+    }
+
+    private fun switchToTrack(track: PoemAudioTrack) {
+        val audio = _audioState.value
+        val previousUrl = audio.activeTrackUrl
+
+        if (previousUrl != null) {
+            val livePositionMs = player.currentPosition
+            val liveDurationMs = player.duration
+            player.pause()
+            updateTrack(previousUrl) {
+                it.copy(
+                    isPlaying = false,
+                    positionMs = livePositionMs,
+                    durationMs = if (liveDurationMs > 0) liveDurationMs else it.durationMs,
+                    progress = if (liveDurationMs > 0) {
+                        livePositionMs.toFloat() / liveDurationMs
+                    } else {
+                        it.progress
+                    },
+                )
+            }
+        }
+
+        val targetState = audio.tracks.firstOrNull { it.track.url == track.url } ?: return
+
+        // Set active track BEFORE calling into the player, so listener
+        // callbacks (onStateChanged/onIsPlayingChanged) route to the
+        // correct track instead of the one we just paused.
+        _audioState.update { it.copy(activeTrackUrl = track.url) }
+        updateTrack(track.url) { it.copy(isLoading = true) }
+
+        track.url?.let { player.setMediaUrl(it) }
+
+        if (targetState.positionMs > 0) {
+            player.seekTo(targetState.positionMs)
+        }
+        player.play()
+
+        updateTrack(track.url) {
+            it.copy(
+                isLoading = false,
+                isPlaying = true,
+                durationMs = if (player.duration > 0) player.duration else it.durationMs,
+            )
+        }
+    }
+    private fun onSeekChanged(track: PoemAudioTrack, progress: Float) {
+        updateTrack(track.url) { state ->
+            val durationMs = state.durationMs
+            state.copy(
+                isSeeking = true,
+                progress = progress,
+                positionMs = (progress * durationMs).toLong(),
+            )
+        }
+    }
+
+    private fun onSeekFinished(track: PoemAudioTrack, progress: Float) {
+        val audio = _audioState.value
+        val state = audio.tracks.firstOrNull { it.track.url == track.url } ?: return
+        val targetMs = (progress * state.durationMs).toLong()
+
+        if (audio.activeTrackUrl == track.url) {
+            player.seekTo(targetMs)
+        }
+
+        updateTrack(track.url) { it.copy(isSeeking = false, progress = progress, positionMs = targetMs) }
+    }
+
+    private fun updateTrack(url: String?, transform: (TrackPlaybackUiState) -> TrackPlaybackUiState) {
+        _audioState.update { audio ->
+            audio.copy(
+                tracks = audio.tracks.map { if (it.track.url == url) transform(it) else it },
+            )
         }
     }
 
@@ -234,5 +420,5 @@ private fun MemorizationError.toUiText(): UiText =
         MemorizationError.PoemNotFound,
         MemorizationError.CardNotFound,
         MemorizationError.Unknown,
-        -> UiText.DynamicString(toString())
+            -> UiText.DynamicString(toString())
     }

@@ -23,5 +23,5 @@ val sharedModules: List<Module> =
         chatPresentationModule,
         tasvirNegarPresentationModule,
         memorizationPresentationModule,
-        gamesPresentationModule,
+        gamesPresentationModule
     )

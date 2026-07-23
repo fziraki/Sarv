@@ -13,6 +13,8 @@ import abkabk.azbarkon.core.platform.ClipboardManager
 import abkabk.azbarkon.core.platform.KeyValueStore
 import abkabk.azbarkon.core.platform.ImageExportManager
 import abkabk.azbarkon.core.platform.ShareManager
+import abkabk.azbarkon.core.player.AudioPlayer
+import abkabk.azbarkon.core.player.Media3AudioPlayer
 import abkabk.azbarkon.data.platform.AndroidDailyBeytNotificationScheduler
 import abkabk.azbarkon.data.platform.AndroidMemorizationReviewNotificationScheduler
 import abkabk.azbarkon.data.platform.AndroidNotificationPermissionGateway
@@ -21,6 +23,7 @@ import abkabk.azbarkon.domain.datasource.PoetImagePrefetcher
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import abkabk.azbarkon.domain.platform.MemorizationReviewNotificationScheduler
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
+import androidx.media3.exoplayer.ExoPlayer
 import com.azbarkon.db.AzbarKonDatabase
 import com.azbarkon.memorization.MemorizationDatabase
 import org.koin.android.ext.koin.androidContext
@@ -123,4 +126,8 @@ val androidPlatformModule =
 
         workerOf(::DailyBeytWorker)
         workerOf(::MemorizationReviewWorker)
+
+        single<AudioPlayer> {
+            Media3AudioPlayer(ExoPlayer.Builder(androidContext()).build())
+        }
     }

@@ -75,7 +75,18 @@ import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_button
 import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_text
 import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_title
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import azbarkoncmp.shared.generated.resources.add_book
+import azbarkoncmp.shared.generated.resources.herobg
+import azbarkoncmp.shared.generated.resources.image_creator_bg
 import azbarkoncmp.shared.generated.resources.newsstand
+import azbarkoncmp.shared.generated.resources.next_verse_game_bg
+import azbarkoncmp.shared.generated.resources.old_book
+import azbarkoncmp.shared.generated.resources.today_distich_bg
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -395,22 +406,35 @@ fun HeroCard(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = RoundedCornerShape(12.dp),
-                ),
+                .padding(horizontal = 16.dp),
     ) {
+        Image(
+            painter = painterResource(Res.drawable.herobg),
+            contentDescription = null,
+            modifier = Modifier.matchParentSize()
+                .clip(RoundedCornerShape(16.dp)),
+            contentScale = ContentScale.Crop
+        )
         Row(
             modifier =
                 Modifier
                     .padding(16.dp)
                     .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                modifier = Modifier.weight(1f),
-                painter = painterResource(Res.drawable.palette),
+                painter = if (hero.hasActivePoems) {
+                    painterResource(Res.drawable.old_book)
+                } else {
+                    painterResource(Res.drawable.add_book)
+                },
+                modifier = Modifier.size(80.dp).padding(end = 40.dp).weight(1f),
                 contentDescription = null,
+                colorFilter = if (hero.hasActivePoems) {
+                    null
+                } else {
+                    ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer)
+                }
             )
             Column(
                 modifier = Modifier.weight(1f),
@@ -530,164 +554,188 @@ fun TopSlider(
 
 @Composable
 fun TasvirNegarSlide(onClick: () -> Unit = {}) {
-    Row(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(
-                    color = MaterialTheme.colorScheme.primaryFixedDim,
-                    shape = RoundedCornerShape(12.dp),
-                ).padding(16.dp),
-    ) {
+
+    Box(modifier = Modifier.fillMaxSize()) {
+
         Image(
-            modifier = Modifier.weight(0.4f),
-            painter = painterResource(Res.drawable.palette),
+            painter = painterResource(Res.drawable.image_creator_bg),
             contentDescription = null,
+            modifier = Modifier.matchParentSize()
+                .clip(RoundedCornerShape(16.dp)),
+            contentScale = ContentScale.Crop
         )
-
-        Column(
-            modifier = Modifier.weight(0.6f).fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.End,
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
         ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(Res.string.slider_tasvir_negar_title),
-                color = MaterialTheme.colorScheme.onSecondaryFixedVariant,
-                style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.End,
+            Image(
+                modifier = Modifier.weight(0.4f),
+                painter = painterResource(Res.drawable.palette),
+                contentDescription = null,
             )
 
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(Res.string.slider_tasvir_negar_text),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.End,
-            )
+            Column(
+                modifier = Modifier.weight(0.6f).fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.End,
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(Res.string.slider_tasvir_negar_title),
+                    color = MaterialTheme.colorScheme.onSecondaryFixedVariant,
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.End,
+                )
 
-            AzbarkonButton(
-                text = stringResource(Res.string.slider_tasvir_negar_button),
-                onClick = onClick,
-                modifier =
-                    Modifier
-                        .fillMaxWidth(0.6f)
-                        .height(36.dp),
-                textStyle = MaterialTheme.typography.labelSmall,
-                colors =
-                    ButtonColors(
-                        containerColor = MaterialTheme.colorScheme.onSecondaryFixedVariant,
-                        contentColor = MaterialTheme.colorScheme.onSecondary,
-                        disabledContainerColor = MaterialTheme.colorScheme.onSecondaryFixedVariant,
-                        disabledContentColor = MaterialTheme.colorScheme.onSecondary,
-                    ),
-            )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(Res.string.slider_tasvir_negar_text),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.End,
+                )
+
+                AzbarkonButton(
+                    text = stringResource(Res.string.slider_tasvir_negar_button),
+                    onClick = onClick,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.6f)
+                            .height(36.dp),
+                    textStyle = MaterialTheme.typography.labelSmall,
+                    colors =
+                        ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.onSecondaryFixedVariant,
+                            contentColor = MaterialTheme.colorScheme.onSecondary,
+                            disabledContainerColor = MaterialTheme.colorScheme.onSecondaryFixedVariant,
+                            disabledContentColor = MaterialTheme.colorScheme.onSecondary,
+                        ),
+                )
+            }
         }
     }
 }
 
 @Composable
 fun ChallengeSlide() {
-    Row(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(
-                    color = MaterialTheme.colorScheme.tertiaryFixedDim,
-                    shape = RoundedCornerShape(12.dp),
-                ).padding(16.dp),
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+
         Image(
-            modifier = Modifier.weight(0.4f),
-            painter = painterResource(Res.drawable.palette),
+            painter = painterResource(Res.drawable.next_verse_game_bg),
             contentDescription = null,
+            modifier = Modifier.matchParentSize()
+                .clip(RoundedCornerShape(16.dp)),
+            contentScale = ContentScale.Crop
         )
-
-        Column(
-            modifier = Modifier.weight(0.6f).fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.End,
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxSize().padding(16.dp),
         ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(Res.string.slider_challenge_title),
-                color = MaterialTheme.colorScheme.tertiary,
-                style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.End,
+            Image(
+                modifier = Modifier.weight(0.4f),
+                painter = painterResource(Res.drawable.palette),
+                contentDescription = null,
             )
 
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(Res.string.slider_challenge_text),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.End,
-            )
+            Column(
+                modifier = Modifier.weight(0.6f).fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.End,
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(Res.string.slider_challenge_title),
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.End,
+                )
 
-            AzbarkonButton(
-                text = stringResource(Res.string.slider_challenge_button),
-                onClick = {},
-                modifier =
-                    Modifier
-                        .fillMaxWidth(0.6f)
-                        .height(36.dp),
-                textStyle = MaterialTheme.typography.labelSmall,
-                colors =
-                    ButtonColors(
-                        containerColor = MaterialTheme.colorScheme.onTertiaryFixedVariant,
-                        contentColor = MaterialTheme.colorScheme.surfaceVariant,
-                        disabledContainerColor = MaterialTheme.colorScheme.onTertiaryFixedVariant,
-                        disabledContentColor = MaterialTheme.colorScheme.onTertiaryFixed,
-                    ),
-            )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(Res.string.slider_challenge_text),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.End,
+                )
+
+                AzbarkonButton(
+                    text = stringResource(Res.string.slider_challenge_button),
+                    onClick = {},
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.6f)
+                            .height(36.dp),
+                    textStyle = MaterialTheme.typography.labelSmall,
+                    colors =
+                        ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.onTertiaryFixedVariant,
+                            contentColor = MaterialTheme.colorScheme.surfaceVariant,
+                            disabledContainerColor = MaterialTheme.colorScheme.onTertiaryFixedVariant,
+                            disabledContentColor = MaterialTheme.colorScheme.onTertiaryFixed,
+                        ),
+                )
+            }
         }
     }
 }
 
 @Composable
 fun BeytOfDaySlide() {
-    Row(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(12.dp),
-                ).padding(16.dp),
-    ) {
-        Column(
-            modifier = Modifier.weight(0.6f).fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(Res.string.slider_beyt_of_day_title),
-                color = MaterialTheme.colorScheme.tertiary,
-                style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.Start,
-            )
 
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(Res.string.slider_beyt_of_day_text),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-            )
-
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(Res.string.slider_beyt_of_day_poet),
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.End,
-            )
-        }
+    Box(modifier = Modifier.fillMaxSize()){
 
         Image(
-            modifier = Modifier.weight(0.4f),
-            painter = painterResource(Res.drawable.palette),
+            painter = painterResource(Res.drawable.today_distich_bg),
             contentDescription = null,
+            modifier = Modifier.matchParentSize()
+                .clip(RoundedCornerShape(16.dp)),
+            contentScale = ContentScale.Crop
         )
+
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+        ) {
+            Column(
+                modifier = Modifier.weight(0.6f).fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(Res.string.slider_beyt_of_day_title),
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.Start,
+                )
+
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(Res.string.slider_beyt_of_day_text),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                )
+
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(Res.string.slider_beyt_of_day_poet),
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.End,
+                )
+            }
+
+            Image(
+                modifier = Modifier.weight(0.4f),
+                painter = painterResource(Res.drawable.palette),
+                contentDescription = null,
+            )
+        }
     }
+
 }

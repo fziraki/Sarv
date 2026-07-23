@@ -44,6 +44,13 @@ import azbarkoncmp.shared.generated.resources.whois_poet_desc
 import azbarkoncmp.shared.generated.resources.whois_poet_score
 import azbarkoncmp.shared.generated.resources.whois_poet_title
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.layout.ContentScale
+import azbarkoncmp.shared.generated.resources.guess_poet_icon
+import azbarkoncmp.shared.generated.resources.incomplete_icon
+import azbarkoncmp.shared.generated.resources.next_verse_icon
+import azbarkoncmp.shared.generated.resources.reorder_poem_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
@@ -72,7 +79,7 @@ fun GamesScreen(
                 title = Res.string.next_line_title,
                 desc = Res.string.next_line_desc,
                 score = Res.string.next_line_score,
-                icon = Res.drawable.games,
+                icon = Res.drawable.next_verse_icon,
                 onClick = { onNavigateToGame(GameType.NEXT_VERSE) },
             )
         }
@@ -82,8 +89,19 @@ fun GamesScreen(
                 title = Res.string.complete_poem_title,
                 desc = Res.string.complete_poem_desc,
                 score = Res.string.complete_poem_score,
-                icon = Res.drawable.games,
+                icon = Res.drawable.incomplete_icon,
                 onClick = { onNavigateToGame(GameType.COMPLETE_POEM) },
+            )
+        }
+
+
+        item {
+            GameItem(
+                title = Res.string.whois_poet_title,
+                desc = Res.string.whois_poet_desc,
+                score = Res.string.whois_poet_score,
+                icon = Res.drawable.guess_poet_icon,
+                onClick = { onNavigateToGame(GameType.FIND_POET) },
             )
         }
 
@@ -92,20 +110,11 @@ fun GamesScreen(
                 title = Res.string.poetry_arrangement_title,
                 desc = Res.string.poetry_arrangement_desc,
                 score = Res.string.poetry_arrangement_score,
-                icon = Res.drawable.games,
+                icon = Res.drawable.reorder_poem_icon,
                 onClick = { onNavigateToGame(GameType.ORGANIZE_POEM) },
             )
         }
 
-        item {
-            GameItem(
-                title = Res.string.whois_poet_title,
-                desc = Res.string.whois_poet_desc,
-                score = Res.string.whois_poet_score,
-                icon = Res.drawable.games,
-                onClick = { onNavigateToGame(GameType.FIND_POET) },
-            )
-        }
     }
 }
 
@@ -138,9 +147,14 @@ fun GameItem(
                     .fillMaxHeight()
                     .background(
                         color = MaterialTheme.colorScheme.secondary,
-                    ),
+                    )
+                    .clip(RoundedCornerShape(
+                        topStart = 12.dp, bottomStart = 12.dp,
+                        topEnd = 0.dp, bottomEnd = 0.dp
+                    )),
             painter = painterResource(icon),
             contentDescription = null,
+            contentScale = ContentScale.Crop
         )
 
         Column(

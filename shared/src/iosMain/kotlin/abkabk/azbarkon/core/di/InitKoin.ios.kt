@@ -8,7 +8,7 @@ fun initKoinIfNeeded() {
     if (isKoinInitialized) return
 
     startKoin {
-        modules(sharedModules + iosPlatformModule)
+        modules(sharedModules + iosPlatformModule + playerPlatformModule)
     }
     isKoinInitialized = true
 }

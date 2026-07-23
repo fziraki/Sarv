@@ -37,6 +37,7 @@ val poetsPresentationModule =
                 memorizationRepository = get(),
                 shareService = get(),
                 poemId = parameters.get(),
+                player = get()
             )
         }
         viewModel {

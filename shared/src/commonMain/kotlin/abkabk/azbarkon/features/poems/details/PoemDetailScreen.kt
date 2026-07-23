@@ -1,30 +1,45 @@
 package abkabk.azbarkon.features.poems.details
 
+import abkabk.azbarkon.core.designsystem.secondary
+import abkabk.azbarkon.core.designsystem.secondaryFixed
 import abkabk.azbarkon.core.ui.FindTextField
 import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.core.ui_base.asString
-import abkabk.azbarkon.ui.components.Header
+import abkabk.azbarkon.domain.model.PoemAudioTrack
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
+import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,7 +48,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -41,6 +59,8 @@ import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.cd_close_find_bar
 import azbarkoncmp.shared.generated.resources.close
 import azbarkoncmp.shared.generated.resources.find_in_poem_hint
+import azbarkoncmp.shared.generated.resources.pause
+import azbarkoncmp.shared.generated.resources.play
 import azbarkoncmp.shared.generated.resources.poem_memorize_practice
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -56,6 +76,7 @@ fun PoemDetailRoot(
     viewModel: PoemDetailViewModel = koinViewModel { parametersOf(poemId) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val audioState by viewModel.audioState.collectAsStateWithLifecycle()
     val appState = LocalAzbarkonAppState.current
     var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
@@ -81,6 +102,7 @@ fun PoemDetailRoot(
     ) {
         PoemDetailScreen(
             state = state,
+            audioState = audioState,
             onAction = viewModel::onAction,
             onBackClick = onBackClick,
         )
@@ -90,6 +112,7 @@ fun PoemDetailRoot(
 @Composable
 fun PoemDetailScreen(
     state: PoemDetailState,
+    audioState: AudioPlayerUiState,
     onAction: (PoemDetailAction) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -180,6 +203,13 @@ fun PoemDetailScreen(
                 }
             }
 
+            AudioTracksList(
+                tracks = audioState.tracks,
+                onPlayPauseClick = { onAction(PoemDetailAction.OnTrackPlayPauseClick(it)) },
+                onSeekChanged = { track, p -> onAction(PoemDetailAction.OnTrackSeekChanged(track, p)) },
+                onSeekFinished = { track, p -> onAction(PoemDetailAction.OnTrackSeekFinished(track, p)) },
+            )
+
             PoemActionBar(
                 isLiked = state.isLiked,
                 onSearchClick = { onAction(PoemDetailAction.OnSearchClick) },
@@ -198,6 +228,193 @@ fun PoemDetailScreen(
             )
         }
     }
+}
+
+@Composable
+fun AudioTracksList(
+    tracks: List<TrackPlaybackUiState>,
+    onPlayPauseClick: (PoemAudioTrack) -> Unit,
+    onSeekChanged: (PoemAudioTrack, Float) -> Unit,
+    onSeekFinished: (PoemAudioTrack, Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        tracks.forEach { trackState ->
+            TrackPlayerCard(
+                state = trackState,
+                onPlayPauseClick = { onPlayPauseClick(trackState.track) },
+                onSeekChanged = { onSeekChanged(trackState.track, it) },
+                onSeekFinished = { onSeekFinished(trackState.track, it) },
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TrackPlayerCard(
+    state: TrackPlaybackUiState,
+    onPlayPauseClick: () -> Unit,
+    onSeekChanged: (Float) -> Unit,
+    onSeekFinished: (Float) -> Unit,
+) {
+    var dragProgress by remember { mutableStateOf<Float?>(null) }
+    val displayedProgress = dragProgress ?: state.progress
+    val isActive = state.isPlaying || state.isLoading
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        PlayPauseButton(
+            isPlaying = state.isPlaying,
+            isLoading = state.isLoading,
+            isActive = isActive,
+            onClick = onPlayPauseClick,
+        )
+        Column(modifier = Modifier.weight(1f)) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = state.track.title ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    text = "${formatMs(state.positionMs)} / ${formatMs(state.durationMs)}",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Slider(
+                value = displayedProgress.coerceIn(0f, 1f),
+                onValueChange = {
+                    dragProgress = it
+                    onSeekChanged(it)
+                },
+                onValueChangeFinished = {
+                    val finalValue = dragProgress ?: state.progress
+                    onSeekFinished(finalValue)
+                    dragProgress = null
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = SliderDefaults.colors(
+                    thumbColor = Color.Transparent,
+                    activeTrackColor = Color.Transparent,
+                    inactiveTrackColor = Color.Transparent,
+                ),
+                thumb = {
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = CircleShape,
+                            ),
+                    )
+                },
+                track = { sliderState ->
+                    val trackProgress =
+                        (sliderState.value - sliderState.valueRange.start) /
+                                (sliderState.valueRange.endInclusive - sliderState.valueRange.start).coerceAtLeast(0.001f)
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(4.dp)
+                            .clip(RoundedCornerShape(percent = 50))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+                    ) {
+                        if (trackProgress > 0f) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .weight(trackProgress)
+                                    .background(MaterialTheme.colorScheme.primary),
+                            )
+                        }
+                        if (trackProgress < 1f) {
+                            Spacer(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .weight(1f - trackProgress),
+                            )
+                        }
+                    }
+                },
+            )
+        }
+    }
+
+}
+
+@Composable
+private fun PlayPauseButton(
+    isPlaying: Boolean,
+    isLoading: Boolean,
+    isActive: Boolean,
+    onClick: () -> Unit,
+) {
+    val backgroundColor = if (isActive) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerHighest
+    }
+    val iconTint = if (isActive) {
+        MaterialTheme.colorScheme.onPrimary
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(backgroundColor)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        when {
+            isLoading -> CircularProgressIndicator(
+                modifier = Modifier.size(18.dp),
+                strokeWidth = 2.dp,
+                color = iconTint,
+            )
+            isPlaying -> Icon(
+                painter = painterResource(Res.drawable.pause),
+                contentDescription = "توقف",
+                tint = iconTint,
+                modifier = Modifier.size(20.dp),
+            )
+            else -> Icon(
+                painter = painterResource(Res.drawable.play),
+                contentDescription = "پخش",
+                tint = iconTint,
+                modifier = Modifier.size(20.dp),
+            )
+        }
+    }
+}
+
+private fun formatMs(ms: Long): String {
+    val totalSeconds = ms / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return "$minutes:${seconds.toString().padStart(2, '0')}"
 }
 
 @Preview
@@ -234,6 +451,7 @@ private fun PoemDetailScreenPreview() {
                         ),
                     isLiked = true,
                 ),
+            audioState = AudioPlayerUiState(),
             onAction = {},
             onBackClick = {},
         )

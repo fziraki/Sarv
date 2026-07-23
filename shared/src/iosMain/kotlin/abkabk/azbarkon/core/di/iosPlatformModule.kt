@@ -6,6 +6,8 @@ import abkabk.azbarkon.core.platform.ClipboardManager
 import abkabk.azbarkon.core.platform.KeyValueStore
 import abkabk.azbarkon.core.platform.ImageExportManager
 import abkabk.azbarkon.core.platform.ShareManager
+import abkabk.azbarkon.core.player.AudioPlayer
+import abkabk.azbarkon.core.player.AvAudioPlayer
 import abkabk.azbarkon.data.cache.CoilPoetImagePrefetcher
 import abkabk.azbarkon.data.platform.IosDailyBeytNotificationScheduler
 import abkabk.azbarkon.domain.datasource.PoetImagePrefetcher
@@ -77,4 +79,6 @@ val iosPlatformModule =
         single<NotificationPermissionGateway> {
             IosNotificationPermissionGateway()
         }
+
+        single<AudioPlayer> { AvAudioPlayer() }
     }
