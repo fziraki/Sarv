@@ -6,6 +6,7 @@ import abkabk.azbarkon.features.tasvir_negar.TasvirNegarAction
 import abkabk.azbarkon.features.tasvir_negar.model.TasvirNegarColors
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -57,8 +59,17 @@ import azbarkoncmp.shared.generated.resources.ic_texture
 import azbarkoncmp.shared.generated.resources.ic_wallpaper
 import azbarkoncmp.shared.generated.resources.reset_image
 import azbarkoncmp.shared.generated.resources.share
+import azbarkoncmp.shared.generated.resources.tasvir_color
+import azbarkoncmp.shared.generated.resources.tasvir_edit
 import azbarkoncmp.shared.generated.resources.tasvir_eraser
+import azbarkoncmp.shared.generated.resources.tasvir_font
+import azbarkoncmp.shared.generated.resources.tasvir_gallery
+import azbarkoncmp.shared.generated.resources.tasvir_grid
 import azbarkoncmp.shared.generated.resources.tasvir_negar_save
+import azbarkoncmp.shared.generated.resources.tasvir_sticker
+import azbarkoncmp.shared.generated.resources.tasvir_share
+import azbarkoncmp.shared.generated.resources.tasvir_text
+import azbarkoncmp.shared.generated.resources.tasvir_texture
 import azbarkoncmp.shared.generated.resources.text_fields
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -99,6 +110,33 @@ fun EditorHeader(
 }
 
 @Composable
+private fun LabeledIconButton(
+    drawable: org.jetbrains.compose.resources.DrawableResource,
+    label: String,
+    onClick: () -> Unit,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Icon(
+            modifier = Modifier.clickable{
+                onClick()
+            },
+            painter = painterResource(drawable),
+            contentDescription = label,
+            tint = TasvirNegarColors.lightCream,
+        )
+        Text(
+            text = label,
+            color = TasvirNegarColors.lightCream,
+            fontSize = 10.sp,
+            fontFamily = samimFontFamily(),
+        )
+    }
+}
+
+@Composable
 fun EditorFooter(
     onEraserClick: () -> Unit,
     onDownloadClick: () -> Unit,
@@ -110,43 +148,31 @@ fun EditorFooter(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(54.dp)
+                .height(72.dp)
                 .background(TasvirNegarColors.brown),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-
-        IconButton(onClick = onDownloadClick) {
-            Icon(
-                painter = painterResource(Res.drawable.download),
-                contentDescription = stringResource(Res.string.tasvir_negar_save),
-                tint = Color.Unspecified,
-            )
-        }
-
-        IconButton(onClick = onEraserClick) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_delete),
-                contentDescription = stringResource(Res.string.tasvir_eraser),
-                tint = Color.Unspecified,
-            )
-        }
-
-        IconButton(onClick = onEditClick) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_edit),
-                contentDescription = null,
-                tint = Color.Unspecified,
-            )
-        }
-
-        IconButton(onClick = onShareClick) {
-            Icon(
-                painter = painterResource(Res.drawable.share),
-                contentDescription = null,
-                tint = Color.Unspecified,
-            )
-        }
+        LabeledIconButton(
+            drawable = Res.drawable.download,
+            label = stringResource(Res.string.tasvir_negar_save),
+            onClick = onDownloadClick,
+        )
+        LabeledIconButton(
+            drawable = Res.drawable.ic_delete,
+            label = stringResource(Res.string.tasvir_eraser),
+            onClick = onEraserClick,
+        )
+        LabeledIconButton(
+            drawable = Res.drawable.ic_edit,
+            label = stringResource(Res.string.tasvir_edit),
+            onClick = onEditClick,
+        )
+        LabeledIconButton(
+            drawable = Res.drawable.share,
+            label = stringResource(Res.string.tasvir_share),
+            onClick = onShareClick,
+        )
     }
 }
 
@@ -155,23 +181,23 @@ fun EditToolbar(
     onAction: (TasvirNegarAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val iconTint = TasvirNegarColors.brown
+    val tint = TasvirNegarColors.lightCream
     Row(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(54.dp)
+                .height(68.dp)
                 .background(TasvirNegarColors.brownAlpha),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        ToolbarIcon(Res.drawable.ic_text_format, iconTint) { onAction(TasvirNegarAction.OnShowFontOptions) }
-        ToolbarIcon(Res.drawable.text_fields, iconTint) { onAction(TasvirNegarAction.OnEnterText) }
-        ToolbarIcon(Res.drawable.ic_sticker, iconTint) { onAction(TasvirNegarAction.OnShowShapeOptions) }
-        ToolbarIcon(Res.drawable.ic_color, iconTint) { onAction(TasvirNegarAction.OnShowColorOptions) }
-        ToolbarIcon(Res.drawable.ic_texture, iconTint) { onAction(TasvirNegarAction.OnLayerSelect(null)) }
-        ToolbarIcon(Res.drawable.ic_grid, iconTint) { onAction(TasvirNegarAction.OnToggleGrid) }
-        ToolbarIcon(Res.drawable.ic_wallpaper, iconTint) { onAction(TasvirNegarAction.OnGalleryClick) }
+        ToolbarIcon(Res.drawable.ic_text_format, tint, stringResource(Res.string.tasvir_font)) { onAction(TasvirNegarAction.OnShowFontOptions) }
+        ToolbarIcon(Res.drawable.text_fields, tint, stringResource(Res.string.tasvir_text)) { onAction(TasvirNegarAction.OnEnterText) }
+        ToolbarIcon(Res.drawable.ic_sticker, tint, stringResource(Res.string.tasvir_sticker)) { onAction(TasvirNegarAction.OnShowShapeOptions) }
+        ToolbarIcon(Res.drawable.ic_color, tint, stringResource(Res.string.tasvir_color)) { onAction(TasvirNegarAction.OnShowColorOptions) }
+        ToolbarIcon(Res.drawable.ic_texture, tint, stringResource(Res.string.tasvir_texture)) { onAction(TasvirNegarAction.OnLayerSelect(null)) }
+        ToolbarIcon(Res.drawable.ic_grid, tint, stringResource(Res.string.tasvir_grid)) { onAction(TasvirNegarAction.OnToggleGrid) }
+        ToolbarIcon(Res.drawable.ic_wallpaper, tint, stringResource(Res.string.tasvir_gallery)) { onAction(TasvirNegarAction.OnGalleryClick) }
     }
 }
 
@@ -179,13 +205,26 @@ fun EditToolbar(
 private fun ToolbarIcon(
     drawable: org.jetbrains.compose.resources.DrawableResource,
     tint: Color,
+    label: String,
     onClick: () -> Unit,
 ) {
-    IconButton(onClick = onClick) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Icon(
+            modifier = Modifier.clickable{
+                onClick()
+            },
             painter = painterResource(drawable),
-            contentDescription = null,
+            contentDescription = label,
             tint = tint,
+        )
+        Text(
+            text = label,
+            color = tint,
+            fontSize = 10.sp,
+            fontFamily = samimFontFamily(),
+            modifier = Modifier.padding(top = 2.dp),
         )
     }
 }
