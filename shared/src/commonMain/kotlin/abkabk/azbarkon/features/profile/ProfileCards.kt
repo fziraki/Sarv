@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -72,9 +74,21 @@ fun ProfileHeader(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            Text(
+                modifier = Modifier,
+                text = stringResource(Res.string.profile_level_format, levelProgress.levelId),
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+            )
+            Box(modifier = Modifier.size(3.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.scrim,
+                    shape = CircleShape
+                ))
             Text(
                 text = levelProgress.levelName,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -93,13 +107,6 @@ fun ProfileHeader(
             }
         }
 
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(Res.string.profile_level_format, levelProgress.levelId),
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
-        )
 
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
             LinearProgressIndicator(
@@ -191,7 +198,7 @@ private fun ProfileStatusCard(
             text = title,
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.End,
+            textAlign = TextAlign.Start,
         )
 
         Row(
@@ -319,14 +326,14 @@ fun BadgeListRow(
                     } else {
                         MaterialTheme.colorScheme.onSurfaceVariant
                     },
-                textAlign = TextAlign.End,
+                textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth(),
             )
             Text(
                 text = item.description,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.End,
+                textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
