@@ -57,4 +57,5 @@ google-services.json
 
 *.s3db
 
-/.cursor
+# graphify generated artifacts
+graphify-out/
