@@ -1,11 +1,5 @@
 package abkabk.azbarkon.features.home
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
@@ -14,6 +8,7 @@ import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.ui.components.AzbarkonButton
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.NetworkImage
+import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -43,22 +38,36 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.add_book
 import azbarkoncmp.shared.generated.resources.all
-import azbarkoncmp.shared.generated.resources.my_poems
-import azbarkoncmp.shared.generated.resources.memorization_button
 import azbarkoncmp.shared.generated.resources.continue_memorization_desc
 import azbarkoncmp.shared.generated.resources.continue_memorization_title
+import azbarkoncmp.shared.generated.resources.herobg
+import azbarkoncmp.shared.generated.resources.image_creator_bg
+import azbarkoncmp.shared.generated.resources.memorization_button
+import azbarkoncmp.shared.generated.resources.my_poems
 import azbarkoncmp.shared.generated.resources.new_memorization_button
 import azbarkoncmp.shared.generated.resources.new_memorization_desc
 import azbarkoncmp.shared.generated.resources.new_memorization_title
+import azbarkoncmp.shared.generated.resources.newsstand
+import azbarkoncmp.shared.generated.resources.next_verse_game_bg
+import azbarkoncmp.shared.generated.resources.old_book
 import azbarkoncmp.shared.generated.resources.palette
 import azbarkoncmp.shared.generated.resources.pic_negar
 import azbarkoncmp.shared.generated.resources.poetry_memorization
@@ -74,19 +83,8 @@ import azbarkoncmp.shared.generated.resources.slider_challenge_title
 import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_button
 import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_text
 import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_title
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
-import azbarkoncmp.shared.generated.resources.add_book
-import azbarkoncmp.shared.generated.resources.herobg
-import azbarkoncmp.shared.generated.resources.image_creator_bg
-import azbarkoncmp.shared.generated.resources.newsstand
-import azbarkoncmp.shared.generated.resources.next_verse_game_bg
-import azbarkoncmp.shared.generated.resources.old_book
 import azbarkoncmp.shared.generated.resources.today_distich_bg
+import azbarkoncmp.shared.generated.resources.unknown
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -284,9 +282,11 @@ fun PoetItem(
                 modifier =
                     Modifier
                         .size(80.dp)
-                        .clip(CircleShape),
-                painter = painterResource(Res.drawable.palette),
+                        .clip(CircleShape)
+                        .background(color = MaterialTheme.colorScheme.primary),
+                painter = painterResource(Res.drawable.unknown),
                 contentDescription = null,
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.surface)
             )
         }
         Text(
@@ -570,11 +570,9 @@ fun TasvirNegarSlide(onClick: () -> Unit = {}) {
                     .fillMaxSize()
                     .padding(16.dp),
         ) {
-            Image(
-                modifier = Modifier.weight(0.4f),
-                painter = painterResource(Res.drawable.palette),
-                contentDescription = null,
-            )
+
+            Spacer(modifier = Modifier.weight(0.4f))
+
 
             Column(
                 modifier = Modifier.weight(0.6f).fillMaxHeight(),
@@ -614,6 +612,7 @@ fun TasvirNegarSlide(onClick: () -> Unit = {}) {
                         ),
                 )
             }
+
         }
     }
 }
@@ -634,11 +633,8 @@ fun ChallengeSlide() {
                 Modifier
                     .fillMaxSize().padding(16.dp),
         ) {
-            Image(
-                modifier = Modifier.weight(0.4f),
-                painter = painterResource(Res.drawable.palette),
-                contentDescription = null,
-            )
+
+            Spacer(modifier = Modifier.weight(0.4f))
 
             Column(
                 modifier = Modifier.weight(0.6f).fillMaxHeight(),
@@ -678,6 +674,7 @@ fun ChallengeSlide() {
                         ),
                 )
             }
+
         }
     }
 }
@@ -730,11 +727,8 @@ fun BeytOfDaySlide() {
                 )
             }
 
-            Image(
-                modifier = Modifier.weight(0.4f),
-                painter = painterResource(Res.drawable.palette),
-                contentDescription = null,
-            )
+            Spacer(modifier = Modifier.weight(0.4f))
+
         }
     }
 

@@ -20,13 +20,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.filter
-import azbarkoncmp.shared.generated.resources.palette
 import azbarkoncmp.shared.generated.resources.search
+import azbarkoncmp.shared.generated.resources.unknown
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -98,9 +99,13 @@ fun PoetAvatar(
         )
     } else {
         Image(
-            modifier = modifier.clip(CircleShape),
-            painter = painterResource(Res.drawable.palette),
+            modifier =
+                modifier.clip(CircleShape)
+                    .background(color = MaterialTheme.colorScheme.primary)
+                    .padding(8.dp),
+            painter = painterResource(Res.drawable.unknown),
             contentDescription = null,
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.surface)
         )
     }
 }
