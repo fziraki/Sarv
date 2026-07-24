@@ -5,9 +5,9 @@ import abkabk.azbarkon.features.tasvir_negar.model.EditorBackground
 import abkabk.azbarkon.features.tasvir_negar.model.EditorDocument
 import abkabk.azbarkon.features.tasvir_negar.model.LayerId
 import abkabk.azbarkon.features.tasvir_negar.model.TextGravity
-import abkabk.azbarkon.features.tasvir_negar.util.catalogAssetDrawableName
 import abkabk.azbarkon.features.tasvir_negar.util.LocalGalleryImage
 import abkabk.azbarkon.features.tasvir_negar.util.rememberCanvasCaptureModifier
+import abkabk.azbarkon.features.tasvir_negar.util.tasvirNegarPainter
 import abkabk.azbarkon.features.tasvir_negar.util.textAlignForGravity
 import abkabk.azbarkon.features.tasvir_negar.util.textDirectionFor
 import abkabk.azbarkon.features.tasvir_negar.util.textLayoutDirectionFor
@@ -26,14 +26,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +49,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -62,8 +62,6 @@ import azbarkoncmp.shared.generated.resources.ic_align_center
 import azbarkoncmp.shared.generated.resources.ic_align_left
 import azbarkoncmp.shared.generated.resources.ic_align_right
 import azbarkoncmp.shared.generated.resources.ic_bold
-import abkabk.azbarkon.features.tasvir_negar.util.tasvirNegarPainter
-import androidx.compose.runtime.Composable
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -423,7 +421,7 @@ private fun StickerContent(document: EditorDocument) {
         }
         sticker.assetId != null -> {
             Image(
-                painter = tasvirNegarPainter(catalogAssetDrawableName(sticker.assetId)),
+                painter = tasvirNegarPainter(sticker.assetId),
                 contentDescription = null,
                 modifier = sizeModifier,
                 colorFilter = colorFilter,
@@ -481,7 +479,7 @@ private fun DividerImage(
     flipVertical: Boolean,
 ) {
     Image(
-        painter = tasvirNegarPainter(catalogAssetDrawableName(assetId)),
+        painter = tasvirNegarPainter(assetId),
         contentDescription = null,
         modifier =
             Modifier

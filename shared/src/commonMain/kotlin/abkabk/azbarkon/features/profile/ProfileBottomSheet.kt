@@ -26,10 +26,14 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalContext
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.check_circle
@@ -100,10 +104,15 @@ private fun ProfileSettingsSheetContent(
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalAlignment = Alignment.Start
     ) {
+
+
         Text(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(Res.string.profile_settings_title),
             style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center
         )
 
         ProfileSettingToggleRow(
@@ -113,6 +122,7 @@ private fun ProfileSettingsSheetContent(
             onCheckedChange = onDailyBeytToggle,
         )
 
+
         ProfileSettingToggleRow(
             title = stringResource(Res.string.profile_memorization_reminder_title),
             subtitle = stringResource(Res.string.profile_memorization_reminder_subtitle),
@@ -120,12 +130,13 @@ private fun ProfileSettingsSheetContent(
             onCheckedChange = onMemorizationReminderToggle,
         )
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.Start) {
             Text(
                 text = stringResource(Res.string.profile_theme_title),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.End,
+                textAlign = TextAlign.Start,
             )
             ProfileThemeOption(
                 label = stringResource(Res.string.profile_theme_system),
@@ -160,9 +171,17 @@ private fun ProfileSettingToggleRow(
                 .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                 .padding(horizontal = 16.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+            Switch(
+                checked = checked,
+                onCheckedChange = onCheckedChange
+            )
+        }
+
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -171,17 +190,16 @@ private fun ProfileSettingToggleRow(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.End,
+                textAlign = TextAlign.Start,
             )
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.End,
+                textAlign = TextAlign.Start,
             )
         }
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
 
@@ -204,7 +222,7 @@ private fun ProfileThemeOption(
                     },
                 ).clickable(onClick = onClick)
                 .padding(horizontal = 16.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -266,7 +284,7 @@ private fun ProfileLevelsSheetContent(levels: List<LevelListItemUi>) {
             text = stringResource(Res.string.profile_levels_title),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.End,
+            textAlign = TextAlign.Center,
         )
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(levels, key = { it.level.id }) { item ->

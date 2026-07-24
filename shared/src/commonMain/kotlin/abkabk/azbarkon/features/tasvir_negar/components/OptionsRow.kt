@@ -134,7 +134,7 @@ private fun ShapeOptionItem(
         contentAlignment = Alignment.Center,
     ) {
         Image(
-            painter = tasvirNegarPainter(item.drawableName),
+            painter = tasvirNegarPainter(item.id),
             contentDescription = null,
             modifier = Modifier.size(40.dp),
             contentScale = ContentScale.Fit,
