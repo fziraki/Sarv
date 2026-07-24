@@ -5,6 +5,7 @@ import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.ObserveAsEvents
 import abkabk.azbarkon.core.ui_base.asString
 import abkabk.azbarkon.domain.model.Poet
+import abkabk.azbarkon.domain.model.RandomDistich
 import abkabk.azbarkon.ui.components.AzbarkonButton
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.NetworkImage
@@ -102,6 +103,7 @@ fun HomeRoot(
     onNavigateToMemorizationSelect: () -> Unit,
     onNavigateToMemorizationPractice: () -> Unit,
     onNavigateToActiveMemorization: () -> Unit,
+    onNavigateToGame: () -> Unit = {},
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -129,6 +131,8 @@ fun HomeRoot(
             HomeEvent.NavigateToMemorizationPractice -> onNavigateToMemorizationPractice()
 
             HomeEvent.NavigateToActiveMemorization -> onNavigateToActiveMemorization()
+
+            HomeEvent.NavigateToGame -> onNavigateToGame()
         }
     }
 
@@ -162,15 +166,17 @@ fun HomeScreen(
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         item {
-            TopSlider(
-                items =
-                    listOf(
-                        SliderPage.BeytOfDay,
-                        SliderPage.Challenge,
-                        SliderPage.TasvirNegar,
-                    ),
-                onTasvirNegarClick = { onAction(HomeAction.OnTasvirNegarClick) },
-            )
+    TopSlider(
+        items =
+            listOf(
+                SliderPage.BeytOfDay,
+                SliderPage.Challenge,
+                SliderPage.TasvirNegar,
+            ),
+        todayDistich = state.todayDistich,
+        onTasvirNegarClick = { onAction(HomeAction.OnTasvirNegarClick) },
+        onChallengeClick = { onAction(HomeAction.OnChallengeClick) },
+    )
         }
         item {
             HeroCard(
@@ -472,7 +478,9 @@ fun TopSlider(
     items: List<SliderPage>,
     modifier: Modifier = Modifier,
     autoPlayDuration: Long = 4000L,
+    todayDistich: RandomDistich? = null,
     onTasvirNegarClick: () -> Unit = {},
+    onChallengeClick: () -> Unit = {},
 ) {
     if (items.isEmpty()) return
 
@@ -515,9 +523,9 @@ fun TopSlider(
             val item = getItem(page)
 
             when (item) {
-                is SliderPage.BeytOfDay -> BeytOfDaySlide()
+                is SliderPage.BeytOfDay -> BeytOfDaySlide(distich = todayDistich)
 
-                is SliderPage.Challenge -> ChallengeSlide()
+                is SliderPage.Challenge -> ChallengeSlide(onClick = onChallengeClick)
 
                 is SliderPage.TasvirNegar -> TasvirNegarSlide(onClick = onTasvirNegarClick)
             }
@@ -618,7 +626,7 @@ fun TasvirNegarSlide(onClick: () -> Unit = {}) {
 }
 
 @Composable
-fun ChallengeSlide() {
+fun ChallengeSlide(onClick: () -> Unit = {}) {
     Box(modifier = Modifier.fillMaxSize()) {
 
         Image(
@@ -659,7 +667,7 @@ fun ChallengeSlide() {
 
                 AzbarkonButton(
                     text = stringResource(Res.string.slider_challenge_button),
-                    onClick = {},
+                    onClick = onClick,
                     modifier =
                         Modifier
                             .fillMaxWidth(0.6f)
@@ -680,7 +688,13 @@ fun ChallengeSlide() {
 }
 
 @Composable
-fun BeytOfDaySlide() {
+fun BeytOfDaySlide(distich: RandomDistich? = null) {
+    val beytText = buildString {
+        distich?.rightText?.let { append(it) }
+        if (distich != null) append("\n")
+        distich?.leftText?.let { append(it) }
+    }.ifEmpty { stringResource(Res.string.slider_beyt_of_day_text) }
+    val poetText = distich?.poetName ?: stringResource(Res.string.slider_beyt_of_day_poet)
 
     Box(modifier = Modifier.fillMaxSize()){
 
@@ -712,7 +726,7 @@ fun BeytOfDaySlide() {
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(Res.string.slider_beyt_of_day_text),
+                    text = beytText,
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
@@ -720,7 +734,7 @@ fun BeytOfDaySlide() {
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(Res.string.slider_beyt_of_day_poet),
+                    text = poetText,
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.labelMedium,
                     textAlign = TextAlign.End,

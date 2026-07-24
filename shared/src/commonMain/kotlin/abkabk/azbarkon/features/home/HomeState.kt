@@ -3,6 +3,7 @@ package abkabk.azbarkon.features.home
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.UiText
 import abkabk.azbarkon.domain.model.Poet
+import abkabk.azbarkon.domain.model.RandomDistich
 import androidx.compose.runtime.Stable
 
 @Stable
@@ -17,6 +18,7 @@ data class HomeState(
     val screenState: UiScreenState = UiScreenState.Idle,
     val poets: List<Poet> = emptyList(),
     val memorizationHero: MemorizationHeroUi = MemorizationHeroUi(),
+    val todayDistich: RandomDistich? = null,
 )
 
 sealed interface HomeAction {
@@ -39,6 +41,8 @@ sealed interface HomeAction {
     data object OnMemorizationClick : HomeAction
 
     data object OnReviewClick : HomeAction
+
+    data object OnChallengeClick : HomeAction
 }
 
 sealed interface HomeEvent {
@@ -63,4 +67,6 @@ sealed interface HomeEvent {
     data object NavigateToMemorizationPractice : HomeEvent
 
     data object NavigateToActiveMemorization : HomeEvent
+
+    data object NavigateToGame : HomeEvent
 }
