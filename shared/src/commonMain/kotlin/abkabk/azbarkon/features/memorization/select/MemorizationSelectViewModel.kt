@@ -23,12 +23,12 @@ class MemorizationSelectViewModel(
                 viewModelScope.launch { sendEvent(MemorizationSelectEvent.NavigateBack) }
             }
 
-            MemorizationSelectAction.OnBabaTaherClick -> {
+            MemorizationSelectAction.OnBabaTaherCoupletsClick -> {
                 viewModelScope.launch {
                     val target =
                         memorizationRepository.resolveQuickStart(
-                            poetNameFragment = "بابا طاهر",
-                            categoryTextFragment = "دوبیتی",
+                            poetNameFragment = "باباطاهر",
+                            categoryTextFragment = "دوبیتی\u200Cها",
                         )
                     navigateQuickStart(target)
                 }
@@ -45,12 +45,12 @@ class MemorizationSelectViewModel(
                 }
             }
 
-            MemorizationSelectAction.OnSimplePoemClick -> {
+            MemorizationSelectAction.OnKhayyamRubaiyatClick -> {
                 viewModelScope.launch {
                     val target =
                         memorizationRepository.resolveQuickStart(
-                            poetNameFragment = "سعدی",
-                            categoryTextFragment = "غزلیات",
+                            poetNameFragment = "خیام",
+                            categoryTextFragment = "رباعیات",
                         )
                     navigateQuickStart(target)
                 }

@@ -7,16 +7,14 @@ import abkabk.azbarkon.domain.model.games.GameType
 import abkabk.azbarkon.ui.components.AzbarkonButtonDefaults
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,18 +47,15 @@ import azbarkoncmp.shared.generated.resources.game_replay
 import azbarkoncmp.shared.generated.resources.game_result_correct
 import azbarkoncmp.shared.generated.resources.game_result_no_answer
 import azbarkoncmp.shared.generated.resources.game_result_progress_answered_format
-import azbarkoncmp.shared.generated.resources.game_result_progress_completed
 import azbarkoncmp.shared.generated.resources.game_result_progress_percent_format
 import azbarkoncmp.shared.generated.resources.game_result_progress_question_count_label
 import azbarkoncmp.shared.generated.resources.game_result_progress_total_questions_format
 import azbarkoncmp.shared.generated.resources.game_result_score
 import azbarkoncmp.shared.generated.resources.game_result_title
 import azbarkoncmp.shared.generated.resources.game_result_wrong
-import azbarkoncmp.shared.generated.resources.newsstand
 import azbarkoncmp.shared.generated.resources.next_line_title
 import azbarkoncmp.shared.generated.resources.poetry_arrangement_title
 import azbarkoncmp.shared.generated.resources.replay
-import azbarkoncmp.shared.generated.resources.reveal_eye
 import azbarkoncmp.shared.generated.resources.whois_poet_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -153,8 +148,6 @@ private fun GameResultScoreCard(
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
-        Spacer(modifier = Modifier.weight(1f))
-
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -187,11 +180,6 @@ private fun GameResultScoreCard(
             }
         }
 
-        Image(
-            painter = painterResource(Res.drawable.newsstand),
-            contentDescription = null,
-            modifier = Modifier.weight(1f).size(80.dp),
-        )
     }
 }
 

@@ -20,6 +20,18 @@ enum class ProfileSheet {
     Settings,
     Badges,
     Levels,
+    Avatar,
+}
+
+object ProfileAvatars {
+    val all = listOf(
+        "rostam_avatar",
+        "tahmine_avatar",
+        "sohrab_avatar",
+        "siavash_avatar",
+        "gordafarid_avatar",
+    )
+    const val DEFAULT_INDEX = 0
 }
 
 enum class LevelRowState {

@@ -29,21 +29,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.forward
-import azbarkoncmp.shared.generated.resources.heart
 import azbarkoncmp.shared.generated.resources.ic_delete
 import azbarkoncmp.shared.generated.resources.memorization_due_cards_format
 import azbarkoncmp.shared.generated.resources.memorization_quick_start
 import azbarkoncmp.shared.generated.resources.memorization_quick_start_desc
-import azbarkoncmp.shared.generated.resources.memorization_quick_start_famous_ghazal
-import azbarkoncmp.shared.generated.resources.memorization_quick_start_short_couplets
-import azbarkoncmp.shared.generated.resources.memorization_quick_start_simple_poem
+import azbarkoncmp.shared.generated.resources.memorization_quick_start_ghazal
+import azbarkoncmp.shared.generated.resources.memorization_quick_start_couplet
+import azbarkoncmp.shared.generated.resources.memorization_quick_start_rubaiyat
 import azbarkoncmp.shared.generated.resources.memorization_select_hero_subtitle
 import azbarkoncmp.shared.generated.resources.memorization_select_hero_title
 import azbarkoncmp.shared.generated.resources.memorization_status_format
-import azbarkoncmp.shared.generated.resources.newsstand
-import azbarkoncmp.shared.generated.resources.palette
+import azbarkoncmp.shared.generated.resources.ornoment30
 import azbarkoncmp.shared.generated.resources.search
-import azbarkoncmp.shared.generated.resources.treasure
+import azbarkoncmp.shared.generated.resources.siahmashghkhat
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -57,20 +55,10 @@ fun MemorizationHeroSection(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Box(
-            modifier =
-                Modifier
-                    .size(110.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface),
-            contentAlignment = Alignment.Center,
-        ) {
-            Image(
-                painter = painterResource(Res.drawable.palette),
-                contentDescription = null,
-                modifier = Modifier.size(72.dp),
-            )
-        }
+        Image(
+            painter = painterResource(Res.drawable.siahmashghkhat),
+            contentDescription = null,
+        )
 
         Text(
             text = stringResource(Res.string.memorization_select_hero_title),
@@ -90,9 +78,9 @@ fun MemorizationHeroSection(
 
 @Composable
 fun QuickStartCard(
-    onShortCoupletsClick: () -> Unit,
-    onFamousGhazalClick: () -> Unit,
-    onSimplePoemClick: () -> Unit,
+    onCoupletClick: () -> Unit,
+    onGhazalClick: () -> Unit,
+    onRubaiyatClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -122,21 +110,18 @@ fun QuickStartCard(
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             QuickStartCategoryTile(
-                label = stringResource(Res.string.memorization_quick_start_short_couplets),
-                icon = Res.drawable.heart,
-                onClick = onShortCoupletsClick,
+                label = stringResource(Res.string.memorization_quick_start_couplet),
+                onClick = onCoupletClick,
                 modifier = Modifier.weight(1f)
             )
             QuickStartCategoryTile(
-                label = stringResource(Res.string.memorization_quick_start_famous_ghazal),
-                icon = Res.drawable.treasure,
-                onClick = onFamousGhazalClick,
+                label = stringResource(Res.string.memorization_quick_start_ghazal),
+                onClick = onGhazalClick,
                 modifier = Modifier.weight(1f)
             )
             QuickStartCategoryTile(
-                label = stringResource(Res.string.memorization_quick_start_simple_poem),
-                icon = Res.drawable.newsstand,
-                onClick = onSimplePoemClick,
+                label = stringResource(Res.string.memorization_quick_start_rubaiyat),
+                onClick = onRubaiyatClick,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -146,7 +131,6 @@ fun QuickStartCard(
 @Composable
 fun QuickStartCategoryTile(
     label: String,
-    icon: DrawableResource,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -168,10 +152,10 @@ fun QuickStartCategoryTile(
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                painter = painterResource(icon),
+                painter = painterResource(Res.drawable.ornoment30),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.size(28.dp),
+                modifier = Modifier.size(42.dp),
             )
         }
 
@@ -337,9 +321,9 @@ private fun MemorizationHeroSectionPreview() {
 private fun QuickStartCardPreview() {
     AzbarkonTheme {
         QuickStartCard(
-            onShortCoupletsClick = {},
-            onFamousGhazalClick = {},
-            onSimplePoemClick = {},
+            onCoupletClick = {},
+            onGhazalClick = {},
+            onRubaiyatClick = {},
             modifier = Modifier.padding(16.dp),
         )
     }

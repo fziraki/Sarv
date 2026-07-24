@@ -8,13 +8,11 @@ import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.setSingletonImageLoaderFactory
 import org.koin.compose.koinInject
 
 @Composable
-@Preview
 fun App(
     initialPoemId: Int? = null,
     openMemorizationPractice: Boolean = false,

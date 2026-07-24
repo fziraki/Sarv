@@ -4,7 +4,6 @@
     <string name="daily_beyt_notification_channel_name">بیت روزانه</string>
     <string name="daily_beyt_notification_channel_description">اعلان بیت تصادفی هر روز ساعت ۸ صبح</string>
     <string name="daily_beyt_notification_app_name">ازبرکن</string>
-    <string name="daily_beyt_notification_now">الان</string>
     <string name="memorization_review_notification_title">مرور امروز</string>
     <string name="memorization_review_notification_body">%1$d بیت</string>
     <string name="memorization_review_notification_action">شروع مرور</string>

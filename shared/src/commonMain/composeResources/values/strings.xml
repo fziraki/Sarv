@@ -7,6 +7,7 @@
     <string name="games">میدان</string>
     <string name="profile">من</string>
     <string name="profile_title">پروفایل</string>
+    <string name="profile_avatar_title">انتخاب آواتار</string>
 
     <string name="games_subtitle">با بازی های ادبی شعر را بهتر یاد بگیر و لذت ببر</string>
     <string name="treasure_subtitle">در میان واژه‌ها قدم بزن</string>
@@ -46,9 +47,9 @@
     <string name="memorization_select_hero_title">اولین شعر خود را از بر کن</string>
     <string name="memorization_select_hero_subtitle">مسیر حفظ شما از همین‌جا آغاز می‌شود</string>
     <string name="memorization_quick_start_desc">یک شعر کوتاه و مناسب برای شروع انتخاب کنید</string>
-    <string name="memorization_quick_start_short_couplets">دوبیتی باباطاهر</string>
-    <string name="memorization_quick_start_famous_ghazal">غزلیات حافظ</string>
-    <string name="memorization_quick_start_simple_poem">شعر ساده</string>
+    <string name="memorization_quick_start_couplet">دوبیتی باباطاهر</string>
+    <string name="memorization_quick_start_ghazal">غزلیات حافظ</string>
+    <string name="memorization_quick_start_rubaiyat">رباعیات خیام</string>
     <string name="memorization_option_search_title">جستجوی شعر</string>
     <string name="memorization_option_search_desc">شاعر، بیت یا نام شعر را جستجو کنید</string>
     <string name="memorization_option_library_title">انتخاب از گنجینه</string>

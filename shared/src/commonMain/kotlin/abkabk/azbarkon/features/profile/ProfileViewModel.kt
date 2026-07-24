@@ -36,6 +36,7 @@ class ProfileViewModel(
     init {
         onAction(ProfileAction.OnLoad)
         observeProfileData()
+        observeAvatar()
     }
 
     override fun onAction(action: ProfileAction) {
@@ -79,6 +80,15 @@ class ProfileViewModel(
 
             is ProfileAction.OnNotificationPermissionResult -> {
                 handleNotificationPermissionResult(action.granted)
+            }
+
+            ProfileAction.OnAvatarClick -> {
+                setState { copy(activeSheet = ProfileSheet.Avatar) }
+            }
+
+            is ProfileAction.OnAvatarSelected -> {
+                userPreferencesRepository.setAvatarIndex(action.index)
+                setState { copy(activeSheet = null, avatarIndex = action.index) }
             }
         }
     }
@@ -216,6 +226,14 @@ class ProfileViewModel(
         dailyBeytNotificationScheduler.disable()
         setState {
             copy(isDailyBeytNotificationEnabled = false)
+        }
+    }
+
+    private fun observeAvatar() {
+        viewModelScope.launch {
+            userPreferencesRepository.observeAvatarIndex().collect { index ->
+                setState { copy(avatarIndex = index) }
+            }
         }
     }
 

@@ -92,9 +92,9 @@ fun MemorizationSelectScreen(
             MemorizationHeroSection()
 
             QuickStartCard(
-                onShortCoupletsClick = { onAction(MemorizationSelectAction.OnBabaTaherClick) },
-                onFamousGhazalClick = { onAction(MemorizationSelectAction.OnHafezGhazalsClick) },
-                onSimplePoemClick = { onAction(MemorizationSelectAction.OnSimplePoemClick) },
+                onCoupletClick = { onAction(MemorizationSelectAction.OnBabaTaherCoupletsClick) },
+                onGhazalClick = { onAction(MemorizationSelectAction.OnHafezGhazalsClick) },
+                onRubaiyatClick = { onAction(MemorizationSelectAction.OnKhayyamRubaiyatClick) },
             )
 
             MemorizationOptionRow(
