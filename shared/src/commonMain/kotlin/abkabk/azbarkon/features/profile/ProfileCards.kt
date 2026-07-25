@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,7 +47,12 @@ import azbarkoncmp.shared.generated.resources.cd_levels
 import azbarkoncmp.shared.generated.resources.default_avatar
 import azbarkoncmp.shared.generated.resources.gordafarid_avatar
 import azbarkoncmp.shared.generated.resources.ic_help
+import azbarkoncmp.shared.generated.resources.beyt100_badge
+import azbarkoncmp.shared.generated.resources.first_badge
+import azbarkoncmp.shared.generated.resources.hafez_star_badge
+import azbarkoncmp.shared.generated.resources.night_badge
 import azbarkoncmp.shared.generated.resources.palette
+import azbarkoncmp.shared.generated.resources.poetry_lover_badge
 import azbarkoncmp.shared.generated.resources.profile_game_status_title
 import azbarkoncmp.shared.generated.resources.rostam_avatar
 import azbarkoncmp.shared.generated.resources.siavash_avatar
@@ -282,12 +288,12 @@ fun ProfileBadges(
                 .background(
                     color = MaterialTheme.colorScheme.secondaryContainer,
                     shape = RoundedCornerShape(12.dp),
-                ).padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+                ).padding(vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.End,
     ) {
         Text(
-            modifier = Modifier.clickable(onClick = onViewAllClick),
+            modifier = Modifier.clickable(onClick = onViewAllClick).padding(end = 16.dp),
             text = stringResource(Res.string.profile_view_all_badges),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground,
@@ -308,6 +314,7 @@ fun ProfileBadges(
 @Composable
 fun BadgeItem(item: BadgeUi) {
     BadgeIcon(
+        badgeId = item.id,
         isEarned = item.isEarned,
         modifier = Modifier.width(80.dp),
         showName = true,
@@ -326,6 +333,7 @@ fun BadgeListRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         BadgeIcon(
+            badgeId = item.id,
             isEarned = item.isEarned,
             modifier = Modifier.size(56.dp),
         )
@@ -342,7 +350,7 @@ fun BadgeListRow(
                     if (item.isEarned) {
                         MaterialTheme.colorScheme.onSurface
                     } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
+                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.45f)
                     },
                 textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth(),
@@ -350,7 +358,7 @@ fun BadgeListRow(
             Text(
                 text = item.description,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = if (item.isEarned) 1f else 0.45f),
                 textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -360,18 +368,28 @@ fun BadgeListRow(
 
 @Composable
 private fun BadgeIcon(
+    badgeId: Int,
     isEarned: Boolean,
     modifier: Modifier = Modifier,
     showName: Boolean = false,
     name: String = "",
 ) {
+    val drawable =
+        when (badgeId) {
+            1 -> Res.drawable.first_badge
+            2 -> Res.drawable.beyt100_badge
+            3 -> Res.drawable.night_badge
+            4 -> Res.drawable.poetry_lover_badge
+            5 -> Res.drawable.hafez_star_badge
+            else -> Res.drawable.first_badge
+        }
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
-            painter = painterResource(Res.drawable.palette),
+            painter = painterResource(drawable),
             contentDescription = null,
             modifier = if (showName) Modifier else Modifier.fillMaxSize(),
             colorFilter =
@@ -394,7 +412,7 @@ private fun BadgeIcon(
                     if (isEarned) {
                         MaterialTheme.colorScheme.onBackground
                     } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
+                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.45f)
                     },
                 textAlign = TextAlign.Center,
             )

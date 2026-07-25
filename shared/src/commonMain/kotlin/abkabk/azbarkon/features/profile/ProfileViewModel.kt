@@ -175,7 +175,7 @@ class ProfileViewModel(
             }
         setState {
             copy(
-                previewBadges = badges.take(4),
+                previewBadges = badges,
                 allBadges = badges,
                 allLevels = levels,
             )

@@ -17,11 +17,20 @@ object TextDiffHighlighter {
         val builder = StringBuilder(withoutTatweel.length)
         withoutTatweel.forEach { char ->
             if (char.category != CharCategory.NON_SPACING_MARK) {
-                builder.append(char)
+                builder.append(normalizeArabicLetter(char))
             }
         }
         return builder.toString()
     }
+
+    private fun normalizeArabicLetter(char: Char): Char =
+        when (char) {
+            '\u0622', '\u0623', '\u0625' -> '\u0627'
+            '\u064A' -> '\u06CC'
+            '\u0643' -> '\u06A9'
+            '\u0629' -> '\u0647'
+            else -> char
+        }
 
     fun extractAlphabeticLetters(text: String): String {
         val builder = StringBuilder()

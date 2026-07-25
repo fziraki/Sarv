@@ -1,6 +1,7 @@
 package abkabk.azbarkon.features.games
 
 import abkabk.azbarkon.domain.model.games.GameType
+import abkabk.azbarkon.domain.model.games.baseScore
 import abkabk.azbarkon.core.ui_base.BaseScreen
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.features.games.navigation.toRoute
@@ -31,17 +32,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.complete_poem_desc
-import azbarkoncmp.shared.generated.resources.complete_poem_score
 import azbarkoncmp.shared.generated.resources.complete_poem_title
 import azbarkoncmp.shared.generated.resources.games
 import azbarkoncmp.shared.generated.resources.next_line_desc
-import azbarkoncmp.shared.generated.resources.next_line_score
 import azbarkoncmp.shared.generated.resources.next_line_title
 import azbarkoncmp.shared.generated.resources.poetry_arrangement_desc
-import azbarkoncmp.shared.generated.resources.poetry_arrangement_score
 import azbarkoncmp.shared.generated.resources.poetry_arrangement_title
 import azbarkoncmp.shared.generated.resources.whois_poet_desc
-import azbarkoncmp.shared.generated.resources.whois_poet_score
 import azbarkoncmp.shared.generated.resources.whois_poet_title
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.layout.size
@@ -76,9 +73,9 @@ fun GamesScreen(
     ) {
         item {
             GameItem(
+                gameType = GameType.NEXT_VERSE,
                 title = Res.string.next_line_title,
                 desc = Res.string.next_line_desc,
-                score = Res.string.next_line_score,
                 icon = Res.drawable.next_verse_icon,
                 onClick = { onNavigateToGame(GameType.NEXT_VERSE) },
             )
@@ -86,9 +83,9 @@ fun GamesScreen(
 
         item {
             GameItem(
+                gameType = GameType.COMPLETE_POEM,
                 title = Res.string.complete_poem_title,
                 desc = Res.string.complete_poem_desc,
-                score = Res.string.complete_poem_score,
                 icon = Res.drawable.incomplete_icon,
                 onClick = { onNavigateToGame(GameType.COMPLETE_POEM) },
             )
@@ -97,9 +94,9 @@ fun GamesScreen(
 
         item {
             GameItem(
+                gameType = GameType.FIND_POET,
                 title = Res.string.whois_poet_title,
                 desc = Res.string.whois_poet_desc,
-                score = Res.string.whois_poet_score,
                 icon = Res.drawable.guess_poet_icon,
                 onClick = { onNavigateToGame(GameType.FIND_POET) },
             )
@@ -107,9 +104,9 @@ fun GamesScreen(
 
         item {
             GameItem(
+                gameType = GameType.ORGANIZE_POEM,
                 title = Res.string.poetry_arrangement_title,
                 desc = Res.string.poetry_arrangement_desc,
-                score = Res.string.poetry_arrangement_score,
                 icon = Res.drawable.reorder_poem_icon,
                 onClick = { onNavigateToGame(GameType.ORGANIZE_POEM) },
             )
@@ -120,9 +117,9 @@ fun GamesScreen(
 
 @Composable
 fun GameItem(
+    gameType: GameType,
     title: StringResource,
     desc: StringResource,
-    score: StringResource,
     icon: DrawableResource,
     onClick: () -> Unit,
 ) {
@@ -191,7 +188,7 @@ fun GameItem(
                             color = MaterialTheme.colorScheme.tertiary,
                             shape = RoundedCornerShape(8.dp),
                         ).padding(horizontal = 8.dp, vertical = 4.dp),
-                text = "${stringResource(score)} امتیاز ",
+                text = "${gameType.baseScore()} امتیاز ",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.End,
