@@ -10,6 +10,7 @@ import abkabk.azbarkon.ui.components.AzbarkonButton
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.NetworkImage
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,7 +57,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.add_book
 import azbarkoncmp.shared.generated.resources.all
 import azbarkoncmp.shared.generated.resources.continue_memorization_desc
 import azbarkoncmp.shared.generated.resources.continue_memorization_title
@@ -68,7 +69,6 @@ import azbarkoncmp.shared.generated.resources.new_memorization_desc
 import azbarkoncmp.shared.generated.resources.new_memorization_title
 import azbarkoncmp.shared.generated.resources.newsstand
 import azbarkoncmp.shared.generated.resources.next_verse_game_bg
-import azbarkoncmp.shared.generated.resources.old_book
 import azbarkoncmp.shared.generated.resources.palette
 import azbarkoncmp.shared.generated.resources.pic_negar
 import azbarkoncmp.shared.generated.resources.poetry_memorization
@@ -428,20 +428,7 @@ fun HeroCard(
                     .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = if (hero.hasActivePoems) {
-                    painterResource(Res.drawable.old_book)
-                } else {
-                    painterResource(Res.drawable.add_book)
-                },
-                modifier = Modifier.size(80.dp).padding(end = 40.dp).weight(1f),
-                contentDescription = null,
-                colorFilter = if (hero.hasActivePoems) {
-                    null
-                } else {
-                    ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer)
-                }
-            )
+            Spacer(modifier = Modifier.weight(1f))
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -590,7 +577,7 @@ fun TasvirNegarSlide(onClick: () -> Unit = {}) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(Res.string.slider_tasvir_negar_title),
-                    color = MaterialTheme.colorScheme.onSecondaryFixedVariant,
+                    color = LightColorScheme.onSecondaryFixedVariant,
                     style = MaterialTheme.typography.labelMedium,
                     textAlign = TextAlign.End,
                 )
@@ -598,7 +585,7 @@ fun TasvirNegarSlide(onClick: () -> Unit = {}) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(Res.string.slider_tasvir_negar_text),
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = LightColorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.End,
                 )
@@ -613,10 +600,10 @@ fun TasvirNegarSlide(onClick: () -> Unit = {}) {
                     textStyle = MaterialTheme.typography.labelSmall,
                     colors =
                         ButtonColors(
-                            containerColor = MaterialTheme.colorScheme.onSecondaryFixedVariant,
-                            contentColor = MaterialTheme.colorScheme.onSecondary,
-                            disabledContainerColor = MaterialTheme.colorScheme.onSecondaryFixedVariant,
-                            disabledContentColor = MaterialTheme.colorScheme.onSecondary,
+                            containerColor = LightColorScheme.onSecondaryFixedVariant,
+                            contentColor = LightColorScheme.onSecondary,
+                            disabledContainerColor = LightColorScheme.onSecondaryFixedVariant,
+                            disabledContentColor = LightColorScheme.onSecondary,
                         ),
                 )
             }
@@ -652,7 +639,7 @@ fun ChallengeSlide(onClick: () -> Unit = {}) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(Res.string.slider_challenge_title),
-                    color = MaterialTheme.colorScheme.tertiary,
+                    color = LightColorScheme.tertiary,
                     style = MaterialTheme.typography.labelMedium,
                     textAlign = TextAlign.End,
                 )
@@ -660,7 +647,7 @@ fun ChallengeSlide(onClick: () -> Unit = {}) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(Res.string.slider_challenge_text),
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = LightColorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.End,
                 )
@@ -675,10 +662,10 @@ fun ChallengeSlide(onClick: () -> Unit = {}) {
                     textStyle = MaterialTheme.typography.labelSmall,
                     colors =
                         ButtonColors(
-                            containerColor = MaterialTheme.colorScheme.onTertiaryFixedVariant,
-                            contentColor = MaterialTheme.colorScheme.surfaceVariant,
-                            disabledContainerColor = MaterialTheme.colorScheme.onTertiaryFixedVariant,
-                            disabledContentColor = MaterialTheme.colorScheme.onTertiaryFixed,
+                            containerColor = LightColorScheme.onTertiaryFixedVariant,
+                            contentColor = LightColorScheme.surfaceVariant,
+                            disabledContainerColor = LightColorScheme.onTertiaryFixedVariant,
+                            disabledContentColor = LightColorScheme.onTertiaryFixed,
                         ),
                 )
             }
@@ -719,7 +706,7 @@ fun BeytOfDaySlide(distich: RandomDistich? = null) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(Res.string.slider_beyt_of_day_title),
-                    color = MaterialTheme.colorScheme.tertiary,
+                    color = LightColorScheme.tertiary,
                     style = MaterialTheme.typography.labelMedium,
                     textAlign = TextAlign.Start,
                 )
@@ -727,7 +714,7 @@ fun BeytOfDaySlide(distich: RandomDistich? = null) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = beytText,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = LightColorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                 )
@@ -735,7 +722,7 @@ fun BeytOfDaySlide(distich: RandomDistich? = null) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = poetText,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = LightColorScheme.secondary,
                     style = MaterialTheme.typography.labelMedium,
                     textAlign = TextAlign.End,
                 )

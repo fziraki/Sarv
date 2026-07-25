@@ -135,11 +135,11 @@
 
     <string name="poetry_arrangement_title">چینش شعر</string>
     <string name="poetry_arrangement_desc">ابیات را به ترتیب درست بچین</string>
-    <string name="poetry_arrangement_score">20</string>
+    <string name="poetry_arrangement_score">25</string>
 
     <string name="whois_poet_title">کشف شاعر</string>
     <string name="whois_poet_desc">شاعر کیست؟</string>
-    <string name="whois_poet_score">25</string>
+    <string name="whois_poet_score">20</string>
 
     <string name="library_coming_soon">به‌زودی</string>
 

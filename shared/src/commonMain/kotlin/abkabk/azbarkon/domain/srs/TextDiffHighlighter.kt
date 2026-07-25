@@ -13,15 +13,24 @@ data class DiffToken(
 
 object TextDiffHighlighter {
     fun normalizeForComparison(text: String): String {
-        val withoutTatweel = text.replace('\u0640', ' ')
-        val builder = StringBuilder(withoutTatweel.length)
-        withoutTatweel.forEach { char ->
+        val withoutSpecials = text.replace('\u0640', ' ').replace('\u200C', ' ')
+        val builder = StringBuilder(withoutSpecials.length)
+        withoutSpecials.forEach { char ->
             if (char.category != CharCategory.NON_SPACING_MARK) {
-                builder.append(char)
+                builder.append(normalizeArabicLetter(char))
             }
         }
         return builder.toString()
     }
+
+    private fun normalizeArabicLetter(char: Char): Char =
+        when (char) {
+            '\u0622', '\u0623', '\u0625' -> '\u0627'
+            '\u064A' -> '\u06CC'
+            '\u0643' -> '\u06A9'
+            '\u0629' -> '\u0647'
+            else -> char
+        }
 
     fun extractAlphabeticLetters(text: String): String {
         val builder = StringBuilder()
@@ -62,19 +71,16 @@ object TextDiffHighlighter {
         var expectedIndex = 0
         return actualWords.map { word ->
             val wordLetters = extractAlphabeticLetters(word)
-            val type =
-                if (wordLetters.isNotEmpty() &&
+            val matched =
+                wordLetters.isNotEmpty() &&
                     expectedIndex + wordLetters.length <= expectedLetters.length &&
                     expectedLetters
                         .substring(expectedIndex, expectedIndex + wordLetters.length)
                         .equals(wordLetters, ignoreCase = true)
-                ) {
-                    expectedIndex += wordLetters.length
-                    DiffTokenType.CORRECT
-                } else {
-                    DiffTokenType.WRONG
-                }
-            DiffToken(word, type)
+            if (wordLetters.isNotEmpty()) {
+                expectedIndex += wordLetters.length
+            }
+            DiffToken(word, if (matched) DiffTokenType.CORRECT else DiffTokenType.WRONG)
         }
     }
 

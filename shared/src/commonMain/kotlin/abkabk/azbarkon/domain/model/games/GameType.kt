@@ -11,6 +11,6 @@ fun GameType.baseScore(): Int =
     when (this) {
         GameType.NEXT_VERSE -> 10
         GameType.COMPLETE_POEM -> 15
-        GameType.ORGANIZE_POEM -> 20
-        GameType.FIND_POET -> 25
+        GameType.FIND_POET -> 20
+        GameType.ORGANIZE_POEM -> 25
     }
