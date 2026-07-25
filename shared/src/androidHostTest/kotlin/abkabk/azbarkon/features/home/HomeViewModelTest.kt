@@ -4,6 +4,7 @@ import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.domain.model.CatNode
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.PoetWithRootCategories
+import abkabk.azbarkon.testing.FakeDailyBeytRepository
 import abkabk.azbarkon.testing.FakeMemorizationRepository
 import abkabk.azbarkon.testing.FakePoetRepository
 import app.cash.turbine.test
@@ -64,7 +65,7 @@ class HomeViewModelTest {
                             ),
                         )
                 }
-            val viewModel = HomeViewModel(repository, FakeMemorizationRepository())
+            val viewModel = HomeViewModel(repository, FakeMemorizationRepository(), FakeDailyBeytRepository())
 
             val state = viewModel.state.value
             assertThat(state.screenState).isInstanceOf(UiScreenState.Success::class)
@@ -112,7 +113,7 @@ class HomeViewModelTest {
                             ),
                         )
                 }
-            val viewModel = HomeViewModel(repository, FakeMemorizationRepository())
+            val viewModel = HomeViewModel(repository, FakeMemorizationRepository(), FakeDailyBeytRepository())
 
             val state = viewModel.state.value
             assertThat(state.poets.size).isEqualTo(1)
@@ -126,7 +127,7 @@ class HomeViewModelTest {
                 FakePoetRepository().apply {
                     shouldFail = true
                 }
-            val viewModel = HomeViewModel(repository, FakeMemorizationRepository())
+            val viewModel = HomeViewModel(repository, FakeMemorizationRepository(), FakeDailyBeytRepository())
 
             viewModel.events.test {
                 val event = awaitItem()

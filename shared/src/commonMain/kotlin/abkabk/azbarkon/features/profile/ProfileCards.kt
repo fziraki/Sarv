@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -42,9 +43,15 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.cd_levels
+import azbarkoncmp.shared.generated.resources.default_avatar
+import azbarkoncmp.shared.generated.resources.gordafarid_avatar
 import azbarkoncmp.shared.generated.resources.ic_help
 import azbarkoncmp.shared.generated.resources.palette
 import azbarkoncmp.shared.generated.resources.profile_game_status_title
+import azbarkoncmp.shared.generated.resources.rostam_avatar
+import azbarkoncmp.shared.generated.resources.siavash_avatar
+import azbarkoncmp.shared.generated.resources.sohrab_avatar
+import azbarkoncmp.shared.generated.resources.tahmine_avatar
 import azbarkoncmp.shared.generated.resources.profile_game_streak
 import azbarkoncmp.shared.generated.resources.profile_game_total_points
 import azbarkoncmp.shared.generated.resources.profile_level_format
@@ -59,17 +66,28 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ProfileHeader(
     levelProgress: ProfileLevelProgress,
+    avatarIndex: Int,
+    onAvatarClick: () -> Unit,
     onLevelsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val avatarResources = listOf(
+        Res.drawable.rostam_avatar,
+        Res.drawable.tahmine_avatar,
+        Res.drawable.sohrab_avatar,
+        Res.drawable.siavash_avatar,
+        Res.drawable.gordafarid_avatar,
+    )
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
-            painter = painterResource(Res.drawable.palette),
+            painter = if (avatarIndex == -1) painterResource(Res.drawable.default_avatar)
+                    else painterResource(avatarResources[avatarIndex]),
             contentDescription = null,
+            modifier = Modifier.size(96.dp).clip(CircleShape).clickable(onClick = onAvatarClick),
         )
 
         Row(

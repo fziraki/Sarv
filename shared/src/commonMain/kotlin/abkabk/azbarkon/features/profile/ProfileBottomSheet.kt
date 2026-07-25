@@ -6,16 +6,22 @@ import abkabk.azbarkon.domain.model.profile.GameLevelCatalog
 import abkabk.azbarkon.domain.model.profile.LevelListItemUi
 import abkabk.azbarkon.domain.model.profile.LevelRowState
 import abkabk.azbarkon.domain.model.profile.ProfileSheet
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -37,7 +43,13 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.check_circle
+import azbarkoncmp.shared.generated.resources.gordafarid_avatar
 import azbarkoncmp.shared.generated.resources.lock
+import azbarkoncmp.shared.generated.resources.profile_avatar_title
+import azbarkoncmp.shared.generated.resources.rostam_avatar
+import azbarkoncmp.shared.generated.resources.siavash_avatar
+import azbarkoncmp.shared.generated.resources.sohrab_avatar
+import azbarkoncmp.shared.generated.resources.tahmine_avatar
 import azbarkoncmp.shared.generated.resources.profile_badges_title
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_subtitle
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_title
@@ -84,6 +96,12 @@ fun ProfileSheets(
 
             ProfileSheet.Levels ->
                 ProfileLevelsSheetContent(levels = state.allLevels)
+
+            ProfileSheet.Avatar ->
+                ProfileAvatarSheetContent(
+                    selectedIndex = state.avatarIndex,
+                    onAvatarSelected = { onAction(ProfileAction.OnAvatarSelected(it)) },
+                )
         }
     }
 }
@@ -264,6 +282,65 @@ private fun ProfileBadgesSheetContent(badges: List<BadgeUi>) {
                 )
                 if (badge.id != badges.lastOrNull()?.id) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProfileAvatarSheetContent(
+    selectedIndex: Int?,
+    onAvatarSelected: (Int) -> Unit,
+) {
+    val avatarResources = listOf(
+        Res.drawable.rostam_avatar to "رستم",
+        Res.drawable.tahmine_avatar to "تهمینه",
+        Res.drawable.sohrab_avatar to "سهراب",
+        Res.drawable.siavash_avatar to "سیاوش",
+        Res.drawable.gordafarid_avatar to "گردآفرید",
+    )
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(
+            text = stringResource(Res.string.profile_avatar_title),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+        )
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth().height(280.dp),
+        ) {
+            items(avatarResources.size) { index ->
+                val isSelected = selectedIndex == index
+                val (drawable, label) = avatarResources[index]
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(72.dp)
+                            .clip(CircleShape)
+                            .then(
+                                if (isSelected) Modifier.border(3.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                                else Modifier
+                            )
+                            .clickable { onAvatarSelected(index) },
+                        painter = painterResource(drawable),
+                        contentDescription = label,
+                    )
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
                 }
             }
         }

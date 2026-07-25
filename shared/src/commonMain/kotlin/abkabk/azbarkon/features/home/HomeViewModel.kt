@@ -5,6 +5,7 @@ import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.core.ui_base.BaseViewModel
 import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.toUiText
+import abkabk.azbarkon.domain.repository.DailyBeytRepository
 import abkabk.azbarkon.domain.repository.MemorizationRepository
 import abkabk.azbarkon.domain.repository.PoetRepository
 import androidx.lifecycle.viewModelScope
@@ -16,12 +17,14 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val poetRepository: PoetRepository,
     private val memorizationRepository: MemorizationRepository,
+    private val dailyBeytRepository: DailyBeytRepository,
 ) : BaseViewModel<HomeAction, HomeState, HomeEvent>(
         initialState = HomeState(),
     ) {
     init {
         onAction(HomeAction.OnLoad)
         observeMemorizationSummary()
+        loadTodayDistich()
     }
 
     override fun onAction(action: HomeAction) {
@@ -80,6 +83,12 @@ class HomeViewModel(
                     sendEvent(HomeEvent.NavigateToMemorizationSelect)
                 }
             }
+
+            HomeAction.OnChallengeClick -> {
+                viewModelScope.launch {
+                    sendEvent(HomeEvent.NavigateToGame)
+                }
+            }
         }
     }
 
@@ -98,6 +107,18 @@ class HomeViewModel(
                     )
                 }
             }.launchIn(viewModelScope)
+    }
+
+    private fun loadTodayDistich() {
+        viewModelScope.launch {
+            dailyBeytRepository.getTodayDistich()
+                .onSuccess { distich ->
+                    setState { copy(todayDistich = distich) }
+                }
+                .onFailure {
+                    Napier.e("Failed to load today's distich")
+                }
+        }
     }
 
     private fun loadPoets() {

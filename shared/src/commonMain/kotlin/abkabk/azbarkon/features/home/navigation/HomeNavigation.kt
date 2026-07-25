@@ -16,6 +16,7 @@ fun NavGraphBuilder.homeGraph(
     onNavigateToMemorizationSelect: () -> Unit,
     onNavigateToMemorizationPractice: () -> Unit,
     onNavigateToActiveMemorization: () -> Unit,
+    onNavigateToGame: () -> Unit = {},
 ) {
     composable<HomeRoute> {
         HomeRoot(
@@ -27,6 +28,7 @@ fun NavGraphBuilder.homeGraph(
             onNavigateToMemorizationSelect = onNavigateToMemorizationSelect,
             onNavigateToMemorizationPractice = onNavigateToMemorizationPractice,
             onNavigateToActiveMemorization = onNavigateToActiveMemorization,
+            onNavigateToGame = onNavigateToGame,
         )
     }
 

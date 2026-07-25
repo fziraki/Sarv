@@ -2,8 +2,10 @@ package abkabk.azbarkon.core.navigation
 
 import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
 import abkabk.azbarkon.core.ui_base.rememberAzbarkonAppState
+import abkabk.azbarkon.features.games.navigation.GameTypeRoute
 import abkabk.azbarkon.features.games.navigation.GamesRoute
 import abkabk.azbarkon.features.games.navigation.gamesGraph
+import abkabk.azbarkon.features.games.navigation.navigateToGame
 import abkabk.azbarkon.features.home.navigation.HomeRoute
 import abkabk.azbarkon.features.home.navigation.MyPoemsRoute
 import abkabk.azbarkon.features.home.navigation.homeGraph
@@ -224,8 +226,9 @@ fun AzbarkonNavigation(
                                         }
                                     if (item == BottomNavItem.Home) {
                                         navController.navigate(HomeRoute) {
-                                            popUpTo(HomeRoute) { inclusive = true }
+                                            popUpTo(HomeRoute) { saveState = true }
                                             launchSingleTop = true
+                                            restoreState = true
                                         }
                                     } else {
                                         navController.navigate(route) {
@@ -304,6 +307,9 @@ fun AzbarkonNavigation(
                     },
                     onNavigateToActiveMemorization = {
                         navController.navigateToActiveMemorization()
+                    },
+                    onNavigateToGame = {
+                        navController.navigateToGame(GameTypeRoute.NEXT_VERSE)
                     },
                 )
                 tasvirNegarGraph(onBackClick = navController::navigateUp)

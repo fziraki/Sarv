@@ -2,6 +2,7 @@ package abkabk.azbarkon.testing
 
 import abkabk.azbarkon.domain.model.ThemeMode
 import abkabk.azbarkon.domain.model.profile.GameProfileStats
+import abkabk.azbarkon.domain.model.profile.ProfileAvatars
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +12,7 @@ class FakeUserPreferencesRepository : UserPreferencesRepository {
     private var dailyBeytEnabled: Boolean = false
     private var memorizationReminderEnabled: Boolean = true
     private var themeMode: ThemeMode = ThemeMode.System
+    private var avatarIndex: Int = ProfileAvatars.DEFAULT_INDEX
     private var coinBalance: Int = 700
     private var visitStreak: Int = 0
     private var totalCorrect: Int = 0
@@ -31,6 +33,16 @@ class FakeUserPreferencesRepository : UserPreferencesRepository {
             ),
         )
     private val themeModeState = MutableStateFlow(themeMode)
+    private val avatarState = MutableStateFlow(avatarIndex)
+
+    override fun getAvatarIndex(): Int = avatarIndex
+
+    override fun setAvatarIndex(index: Int) {
+        avatarIndex = index
+        avatarState.value = index
+    }
+
+    override fun observeAvatarIndex(): Flow<Int> = avatarState
 
     override fun isDailyBeytNotificationEnabled(): Boolean = dailyBeytEnabled
 

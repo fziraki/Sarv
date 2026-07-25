@@ -1,20 +1,19 @@
 package abkabk.azbarkon.features.poems.details
 
 import abkabk.azbarkon.core.ui.HighlightedText
+import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,19 +23,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.cd_context_search
-import azbarkoncmp.shared.generated.resources.cd_copy
 import azbarkoncmp.shared.generated.resources.cd_image_creator
 import azbarkoncmp.shared.generated.resources.cd_like
 import azbarkoncmp.shared.generated.resources.cd_share
 import azbarkoncmp.shared.generated.resources.context_search
-import azbarkoncmp.shared.generated.resources.copy
 import azbarkoncmp.shared.generated.resources.heart
 import azbarkoncmp.shared.generated.resources.heart_filled
+import azbarkoncmp.shared.generated.resources.ornoment230l
+import azbarkoncmp.shared.generated.resources.ornoment230r
+import azbarkoncmp.shared.generated.resources.ornoment30
 import azbarkoncmp.shared.generated.resources.palette
-import azbarkoncmp.shared.generated.resources.poem_copy
 import azbarkoncmp.shared.generated.resources.poem_image_creator
 import azbarkoncmp.shared.generated.resources.poem_liked
 import azbarkoncmp.shared.generated.resources.poem_share
@@ -226,24 +226,32 @@ fun PoemOrnamentalDivider(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.spacedBy(
+            4.dp, Alignment.CenterHorizontally),
     ) {
-        HorizontalDivider(
-            modifier = Modifier.weight(1f),
-            color = MaterialTheme.colorScheme.outlineVariant,
+        Image(
+            modifier = Modifier.size(32.dp),
+            painter = painterResource(Res.drawable.ornoment230r),
+            contentDescription = null,
         )
-        Box(
-            modifier =
-                Modifier
-                    .padding(horizontal = 12.dp)
-                    .size(8.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.outline),
+        Image(
+            modifier = Modifier.size(48.dp),
+            painter = painterResource(Res.drawable.ornoment30),
+            contentDescription = null,
         )
-        HorizontalDivider(
-            modifier = Modifier.weight(1f),
-            color = MaterialTheme.colorScheme.outlineVariant,
+        Image(
+            modifier = Modifier.size(32.dp),
+            painter = painterResource(Res.drawable.ornoment230l),
+            contentDescription = null,
         )
+    }
+}
+
+@Preview
+@Composable
+private fun PoemOrnamentalDividerPreview() {
+    AzbarkonTheme {
+        PoemOrnamentalDivider()
     }
 }
 

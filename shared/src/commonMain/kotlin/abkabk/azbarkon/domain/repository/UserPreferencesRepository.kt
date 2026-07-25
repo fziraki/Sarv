@@ -31,4 +31,10 @@ interface UserPreferencesRepository {
         playedAtMillis: Long,
         isPerfect: Boolean = false,
     )
+
+    fun getAvatarIndex(): Int
+
+    fun setAvatarIndex(index: Int)
+
+    fun observeAvatarIndex(): Flow<Int>
 }

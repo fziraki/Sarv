@@ -14,11 +14,11 @@ sealed interface MemorizationSelectAction {
 
     data object OnBackClick : MemorizationSelectAction
 
-    data object OnBabaTaherClick : MemorizationSelectAction
+    data object OnBabaTaherCoupletsClick : MemorizationSelectAction
 
     data object OnHafezGhazalsClick : MemorizationSelectAction
 
-    data object OnSimplePoemClick : MemorizationSelectAction
+    data object OnKhayyamRubaiyatClick : MemorizationSelectAction
 
     data object OnTreasuryClick : MemorizationSelectAction
 
