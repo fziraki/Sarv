@@ -48,7 +48,6 @@ Compose:
     active: true
   CompositionLocalAllowlist:
     active: true
-    allowedCompositionLocals: LocalAzbarkonAppState
   CompositionLocalNaming:
     active: true
   ContentEmitterReturningValues:

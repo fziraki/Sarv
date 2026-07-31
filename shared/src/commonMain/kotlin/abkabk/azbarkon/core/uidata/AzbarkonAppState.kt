@@ -21,6 +21,7 @@ class AzbarkonAppState(
     }
 }
 
+@Suppress("CompositionLocalAllowlist")
 val LocalAzbarkonAppState =
     staticCompositionLocalOf<AzbarkonAppState> {
         error("AzbarkonAppState not provided")

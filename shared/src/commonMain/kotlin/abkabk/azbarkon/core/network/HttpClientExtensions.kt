@@ -15,9 +15,9 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import io.ktor.utils.io.errors.IOException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 
 suspend inline fun <reified Response : Any> HttpClient.getResult(
