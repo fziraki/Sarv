@@ -25,7 +25,6 @@ data class ProfileState(
     val allLevels: List<LevelListItemUi> = emptyList(),
     val reviewedVersesCount: Int = 0,
     val hasCompletedGhazal: Boolean = false,
-    val avatarIndex: Int = -1,
 )
 
 sealed interface ProfileAction {
@@ -55,12 +54,6 @@ sealed interface ProfileAction {
 
     data class OnNotificationPermissionResult(
         val granted: Boolean,
-    ) : ProfileAction
-
-    data object OnAvatarClick : ProfileAction
-
-    data class OnAvatarSelected(
-        val index: Int,
     ) : ProfileAction
 }
 

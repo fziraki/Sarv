@@ -44,20 +44,22 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.cd_levels
-import azbarkoncmp.shared.generated.resources.default_avatar
-import azbarkoncmp.shared.generated.resources.gordafarid_avatar
 import azbarkoncmp.shared.generated.resources.ic_help
 import azbarkoncmp.shared.generated.resources.beyt100_badge
 import azbarkoncmp.shared.generated.resources.first_badge
 import azbarkoncmp.shared.generated.resources.hafez_star_badge
+import azbarkoncmp.shared.generated.resources.level1
+import azbarkoncmp.shared.generated.resources.level2
+import azbarkoncmp.shared.generated.resources.level3
+import azbarkoncmp.shared.generated.resources.level4
+import azbarkoncmp.shared.generated.resources.level5
+import azbarkoncmp.shared.generated.resources.level6
+import azbarkoncmp.shared.generated.resources.level7
+import azbarkoncmp.shared.generated.resources.level8
 import azbarkoncmp.shared.generated.resources.night_badge
 import azbarkoncmp.shared.generated.resources.palette
 import azbarkoncmp.shared.generated.resources.poetry_lover_badge
 import azbarkoncmp.shared.generated.resources.profile_game_status_title
-import azbarkoncmp.shared.generated.resources.rostam_avatar
-import azbarkoncmp.shared.generated.resources.siavash_avatar
-import azbarkoncmp.shared.generated.resources.sohrab_avatar
-import azbarkoncmp.shared.generated.resources.tahmine_avatar
 import azbarkoncmp.shared.generated.resources.profile_game_streak
 import azbarkoncmp.shared.generated.resources.profile_game_total_points
 import azbarkoncmp.shared.generated.resources.profile_level_format
@@ -66,6 +68,7 @@ import azbarkoncmp.shared.generated.resources.profile_mem_streak
 import azbarkoncmp.shared.generated.resources.profile_memorization_status_title
 import azbarkoncmp.shared.generated.resources.profile_view_all_badges
 import azbarkoncmp.shared.generated.resources.profile_xp_format
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -73,35 +76,45 @@ private const val WEEKLY_STREAK_BADGE_ID = 3
 private const val POETRY_LOVER_BADGE_ID = 4
 private const val PERFECT_GAMES_BADGE_ID = 5
 
+internal val levelImages: List<DrawableResource> =
+    listOf(
+        Res.drawable.level1,
+        Res.drawable.level2,
+        Res.drawable.level3,
+        Res.drawable.level4,
+        Res.drawable.level5,
+        Res.drawable.level6,
+        Res.drawable.level7,
+        Res.drawable.level8,
+    )
+
+internal fun levelImageResource(levelId: Int): DrawableResource? =
+    levelImages.getOrNull(levelId - 1)
+
 @Composable
 fun ProfileHeader(
     levelProgress: ProfileLevelProgress,
-    avatarIndex: Int,
-    onAvatarClick: () -> Unit,
     onLevelsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val avatarResources = listOf(
-        Res.drawable.rostam_avatar,
-        Res.drawable.tahmine_avatar,
-        Res.drawable.sohrab_avatar,
-        Res.drawable.siavash_avatar,
-        Res.drawable.gordafarid_avatar,
-    )
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
-            painter = if (avatarIndex == -1) painterResource(Res.drawable.default_avatar)
-                    else painterResource(avatarResources[avatarIndex]),
-            contentDescription = null,
-            modifier = Modifier.size(96.dp).clip(CircleShape).clickable(onClick = onAvatarClick),
-        )
+        levelImageResource(levelProgress.levelId)?.let { drawable ->
+            Image(
+                painter = painterResource(drawable),
+                contentDescription = null,
+                modifier = Modifier.size(96.dp).clickable(onClick = onLevelsClick),
+            )
+        }
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onLevelsClick),
             horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally ),
             verticalAlignment = Alignment.CenterVertically,
         ) {

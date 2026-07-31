@@ -8,20 +8,15 @@ import abkabk.azbarkon.domain.model.profile.LevelRowState
 import abkabk.azbarkon.domain.model.profile.ProfileSheet
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -37,19 +32,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.check_circle
-import azbarkoncmp.shared.generated.resources.gordafarid_avatar
 import azbarkoncmp.shared.generated.resources.lock
-import azbarkoncmp.shared.generated.resources.profile_avatar_title
-import azbarkoncmp.shared.generated.resources.rostam_avatar
-import azbarkoncmp.shared.generated.resources.siavash_avatar
-import azbarkoncmp.shared.generated.resources.sohrab_avatar
-import azbarkoncmp.shared.generated.resources.tahmine_avatar
 import azbarkoncmp.shared.generated.resources.profile_badges_title
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_subtitle
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_title
@@ -66,8 +57,6 @@ import azbarkoncmp.shared.generated.resources.profile_theme_system
 import azbarkoncmp.shared.generated.resources.profile_theme_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-
-private const val STATS_GRID_COLUMN_COUNT = 3
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,12 +87,6 @@ fun ProfileSheets(
 
             ProfileSheet.Levels ->
                 ProfileLevelsSheetContent(levels = state.allLevels)
-
-            ProfileSheet.Avatar ->
-                ProfileAvatarSheetContent(
-                    selectedIndex = state.avatarIndex,
-                    onAvatarSelect = { onAction(ProfileAction.OnAvatarSelected(it)) },
-                )
         }
     }
 }
@@ -291,65 +274,6 @@ private fun ProfileBadgesSheetContent(badges: List<BadgeUi>) {
 }
 
 @Composable
-private fun ProfileAvatarSheetContent(
-    selectedIndex: Int?,
-    onAvatarSelect: (Int) -> Unit,
-) {
-    val avatarResources = listOf(
-        Res.drawable.rostam_avatar to "رستم",
-        Res.drawable.tahmine_avatar to "تهمینه",
-        Res.drawable.sohrab_avatar to "سهراب",
-        Res.drawable.siavash_avatar to "سیاوش",
-        Res.drawable.gordafarid_avatar to "گردآفرید",
-    )
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Text(
-            text = stringResource(Res.string.profile_avatar_title),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-        )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(STATS_GRID_COLUMN_COUNT),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth().height(280.dp),
-        ) {
-            items(avatarResources.size) { index ->
-                val isSelected = selectedIndex == index
-                val (drawable, label) = avatarResources[index]
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .size(72.dp)
-                            .clip(CircleShape)
-                            .then(
-                                if (isSelected) Modifier.border(3.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                                else Modifier
-                            )
-                            .clickable { onAvatarSelect(index) },
-                        painter = painterResource(drawable),
-                        contentDescription = label,
-                    )
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
 private fun ProfileLevelsSheetContent(levels: List<LevelListItemUi>) {
     Column(
         modifier =
@@ -400,6 +324,7 @@ private fun ProfileLevelRow(item: LevelListItemUi) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+
         Text(
             text = stringResource(Res.string.profile_level_format, item.level.id),
             style = MaterialTheme.typography.labelMedium,
@@ -420,6 +345,25 @@ private fun ProfileLevelRow(item: LevelListItemUi) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
+            )
+        }
+
+
+        levelImageResource(item.level.id)?.let { drawable ->
+            val isLocked = item.state == LevelRowState.Locked
+            Image(
+                painter = painterResource(drawable),
+                contentDescription = null,
+                modifier = Modifier.size(40.dp),
+                colorFilter =
+                    if (isLocked) {
+                        ColorFilter.colorMatrix(
+                            ColorMatrix().apply { setToSaturation(0f) },
+                        )
+                    } else {
+                        null
+                    },
+                alpha = if (isLocked) 0.45f else 1f,
             )
         }
 

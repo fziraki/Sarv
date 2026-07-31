@@ -92,8 +92,6 @@ fun ProfileScreen(
         item {
             ProfileHeader(
                 levelProgress = state.levelProgress,
-                avatarIndex = state.avatarIndex,
-                onAvatarClick = { onAction(ProfileAction.OnAvatarClick) },
                 onLevelsClick = { onAction(ProfileAction.OnLevelsIconClick) },
             )
         }
