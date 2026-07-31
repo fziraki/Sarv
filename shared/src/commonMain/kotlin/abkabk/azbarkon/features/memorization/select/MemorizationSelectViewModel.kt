@@ -1,6 +1,6 @@
 package abkabk.azbarkon.features.memorization.select
 
-import abkabk.azbarkon.core.ui_base.BaseViewModel
+import abkabk.azbarkon.core.uidata.BaseViewModel
 import abkabk.azbarkon.domain.repository.MemorizationRepository
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.launchIn

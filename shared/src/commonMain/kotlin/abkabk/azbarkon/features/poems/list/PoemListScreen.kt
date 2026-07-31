@@ -1,12 +1,13 @@
 package abkabk.azbarkon.features.poems.list
 
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
-import abkabk.azbarkon.core.ui_base.ObserveAsEvents
-import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.UiText
-import abkabk.azbarkon.core.ui_base.asString
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.uidata.UiText
+import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.ui.components.Header
+import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -120,7 +121,7 @@ fun PoemListScreen(
         Header(
             title = state.title,
             onBackClick = onBackClick,
-            onSearchClick = onSearchClick,
+            action = HeaderAction.Search(onSearchClick),
         )
 
         LazyColumn(
@@ -138,13 +139,13 @@ fun PoemListScreen(
                             Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(16.dp))
-                                .clickable { onPoemClick(poem.id) }
                                 .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                                 .border(
                                     width = 1.dp,
                                     color = MaterialTheme.colorScheme.outlineVariant,
                                     shape = RoundedCornerShape(16.dp),
-                                ).padding(14.dp),
+                                ).clickable { onPoemClick(poem.id) }
+                                .padding(14.dp),
                         text = poem.title,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground,

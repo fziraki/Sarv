@@ -1,9 +1,9 @@
 package abkabk.azbarkon.features.home
 
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
-import abkabk.azbarkon.core.ui_base.ObserveAsEvents
-import abkabk.azbarkon.core.ui_base.asString
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.RandomDistich
 import abkabk.azbarkon.ui.components.AzbarkonButton
@@ -93,22 +93,30 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
+private const val SLIDER_TOP_WEIGHT = 0.4f
+private const val SLIDER_CONTENT_WEIGHT = 0.6f
+private const val SLIDER_BUTTON_WIDTH_FRACTION = 0.6f
+
+data class HomeCallbacks(
+    val onNavigateToPoetsList: () -> Unit,
+    val onNavigateToPoetDetail: (Int) -> Unit,
+    val onNavigateToMyPoems: () -> Unit,
+    val onNavigateToSearch: () -> Unit,
+    val onNavigateToTasvirNegar: () -> Unit,
+    val onNavigateToMemorizationSelect: () -> Unit,
+    val onNavigateToMemorizationPractice: () -> Unit,
+    val onNavigateToActiveMemorization: () -> Unit,
+    val onNavigateToGame: () -> Unit = {},
+)
+
 @Composable
 fun HomeRoot(
-    onNavigateToPoetsList: () -> Unit,
-    onNavigateToPoetDetail: (Int) -> Unit,
-    onNavigateToMyPoems: () -> Unit,
-    onNavigateToSearch: () -> Unit,
-    onNavigateToTasvirNegar: () -> Unit,
-    onNavigateToMemorizationSelect: () -> Unit,
-    onNavigateToMemorizationPractice: () -> Unit,
-    onNavigateToActiveMemorization: () -> Unit,
-    onNavigateToGame: () -> Unit = {},
+    callbacks: HomeCallbacks,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.ui_base.UiText?>(null) }
+    var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.uidata.UiText?>(null) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -116,23 +124,23 @@ fun HomeRoot(
                 snackbarMessage = event.message
             }
 
-            HomeEvent.NavigateToPoetsList -> onNavigateToPoetsList()
+            HomeEvent.NavigateToPoetsList -> callbacks.onNavigateToPoetsList()
 
-            is HomeEvent.NavigateToPoetDetail -> onNavigateToPoetDetail(event.poetId)
+            is HomeEvent.NavigateToPoetDetail -> callbacks.onNavigateToPoetDetail(event.poetId)
 
-            HomeEvent.NavigateToMyPoems -> onNavigateToMyPoems()
+            HomeEvent.NavigateToMyPoems -> callbacks.onNavigateToMyPoems()
 
-            HomeEvent.NavigateToSearch -> onNavigateToSearch()
+            HomeEvent.NavigateToSearch -> callbacks.onNavigateToSearch()
 
-            HomeEvent.NavigateToTasvirNegar -> onNavigateToTasvirNegar()
+            HomeEvent.NavigateToTasvirNegar -> callbacks.onNavigateToTasvirNegar()
 
-            HomeEvent.NavigateToMemorizationSelect -> onNavigateToMemorizationSelect()
+            HomeEvent.NavigateToMemorizationSelect -> callbacks.onNavigateToMemorizationSelect()
 
-            HomeEvent.NavigateToMemorizationPractice -> onNavigateToMemorizationPractice()
+            HomeEvent.NavigateToMemorizationPractice -> callbacks.onNavigateToMemorizationPractice()
 
-            HomeEvent.NavigateToActiveMemorization -> onNavigateToActiveMemorization()
+            HomeEvent.NavigateToActiveMemorization -> callbacks.onNavigateToActiveMemorization()
 
-            HomeEvent.NavigateToGame -> onNavigateToGame()
+            HomeEvent.NavigateToGame -> callbacks.onNavigateToGame()
         }
     }
 
@@ -159,9 +167,10 @@ fun HomeRoot(
 fun HomeScreen(
     state: HomeState,
     onAction: (HomeAction) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 12.dp),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -218,10 +227,11 @@ fun Poets(
     poets: List<Poet>,
     onSeeAllClick: () -> Unit,
     onPoetClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -266,10 +276,11 @@ fun Poets(
 fun PoetItem(
     item: Poet,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .width(80.dp)
                 .clickable(onClick = onClick),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -312,9 +323,10 @@ fun QuickAccessMenu(
     onSearchClick: () -> Unit,
     onTasvirNegarClick: () -> Unit,
     onReviewClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -350,20 +362,21 @@ fun QuickAccessMenu(
 
 @Composable
 fun QuickAccessItem(
-    modifier: Modifier = Modifier,
     icon: DrawableResource,
     title: StringResource,
     onItemClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier =
             modifier
-                .clickable {
-                    onItemClick()
-                }.background(
+                .background(
                     color = MaterialTheme.colorScheme.surfaceVariant,
                     shape = RoundedCornerShape(24.dp),
-                ).padding(vertical = 20.dp, horizontal = 4.dp),
+                ).padding(vertical = 20.dp, horizontal = 4.dp)
+                .clickable {
+                    onItemClick()
+                },
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -384,6 +397,7 @@ fun QuickAccessItem(
 fun HeroCard(
     hero: MemorizationHeroUi,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val titleText =
         if (hero.hasActivePoems) {
@@ -410,7 +424,7 @@ fun HeroCard(
 
     Box(
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
     ) {
@@ -548,9 +562,12 @@ fun TopSlider(
 }
 
 @Composable
-fun TasvirNegarSlide(onClick: () -> Unit = {}) {
+fun TasvirNegarSlide(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+) {
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
 
         Image(
             painter = painterResource(Res.drawable.image_creator_bg),
@@ -566,11 +583,11 @@ fun TasvirNegarSlide(onClick: () -> Unit = {}) {
                     .padding(16.dp),
         ) {
 
-            Spacer(modifier = Modifier.weight(0.4f))
+            Spacer(modifier = Modifier.weight(SLIDER_TOP_WEIGHT))
 
 
             Column(
-                modifier = Modifier.weight(0.6f).fillMaxHeight(),
+                modifier = Modifier.weight(SLIDER_CONTENT_WEIGHT).fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.End,
             ) {
@@ -595,7 +612,7 @@ fun TasvirNegarSlide(onClick: () -> Unit = {}) {
                     onClick = onClick,
                     modifier =
                         Modifier
-                            .fillMaxWidth(0.6f)
+                            .fillMaxWidth(SLIDER_BUTTON_WIDTH_FRACTION)
                             .height(36.dp),
                     textStyle = MaterialTheme.typography.labelSmall,
                     colors =
@@ -613,8 +630,11 @@ fun TasvirNegarSlide(onClick: () -> Unit = {}) {
 }
 
 @Composable
-fun ChallengeSlide(onClick: () -> Unit = {}) {
-    Box(modifier = Modifier.fillMaxSize()) {
+fun ChallengeSlide(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+) {
+    Box(modifier = modifier.fillMaxSize()) {
 
         Image(
             painter = painterResource(Res.drawable.next_verse_game_bg),
@@ -629,10 +649,10 @@ fun ChallengeSlide(onClick: () -> Unit = {}) {
                     .fillMaxSize().padding(16.dp),
         ) {
 
-            Spacer(modifier = Modifier.weight(0.4f))
+            Spacer(modifier = Modifier.weight(SLIDER_TOP_WEIGHT))
 
             Column(
-                modifier = Modifier.weight(0.6f).fillMaxHeight(),
+                modifier = Modifier.weight(SLIDER_CONTENT_WEIGHT).fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.End,
             ) {
@@ -657,7 +677,7 @@ fun ChallengeSlide(onClick: () -> Unit = {}) {
                     onClick = onClick,
                     modifier =
                         Modifier
-                            .fillMaxWidth(0.6f)
+                            .fillMaxWidth(SLIDER_BUTTON_WIDTH_FRACTION)
                             .height(36.dp),
                     textStyle = MaterialTheme.typography.labelSmall,
                     colors =
@@ -675,7 +695,10 @@ fun ChallengeSlide(onClick: () -> Unit = {}) {
 }
 
 @Composable
-fun BeytOfDaySlide(distich: RandomDistich? = null) {
+fun BeytOfDaySlide(
+    modifier: Modifier = Modifier,
+    distich: RandomDistich? = null,
+) {
     val beytText = buildString {
         distich?.rightText?.let { append(it) }
         if (distich != null) append("\n")
@@ -683,7 +706,7 @@ fun BeytOfDaySlide(distich: RandomDistich? = null) {
     }.ifEmpty { stringResource(Res.string.slider_beyt_of_day_text) }
     val poetText = distich?.poetName ?: stringResource(Res.string.slider_beyt_of_day_poet)
 
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = modifier.fillMaxSize()){
 
         Image(
             painter = painterResource(Res.drawable.today_distich_bg),
@@ -700,7 +723,7 @@ fun BeytOfDaySlide(distich: RandomDistich? = null) {
                     .padding(16.dp),
         ) {
             Column(
-                modifier = Modifier.weight(0.6f).fillMaxHeight(),
+                modifier = Modifier.weight(SLIDER_CONTENT_WEIGHT).fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
@@ -728,7 +751,7 @@ fun BeytOfDaySlide(distich: RandomDistich? = null) {
                 )
             }
 
-            Spacer(modifier = Modifier.weight(0.4f))
+            Spacer(modifier = Modifier.weight(SLIDER_TOP_WEIGHT))
 
         }
     }

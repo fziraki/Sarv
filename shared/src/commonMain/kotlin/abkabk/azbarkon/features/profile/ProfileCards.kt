@@ -69,6 +69,10 @@ import azbarkoncmp.shared.generated.resources.profile_xp_format
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+private const val WEEKLY_STREAK_BADGE_ID = 3
+private const val POETRY_LOVER_BADGE_ID = 4
+private const val PERFECT_GAMES_BADGE_ID = 5
+
 @Composable
 fun ProfileHeader(
     levelProgress: ProfileLevelProgress,
@@ -305,18 +309,21 @@ fun ProfileBadges(
                 items = badges,
                 key = { badge -> badge.id },
             ) { badge ->
-                BadgeItem(badge)
+                BadgeItem(item = badge)
             }
         }
     }
 }
 
 @Composable
-fun BadgeItem(item: BadgeUi) {
+fun BadgeItem(
+    item: BadgeUi,
+    modifier: Modifier = Modifier,
+) {
     BadgeIcon(
         badgeId = item.id,
         isEarned = item.isEarned,
-        modifier = Modifier.width(80.dp),
+        modifier = modifier.width(80.dp),
         showName = true,
         name = item.name,
     )
@@ -378,9 +385,9 @@ private fun BadgeIcon(
         when (badgeId) {
             1 -> Res.drawable.first_badge
             2 -> Res.drawable.beyt100_badge
-            3 -> Res.drawable.night_badge
-            4 -> Res.drawable.poetry_lover_badge
-            5 -> Res.drawable.hafez_star_badge
+            WEEKLY_STREAK_BADGE_ID -> Res.drawable.night_badge
+            POETRY_LOVER_BADGE_ID -> Res.drawable.poetry_lover_badge
+            PERFECT_GAMES_BADGE_ID -> Res.drawable.hafez_star_badge
             else -> Res.drawable.first_badge
         }
     Column(

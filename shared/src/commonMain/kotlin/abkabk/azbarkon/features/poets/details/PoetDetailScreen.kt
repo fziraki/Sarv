@@ -1,14 +1,15 @@
 package abkabk.azbarkon.features.poets.details
 
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
-import abkabk.azbarkon.core.ui_base.ObserveAsEvents
-import abkabk.azbarkon.core.ui_base.UiText
-import abkabk.azbarkon.core.ui_base.asString
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.core.uidata.UiText
+import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.poets.PoetCategoryRowUi
 import abkabk.azbarkon.features.poets.list.PoetAvatar
 import abkabk.azbarkon.features.poets.list.PoetsSectionTitle
 import abkabk.azbarkon.ui.components.Header
+import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -116,7 +117,7 @@ fun PoetDetailScreen(
         Header(
             title = state.name,
             onBackClick = onBackClick,
-            onSearchClick = onSearchClick
+            action = HeaderAction.Search(onSearchClick),
         )
 
         LazyColumn(

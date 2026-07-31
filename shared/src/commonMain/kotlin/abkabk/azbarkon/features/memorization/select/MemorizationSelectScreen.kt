@@ -1,7 +1,7 @@
 package abkabk.azbarkon.features.memorization.select
 
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.ObserveAsEvents
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.features.memorization.MemorizationHeroSection
 import abkabk.azbarkon.features.memorization.MemorizationOptionRow
 import abkabk.azbarkon.features.memorization.QuickStartCard
@@ -74,8 +74,9 @@ fun MemorizationSelectRoot(
 fun MemorizationSelectScreen(
     state: MemorizationSelectState,
     onAction: (MemorizationSelectAction) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         Header(
             title = stringResource(Res.string.new_memorization_title),
             onBackClick = { onAction(MemorizationSelectAction.OnBackClick) },

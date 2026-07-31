@@ -1,11 +1,13 @@
 package abkabk.azbarkon.core.navigation
 
-import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
-import abkabk.azbarkon.core.ui_base.rememberAzbarkonAppState
+import abkabk.azbarkon.core.uidata.AzbarkonAppState
+import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.rememberAzbarkonAppState
 import abkabk.azbarkon.features.games.navigation.GameTypeRoute
 import abkabk.azbarkon.features.games.navigation.GamesRoute
 import abkabk.azbarkon.features.games.navigation.gamesGraph
 import abkabk.azbarkon.features.games.navigation.navigateToGame
+import abkabk.azbarkon.features.home.HomeCallbacks
 import abkabk.azbarkon.features.home.navigation.HomeRoute
 import abkabk.azbarkon.features.home.navigation.MyPoemsRoute
 import abkabk.azbarkon.features.home.navigation.homeGraph
@@ -15,8 +17,8 @@ import abkabk.azbarkon.features.poets.navigation.PoetsListRoute
 import abkabk.azbarkon.features.poets.navigation.poetsGraph
 import abkabk.azbarkon.features.profile.navigation.ProfileRoute
 import abkabk.azbarkon.features.profile.navigation.profileGraph
-import abkabk.azbarkon.features.tasvir_negar.navigation.TasvirNegarRoute
-import abkabk.azbarkon.features.tasvir_negar.navigation.tasvirNegarGraph
+import abkabk.azbarkon.features.tasvirNegar.navigation.TasvirNegarRoute
+import abkabk.azbarkon.features.tasvirNegar.navigation.tasvirNegarGraph
 import abkabk.azbarkon.features.memorization.navigation.memorizationGraph
 import abkabk.azbarkon.features.memorization.navigation.navigateToActiveMemorization
 import abkabk.azbarkon.features.memorization.navigation.navigateToMemorizationPractice
@@ -53,6 +55,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
@@ -77,9 +80,161 @@ private fun NavDestination?.isRootTabDestination(): Boolean =
                 hasRoute<ProfileRoute>()
         )
 
+private val bottomNavItems =
+    listOf(
+        BottomNavItem.Home,
+        BottomNavItem.Treasure,
+        BottomNavItem.Games,
+        BottomNavItem.Profile,
+    )
+
+@Composable
+private fun AzbarkonTopBar(
+    currentItem: BottomNavItem?,
+    currentDestination: NavDestination?,
+    navController: NavController,
+    appState: AzbarkonAppState,
+) {
+    Box(
+        modifier =
+            Modifier
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .fillMaxWidth()
+                .height(56.dp),
+    ) {
+        if (navController.previousBackStackEntry != null) {
+            IconButton(
+                modifier = Modifier.align(Alignment.CenterStart),
+                onClick = { navController.navigateUp() },
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.arrow_back_right),
+                    contentDescription = stringResource(Res.string.cd_back),
+                )
+            }
+        }
+
+        Column(
+            modifier = Modifier.align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = currentItem?.headerTitle?.let { stringResource(it) } ?: "",
+                style = MaterialTheme.typography.headlineLarge,
+            )
+
+            currentItem?.subtitle?.let {
+                Text(
+                    text = stringResource(it),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
+        if (currentDestination?.hasRoute<ProfileRoute>() == true) {
+            IconButton(
+                modifier = Modifier.align(Alignment.CenterEnd),
+                onClick = { appState.onProfileSettingsClick?.invoke() },
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.settings),
+                    contentDescription = stringResource(Res.string.cd_settings),
+                )
+            }
+        }
+
+        if (currentDestination?.hasRoute<PoetsListRoute>() == true) {
+            IconButton(
+                modifier = Modifier.align(Alignment.CenterEnd),
+                onClick = { navController.navigateToSearch() },
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.search),
+                    contentDescription = stringResource(Res.string.cd_search),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AzbarkonBottomBar(
+    currentDestination: NavDestination?,
+    navController: NavController,
+) {
+    NavigationBar(
+        modifier =
+            Modifier
+                .windowInsetsPadding(WindowInsets.navigationBars)
+                .fillMaxWidth()
+                .height(64.dp),
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) {
+        bottomNavItems.forEach { item ->
+            val selected =
+                when (item) {
+                    BottomNavItem.Home -> currentDestination?.hasRoute<HomeRoute>() == true
+                    BottomNavItem.Treasure -> currentDestination?.hasRoute<PoetsListRoute>() == true
+                    BottomNavItem.Games -> currentDestination?.hasRoute<GamesRoute>() == true
+                    BottomNavItem.Profile -> currentDestination?.hasRoute<ProfileRoute>() == true
+                }
+
+            NavigationBarItem(
+                selected = selected,
+                onClick = {
+                    val route =
+                        when (item) {
+                            BottomNavItem.Home -> HomeRoute
+                            BottomNavItem.Treasure -> PoetsListRoute
+                            BottomNavItem.Games -> GamesRoute
+                            BottomNavItem.Profile -> ProfileRoute
+                        }
+                    if (item == BottomNavItem.Home) {
+                        navController.navigate(HomeRoute) {
+                            popUpTo(HomeRoute) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    } else {
+                        navController.navigate(route) {
+                            popUpTo(HomeRoute) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                },
+                icon = {
+                    Icon(
+                        modifier = Modifier.size(22.dp),
+                        painter = painterResource(item.icon),
+                        contentDescription = stringResource(item.title),
+                    )
+                },
+                colors =
+                    NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.secondary,
+                        selectedTextColor = MaterialTheme.colorScheme.secondary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        indicatorColor = Color.Transparent,
+                    ),
+                label = {
+                    Text(
+                        text = stringResource(item.title),
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                },
+                alwaysShowLabel = false,
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AzbarkonNavigation(
+    modifier: Modifier = Modifier,
     initialPoemId: Int? = null,
     openMemorizationPractice: Boolean = false,
 ) {
@@ -100,20 +255,12 @@ fun AzbarkonNavigation(
         }
     }
 
-    val items =
-        listOf(
-            BottomNavItem.Home,
-            BottomNavItem.Treasure,
-            BottomNavItem.Games,
-            BottomNavItem.Profile,
-        )
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val isRootDestination = currentDestination.isRootTabDestination()
 
     val currentItem =
-        items.find { item ->
+        bottomNavItems.find { item ->
             when (item) {
                 BottomNavItem.Home -> currentDestination?.hasRoute<HomeRoute>() == true
                 BottomNavItem.Treasure -> currentDestination?.hasRoute<PoetsListRoute>() == true
@@ -124,145 +271,27 @@ fun AzbarkonNavigation(
 
     CompositionLocalProvider(LocalAzbarkonAppState provides appState) {
         Scaffold(
+            modifier = modifier,
             snackbarHost = {
                 SnackbarHost(appState.snackbarHostState)
             },
             containerColor = MaterialTheme.colorScheme.background,
             topBar = {
                 if (isRootDestination) {
-                    Box(
-                        modifier =
-                            Modifier
-                                .windowInsetsPadding(WindowInsets.statusBars)
-                                .fillMaxWidth()
-                                .height(56.dp),
-                    ) {
-                        if (navController.previousBackStackEntry != null) {
-                            IconButton(
-                                modifier = Modifier.align(Alignment.CenterStart),
-                                onClick = { navController.navigateUp() },
-                            ) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.arrow_back_right),
-                                    contentDescription = stringResource(Res.string.cd_back),
-                                )
-                            }
-                        }
-
-                        Column(
-                            modifier = Modifier.align(Alignment.Center),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(
-                                text = currentItem?.headerTitle?.let { stringResource(it) } ?: "",
-                                style = MaterialTheme.typography.headlineLarge,
-                            )
-
-                            currentItem?.subtitle?.let {
-                                Text(
-                                    text = stringResource(it),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                        }
-
-                        if (currentDestination?.hasRoute<ProfileRoute>() == true) {
-                            IconButton(
-                                modifier = Modifier.align(Alignment.CenterEnd),
-                                onClick = { appState.onProfileSettingsClick?.invoke() },
-                            ) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.settings),
-                                    contentDescription = stringResource(Res.string.cd_settings),
-                                )
-                            }
-                        }
-
-                        if (currentDestination?.hasRoute<PoetsListRoute>() == true) {
-                            IconButton(
-                                modifier = Modifier.align(Alignment.CenterEnd),
-                                onClick = {
-                                    navController.navigateToSearch()
-                                },
-                            ) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.search),
-                                    contentDescription = stringResource(Res.string.cd_search),
-                                )
-                            }
-                        }
-                    }
+                    AzbarkonTopBar(
+                        currentItem = currentItem,
+                        currentDestination = currentDestination,
+                        navController = navController,
+                        appState = appState,
+                    )
                 }
             },
             bottomBar = {
                 if (isRootDestination) {
-                    NavigationBar(
-                        modifier =
-                            Modifier
-                                .windowInsetsPadding(WindowInsets.navigationBars)
-                                .fillMaxWidth()
-                                .height(64.dp),
-                        containerColor = MaterialTheme.colorScheme.surface,
-                    ) {
-                        items.forEach { item ->
-                            val selected =
-                                when (item) {
-                                    BottomNavItem.Home -> currentDestination?.hasRoute<HomeRoute>() == true
-                                    BottomNavItem.Treasure -> currentDestination?.hasRoute<PoetsListRoute>() == true
-                                    BottomNavItem.Games -> currentDestination?.hasRoute<GamesRoute>() == true
-                                    BottomNavItem.Profile -> currentDestination?.hasRoute<ProfileRoute>() == true
-                                }
-
-                            NavigationBarItem(
-                                selected = selected,
-                                onClick = {
-                                    val route =
-                                        when (item) {
-                                            BottomNavItem.Home -> HomeRoute
-                                            BottomNavItem.Treasure -> PoetsListRoute
-                                            BottomNavItem.Games -> GamesRoute
-                                            BottomNavItem.Profile -> ProfileRoute
-                                        }
-                                    if (item == BottomNavItem.Home) {
-                                        navController.navigate(HomeRoute) {
-                                            popUpTo(HomeRoute) { saveState = true }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                    } else {
-                                        navController.navigate(route) {
-                                            popUpTo(HomeRoute) { saveState = true }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                    }
-                                },
-                                icon = {
-                                    Icon(
-                                        modifier = Modifier.size(22.dp),
-                                        painter = painterResource(item.icon),
-                                        contentDescription = stringResource(item.title),
-                                    )
-                                },
-                                colors =
-                                    NavigationBarItemDefaults.colors(
-                                        selectedIconColor = MaterialTheme.colorScheme.secondary,
-                                        selectedTextColor = MaterialTheme.colorScheme.secondary,
-                                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        indicatorColor = Color.Transparent,
-                                    ),
-                                label = {
-                                    Text(
-                                        text = stringResource(item.title),
-                                        style = MaterialTheme.typography.labelSmall,
-                                    )
-                                },
-                                alwaysShowLabel = false,
-                            )
-                        }
-                    }
+                    AzbarkonBottomBar(
+                        currentDestination = currentDestination,
+                        navController = navController,
+                    )
                 }
             },
         ) { padding ->
@@ -276,40 +305,43 @@ fun AzbarkonNavigation(
                 popExitTransition = { ExitTransition.None },
             ) {
                 homeGraph(
-                    onNavigateToPoetsList = {
-                        navController.navigate(PoetsListRoute) {
-                            popUpTo(HomeRoute) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    onNavigateToPoetDetail = { poetId ->
-                        navController.navigate(PoetDetailRoute(poetId))
-                    },
-                    onNavigateToMyPoems = {
-                        navController.navigate(MyPoemsRoute)
-                    },
-                    onNavigateToSearch = {
-                        navController.navigateToSearch()
-                    },
+                    callbacks =
+                        HomeCallbacks(
+                            onNavigateToPoetsList = {
+                                navController.navigate(PoetsListRoute) {
+                                    popUpTo(HomeRoute) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            },
+                            onNavigateToPoetDetail = { poetId ->
+                                navController.navigate(PoetDetailRoute(poetId))
+                            },
+                            onNavigateToMyPoems = {
+                                navController.navigate(MyPoemsRoute)
+                            },
+                            onNavigateToSearch = {
+                                navController.navigateToSearch()
+                            },
+                            onNavigateToTasvirNegar = {
+                                navController.navigate(TasvirNegarRoute(poemId = null))
+                            },
+                            onNavigateToMemorizationSelect = {
+                                navController.navigateToMemorizationSelect()
+                            },
+                            onNavigateToMemorizationPractice = {
+                                navController.navigateToMemorizationPractice()
+                            },
+                            onNavigateToActiveMemorization = {
+                                navController.navigateToActiveMemorization()
+                            },
+                            onNavigateToGame = {
+                                navController.navigateToGame(GameTypeRoute.NEXT_VERSE)
+                            },
+                        ),
                     onBackFromMyPoems = navController::navigateUp,
                     onNavigateToPoemDetailFromMyPoems = { poemId ->
                         navController.navigate(PoemDetailRoute(poemId = poemId))
-                    },
-                    onNavigateToTasvirNegar = {
-                        navController.navigate(TasvirNegarRoute(poemId = null))
-                    },
-                    onNavigateToMemorizationSelect = {
-                        navController.navigateToMemorizationSelect()
-                    },
-                    onNavigateToMemorizationPractice = {
-                        navController.navigateToMemorizationPractice()
-                    },
-                    onNavigateToActiveMemorization = {
-                        navController.navigateToActiveMemorization()
-                    },
-                    onNavigateToGame = {
-                        navController.navigateToGame(GameTypeRoute.NEXT_VERSE)
                     },
                 )
                 tasvirNegarGraph(onBackClick = navController::navigateUp)

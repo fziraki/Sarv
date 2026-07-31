@@ -2,11 +2,11 @@ package abkabk.azbarkon.features.chat
 
 import abkabk.azbarkon.core.ui.keyboardAboveIme
 import abkabk.azbarkon.core.ui.rememberKeyboardLiftPx
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
-import abkabk.azbarkon.core.ui_base.ObserveAsEvents
-import abkabk.azbarkon.core.ui_base.UiText
-import abkabk.azbarkon.core.ui_base.asString
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.core.uidata.UiText
+import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.poets.list.PoetAvatar
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
@@ -68,6 +68,9 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+
+private const val KEYBOARD_SCROLL_RETRY_DELAY_MILLIS = 100L
+private const val SEND_ICON_ROTATION_DEGREES = 180f
 
 @Immutable
 private data class ChatColors(
@@ -155,7 +158,7 @@ fun ChatScreen(
     LaunchedEffect(keyboardLiftPx, state.messages.size, state.isPoetTyping) {
         if (keyboardLiftPx > 0) {
             listState.scrollToLastMessage(state.messages.size, state.isPoetTyping)
-            delay(100)
+            delay(KEYBOARD_SCROLL_RETRY_DELAY_MILLIS)
             listState.scrollToLastMessage(state.messages.size, state.isPoetTyping)
         }
     }
@@ -367,11 +370,12 @@ private fun PoetMessageBubble(
                 modifier =
                     Modifier
                         .clip(bubbleShape)
+                        .background(colors.poetBubble)
+                        .border(1.dp, colors.poetBubbleBorder, bubbleShape)
                         .combinedClickable(
                             onClick = {},
                             onLongClick = onLongPress,
-                        ).background(colors.poetBubble)
-                        .border(1.dp, colors.poetBubbleBorder, bubbleShape)
+                        )
                         .padding(horizontal = 16.dp, vertical = 12.dp),
             ) {
                 Column(
@@ -449,7 +453,7 @@ private fun ChatInputBar(
                     painter = painterResource(Res.drawable.send),
                     contentDescription = stringResource(Res.string.cd_send_message),
                     tint = colors.onAccent,
-                    modifier = Modifier.size(20.dp).rotate(180f),
+                    modifier = Modifier.size(20.dp).rotate(SEND_ICON_ROTATION_DEGREES),
                 )
             }
             BasicTextField(

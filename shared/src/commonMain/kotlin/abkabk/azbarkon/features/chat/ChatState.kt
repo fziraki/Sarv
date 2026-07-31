@@ -1,7 +1,7 @@
 package abkabk.azbarkon.features.chat
 
-import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.uidata.UiText
 import androidx.compose.runtime.Stable
 
 @Stable

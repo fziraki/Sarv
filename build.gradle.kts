@@ -1,4 +1,7 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
+
+val composeRulesDetekt = libs.compose.rules.detekt
 
 plugins {
     alias(libs.plugins.androidApplication) apply false
@@ -12,17 +15,30 @@ plugins {
 subprojects {
     apply(plugin = "io.gitlab.arturbosch.detekt")
 
+    dependencies {
+        project.dependencies.add("detektPlugins", composeRulesDetekt)
+    }
+
     extensions.configure<DetektExtension> {
         config.setFrom(file("$rootDir/config/detekt.yml"))
+        baseline = file("$rootDir/config/detekt-baseline.xml")
         buildUponDefaultConfig = true
         allRules = false
     }
+}
 
+gradle.projectsEvaluated {
+    allprojects {
+        tasks.withType<Detekt>().configureEach {
+            setSource(source.files.filter { !it.path.contains("build${File.separator}generated") })
+        }
+    }
 }
 
 tasks.register("detektCheckAll") {
     dependsOn(
-        ":shared:detekt",
+        ":shared:detektMetadataCommonMain",
+        ":shared:detektAndroidMain",
         ":androidApp:detekt"
     )
 }

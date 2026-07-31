@@ -20,6 +20,7 @@ private fun keyboardLiftPx(): Int {
 @Composable
 actual fun rememberKeyboardLiftPx(): Int = keyboardLiftPx()
 
+@Composable
 actual fun Modifier.keyboardAboveIme(): Modifier =
     composed {
         val density = LocalDensity.current

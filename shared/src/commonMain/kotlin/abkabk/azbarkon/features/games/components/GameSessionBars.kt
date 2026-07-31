@@ -47,6 +47,10 @@ import azbarkoncmp.shared.generated.resources.whois_poet_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+private const val PROGRESS_FLIP_ROTATION_DEGREES = 180f
+private const val PRIMARY_BUTTON_WEIGHT = 0.6f
+private const val HINT_BUTTON_WEIGHT = 0.4f
+
 @Composable
 fun GameSessionTopBar(
     gameType: GameType,
@@ -136,7 +140,7 @@ fun GameQuizProgressSection(
 
         LinearProgressIndicator(
             progress = { (quizNumber.toFloat() / GameConstants.QUIZ_COUNT).coerceIn(0f, 1f) },
-            modifier = Modifier.fillMaxWidth().rotate(180f),
+            modifier = Modifier.fillMaxWidth().rotate(PROGRESS_FLIP_ROTATION_DEGREES),
             gapSize = 0.dp,
             drawStopIndicator = {},
         )
@@ -170,7 +174,6 @@ private fun GameCoinBadge(balance: Int) {
 
 @Composable
 fun GameSessionBottomBar(
-    gameType: GameType,
     canUseHint: Boolean,
     hasSelection: Boolean,
     isRevealing: Boolean,
@@ -191,13 +194,13 @@ fun GameSessionBottomBar(
             text = checkAnswerLabel(hasSelection = hasSelection, isRevealing = isRevealing),
             onClick = onCheckAnswerClick,
             enabled = canPressPrimaryAction,
-            modifier = Modifier.weight(0.6f),
+            modifier = Modifier.weight(PRIMARY_BUTTON_WEIGHT),
         )
 
         GameHintButton(
             enabled = canUseHint,
             onClick = onHintClick,
-            modifier = Modifier.weight(0.4f),
+            modifier = Modifier.weight(HINT_BUTTON_WEIGHT),
         )
     }
 }

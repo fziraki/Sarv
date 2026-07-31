@@ -1,7 +1,7 @@
 package abkabk.azbarkon.features.chat
 
-import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.PoetWithCategories
 import abkabk.azbarkon.testing.FakeChatRepository

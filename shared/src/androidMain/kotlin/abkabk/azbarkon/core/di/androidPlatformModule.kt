@@ -26,12 +26,17 @@ import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
 import androidx.media3.exoplayer.ExoPlayer
 import com.azbarkon.db.AzbarKonDatabase
 import com.azbarkon.memorization.MemorizationDatabase
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.dsl.module
 
 val androidPlatformModule =
     module {
+        @Suppress("InjectDispatcher")
+        single<CoroutineDispatcher> { Dispatchers.IO }
+
         single {
             DatabaseDriverFactory(
                 context = androidContext(),
@@ -82,6 +87,7 @@ val androidPlatformModule =
                 userPreferencesRepository = get(),
                 dailyBeytRepository = get(),
                 notificationPresenter = get(),
+                ioDispatcher = get(),
             )
         }
 

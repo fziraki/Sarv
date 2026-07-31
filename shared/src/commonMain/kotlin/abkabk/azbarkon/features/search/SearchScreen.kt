@@ -1,12 +1,12 @@
 package abkabk.azbarkon.features.search
 
 import abkabk.azbarkon.core.ui.HighlightedText
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
-import abkabk.azbarkon.core.ui_base.ObserveAsEvents
-import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.UiText
-import abkabk.azbarkon.core.ui_base.asString
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.uidata.UiText
+import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -198,62 +199,102 @@ fun SearchScreen(
             }
         }
 
-        when {
-            showNoResults -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = stringResource(Res.string.search_no_results),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
+        SearchResultsList(
+            searchResults = searchResults,
+            submittedQuery = state.submittedQuery,
+            showNoResults = showNoResults,
+            onResultClick = { poemId -> onAction(SearchAction.OnResultClick(poemId)) },
+            listState = listState,
+        )
+    }
+
+    SearchOptionSheets(
+        state = state,
+        allLabel = allLabel,
+        showPoetPicker = showPoetPicker,
+        showCategoryPicker = showCategoryPicker,
+        onDismissPoetPicker = { showPoetPicker = false },
+        onDismissCategoryPicker = { showCategoryPicker = false },
+        onSelectPoet = { optionId -> onAction(SearchAction.OnPoetSelected(optionId)) },
+        onSelectCategory = { optionId -> onAction(SearchAction.OnCategorySelected(optionId)) },
+    )
+}
+
+@Composable
+private fun SearchResultsList(
+    searchResults: LazyPagingItems<SearchResultUi>,
+    submittedQuery: String,
+    showNoResults: Boolean,
+    onResultClick: (Int) -> Unit,
+    listState: LazyListState,
+) {
+    when {
+        showNoResults -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stringResource(Res.string.search_no_results),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
+        }
 
-            else -> {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    items(
-                        count = searchResults.itemCount,
-                        key = searchResults.itemKey { result -> result.key },
-                    ) { index ->
-                        searchResults[index]?.let { result ->
-                            SearchResultRow(
-                                result = result,
-                                submittedQuery = state.submittedQuery,
-                                onClick = { onAction(SearchAction.OnResultClick(result.poemId)) },
-                            )
-                        }
+        else -> {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                items(
+                    count = searchResults.itemCount,
+                    key = searchResults.itemKey { result -> result.key },
+                ) { index ->
+                    searchResults[index]?.let { result ->
+                        SearchResultRow(
+                            result = result,
+                            submittedQuery = submittedQuery,
+                            onClick = { onResultClick(result.poemId) },
+                        )
                     }
+                }
 
-                    if (searchResults.loadState.append is LoadState.Loading) {
-                        item {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 16.dp),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                CircularProgressIndicator()
-                            }
+                if (searchResults.loadState.append is LoadState.Loading) {
+                    item {
+                        Box(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 16.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator()
                         }
                     }
                 }
             }
         }
     }
+}
 
+@Composable
+private fun SearchOptionSheets(
+    state: SearchState,
+    allLabel: String,
+    showPoetPicker: Boolean,
+    showCategoryPicker: Boolean,
+    onDismissPoetPicker: () -> Unit,
+    onDismissCategoryPicker: () -> Unit,
+    onSelectPoet: (Int?) -> Unit,
+    onSelectCategory: (Int?) -> Unit,
+) {
     if (showPoetPicker) {
         SearchOptionSheet(
             title = stringResource(Res.string.search_choose_poet),
-            onDismiss = { showPoetPicker = false },
+            onDismiss = onDismissPoetPicker,
         ) {
             state.poetOptions.forEach { option ->
                 SearchOptionRow(
@@ -261,8 +302,8 @@ fun SearchScreen(
                     depth = 0,
                     isSelected = option.id == state.selectedPoetId,
                     onClick = {
-                        onAction(SearchAction.OnPoetSelected(option.id))
-                        showPoetPicker = false
+                        onSelectPoet(option.id)
+                        onDismissPoetPicker()
                     },
                 )
             }
@@ -272,7 +313,7 @@ fun SearchScreen(
     if (showCategoryPicker) {
         SearchOptionSheet(
             title = stringResource(Res.string.search_choose_category),
-            onDismiss = { showCategoryPicker = false },
+            onDismiss = onDismissCategoryPicker,
         ) {
             state.categoryOptions.forEach { option ->
                 SearchOptionRow(
@@ -280,8 +321,8 @@ fun SearchScreen(
                     depth = option.depth,
                     isSelected = option.id == state.selectedCategoryId,
                     onClick = {
-                        onAction(SearchAction.OnCategorySelected(option.id))
-                        showCategoryPicker = false
+                        onSelectCategory(option.id)
+                        onDismissCategoryPicker()
                     },
                 )
             }

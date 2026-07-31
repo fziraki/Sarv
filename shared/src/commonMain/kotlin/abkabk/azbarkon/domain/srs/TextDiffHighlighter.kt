@@ -12,6 +12,10 @@ data class DiffToken(
 )
 
 object TextDiffHighlighter {
+    private const val EASY_THRESHOLD = 0.95
+    private const val GOOD_THRESHOLD = 0.75
+    private const val HARD_THRESHOLD = 0.45
+
     fun normalizeForComparison(text: String): String {
         val withoutSpecials = text.replace('\u0640', ' ').replace('\u200C', ' ')
         val builder = StringBuilder(withoutSpecials.length)
@@ -56,9 +60,9 @@ object TextDiffHighlighter {
     ): abkabk.azbarkon.domain.model.memorization.SrsGrade {
         val ratio = charMatchRatio(expected, actual)
         return when {
-            ratio >= 0.95 -> abkabk.azbarkon.domain.model.memorization.SrsGrade.EASY
-            ratio >= 0.75 -> abkabk.azbarkon.domain.model.memorization.SrsGrade.GOOD
-            ratio >= 0.45 -> abkabk.azbarkon.domain.model.memorization.SrsGrade.HARD
+            ratio >= EASY_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.EASY
+            ratio >= GOOD_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.GOOD
+            ratio >= HARD_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.HARD
             else -> abkabk.azbarkon.domain.model.memorization.SrsGrade.AGAIN
         }
     }
@@ -103,15 +107,12 @@ object TextDiffHighlighter {
     fun suggestGrade(expected: String, actual: String): abkabk.azbarkon.domain.model.memorization.SrsGrade {
         val ratio = score(expected, actual)
         return when {
-            ratio >= 0.95 -> abkabk.azbarkon.domain.model.memorization.SrsGrade.EASY
-            ratio >= 0.75 -> abkabk.azbarkon.domain.model.memorization.SrsGrade.GOOD
-            ratio >= 0.45 -> abkabk.azbarkon.domain.model.memorization.SrsGrade.HARD
+            ratio >= EASY_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.EASY
+            ratio >= GOOD_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.GOOD
+            ratio >= HARD_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.HARD
             else -> abkabk.azbarkon.domain.model.memorization.SrsGrade.AGAIN
         }
     }
-
-    private fun lettersOnlyMatch(expected: String, actual: String): Boolean =
-        extractAlphabeticLetters(expected).equals(extractAlphabeticLetters(actual), ignoreCase = true)
 
     private fun splitDisplayWords(text: String): List<String> =
         text

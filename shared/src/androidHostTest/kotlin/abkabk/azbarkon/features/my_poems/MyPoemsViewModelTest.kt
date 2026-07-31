@@ -1,6 +1,6 @@
-package abkabk.azbarkon.features.my_poems
+package abkabk.azbarkon.features.mypoems
 
-import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.domain.model.MyPoemSummary
 import abkabk.azbarkon.testing.FakePoemRepository
 import abkabk.azbarkon.testing.FakeSavedPoemRepository

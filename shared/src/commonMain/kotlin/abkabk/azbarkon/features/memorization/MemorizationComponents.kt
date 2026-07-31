@@ -46,6 +46,8 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+private const val LABEL_WIDTH_FRACTION = 0.9f
+
 @Composable
 fun MemorizationHeroSection(
     modifier: Modifier = Modifier,
@@ -164,7 +166,7 @@ fun QuickStartCategoryTile(
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(0.9f),
+            modifier = Modifier.fillMaxWidth(LABEL_WIDTH_FRACTION),
         )
     }
 }

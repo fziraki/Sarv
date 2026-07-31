@@ -2,11 +2,11 @@ package abkabk.azbarkon.features.memorization.practice
 
 import abkabk.azbarkon.core.ui.keyboardAboveIme
 import abkabk.azbarkon.core.ui.rememberKeyboardLiftPx
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
-import abkabk.azbarkon.core.ui_base.ObserveAsEvents
-import abkabk.azbarkon.core.ui_base.UiText
-import abkabk.azbarkon.core.ui_base.asString
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.core.uidata.UiText
+import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
 import abkabk.azbarkon.features.memorization.practice.notifications.rememberMemorizationReviewNotificationPermissionRequester
@@ -16,6 +16,7 @@ import abkabk.azbarkon.domain.srs.DiffTokenType
 import abkabk.azbarkon.ui.components.AzbarkonButton
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.Header
+import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateDpAsState
@@ -101,6 +102,11 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlinx.coroutines.launch
 
+private const val PROGRESS_FLIP_ROTATION_DEGREES = 180f
+private val CORRECT_DIFF_COLOR = Color(0xFF2E7D32)
+private val MISSING_DIFF_COLOR = Color(0xFFF9A825)
+private val WRONG_DIFF_COLOR = Color(0xFFC62828)
+
 private val PracticePrimaryButtonHeight = 52.dp
 private val PracticeModeIconSize = 48.dp
 
@@ -165,17 +171,17 @@ fun MemorizationPracticeRoot(
 fun MemorizationPracticeScreen(
     state: MemorizationPracticeState,
     onAction: (MemorizationPracticeAction) -> Unit,
+    modifier: Modifier = Modifier,
     notificationsEnabled: Boolean = false,
     onAlarmClick: (() -> Unit)? = null,
 ) {
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         topBar = {
             Header(
                 title = stringResource(Res.string.memorization_practice_title),
                 onBackClick = { onAction(MemorizationPracticeAction.OnBackClick) },
-                onAlarmClick = onAlarmClick,
-                isAlarmEnabled = notificationsEnabled,
+                action = HeaderAction.Alarm(isEnabled = notificationsEnabled, onClick = onAlarmClick ?: {}),
             )
         },
         bottomBar = {
@@ -300,7 +306,7 @@ private fun PracticeProgressSection(
         )
         LinearProgressIndicator(
             progress = { (cardIndex.toFloat() / totalCards.coerceAtLeast(1)).coerceIn(0f, 1f) },
-            modifier = Modifier.fillMaxWidth().rotate(180f),
+            modifier = Modifier.fillMaxWidth().rotate(PROGRESS_FLIP_ROTATION_DEGREES),
             gapSize = 0.dp,
             drawStopIndicator = {}
         )
@@ -764,9 +770,9 @@ private fun DiffText(
                     if (index > 0) append(' ')
                     val color =
                         when (token.type) {
-                            DiffTokenType.CORRECT -> Color(0xFF2E7D32)
-                            DiffTokenType.MISSING -> Color(0xFFF9A825)
-                            DiffTokenType.WRONG -> Color(0xFFC62828)
+                            DiffTokenType.CORRECT -> CORRECT_DIFF_COLOR
+                            DiffTokenType.MISSING -> MISSING_DIFF_COLOR
+                            DiffTokenType.WRONG -> WRONG_DIFF_COLOR
                         }
                     pushStyle(SpanStyle(color = color))
                     append(token.text)

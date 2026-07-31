@@ -67,6 +67,8 @@ import azbarkoncmp.shared.generated.resources.profile_theme_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+private const val STATS_GRID_COLUMN_COUNT = 3
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileSheets(
@@ -88,7 +90,7 @@ fun ProfileSheets(
                     themeMode = state.themeMode,
                     onDailyBeytToggle = { onAction(ProfileAction.OnDailyBeytNotificationToggle(it)) },
                     onMemorizationReminderToggle = { onAction(ProfileAction.OnMemorizationReminderToggle(it)) },
-                    onThemeModeSelected = { onAction(ProfileAction.OnThemeModeSelected(it)) },
+                    onThemeModeSelect = { onAction(ProfileAction.OnThemeModeSelected(it)) },
                 )
 
             ProfileSheet.Badges ->
@@ -100,7 +102,7 @@ fun ProfileSheets(
             ProfileSheet.Avatar ->
                 ProfileAvatarSheetContent(
                     selectedIndex = state.avatarIndex,
-                    onAvatarSelected = { onAction(ProfileAction.OnAvatarSelected(it)) },
+                    onAvatarSelect = { onAction(ProfileAction.OnAvatarSelected(it)) },
                 )
         }
     }
@@ -113,7 +115,7 @@ private fun ProfileSettingsSheetContent(
     themeMode: ThemeMode,
     onDailyBeytToggle: (Boolean) -> Unit,
     onMemorizationReminderToggle: (Boolean) -> Unit,
-    onThemeModeSelected: (ThemeMode) -> Unit,
+    onThemeModeSelect: (ThemeMode) -> Unit,
 ) {
     Column(
         modifier =
@@ -159,17 +161,17 @@ private fun ProfileSettingsSheetContent(
             ProfileThemeOption(
                 label = stringResource(Res.string.profile_theme_system),
                 selected = themeMode == ThemeMode.System,
-                onClick = { onThemeModeSelected(ThemeMode.System) },
+                onClick = { onThemeModeSelect(ThemeMode.System) },
             )
             ProfileThemeOption(
                 label = stringResource(Res.string.profile_theme_light),
                 selected = themeMode == ThemeMode.Light,
-                onClick = { onThemeModeSelected(ThemeMode.Light) },
+                onClick = { onThemeModeSelect(ThemeMode.Light) },
             )
             ProfileThemeOption(
                 label = stringResource(Res.string.profile_theme_dark),
                 selected = themeMode == ThemeMode.Dark,
-                onClick = { onThemeModeSelected(ThemeMode.Dark) },
+                onClick = { onThemeModeSelect(ThemeMode.Dark) },
             )
         }
     }
@@ -291,7 +293,7 @@ private fun ProfileBadgesSheetContent(badges: List<BadgeUi>) {
 @Composable
 private fun ProfileAvatarSheetContent(
     selectedIndex: Int?,
-    onAvatarSelected: (Int) -> Unit,
+    onAvatarSelect: (Int) -> Unit,
 ) {
     val avatarResources = listOf(
         Res.drawable.rostam_avatar to "رستم",
@@ -311,7 +313,7 @@ private fun ProfileAvatarSheetContent(
             textAlign = TextAlign.Center,
         )
         LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
+            columns = GridCells.Fixed(STATS_GRID_COLUMN_COUNT),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxWidth().height(280.dp),
@@ -331,7 +333,7 @@ private fun ProfileAvatarSheetContent(
                                 if (isSelected) Modifier.border(3.dp, MaterialTheme.colorScheme.primary, CircleShape)
                                 else Modifier
                             )
-                            .clickable { onAvatarSelected(index) },
+                            .clickable { onAvatarSelect(index) },
                         painter = painterResource(drawable),
                         contentDescription = label,
                     )

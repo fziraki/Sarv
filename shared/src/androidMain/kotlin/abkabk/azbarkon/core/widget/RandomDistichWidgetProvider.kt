@@ -3,8 +3,8 @@ package abkabk.azbarkon.core.widget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -15,6 +15,7 @@ class RandomDistichWidgetProvider :
     private val updater: RandomDistichWidgetUpdater by inject()
     private val preferences: RandomDistichWidgetPreferences by inject()
     private val refresher: RandomDistichWidgetRefresher by inject()
+    private val ioDispatcher: CoroutineDispatcher by inject()
 
     override fun onUpdate(
         context: Context,
@@ -22,7 +23,7 @@ class RandomDistichWidgetProvider :
         appWidgetIds: IntArray,
     ) {
         val pendingResult = goAsync()
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(ioDispatcher).launch {
             try {
                 appWidgetIds.forEach { appWidgetId ->
                     updater.update(
@@ -60,7 +61,7 @@ class RandomDistichWidgetProvider :
                 if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) return
 
                 val pendingResult = goAsync()
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(ioDispatcher).launch {
                     try {
                         updater.update(
                             context = context,
@@ -77,7 +78,7 @@ class RandomDistichWidgetProvider :
             Intent.ACTION_TIMEZONE_CHANGED,
             -> {
                 val pendingResult = goAsync()
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(ioDispatcher).launch {
                     try {
                         refresher.updateAllWidgets(context.applicationContext)
                     } finally {

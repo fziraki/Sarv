@@ -29,6 +29,8 @@ import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.game_complete_poem_instruction
 import org.jetbrains.compose.resources.stringResource
 
+private const val MIN_BLANK_PARTS = 3
+
 @Composable
 fun CompletePoemContent(
     question: GameQuestion.CompletePoem,
@@ -36,7 +38,7 @@ fun CompletePoemContent(
     disabledOptionIndices: Set<Int>,
     answerPhase: QuizAnswerPhase,
     enabled: Boolean,
-    onWordSelected: (String) -> Unit,
+    onWordSelect: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val firstCorrectIndex = question.options.indexOf(question.correctWords.first)
@@ -120,7 +122,7 @@ fun CompletePoemContent(
                             Modifier
                                 .weight(1f)
                                 .gameOptionStyle(state)
-                                .clickable(enabled = clickable) { onWordSelected(word) }
+                                .clickable(enabled = clickable) { onWordSelect(word) }
                                 .padding(horizontal = 12.dp, vertical = 14.dp),
                         text =
                             completePoemOptionLabel(
@@ -165,7 +167,7 @@ private fun CompletePoemBlankedLine(
     correctWords: Pair<String, String>,
 ) {
     val parts = blankedLine.split("____")
-    if (parts.size < 3) {
+    if (parts.size < MIN_BLANK_PARTS) {
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = blankedLine,

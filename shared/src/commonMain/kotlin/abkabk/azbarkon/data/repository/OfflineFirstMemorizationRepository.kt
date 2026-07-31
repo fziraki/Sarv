@@ -210,6 +210,7 @@ class OfflineFirstMemorizationRepository(
             poemId = poemId,
             title = detail.title,
             poetName = detail.poetName,
+            categoryName = detail.categoryName,
             addedAtMillis = addedAt,
             status = ActiveMemorizationStatus.ACTIVE,
             totalCards = totalCards,

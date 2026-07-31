@@ -14,10 +14,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-object AzbarkonButtonDefaults {
-    val Shape = RoundedCornerShape(12.dp)
-}
-
 @Composable
 fun AzbarkonPrimaryButton(
     text: String,

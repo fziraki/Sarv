@@ -1,6 +1,6 @@
 package abkabk.azbarkon.core.di
 
-import abkabk.azbarkon.features.tasvir_negar.TasvirNegarViewModel
+import abkabk.azbarkon.features.tasvirNegar.TasvirNegarViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

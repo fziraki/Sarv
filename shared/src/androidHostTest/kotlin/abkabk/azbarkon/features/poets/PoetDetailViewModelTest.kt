@@ -1,6 +1,6 @@
 package abkabk.azbarkon.features.poets
 
-import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.PoetCategoryNode
 import abkabk.azbarkon.domain.model.PoetWithCategories

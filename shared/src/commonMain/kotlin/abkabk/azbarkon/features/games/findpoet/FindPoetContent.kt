@@ -42,7 +42,7 @@ fun FindPoetContent(
     disabledOptionIndices: Set<Int>,
     answerPhase: QuizAnswerPhase,
     enabled: Boolean,
-    onPoetSelected: (Int) -> Unit,
+    onPoetSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val correctIndex = question.options.indexOfFirst { it.id == question.correctPoetId }
@@ -114,7 +114,7 @@ fun FindPoetContent(
                                     .weight(1f)
                                     .gameOptionStyle(state)
                                     .clickable(enabled = clickable) {
-                                        onPoetSelected(poetOption.id)
+                                        onPoetSelect(poetOption.id)
                                     }.padding(12.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically,

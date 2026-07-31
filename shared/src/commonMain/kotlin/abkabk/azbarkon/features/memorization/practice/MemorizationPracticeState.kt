@@ -1,7 +1,7 @@
 package abkabk.azbarkon.features.memorization.practice
 
-import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
 import abkabk.azbarkon.domain.srs.DiffToken
 import androidx.compose.runtime.Stable

@@ -33,6 +33,7 @@ data class ActiveMemorizationPoem(
     val poemId: Int,
     val title: String,
     val poetName: String,
+    val categoryName: String,
     val addedAtMillis: Long,
     val status: ActiveMemorizationStatus,
     val totalCards: Int,

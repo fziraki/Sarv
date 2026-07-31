@@ -32,7 +32,7 @@ fun NextVerseContent(
     disabledOptionIndices: Set<Int>,
     answerPhase: QuizAnswerPhase,
     enabled: Boolean,
-    onOptionSelected: (Int) -> Unit,
+    onOptionSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -96,7 +96,7 @@ fun NextVerseContent(
                     Modifier
                         .fillMaxWidth()
                         .gameOptionStyle(state)
-                        .clickable(enabled = clickable) { onOptionSelected(index) }
+                        .clickable(enabled = clickable) { onOptionSelect(index) }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                 text = option,
                 style = MaterialTheme.typography.bodyMedium,

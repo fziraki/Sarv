@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.platform.LocalDensity
 
 @Composable
@@ -20,9 +19,9 @@ private fun keyboardLiftPx(): Int {
 @Composable
 actual fun rememberKeyboardLiftPx(): Int = keyboardLiftPx()
 
-actual fun Modifier.keyboardAboveIme(): Modifier =
-    composed {
-        val density = LocalDensity.current
-        val lift = keyboardLiftPx()
-        padding(bottom = with(density) { lift.toDp() })
-    }
+@Composable
+actual fun Modifier.keyboardAboveIme(): Modifier {
+    val density = LocalDensity.current
+    val lift = keyboardLiftPx()
+    return padding(bottom = with(density) { lift.toDp() })
+}

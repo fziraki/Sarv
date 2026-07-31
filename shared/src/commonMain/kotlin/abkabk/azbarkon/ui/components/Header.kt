@@ -36,15 +36,10 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun Header(
     title: String,
+    modifier: Modifier = Modifier,
     subtitle: String? = null,
     onBackClick: (() -> Unit)? = null,
-    isBookmarked: Boolean = false,
-    onBookmarkClick: (() -> Unit)? = null,
-    onClearAllClick: (() -> Unit)? = null,
-    onSearchClick: (() -> Unit)? = null,
-    onAlarmClick: (() -> Unit)? = null,
-    isAlarmEnabled: Boolean = false,
-    modifier: Modifier = Modifier,
+    action: HeaderAction? = null,
 ) {
     Row(
         modifier =
@@ -92,91 +87,80 @@ fun Header(
             }
         }
 
-        when {
-            onAlarmClick != null -> {
-                Box(
-                    modifier =
-                        Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .clickable(onClick = onAlarmClick),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.notifications),
-                        contentDescription = stringResource(Res.string.cd_memorization_review_alarm),
-                        tint =
-                            if (isAlarmEnabled) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            },
-                    )
-                }
-            }
+        if (action != null) {
+            HeaderActionButton(action)
+        } else {
+            Box(modifier = Modifier.size(40.dp))
+        }
+    }
+}
 
-            onClearAllClick != null -> {
-                Text(
-                    text = stringResource(Res.string.clear_all_title),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier =
-                        Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable(onClick = onClearAllClick)
-                            .padding(horizontal = 8.dp, vertical = 8.dp),
+@Composable
+private fun HeaderActionButton(action: HeaderAction) {
+    if (action is HeaderAction.ClearAll) {
+        Text(
+            text = stringResource(Res.string.clear_all_title),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary,
+            modifier =
+                Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable(onClick = action.onClick)
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
+        )
+        return
+    }
+
+    Box(
+        modifier =
+            Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .clickable(onClick = action.onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        when (action) {
+            is HeaderAction.Search -> {
+                Icon(
+                    painter = painterResource(Res.drawable.search),
+                    contentDescription = stringResource(Res.string.cd_search),
                 )
             }
 
-            onBookmarkClick != null -> {
-                Box(
-                    modifier =
-                        Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .clickable(onClick = onBookmarkClick),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        painter =
-                            painterResource(
-                                if (isBookmarked) {
-                                    Res.drawable.bookmark_filled
-                                } else {
-                                    Res.drawable.bookmark
-                                },
-                            ),
-                        contentDescription = stringResource(Res.string.cd_bookmark),
-                        tint =
-                            if (isBookmarked) {
-                                MaterialTheme.colorScheme.primary
+            is HeaderAction.Bookmark -> {
+                Icon(
+                    painter =
+                        painterResource(
+                            if (action.isBookmarked) {
+                                Res.drawable.bookmark_filled
                             } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
+                                Res.drawable.bookmark
                             },
-                    )
-                }
+                        ),
+                    contentDescription = stringResource(Res.string.cd_bookmark),
+                    tint =
+                        if (action.isBookmarked) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                )
             }
 
-            onSearchClick != null -> {
-
-                Box(
-                    modifier =
-                        Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .clickable(onClick = onSearchClick),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.search),
-                        contentDescription = stringResource(Res.string.cd_search)
-                    )
-                }
+            is HeaderAction.Alarm -> {
+                Icon(
+                    painter = painterResource(Res.drawable.notifications),
+                    contentDescription = stringResource(Res.string.cd_memorization_review_alarm),
+                    tint =
+                        if (action.isEnabled) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                )
             }
 
-            else -> {
-                Box(modifier = Modifier.size(40.dp))
-            }
+            is HeaderAction.ClearAll -> Unit
         }
     }
 }

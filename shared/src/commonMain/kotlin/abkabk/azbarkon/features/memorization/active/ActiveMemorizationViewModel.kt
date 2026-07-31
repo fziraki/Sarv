@@ -2,9 +2,9 @@ package abkabk.azbarkon.features.memorization.active
 
 import abkabk.azbarkon.core.domain.result.onFailure
 import abkabk.azbarkon.core.domain.result.onSuccess
-import abkabk.azbarkon.core.ui_base.BaseViewModel
-import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.uidata.BaseViewModel
+import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.domain.model.memorization.ActiveMemorizationPoem
 import abkabk.azbarkon.domain.repository.MemorizationRepository
 import androidx.lifecycle.viewModelScope

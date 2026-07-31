@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 
+private const val DRAG_SHADOW_ELEVATION = 8f
+
 private val RowSpacing = 8.dp
 private val DragReorderThreshold = 48.dp
 
@@ -106,7 +108,7 @@ fun ReorderablePoemLines(
                             scaleX = dragScale
                             scaleY = dragScale
                             if (isDragging) {
-                                shadowElevation = 8f
+                                shadowElevation = DRAG_SHADOW_ELEVATION
                             }
                         }.then(
                             if (enabled && !isPinned) {
@@ -125,16 +127,14 @@ fun ReorderablePoemLines(
                                         var fromIndex = currentItems.indexOf(itemId)
                                         while (fromIndex >= 0 && accumulatedDragY >= thresholdPx) {
                                             val toIndex = resolveToIndex(fromIndex, direction = 1)
-                                            if (toIndex !in currentItems.indices) break
-                                            if (isLocked(toIndex)) break
+                                            if (toIndex !in currentItems.indices || isLocked(toIndex)) break
                                             currentOnReorder(fromIndex, toIndex)
                                             accumulatedDragY -= thresholdPx
                                             fromIndex = currentItems.indexOf(itemId)
                                         }
                                         while (fromIndex >= 0 && accumulatedDragY <= -thresholdPx) {
                                             val toIndex = resolveToIndex(fromIndex, direction = -1)
-                                            if (toIndex !in currentItems.indices) break
-                                            if (isLocked(toIndex)) break
+                                            if (toIndex !in currentItems.indices || isLocked(toIndex)) break
                                             currentOnReorder(fromIndex, toIndex)
                                             accumulatedDragY += thresholdPx
                                             fromIndex = currentItems.indexOf(itemId)

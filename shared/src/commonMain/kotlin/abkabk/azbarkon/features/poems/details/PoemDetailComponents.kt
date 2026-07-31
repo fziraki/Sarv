@@ -50,8 +50,8 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun PoemVerseItem(
     verse: PoemVerseUi,
-    highlightQuery: String = "",
     modifier: Modifier = Modifier,
+    highlightQuery: String = "",
 ) {
     when (verse.positionType) {
         PoemVersePositionType.Comment -> {
@@ -317,9 +317,9 @@ private fun PoemActionItem(
     label: StringResource,
     contentDescription: StringResource,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     tint: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     labelColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier =

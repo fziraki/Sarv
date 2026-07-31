@@ -111,6 +111,7 @@ kotlin {
 
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
+    lintChecks(libs.compose.lint.checks)
 }
 
 sqldelight {

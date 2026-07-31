@@ -11,8 +11,8 @@ class StubUserRepository : UserRepository {
     override suspend fun getUserInfo(): Result<UserInfo, DataError> =
         Result.Success(
             UserInfo(
-                completedLevel = GameLevel(id = 3, name = "همنشین غزل", 900),
-                inProgressLevel = GameLevel(id = 4, name = "حافظ ابیات", 900),
+                completedLevel = GameLevel(id = 3, name = "همنشین غزل", totalScore = 900),
+                inProgressLevel = GameLevel(id = 4, name = "حافظ ابیات", totalScore = 900),
                 currentScore = 700,
                 streakNumber = 18,
                 poetsNumber = 12,

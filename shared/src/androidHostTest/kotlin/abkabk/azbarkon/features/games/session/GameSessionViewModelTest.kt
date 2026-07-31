@@ -5,7 +5,6 @@ import abkabk.azbarkon.domain.model.games.GameConstants
 import abkabk.azbarkon.domain.model.games.GameGenerationCache
 import abkabk.azbarkon.domain.model.games.GameQuestion
 import abkabk.azbarkon.domain.model.games.GameType
-import abkabk.azbarkon.domain.model.games.baseScore
 import abkabk.azbarkon.domain.model.games.OrganizeLine
 import abkabk.azbarkon.domain.repository.GamesRepository
 import abkabk.azbarkon.testing.FakeUserPreferencesRepository
@@ -540,7 +539,7 @@ class GameSessionViewModelTest {
             viewModel.onAction(GameSessionAction.OnCheckAnswerClick)
 
             assertThat(viewModel.state.value.answerPhase).isEqualTo(QuizAnswerPhase.Correct)
-            assertThat(viewModel.state.value.sessionScoreDelta).isEqualTo(GameType.ORGANIZE_POEM.baseScore())
+            assertThat(viewModel.state.value.sessionScoreDelta).isEqualTo(GameType.ORGANIZE_POEM.baseScore)
         }
 
     @Test

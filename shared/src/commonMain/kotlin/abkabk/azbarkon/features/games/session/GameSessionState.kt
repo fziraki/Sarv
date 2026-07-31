@@ -1,6 +1,6 @@
 package abkabk.azbarkon.features.games.session
 
-import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.domain.model.games.GameConstants
 import abkabk.azbarkon.domain.model.games.GameQuestion
 import abkabk.azbarkon.domain.model.games.GameType
@@ -54,7 +54,7 @@ data class GameSessionState(
 
     val hasSelection: Boolean
         get() =
-            when (val question = currentQuestion) {
+            when (currentQuestion) {
                 is GameQuestion.NextVerse -> selectedOptionIndex != null
                 is GameQuestion.FindPoet -> selectedPoetId != null
                 is GameQuestion.CompletePoem -> filledWords.isNotEmpty()

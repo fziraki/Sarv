@@ -1,6 +1,6 @@
 package abkabk.azbarkon.features.profile
 
-import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.domain.model.ThemeMode
 import abkabk.azbarkon.domain.model.profile.BadgeUi
 import abkabk.azbarkon.domain.model.profile.GameProfileStats
@@ -17,14 +17,14 @@ data class ProfileState(
     val themeMode: ThemeMode = ThemeMode.System,
     val isDailyBeytNotificationEnabled: Boolean = false,
     val isMemorizationReminderEnabled: Boolean = true,
-    val levelProgress: ProfileLevelProgress = ProfileLevelProgress(1, "", 0, 900),
+    val levelProgress: ProfileLevelProgress = ProfileLevelProgress(levelId = 1, levelName = "", currentXp = 0, targetXp = 900),
     val memorizationStats: MemorizationProfileStats = MemorizationProfileStats(),
     val gameStats: GameProfileStats = GameProfileStats(),
     val previewBadges: List<BadgeUi> = emptyList(),
     val allBadges: List<BadgeUi> = emptyList(),
     val allLevels: List<LevelListItemUi> = emptyList(),
     val reviewedVersesCount: Int = 0,
-    val hasCompletedMemorizationPoem: Boolean = false,
+    val hasCompletedGhazal: Boolean = false,
     val avatarIndex: Int = -1,
 )
 
@@ -66,7 +66,7 @@ sealed interface ProfileAction {
 
 sealed interface ProfileEvent {
     data class ShowSnackbar(
-        val message: abkabk.azbarkon.core.ui_base.UiText,
+        val message: abkabk.azbarkon.core.uidata.UiText,
     ) : ProfileEvent
 
     data object RequestNotificationPermission : ProfileEvent

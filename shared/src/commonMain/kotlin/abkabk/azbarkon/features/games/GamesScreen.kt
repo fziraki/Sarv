@@ -1,9 +1,8 @@
 package abkabk.azbarkon.features.games
 
 import abkabk.azbarkon.domain.model.games.GameType
-import abkabk.azbarkon.domain.model.games.baseScore
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.features.games.navigation.toRoute
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -53,6 +52,9 @@ import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+private const val GAME_CARD_IMAGE_WEIGHT = 0.3f
+private const val GAME_CARD_CONTENT_WEIGHT = 0.7f
+
 @Composable
 fun GamesRoot(
     onNavigateToGame: (GameType) -> Unit,
@@ -65,9 +67,10 @@ fun GamesRoot(
 @Composable
 fun GamesScreen(
     onNavigateToGame: (GameType) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp),
     ) {
@@ -122,25 +125,27 @@ fun GameItem(
     desc: StringResource,
     icon: DrawableResource,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier =
-            Modifier
-                .clickable {
-                    onClick()
-                }.fillMaxWidth()
+            modifier
+                .fillMaxWidth()
                 .height(IntrinsicSize.Min)
                 .clip(RoundedCornerShape(12.dp))
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     shape = RoundedCornerShape(12.dp),
-                ),
+                )
+                .clickable {
+                    onClick()
+                },
     ) {
         Image(
             modifier =
                 Modifier
-                    .weight(0.3f)
+                    .weight(GAME_CARD_IMAGE_WEIGHT)
                     .fillMaxHeight()
                     .background(
                         color = MaterialTheme.colorScheme.secondary,
@@ -157,7 +162,7 @@ fun GameItem(
         Column(
             modifier =
                 Modifier
-                    .weight(0.7f)
+                    .weight(GAME_CARD_CONTENT_WEIGHT)
                     .background(
                         color = MaterialTheme.colorScheme.surfaceContainer,
                     ).padding(16.dp),
@@ -188,7 +193,7 @@ fun GameItem(
                             color = MaterialTheme.colorScheme.tertiary,
                             shape = RoundedCornerShape(8.dp),
                         ).padding(horizontal = 8.dp, vertical = 4.dp),
-                text = "${gameType.baseScore()} امتیاز ",
+                text = "${gameType.baseScore} امتیاز ",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.End,
