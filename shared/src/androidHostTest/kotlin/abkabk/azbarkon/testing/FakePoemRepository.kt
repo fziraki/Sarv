@@ -5,6 +5,7 @@ import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.core.paging.DEFAULT_PAGING_CONFIG
 import abkabk.azbarkon.data.paging.PagingLoadException
 import abkabk.azbarkon.domain.model.MyPoemSummary
+import abkabk.azbarkon.domain.model.PoemAudioTrack
 import abkabk.azbarkon.domain.model.PoemDetail
 import abkabk.azbarkon.domain.model.PoemSummary
 import abkabk.azbarkon.domain.repository.PoemRepository
@@ -70,4 +71,7 @@ class FakePoemRepository : PoemRepository {
             poemDetails[poemId]?.let { Result.Success(it) }
                 ?: Result.Error(DataError.Local.NOT_FOUND)
         }
+
+    override suspend fun getPoemRecitations(poemId: Int): Result<List<PoemAudioTrack>, DataError.Network> =
+        Result.Success(emptyList())
 }

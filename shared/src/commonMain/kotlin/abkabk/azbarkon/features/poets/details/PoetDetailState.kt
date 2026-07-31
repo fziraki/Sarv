@@ -12,6 +12,7 @@ data class PoetDetailState(
     val bio: String = "",
     val imageUrl: String? = null,
     val categories: List<PoetCategoryRowUi> = emptyList(),
+    val canChat: Boolean = false,
 )
 
 sealed interface PoetDetailAction {

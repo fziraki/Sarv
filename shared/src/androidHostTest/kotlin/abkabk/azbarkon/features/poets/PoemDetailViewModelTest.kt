@@ -8,6 +8,7 @@ import abkabk.azbarkon.features.poems.details.PoemDetailAction
 import abkabk.azbarkon.features.poems.details.PoemDetailEvent
 import abkabk.azbarkon.features.poems.details.PoemDetailViewModel
 import abkabk.azbarkon.features.poems.details.PoemVersePositionType
+import abkabk.azbarkon.testing.FakeAudioPlayer
 import abkabk.azbarkon.testing.FakeMemorizationRepository
 import abkabk.azbarkon.testing.FakeSavedPoemRepository
 import abkabk.azbarkon.testing.FakePoemRepository
@@ -62,6 +63,7 @@ class PoemDetailViewModelTest {
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
+                    player = FakeAudioPlayer(),
                 )
 
             val state = viewModel.state.value
@@ -89,6 +91,7 @@ class PoemDetailViewModelTest {
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
+                    player = FakeAudioPlayer(),
                 )
 
             viewModel.onAction(PoemDetailAction.OnLikeClick)
@@ -110,6 +113,7 @@ class PoemDetailViewModelTest {
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
+                    player = FakeAudioPlayer(),
                 )
 
             viewModel.onAction(PoemDetailAction.OnBookmarkClick)
@@ -131,6 +135,7 @@ class PoemDetailViewModelTest {
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
+                    player = FakeAudioPlayer(),
                 )
 
             viewModel.onAction(PoemDetailAction.OnFindQueryChange("الا"))
@@ -155,6 +160,7 @@ class PoemDetailViewModelTest {
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
+                    player = FakeAudioPlayer(),
                 )
 
             viewModel.events.test {
@@ -186,6 +192,7 @@ class PoemDetailViewModelTest {
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
+                    player = FakeAudioPlayer(),
                 )
 
             viewModel.onAction(PoemDetailAction.OnSearchClick)
@@ -209,6 +216,7 @@ class PoemDetailViewModelTest {
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
                     poemId = 77,
+                    player = FakeAudioPlayer(),
                 )
 
             viewModel.onAction(PoemDetailAction.OnSearchClick)
@@ -240,6 +248,7 @@ class PoemDetailViewModelTest {
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = shareService,
                     poemId = 77,
+                    player = FakeAudioPlayer(),
                 )
 
             viewModel.onAction(PoemDetailAction.OnShareClick)

@@ -7,6 +7,7 @@ import abkabk.azbarkon.core.ui_base.UiScreenState
 import abkabk.azbarkon.core.ui_base.toUiText
 import abkabk.azbarkon.domain.model.PoetCategoryNode
 import abkabk.azbarkon.domain.repository.PoetRepository
+import abkabk.azbarkon.features.poets.GHAZAL_CATEGORY
 import abkabk.azbarkon.features.poets.flattenPoetCategories
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
@@ -65,6 +66,7 @@ class PoetDetailViewModel(
                             name = poetWithCategories.poet.name.orEmpty(),
                             bio = poetWithCategories.poet.description.orEmpty(),
                             imageUrl = poetWithCategories.poet.imageUrl,
+                            canChat = poetWithCategories.categories.any { it.text == GHAZAL_CATEGORY },
                             categories =
                                 flattenPoetCategories(
                                     nodes = categoryTree,

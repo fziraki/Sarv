@@ -237,6 +237,7 @@
     <string name="chat_with_poet">گفتگو با شاعر</string>
     <string name="cd_chat">گفتگو با شاعر</string>
     <string name="cd_send_message">ارسال پیام</string>
+    <string name="chat_persian_only">با حروف فارسی چت کنید</string>
 
     <string name="tasvir_negar_save">ذخیره</string>
     <string name="tasvir_negar_saved">با موفقیت ذخیره شد</string>

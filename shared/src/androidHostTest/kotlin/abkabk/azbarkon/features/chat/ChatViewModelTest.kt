@@ -15,6 +15,7 @@ import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.chat_persian_only
 import azbarkoncmp.shared.generated.resources.poem_copied
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -88,20 +89,27 @@ class ChatViewModelTest {
         }
 
     @Test
-    fun `invalid message gets emoji fallback`() =
+    fun `non persian input shows snackbar and does not send`() =
         runTest {
             val viewModel =
                 createViewModel(
                     replyDelayMillis = 0L,
                 )
 
-            viewModel.onAction(ChatAction.OnInputChange("???"))
-            viewModel.onAction(ChatAction.OnSendClick)
-            advanceUntilIdle()
+            viewModel.events.test {
+                viewModel.onAction(ChatAction.OnInputChange("hello"))
+                viewModel.onAction(ChatAction.OnSendClick)
+                advanceUntilIdle()
 
-            val poetMessage = viewModel.state.value.messages.last()
-            assertThat(poetMessage.isFromUser).isFalse()
-            assertThat(poetMessage.text).isEqualTo("😐\n\n???")
+                assertThat(viewModel.state.value.messages).hasSize(0)
+                assertThat(viewModel.state.value.isPoetTyping).isFalse()
+                assertThat(viewModel.state.value.inputText).isEqualTo("hello")
+                assertThat(awaitItem()).isEqualTo(
+                    ChatEvent.ShowSnackbar(
+                        UiText.Resource(Res.string.chat_persian_only),
+                    ),
+                )
+            }
         }
 
     @Test

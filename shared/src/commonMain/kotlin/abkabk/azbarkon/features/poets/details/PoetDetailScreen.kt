@@ -207,24 +207,26 @@ private fun PoetDetailHero(
             textAlign = TextAlign.Center,
         )
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier =
-                Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .clickable { onAction(PoetDetailAction.OnChatClick) }
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
-        ) {
-            Text(
-                text = stringResource(Res.string.chat_with_poet),
-                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
-                color = MaterialTheme.colorScheme.primaryContainer
-            )
-            Icon(
-                painter = painterResource(Res.drawable.chat_bubble),
-                contentDescription = stringResource(Res.string.cd_chat),
-                tint = MaterialTheme.colorScheme.primaryContainer
-            )
+        if (state.canChat) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier =
+                    Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable { onAction(PoetDetailAction.OnChatClick) }
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+            ) {
+                Text(
+                    text = stringResource(Res.string.chat_with_poet),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
+                    color = MaterialTheme.colorScheme.primaryContainer
+                )
+                Icon(
+                    painter = painterResource(Res.drawable.chat_bubble),
+                    contentDescription = stringResource(Res.string.cd_chat),
+                    tint = MaterialTheme.colorScheme.primaryContainer
+                )
+            }
         }
 
         if (state.bio.isNotBlank()) {

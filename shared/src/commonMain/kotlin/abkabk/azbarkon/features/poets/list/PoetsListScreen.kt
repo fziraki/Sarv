@@ -210,16 +210,18 @@ private fun FeaturedPoetCard(
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
-            Icon(
-                painter = painterResource(Res.drawable.chat_bubble),
-                contentDescription = stringResource(Res.string.cd_chat),
-                tint = MaterialTheme.colorScheme.surface,
-                modifier =
-                    Modifier
-                        .clip(CircleShape)
-                        .clickable(onClick = onChatClick)
-                        .padding(4.dp),
-            )
+            if (poet.canChat) {
+                Icon(
+                    painter = painterResource(Res.drawable.chat_bubble),
+                    contentDescription = stringResource(Res.string.cd_chat),
+                    tint = MaterialTheme.colorScheme.surface,
+                    modifier =
+                        Modifier
+                            .clip(CircleShape)
+                            .clickable(onClick = onChatClick)
+                            .padding(4.dp),
+                )
+            }
 
             AzbarkonSecondaryButton(
                 text = stringResource(Res.string.poets_view_works),
@@ -284,16 +286,18 @@ private fun PoetListRow(
             }
         }
 
-        Icon(
-            painter = painterResource(Res.drawable.chat_bubble),
-            contentDescription = stringResource(Res.string.cd_chat),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier =
-                Modifier
-                    .clip(CircleShape)
-                    .clickable(onClick = onChatClick)
-                    .padding(4.dp),
-        )
+        if (poet.canChat) {
+            Icon(
+                painter = painterResource(Res.drawable.chat_bubble),
+                contentDescription = stringResource(Res.string.cd_chat),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier =
+                    Modifier
+                        .clip(CircleShape)
+                        .clickable(onClick = onChatClick)
+                        .padding(4.dp),
+            )
+        }
     }
 }
 
@@ -311,6 +315,7 @@ private fun PoetsListScreenPreview() {
                                 name = "سعدی شیرازی",
                                 worksSummary = "گلستان و 1 اثر دیگر",
                                 imageUrl = null,
+                                canChat = false,
                             ),
                         ),
                     featuredPoet =
@@ -320,6 +325,7 @@ private fun PoetsListScreenPreview() {
                             description = "غزل‌سرای بزرگ ایران",
                             stats = "قطعات و 4 اثر دیگر",
                             imageUrl = null,
+                            canChat = true,
                         ),
                 ),
             onAction = {},
