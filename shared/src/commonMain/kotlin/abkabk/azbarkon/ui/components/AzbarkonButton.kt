@@ -2,7 +2,6 @@ package abkabk.azbarkon.ui.components
 
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -39,30 +38,6 @@ fun AzbarkonPrimaryButton(
 }
 
 @Composable
-fun AzbarkonSecondaryButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    textStyle: TextStyle = MaterialTheme.typography.labelMedium,
-) {
-    AzbarkonButton(
-        text = text,
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-        textStyle = textStyle,
-        colors =
-            ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.primary,
-                disabledContainerColor = MaterialTheme.colorScheme.surface,
-                disabledContentColor = MaterialTheme.colorScheme.primary,
-            ),
-    )
-}
-
-@Composable
 fun AzbarkonButton(
     text: String,
     onClick: () -> Unit,
@@ -93,17 +68,6 @@ private fun AzbarkonPrimaryButtonPreview() {
             text = "تمرین حفظ این شعر",
             onClick = {},
             modifier = Modifier.height(52.dp),
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun AzbarkonSecondaryButtonPreview() {
-    AzbarkonTheme {
-        AzbarkonSecondaryButton(
-            text = "مشاهده آثار",
-            onClick = {},
         )
     }
 }

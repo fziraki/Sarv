@@ -220,12 +220,12 @@ private fun PoetDetailHero(
                 Text(
                     text = stringResource(Res.string.chat_with_poet),
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
-                    color = MaterialTheme.colorScheme.primaryContainer
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
                 Icon(
                     painter = painterResource(Res.drawable.chat_bubble),
                     contentDescription = stringResource(Res.string.cd_chat),
-                    tint = MaterialTheme.colorScheme.primaryContainer
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
         }
@@ -271,7 +271,7 @@ private fun PoetBioText(
                         .clickable { isExpanded = true },
                 text = stringResource(Res.string.poet_bio_read_more),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 textAlign = TextAlign.Center,
             )
         }

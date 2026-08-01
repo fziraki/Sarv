@@ -7,8 +7,9 @@ import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.poets.FeaturedPoetUi
 import abkabk.azbarkon.features.poets.PoetListItemUi
-import abkabk.azbarkon.ui.components.AzbarkonSecondaryButton
+import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -43,8 +44,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.chat_bubble
 import azbarkoncmp.shared.generated.resources.cd_chat
+import azbarkoncmp.shared.generated.resources.chat_bubble
 import azbarkoncmp.shared.generated.resources.poets_filter_placeholder
 import azbarkoncmp.shared.generated.resources.poets_view_works
 import org.jetbrains.compose.resources.painterResource
@@ -196,7 +197,7 @@ private fun FeaturedPoetCard(
                         modifier = Modifier.fillMaxWidth(),
                         text = poet.stats,
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        color = LightColorScheme.secondaryContainer,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -214,7 +215,7 @@ private fun FeaturedPoetCard(
                 Icon(
                     painter = painterResource(Res.drawable.chat_bubble),
                     contentDescription = stringResource(Res.string.cd_chat),
-                    tint = MaterialTheme.colorScheme.surface,
+                    tint = LightColorScheme.secondaryContainer,
                     modifier =
                         Modifier
                             .clip(CircleShape)
@@ -223,7 +224,7 @@ private fun FeaturedPoetCard(
                 )
             }
 
-            AzbarkonSecondaryButton(
+            AzbarkonPrimaryButton(
                 text = stringResource(Res.string.poets_view_works),
                 onClick = onClick,
                 modifier = Modifier.fillMaxWidth(),

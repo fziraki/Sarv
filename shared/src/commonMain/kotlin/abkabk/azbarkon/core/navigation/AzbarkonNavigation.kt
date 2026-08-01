@@ -27,6 +27,7 @@ import abkabk.azbarkon.features.search.navigation.navigateToSearch
 import abkabk.azbarkon.features.search.navigation.searchGraph
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -54,6 +55,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -62,7 +64,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.app_name
 import azbarkoncmp.shared.generated.resources.arrow_back_right
+import azbarkoncmp.shared.generated.resources.azbarkontxt
 import azbarkoncmp.shared.generated.resources.cd_back
 import azbarkoncmp.shared.generated.resources.cd_search
 import azbarkoncmp.shared.generated.resources.cd_settings
@@ -118,10 +122,25 @@ private fun AzbarkonTopBar(
             modifier = Modifier.align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = currentItem?.headerTitle?.let { stringResource(it) } ?: "",
-                style = MaterialTheme.typography.headlineLarge,
-            )
+
+            currentItem?.headerTitle?.let {
+
+                if (it == Res.string.app_name){
+                    Image(
+                        painter = painterResource(Res.drawable.azbarkontxt),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
+                    )
+                }else{
+                    Text(
+                        text = stringResource(it),
+                        style = MaterialTheme.typography.headlineLarge,
+                    )
+                }
+
+            }
+
+
 
             currentItem?.subtitle?.let {
                 Text(
