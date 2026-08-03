@@ -342,7 +342,7 @@ private fun SearchQueryField(
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,
@@ -400,9 +400,9 @@ private fun SearchPickerField(
                 .clip(RoundedCornerShape(14.dp))
                 .background(
                     if (enabled) {
-                        MaterialTheme.colorScheme.surfaceContainerHigh
+                        MaterialTheme.colorScheme.surfaceVariant
                     } else {
-                        MaterialTheme.colorScheme.surfaceContainerLow
+                        MaterialTheme.colorScheme.surfaceVariant
                     },
                 ).border(
                     width = 1.dp,
@@ -444,7 +444,7 @@ private fun SearchResultRow(
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,

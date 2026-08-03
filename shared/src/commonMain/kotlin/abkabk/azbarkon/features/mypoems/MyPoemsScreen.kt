@@ -309,7 +309,7 @@ private fun MyPoemRow(
             Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,

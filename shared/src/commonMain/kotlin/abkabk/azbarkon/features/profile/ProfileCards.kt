@@ -4,6 +4,7 @@ import abkabk.azbarkon.domain.model.profile.BadgeUi
 import abkabk.azbarkon.domain.model.profile.GameProfileStats
 import abkabk.azbarkon.domain.model.profile.MemorizationProfileStats
 import abkabk.azbarkon.domain.model.profile.ProfileLevelProgress
+import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -127,7 +128,7 @@ fun ProfileHeader(
             )
             Box(modifier = Modifier.size(3.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.scrim,
+                    color = MaterialTheme.colorScheme.onSurface,
                     shape = CircleShape
                 ))
             Text(
@@ -163,8 +164,7 @@ fun ProfileHeader(
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp)
                         .height(8.dp),
-                color = ProgressIndicatorDefaults.linearColor,
-                trackColor = ProgressIndicatorDefaults.linearTrackColor,
+                trackColor = LightColorScheme.outlineVariant,
                 strokeCap = StrokeCap.Round,
                 drawStopIndicator = {},
                 gapSize = (-4).dp,
@@ -229,7 +229,7 @@ private fun ProfileStatusCard(
             modifier
                 .fillMaxWidth()
                 .background(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     shape = RoundedCornerShape(12.dp),
                 ).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -238,7 +238,7 @@ private fun ProfileStatusCard(
             modifier = Modifier.fillMaxWidth(),
             text = title,
             style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Start,
         )
 
@@ -258,7 +258,7 @@ private fun ProfileStatusCard(
                     VerticalDivider(
                         modifier = Modifier.fillMaxHeight(),
                         thickness = 1.dp,
-                        color = MaterialTheme.colorScheme.surface,
+                        color = MaterialTheme.colorScheme.outlineVariant,
                     )
                 }
             }
@@ -279,13 +279,13 @@ private fun ProfileStatItem(
     ) {
         Text(
             text = value.toString(),
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
         )
         Text(
             text = label,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
         )
@@ -303,7 +303,7 @@ fun ProfileBadges(
             modifier
                 .fillMaxWidth()
                 .background(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     shape = RoundedCornerShape(12.dp),
                 ).padding(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -313,7 +313,7 @@ fun ProfileBadges(
             modifier = Modifier.clickable(onClick = onViewAllClick).padding(end = 16.dp),
             text = stringResource(Res.string.profile_view_all_badges),
             style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.End,
         )
 

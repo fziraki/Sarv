@@ -91,14 +91,14 @@ private data class ChatColors(
 @Composable
 private fun chatColors(colorScheme: ColorScheme = MaterialTheme.colorScheme): ChatColors =
     ChatColors(
-        userBubble = colorScheme.secondaryFixed,
-        userBubbleText = colorScheme.onSecondaryFixed,
-        poetBubble = colorScheme.tertiaryContainer,
-        poetBubbleText = colorScheme.onTertiaryContainer,
+        userBubble = colorScheme.surfaceVariant,
+        userBubbleText = colorScheme.onSurfaceVariant,
+        poetBubble = colorScheme.tertiary,
+        poetBubbleText = colorScheme.onTertiary,
         poetBubbleBorder = colorScheme.outlineVariant,
         accent = colorScheme.primary,
         onAccent = colorScheme.onPrimary,
-        inputBackground = colorScheme.surfaceContainerLow,
+        inputBackground = colorScheme.surfaceVariant,
         inputBorder = colorScheme.outlineVariant,
         inputText = colorScheme.onSurface,
         inputPlaceholder = colorScheme.onSurfaceVariant,

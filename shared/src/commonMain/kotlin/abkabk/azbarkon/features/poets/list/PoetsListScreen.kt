@@ -7,6 +7,7 @@ import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.poets.FeaturedPoetUi
 import abkabk.azbarkon.features.poets.PoetListItemUi
+import abkabk.azbarkon.ui.components.AzbarkonButton
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import abkabk.azbarkon.ui.theme.LightColorScheme
@@ -25,6 +26,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -157,7 +159,7 @@ private fun FeaturedPoetCard(
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(LightColorScheme.primary)
                 .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
@@ -183,12 +185,12 @@ private fun FeaturedPoetCard(
                 Text(
                     text = poet.name,
                     style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = LightColorScheme.onPrimary,
                 )
                 Text(
                     text = poet.description,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.9f),
+                    color = LightColorScheme.onPrimary.copy(alpha = 0.9f),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -197,7 +199,7 @@ private fun FeaturedPoetCard(
                         modifier = Modifier.fillMaxWidth(),
                         text = poet.stats,
                         style = MaterialTheme.typography.labelMedium,
-                        color = LightColorScheme.secondaryContainer,
+                        color = LightColorScheme.surfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -215,7 +217,7 @@ private fun FeaturedPoetCard(
                 Icon(
                     painter = painterResource(Res.drawable.chat_bubble),
                     contentDescription = stringResource(Res.string.cd_chat),
-                    tint = LightColorScheme.secondaryContainer,
+                    tint = LightColorScheme.surfaceVariant,
                     modifier =
                         Modifier
                             .clip(CircleShape)
@@ -224,9 +226,15 @@ private fun FeaturedPoetCard(
                 )
             }
 
-            AzbarkonPrimaryButton(
+            AzbarkonButton(
                 text = stringResource(Res.string.poets_view_works),
                 onClick = onClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = LightColorScheme.secondary,
+                    contentColor = LightColorScheme.onSecondary,
+                    disabledContainerColor = LightColorScheme.secondary,
+                    disabledContentColor = LightColorScheme.onSecondary,
+                ),
                 modifier = Modifier.fillMaxWidth(),
             )
         }
@@ -246,7 +254,7 @@ private fun PoetListRow(
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,

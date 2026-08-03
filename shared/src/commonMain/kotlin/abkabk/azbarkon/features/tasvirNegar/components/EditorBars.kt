@@ -1,7 +1,7 @@
 package abkabk.azbarkon.features.tasvirNegar.components
 
 import abkabk.azbarkon.core.designsystem.secondary
-import abkabk.azbarkon.core.designsystem.secondaryFixed
+import abkabk.azbarkon.core.designsystem.surfaceVariant
 import abkabk.azbarkon.features.tasvirNegar.TasvirNegarAction
 import abkabk.azbarkon.features.tasvirNegar.model.TasvirNegarColors
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
@@ -310,7 +310,7 @@ fun VerticalSizeSlider(
                                 Modifier
                                     .size(thumbSize)
                                     .background(
-                                        color = secondaryFixed,
+                                        color = surfaceVariant,
                                         shape = CircleShape,
                                     ),
                         )

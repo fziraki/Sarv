@@ -11,6 +11,7 @@ import abkabk.azbarkon.features.poets.list.PoetsSectionTitle
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -187,7 +188,7 @@ private fun PoetDetailHero(
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,
@@ -220,12 +221,12 @@ private fun PoetDetailHero(
                 Text(
                     text = stringResource(Res.string.chat_with_poet),
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 Icon(
                     painter = painterResource(Res.drawable.chat_bubble),
                     contentDescription = stringResource(Res.string.cd_chat),
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
         }
@@ -271,7 +272,7 @@ private fun PoetBioText(
                         .clickable { isExpanded = true },
                 text = stringResource(Res.string.poet_bio_read_more),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
             )
         }

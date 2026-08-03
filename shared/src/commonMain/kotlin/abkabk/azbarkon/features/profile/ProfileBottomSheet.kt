@@ -24,6 +24,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchColors
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -32,6 +34,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -70,6 +73,7 @@ fun ProfileSheets(
     ModalBottomSheet(
         onDismissRequest = { onAction(ProfileAction.OnDismissSheet) },
         sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
         when (sheet) {
             ProfileSheet.Settings ->
@@ -172,7 +176,7 @@ private fun ProfileSettingToggleRow(
             Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -181,7 +185,15 @@ private fun ProfileSettingToggleRow(
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
             Switch(
                 checked = checked,
-                onCheckedChange = onCheckedChange
+                onCheckedChange = onCheckedChange,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.primary,
+                    checkedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    checkedBorderColor = MaterialTheme.colorScheme.tertiary,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.tertiary,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    uncheckedBorderColor = MaterialTheme.colorScheme.tertiary,
+                )
             )
         }
 
@@ -219,9 +231,9 @@ private fun ProfileThemeOption(
                 .clip(RoundedCornerShape(12.dp))
                 .background(
                     if (selected) {
-                        MaterialTheme.colorScheme.primaryContainer
+                        MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.surfaceContainerHigh
+                        MaterialTheme.colorScheme.surfaceVariant
                     },
                 ).clickable(onClick = onClick)
                 .padding(horizontal = 16.dp, vertical = 12.dp),
@@ -233,7 +245,7 @@ private fun ProfileThemeOption(
             style = MaterialTheme.typography.bodyLarge,
             color =
                 if (selected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
+                    MaterialTheme.colorScheme.onPrimary
                 } else {
                     MaterialTheme.colorScheme.onSurface
                 },
@@ -301,8 +313,8 @@ private fun ProfileLevelsSheetContent(levels: List<LevelListItemUi>) {
 private fun ProfileLevelRow(item: LevelListItemUi) {
     val backgroundColor =
         when (item.state) {
-            LevelRowState.Current -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f)
-            else -> MaterialTheme.colorScheme.surfaceContainerHigh
+            LevelRowState.Current -> MaterialTheme.colorScheme.primary.copy(alpha = 0.45f)
+            else -> MaterialTheme.colorScheme.surfaceVariant
         }
     val subtitle =
         if (item.level.id == 1) {

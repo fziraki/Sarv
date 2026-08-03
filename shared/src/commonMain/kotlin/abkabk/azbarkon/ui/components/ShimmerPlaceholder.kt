@@ -19,8 +19,8 @@ private const val GRADIENT_LENGTH = 300f
 
 @Composable
 fun ShimmerPlaceholder(modifier: Modifier = Modifier) {
-    val baseColor = MaterialTheme.colorScheme.surfaceContainerHigh
-    val highlightColor = MaterialTheme.colorScheme.surfaceContainerHighest
+    val baseColor = MaterialTheme.colorScheme.surfaceVariant
+    val highlightColor = MaterialTheme.colorScheme.surfaceVariant
     val transition = rememberInfiniteTransition(label = "shimmer")
     val translate by transition.animateFloat(
         initialValue = -400f,

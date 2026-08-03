@@ -145,7 +145,7 @@ private fun GameResultScoreCard(
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(MaterialTheme.colorScheme.primary)
                 .padding(20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -159,7 +159,7 @@ private fun GameResultScoreCard(
             Text(
                 text = scoreDelta.toString(),
                 style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = MaterialTheme.colorScheme.onPrimary,
             )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -173,7 +173,7 @@ private fun GameResultScoreCard(
                 Text(
                     text = stringResource(Res.string.game_result_score),
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = MaterialTheme.colorScheme.onPrimary,
                 )
                 Text(
                     text = "◆",
@@ -322,7 +322,7 @@ private fun GameResultCircularProgress(
     percent: Int,
     modifier: Modifier = Modifier,
 ) {
-    val trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
+    val trackColor = MaterialTheme.colorScheme.surfaceVariant
     val progressColor = MaterialTheme.colorScheme.primary
 
     Box(
@@ -389,7 +389,7 @@ private fun GameResultSegmentedBar(
                             if (index < filledCount) {
                                 MaterialTheme.colorScheme.primary
                             } else {
-                                MaterialTheme.colorScheme.surfaceContainerHighest
+                                MaterialTheme.colorScheme.surfaceVariant
                             },
                         ),
             )

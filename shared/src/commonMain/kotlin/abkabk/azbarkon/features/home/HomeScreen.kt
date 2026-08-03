@@ -451,17 +451,17 @@ fun HeroCard(
                 Text(
                     text = stringResource(Res.string.poetry_memorization),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = LightColorScheme.onSecondary,
                 )
                 Text(
                     text = titleText,
                     style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = LightColorScheme.onSecondary,
                 )
                 Text(
                     text = descText,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = LightColorScheme.onSecondary,
                 )
                 AzbarkonPrimaryButton(
                     text = buttonText,
@@ -594,7 +594,7 @@ fun TasvirNegarSlide(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(Res.string.slider_tasvir_negar_title),
-                    color = LightColorScheme.onSecondaryFixedVariant,
+                    color = LightColorScheme.secondary,
                     style = MaterialTheme.typography.labelMedium,
                     textAlign = TextAlign.End,
                 )
@@ -617,9 +617,9 @@ fun TasvirNegarSlide(
                     textStyle = MaterialTheme.typography.labelSmall,
                     colors =
                         ButtonColors(
-                            containerColor = LightColorScheme.onSecondaryFixedVariant,
+                            containerColor = LightColorScheme.secondary,
                             contentColor = LightColorScheme.onSecondary,
-                            disabledContainerColor = LightColorScheme.onSecondaryFixedVariant,
+                            disabledContainerColor = LightColorScheme.secondary,
                             disabledContentColor = LightColorScheme.onSecondary,
                         ),
                 )
@@ -682,10 +682,10 @@ fun ChallengeSlide(
                     textStyle = MaterialTheme.typography.labelSmall,
                     colors =
                         ButtonColors(
-                            containerColor = LightColorScheme.onTertiaryFixedVariant,
+                            containerColor = LightColorScheme.onSurfaceVariant,
                             contentColor = LightColorScheme.surfaceVariant,
-                            disabledContainerColor = LightColorScheme.onTertiaryFixedVariant,
-                            disabledContentColor = LightColorScheme.onTertiaryFixed,
+                            disabledContainerColor = LightColorScheme.onSurfaceVariant,
+                            disabledContentColor = LightColorScheme.surfaceVariant,
                         ),
                 )
             }
@@ -745,7 +745,7 @@ fun BeytOfDaySlide(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = poetText,
-                    color = LightColorScheme.secondary,
+                    color = LightColorScheme.primary,
                     style = MaterialTheme.typography.labelMedium,
                     textAlign = TextAlign.End,
                 )

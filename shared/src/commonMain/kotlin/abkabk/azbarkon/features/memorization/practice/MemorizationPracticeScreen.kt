@@ -18,6 +18,7 @@ import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
@@ -307,8 +308,9 @@ private fun PracticeProgressSection(
         LinearProgressIndicator(
             progress = { (cardIndex.toFloat() / totalCards.coerceAtLeast(1)).coerceIn(0f, 1f) },
             modifier = Modifier.fillMaxWidth().rotate(PROGRESS_FLIP_ROTATION_DEGREES),
-            gapSize = 0.dp,
-            drawStopIndicator = {}
+            drawStopIndicator = {},
+            trackColor = LightColorScheme.outlineVariant,
+            gapSize = (-4).dp
         )
     }
 }
@@ -732,13 +734,13 @@ private fun GradeButton(
     val containerColor =
         when {
             isSelected -> MaterialTheme.colorScheme.primary
-            isSuggested -> MaterialTheme.colorScheme.primaryContainer
+            isSuggested -> MaterialTheme.colorScheme.primary
             else -> MaterialTheme.colorScheme.surfaceVariant
         }
     val contentColor =
         when {
             isSelected -> MaterialTheme.colorScheme.onPrimary
-            isSuggested -> MaterialTheme.colorScheme.onPrimaryContainer
+            isSuggested -> MaterialTheme.colorScheme.onPrimary
             else -> MaterialTheme.colorScheme.onSurface
         }
     AzbarkonButton(

@@ -87,12 +87,12 @@ private fun ColorOptionItem(
             Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
                 .then(
                     if (option.color != null) {
                         Modifier.background(option.color)
                     } else {
-                        Modifier.background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                        Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
                     },
                 ).clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
@@ -127,7 +127,7 @@ private fun ShapeOptionItem(
             Modifier
                 .size(56.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp))
                 .clickable(onClick = onClick)
                 .padding(8.dp),
@@ -164,7 +164,7 @@ private fun FontOptionsRow(
                 modifier =
                     Modifier
                         .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
                         .clickable { onFontClick(index) }
                         .padding(horizontal = 20.dp, vertical = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,

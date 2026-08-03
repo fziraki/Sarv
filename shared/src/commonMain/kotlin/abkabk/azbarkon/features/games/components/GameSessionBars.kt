@@ -5,6 +5,7 @@ import abkabk.azbarkon.domain.model.games.GameType
 import abkabk.azbarkon.features.games.session.QuizAnswerPhase
 import abkabk.azbarkon.ui.components.AzbarkonButtonDefaults
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
+import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -141,8 +143,9 @@ fun GameQuizProgressSection(
         LinearProgressIndicator(
             progress = { (quizNumber.toFloat() / GameConstants.QUIZ_COUNT).coerceIn(0f, 1f) },
             modifier = Modifier.fillMaxWidth().rotate(PROGRESS_FLIP_ROTATION_DEGREES),
-            gapSize = 0.dp,
+            gapSize = (-4).dp,
             drawStopIndicator = {},
+            trackColor = LightColorScheme.outlineVariant,
         )
     }
 }
@@ -154,7 +157,7 @@ private fun GameCoinBadge(balance: Int) {
             Modifier
                 .border(
                     width = 1.dp,
-                    color = MaterialTheme.colorScheme.outline,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     shape = RoundedCornerShape(16.dp),
                 ).padding(horizontal = 10.dp, vertical = 6.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -164,10 +167,12 @@ private fun GameCoinBadge(balance: Int) {
             painter = painterResource(Res.drawable.coin),
             contentDescription = null,
             modifier = Modifier.size(18.dp),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
         )
         Text(
             text = balance.toString(),
             style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -219,7 +224,7 @@ private fun GameHintButton(
         border =
             androidx.compose.foundation.BorderStroke(
                 1.dp,
-                MaterialTheme.colorScheme.outline,
+                MaterialTheme.colorScheme.onSurfaceVariant,
             ),
     ) {
         Row(
@@ -229,16 +234,18 @@ private fun GameHintButton(
             Icon(
                 painter = painterResource(Res.drawable.coin),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.tertiary,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(18.dp),
             )
             Text(
                 text = stringResource(Res.string.game_hint_cost),
                 style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
                 text = stringResource(Res.string.game_hint),
                 style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
@@ -305,7 +312,7 @@ fun GamePoemCard(
 }
 
 @Composable
-fun gamePoemUserAnswerTextColor(): Color = MaterialTheme.colorScheme.tertiaryFixedDim
+fun gamePoemUserAnswerTextColor(): Color = MaterialTheme.colorScheme.tertiary
 
 @Composable
 fun gamePoemCorrectAnswerTextColor(): Color = MaterialTheme.colorScheme.primary
@@ -372,10 +379,10 @@ fun optionStateForIndex(
 fun gameOptionColors(state: GameOptionState): Pair<androidx.compose.ui.graphics.Color, androidx.compose.ui.graphics.Color> =
     when (state) {
         GameOptionState.Default ->
-            MaterialTheme.colorScheme.surfaceContainer to MaterialTheme.colorScheme.onSurface
+            MaterialTheme.colorScheme.surfaceVariant to MaterialTheme.colorScheme.onSurface
 
         GameOptionState.Disabled ->
-            MaterialTheme.colorScheme.surfaceDim to MaterialTheme.colorScheme.onSurfaceVariant
+            MaterialTheme.colorScheme.surfaceVariant to MaterialTheme.colorScheme.onSurfaceVariant
 
         GameOptionState.Selected ->
             MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) to MaterialTheme.colorScheme.onSurface

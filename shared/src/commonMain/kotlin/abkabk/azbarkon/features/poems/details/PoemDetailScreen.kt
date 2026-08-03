@@ -1,7 +1,6 @@
 package abkabk.azbarkon.features.poems.details
 
 import abkabk.azbarkon.core.designsystem.secondary
-import abkabk.azbarkon.core.designsystem.secondaryFixed
 import abkabk.azbarkon.core.ui.FindTextField
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
@@ -13,6 +12,7 @@ import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -272,7 +272,6 @@ private fun TrackPlayerCard(
 ) {
     var dragProgress by remember { mutableStateOf<Float?>(null) }
     val displayedProgress = dragProgress ?: state.progress
-    val isActive = state.isPlaying || state.isLoading
 
     Row(
         modifier = Modifier
@@ -286,7 +285,6 @@ private fun TrackPlayerCard(
         PlayPauseButton(
             isPlaying = state.isPlaying,
             isLoading = state.isLoading,
-            isActive = isActive,
             onClick = onPlayPauseClick,
         )
         Column(modifier = Modifier.weight(1f)) {
@@ -346,7 +344,7 @@ private fun TrackPlayerCard(
                             .fillMaxWidth()
                             .height(4.dp)
                             .clip(RoundedCornerShape(percent = 50))
-                            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+                            .background(LightColorScheme.outlineVariant),
                     ) {
                         if (trackProgress > 0f) {
                             Box(
@@ -375,25 +373,16 @@ private fun TrackPlayerCard(
 private fun PlayPauseButton(
     isPlaying: Boolean,
     isLoading: Boolean,
-    isActive: Boolean,
     onClick: () -> Unit,
 ) {
-    val backgroundColor = if (isActive) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.surfaceContainerHighest
-    }
-    val iconTint = if (isActive) {
-        MaterialTheme.colorScheme.onPrimary
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
+
+    val iconTint = MaterialTheme.colorScheme.tertiary
 
     Box(
         modifier = Modifier
             .size(40.dp)
             .clip(CircleShape)
-            .background(backgroundColor)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {

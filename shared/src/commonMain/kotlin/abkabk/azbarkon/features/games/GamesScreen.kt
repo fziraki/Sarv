@@ -135,7 +135,7 @@ fun GameItem(
                 .clip(RoundedCornerShape(12.dp))
                 .border(
                     width = 1.dp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(12.dp),
                 )
                 .clickable {
@@ -164,7 +164,7 @@ fun GameItem(
                 Modifier
                     .weight(GAME_CARD_CONTENT_WEIGHT)
                     .background(
-                        color = MaterialTheme.colorScheme.surfaceContainer,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                     ).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.End,
