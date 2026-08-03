@@ -5,7 +5,6 @@ import abkabk.azbarkon.features.tasvirNegar.model.ColorOption
 import abkabk.azbarkon.features.tasvirNegar.model.EditorFontPreset
 import abkabk.azbarkon.features.tasvirNegar.model.OptionPanelMode
 import abkabk.azbarkon.features.tasvirNegar.model.TasvirNegarCatalog
-import abkabk.azbarkon.features.tasvirNegar.model.TasvirNegarColors
 import abkabk.azbarkon.features.tasvirNegar.util.tasvirNegarPainter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -52,7 +51,7 @@ fun OptionsRow(
         modifier =
             modifier
                 .fillMaxWidth()
-                .background(TasvirNegarColors.lightCream),
+                .background(MaterialTheme.colorScheme.surfaceVariant),
     ) {
         when (mode) {
             OptionPanelMode.Color -> ColorOptionsRow(onColorClick = onColorClick)
@@ -92,7 +91,7 @@ private fun ColorOptionItem(
                     if (option.color != null) {
                         Modifier.background(option.color)
                     } else {
-                        Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
+                        Modifier.background(MaterialTheme.colorScheme.onSurfaceVariant)
                     },
                 ).clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
@@ -160,18 +159,21 @@ private fun FontOptionsRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         labels.forEachIndexed { index, (label, preset) ->
-            Column(
+            Box(
                 modifier =
                     Modifier
-                        .clip(RoundedCornerShape(12.dp))
+                        .size(56.dp)
+                        .clip(RoundedCornerShape(8.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp))
                         .clickable { onFontClick(index) }
-                        .padding(horizontal = 20.dp, vertical = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                        .padding(8.dp),
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = label,
                     style = MaterialTheme.typography.titleMedium.copy(fontFamily = editorFontFamily(preset)),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

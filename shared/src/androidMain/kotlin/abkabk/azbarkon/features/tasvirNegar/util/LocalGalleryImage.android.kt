@@ -15,10 +15,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import abkabk.azbarkon.features.tasvirNegar.model.TasvirNegarColors
 import java.io.File
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -46,7 +46,7 @@ actual fun LocalGalleryImage(
             }
     }
 
-    Box(modifier = modifier.background(TasvirNegarColors.canvasDefault)) {
+    Box(modifier = modifier.background(Color.Transparent)) {
         imageBitmap?.let { bitmap ->
             Image(
                 bitmap = bitmap,

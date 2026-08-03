@@ -1,6 +1,5 @@
 package abkabk.azbarkon.features.tasvirNegar.util
 
-import abkabk.azbarkon.features.tasvirNegar.model.TasvirNegarColors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable

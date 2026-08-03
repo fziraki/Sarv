@@ -100,7 +100,7 @@ data class EditorDocument(
     val sticker: StickerLayer = StickerLayer(),
     val topDivider: DividerLayer = DividerLayer(),
     val bottomDivider: DividerLayer = DividerLayer(),
-    val background: EditorBackground = EditorBackground.SolidColor(TasvirNegarColors.canvasDefault),
+    val background: EditorBackground = EditorBackground.SolidColor(Color.Transparent),
     val fontPreset: EditorFontPreset = EditorFontPreset.Yekan,
     val showAlignmentGrid: Boolean = false,
     val selectedLayer: LayerId? = null,

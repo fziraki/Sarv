@@ -19,7 +19,6 @@ import abkabk.azbarkon.features.tasvirNegar.model.LayerOffset
 import abkabk.azbarkon.features.tasvirNegar.model.OptionPanelMode
 import abkabk.azbarkon.features.tasvirNegar.model.StickerLayer
 import abkabk.azbarkon.features.tasvirNegar.model.TasvirNegarCatalog
-import abkabk.azbarkon.features.tasvirNegar.model.TasvirNegarColors
 import abkabk.azbarkon.features.tasvirNegar.model.TextGravity
 import abkabk.azbarkon.features.tasvirNegar.model.TextLayer
 import androidx.compose.ui.graphics.Color
@@ -214,7 +213,7 @@ class TasvirNegarViewModel(
                 sticker = StickerLayer(),
                 topDivider = DividerLayer(),
                 bottomDivider = DividerLayer(),
-                background = EditorBackground.SolidColor(TasvirNegarColors.canvasDefault),
+                background = EditorBackground.SolidColor(Color.Transparent),
                 fontPreset = EditorFontPreset.Yekan,
                 showAlignmentGrid = false,
                 selectedLayer = null,

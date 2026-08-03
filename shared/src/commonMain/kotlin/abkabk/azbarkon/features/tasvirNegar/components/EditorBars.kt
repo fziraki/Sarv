@@ -3,7 +3,6 @@ package abkabk.azbarkon.features.tasvirNegar.components
 import abkabk.azbarkon.core.designsystem.secondary
 import abkabk.azbarkon.core.designsystem.surfaceVariant
 import abkabk.azbarkon.features.tasvirNegar.TasvirNegarAction
-import abkabk.azbarkon.features.tasvirNegar.model.TasvirNegarColors
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -36,13 +36,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import azbarkoncmp.shared.generated.resources.Res
@@ -66,8 +66,8 @@ import azbarkoncmp.shared.generated.resources.tasvir_font
 import azbarkoncmp.shared.generated.resources.tasvir_gallery
 import azbarkoncmp.shared.generated.resources.tasvir_grid
 import azbarkoncmp.shared.generated.resources.tasvir_negar_save
-import azbarkoncmp.shared.generated.resources.tasvir_sticker
 import azbarkoncmp.shared.generated.resources.tasvir_share
+import azbarkoncmp.shared.generated.resources.tasvir_sticker
 import azbarkoncmp.shared.generated.resources.tasvir_text
 import azbarkoncmp.shared.generated.resources.tasvir_texture
 import azbarkoncmp.shared.generated.resources.text_fields
@@ -91,14 +91,14 @@ fun EditorHeader(
             modifier
                 .fillMaxWidth()
                 .height(54.dp)
-                .background(TasvirNegarColors.brown),
+                .background(MaterialTheme.colorScheme.surface),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onBackClick) {
             Icon(
                 painter = painterResource(Res.drawable.arrow_back_right),
                 contentDescription = stringResource(Res.string.cd_back),
-                tint = Color.Unspecified,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
 
@@ -108,7 +108,7 @@ fun EditorHeader(
             Icon(
                 painter = painterResource(Res.drawable.reset_image),
                 contentDescription = null,
-                tint = Color.Unspecified,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(24.dp),
             )
         }
@@ -131,11 +131,11 @@ private fun LabeledIconButton(
             },
             painter = painterResource(drawable),
             contentDescription = label,
-            tint = TasvirNegarColors.lightCream,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
             text = label,
-            color = TasvirNegarColors.lightCream,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 10.sp,
             fontFamily = samimFontFamily(),
         )
@@ -155,7 +155,7 @@ fun EditorFooter(
             modifier
                 .fillMaxWidth()
                 .height(72.dp)
-                .background(TasvirNegarColors.brown),
+                .background(MaterialTheme.colorScheme.surface),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
@@ -187,13 +187,13 @@ fun EditToolbar(
     onAction: (TasvirNegarAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val tint = TasvirNegarColors.lightCream
+    val tint = MaterialTheme.colorScheme.onSurfaceVariant
     Row(
         modifier =
             modifier
                 .fillMaxWidth()
                 .height(68.dp)
-                .background(TasvirNegarColors.brownAlpha),
+                .background(MaterialTheme.colorScheme.surfaceVariant),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {

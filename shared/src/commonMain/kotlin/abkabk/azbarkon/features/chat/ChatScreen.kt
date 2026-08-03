@@ -68,8 +68,9 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.time.Duration.Companion.milliseconds
 
-private const val KEYBOARD_SCROLL_RETRY_DELAY_MILLIS = 100L
+private val KEYBOARD_SCROLL_RETRY_DELAY_MILLIS = 100.milliseconds
 private const val SEND_ICON_ROTATION_DEGREES = 180f
 
 @Immutable
@@ -88,19 +89,18 @@ private data class ChatColors(
     val timestamp: androidx.compose.ui.graphics.Color,
 )
 
-@Composable
-private fun chatColors(colorScheme: ColorScheme = MaterialTheme.colorScheme): ChatColors =
+private fun chatColors(colorScheme: ColorScheme): ChatColors =
     ChatColors(
-        userBubble = colorScheme.surfaceVariant,
-        userBubbleText = colorScheme.onSurfaceVariant,
-        poetBubble = colorScheme.tertiary,
-        poetBubbleText = colorScheme.onTertiary,
+        userBubble = colorScheme.surface,
+        userBubbleText = colorScheme.onSurface,
+        poetBubble = colorScheme.surfaceVariant,
+        poetBubbleText = colorScheme.onSurfaceVariant,
         poetBubbleBorder = colorScheme.outlineVariant,
-        accent = colorScheme.primary,
-        onAccent = colorScheme.onPrimary,
+        accent = colorScheme.secondary,
+        onAccent = colorScheme.onSecondary,
         inputBackground = colorScheme.surfaceVariant,
         inputBorder = colorScheme.outlineVariant,
-        inputText = colorScheme.onSurface,
+        inputText = colorScheme.onSurfaceVariant,
         inputPlaceholder = colorScheme.onSurfaceVariant,
         timestamp = colorScheme.onSurfaceVariant,
     )
@@ -148,7 +148,7 @@ fun ChatScreen(
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
-    val colors = chatColors()
+    val colors = chatColors(MaterialTheme.colorScheme)
     val keyboardLiftPx = rememberKeyboardLiftPx()
 
     LaunchedEffect(state.messages.size, state.isPoetTyping) {
@@ -232,7 +232,7 @@ private fun ChatTopBar(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -242,7 +242,7 @@ private fun ChatTopBar(
             modifier = Modifier.clickable(onClick = onBackClick),
             painter = painterResource(Res.drawable.arrow_back_right),
             contentDescription = stringResource(Res.string.cd_back),
-            tint = MaterialTheme.colorScheme.onBackground,
+            tint = MaterialTheme.colorScheme.onSurface,
         )
 
         Column(
