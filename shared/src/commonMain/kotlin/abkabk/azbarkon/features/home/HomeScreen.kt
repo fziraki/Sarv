@@ -42,6 +42,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,6 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
@@ -369,30 +371,33 @@ fun QuickAccessItem(
     onItemClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier =
-            modifier
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(24.dp),
-                ).padding(vertical = 20.dp, horizontal = 4.dp)
-                .clickable {
-                    onItemClick()
-                },
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+
+    Surface(
+        modifier = modifier.clickable { onItemClick() },
+        shape = RoundedCornerShape(24.dp),
+        tonalElevation = 1.dp,
+        shadowElevation = 1.dp,
+        color = MaterialTheme.colorScheme.surfaceVariant
     ) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.secondary,
-        )
-        Text(
-            text = stringResource(title),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.secondary,
-        )
+
+        Column(
+            modifier = Modifier.padding(vertical = 20.dp, horizontal = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.secondary,
+            )
+            Text(
+                text = stringResource(title),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.secondary,
+            )
+        }
     }
+
 }
 
 @Composable
@@ -715,7 +720,14 @@ fun BeytOfDaySlide(
     }.ifEmpty { stringResource(Res.string.slider_beyt_of_day_text) }
     val poetText = distich?.poetName ?: stringResource(Res.string.slider_beyt_of_day_poet)
 
-    Box(modifier = modifier.fillMaxSize()){
+    Box(modifier = modifier
+        .shadow(
+            shape = RoundedCornerShape(16.dp),
+            elevation = 1.dp,
+            spotColor = MaterialTheme.colorScheme.tertiary,
+            ambientColor = MaterialTheme.colorScheme.tertiary
+        ).fillMaxSize()
+    ){
 
         Image(
             painter = painterResource(Res.drawable.today_distich_bg),

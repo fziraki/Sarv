@@ -27,6 +27,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -249,65 +251,65 @@ private fun PoetListRow(
     onChatClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(16.dp),
-                ).clickable(onClick = onClick)
-                .padding(horizontal = 14.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
-    ) {
-
-        PoetAvatar(
-            imageUrl = poet.imageUrl,
-            modifier = Modifier.size(52.dp),
-        )
-
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalAlignment = Alignment.End,
+    Card(
+        modifier = modifier.fillMaxWidth().clickable(onClick = onClick),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        elevation =  CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ){
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = poet.name,
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Start,
+
+            PoetAvatar(
+                imageUrl = poet.imageUrl,
+                modifier = Modifier.size(52.dp),
             )
-            if (poet.worksSummary.isNotBlank()) {
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.End,
+            ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = poet.worksSummary,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text = poet.name,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Start,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                )
+                if (poet.worksSummary.isNotBlank()) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = poet.worksSummary,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Start,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+
+            if (poet.canChat) {
+                Icon(
+                    painter = painterResource(Res.drawable.chat_bubble),
+                    contentDescription = stringResource(Res.string.cd_chat),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier =
+                        Modifier
+                            .clip(CircleShape)
+                            .clickable(onClick = onChatClick)
+                            .padding(4.dp),
                 )
             }
         }
-
-        if (poet.canChat) {
-            Icon(
-                painter = painterResource(Res.drawable.chat_bubble),
-                contentDescription = stringResource(Res.string.cd_chat),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier =
-                    Modifier
-                        .clip(CircleShape)
-                        .clickable(onClick = onChatClick)
-                        .padding(4.dp),
-            )
-        }
     }
+
 }
 
 @Preview

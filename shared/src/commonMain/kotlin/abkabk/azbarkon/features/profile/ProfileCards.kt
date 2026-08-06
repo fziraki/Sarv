@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,6 +31,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -179,7 +181,7 @@ fun ProfileHeader(
                     levelProgress.currentXp,
                     levelProgress.targetXp,
                 ),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center,
         )
@@ -224,46 +226,49 @@ private fun ProfileStatusCard(
     items: List<Pair<Int, String>>,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(12.dp),
-                ).padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        tonalElevation = 1.dp,
+        shadowElevation = 1.dp,
+        color = MaterialTheme.colorScheme.surfaceVariant
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = title,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Start,
-        )
-
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(IntrinsicSize.Min),
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            items.forEachIndexed { index, (value, label) ->
-                ProfileStatItem(
-                    modifier = Modifier.weight(1f),
-                    value = value,
-                    label = label,
-                )
-                if (index < items.lastIndex) {
-                    VerticalDivider(
-                        modifier = Modifier.fillMaxHeight(),
-                        thickness = 1.dp,
-                        color = MaterialTheme.colorScheme.outlineVariant,
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = title,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.secondary,
+                textAlign = TextAlign.Start,
+            )
+
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Min),
+            ) {
+                items.forEachIndexed { index, (value, label) ->
+                    ProfileStatItem(
+                        modifier = Modifier.weight(1f),
+                        value = value,
+                        label = label,
                     )
+                    if (index < items.lastIndex) {
+                        VerticalDivider(
+                            modifier = Modifier.fillMaxHeight(),
+                            thickness = 1.dp,
+                            color = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
                 }
             }
         }
     }
+
 }
 
 @Composable
@@ -298,34 +303,39 @@ fun ProfileBadges(
     onViewAllClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(12.dp),
-                ).padding(vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalAlignment = Alignment.End,
-    ) {
-        Text(
-            modifier = Modifier.clickable(onClick = onViewAllClick).padding(end = 16.dp),
-            text = stringResource(Res.string.profile_view_all_badges),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.End,
-        )
 
-        LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(
-                items = badges,
-                key = { badge -> badge.id },
-            ) { badge ->
-                BadgeItem(item = badge)
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        tonalElevation = 1.dp,
+        shadowElevation = 1.dp,
+        color = MaterialTheme.colorScheme.surfaceVariant
+    ) {
+        Column(
+            modifier = Modifier.padding(vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.End,
+        ) {
+            Text(
+                modifier = Modifier.clickable(onClick = onViewAllClick).padding(end = 16.dp),
+                text = stringResource(Res.string.profile_view_all_badges),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.secondary,
+                textAlign = TextAlign.End,
+            )
+
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                items(
+                    items = badges,
+                    key = { badge -> badge.id },
+                ) { badge ->
+                    BadgeItem(item = badge)
+                }
             }
         }
     }
+
+
 }
 
 @Composable
