@@ -1,5 +1,6 @@
 package abkabk.azbarkon.features.home
 
+import abkabk.azbarkon.core.designsystem.brown
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
@@ -10,6 +11,7 @@ import abkabk.azbarkon.ui.components.AzbarkonButton
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.NetworkImage
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.DarkColorScheme
 import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -450,22 +452,29 @@ fun HeroCard(
             ) {
                 Text(
                     text = stringResource(Res.string.poetry_memorization),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     color = LightColorScheme.onSecondary,
                 )
                 Text(
                     text = titleText,
                     style = MaterialTheme.typography.headlineLarge,
-                    color = LightColorScheme.onSecondary,
+                    color = LightColorScheme.surfaceVariant,
                 )
                 Text(
                     text = descText,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.labelSmall,
                     color = LightColorScheme.onSecondary,
                 )
-                AzbarkonPrimaryButton(
+                AzbarkonButton(
                     text = buttonText,
                     onClick = onClick,
+                    colors =
+                        ButtonColors(
+                            containerColor = brown,
+                            contentColor = LightColorScheme.onPrimary,
+                            disabledContainerColor = brown,
+                            disabledContentColor = LightColorScheme.onPrimary,
+                        ),
                     modifier = Modifier.fillMaxWidth(),
                 )
             }

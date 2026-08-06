@@ -6,6 +6,8 @@ import androidx.compose.ui.graphics.Color
 // Light Colors
 // =======================
 
+val brown = Color(0XFF4B635A)
+
 // Brand
 val primary = Color(0xFF355B50)
 val onPrimary = Color(0xFFFFFFFF)
