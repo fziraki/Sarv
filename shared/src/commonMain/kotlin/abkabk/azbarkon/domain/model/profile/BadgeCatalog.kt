@@ -7,6 +7,18 @@ data class CatalogBadge(
 )
 
 object BadgeCatalog {
+    private const val FIRST_GHAZAL_BADGE_ID = 1
+    private const val HUNDRED_VERSES_BADGE_ID = 2
+    private const val WEEKLY_STREAK_BADGE_ID = 3
+    private const val POETRY_LOVER_BADGE_ID = 4
+    private const val GAMES_STAR_BADGE_ID = 5
+
+
+    private const val HUNDRED_VERSES_THRESHOLD = 100
+    private const val WEEKLY_STREAK_THRESHOLD = 7
+    private const val POETRY_LOVER_THRESHOLD = 5
+    private const val GAMES_STAR_THRESHOLD = 5
+
     val badges: List<CatalogBadge> =
         listOf(
             CatalogBadge(
@@ -27,36 +39,38 @@ object BadgeCatalog {
             CatalogBadge(
                 id = 4,
                 name = "علاقه‌مند شعر",
-                description = "۱۰ شاعر مختلف بخوانید",
+                description = "۵ شعر کامل حفظ کنید",
             ),
             CatalogBadge(
                 id = 5,
-                name = "ستاره‌ی حافظ",
+                name = "ستاره‌ی میدان",
                 description = "۵ بازی را با امتیاز کامل ببرید",
             ),
         )
 
     fun resolveEarned(
         badgeId: Int,
-        hasCompletedMemorizationPoem: Boolean,
+        hasCompletedGhazal: Boolean,
         reviewedVersesCount: Int,
         gameVisitStreak: Int,
+        completedPoemCount: Int,
         perfectGameSessions: Int,
     ): Boolean =
         when (badgeId) {
-            1 -> hasCompletedMemorizationPoem
-            2 -> reviewedVersesCount >= 100
-            3 -> gameVisitStreak >= 7
-            4 -> false
-            5 -> perfectGameSessions >= 5
+            FIRST_GHAZAL_BADGE_ID -> hasCompletedGhazal
+            HUNDRED_VERSES_BADGE_ID -> reviewedVersesCount >= HUNDRED_VERSES_THRESHOLD
+            WEEKLY_STREAK_BADGE_ID -> gameVisitStreak >= WEEKLY_STREAK_THRESHOLD
+            POETRY_LOVER_BADGE_ID -> completedPoemCount >= POETRY_LOVER_THRESHOLD
+            GAMES_STAR_BADGE_ID -> perfectGameSessions >= GAMES_STAR_THRESHOLD
             else -> false
         }
 
     fun toBadgeUi(
         badge: CatalogBadge,
-        hasCompletedMemorizationPoem: Boolean,
+        hasCompletedGhazal: Boolean,
         reviewedVersesCount: Int,
         gameVisitStreak: Int,
+        completedPoemCount: Int,
         perfectGameSessions: Int,
     ): BadgeUi =
         BadgeUi(
@@ -66,9 +80,10 @@ object BadgeCatalog {
             isEarned =
                 resolveEarned(
                     badgeId = badge.id,
-                    hasCompletedMemorizationPoem = hasCompletedMemorizationPoem,
+                    hasCompletedGhazal = hasCompletedGhazal,
                     reviewedVersesCount = reviewedVersesCount,
                     gameVisitStreak = gameVisitStreak,
+                    completedPoemCount = completedPoemCount,
                     perfectGameSessions = perfectGameSessions,
                 ),
         )

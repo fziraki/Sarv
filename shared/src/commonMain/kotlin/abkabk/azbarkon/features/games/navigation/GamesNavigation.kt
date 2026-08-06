@@ -37,7 +37,6 @@ fun NavGraphBuilder.gamesGraph(
     composable<GameResultRoute> { backStackEntry ->
         val route = backStackEntry.toRoute<GameResultRoute>()
         GameResultRoot(
-            gameType = route.type.toDomain(),
             correctCount = route.correct,
             wrongCount = route.wrong,
             noAnswerCount = route.noAnswer,

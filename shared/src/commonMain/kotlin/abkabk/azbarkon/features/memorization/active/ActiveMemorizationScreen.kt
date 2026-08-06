@@ -1,9 +1,9 @@
 package abkabk.azbarkon.features.memorization.active
 
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
-import abkabk.azbarkon.core.ui_base.ObserveAsEvents
-import abkabk.azbarkon.core.ui_base.asString
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.memorization.ActivePoemCard
 import abkabk.azbarkon.features.memorization.MemorizationHeroSection
 import abkabk.azbarkon.features.memorization.MemorizationOptionRow
@@ -57,7 +57,7 @@ fun ActiveMemorizationRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.ui_base.UiText?>(null) }
+    var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.uidata.UiText?>(null) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -109,6 +109,7 @@ fun ActiveMemorizationRoot(
 fun ActiveMemorizationScreen(
     state: ActiveMemorizationState,
     onAction: (ActiveMemorizationAction) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val headerSubtitle =
         if (state.poems.isNotEmpty()) {
@@ -117,7 +118,7 @@ fun ActiveMemorizationScreen(
             null
         }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         Header(
             title = stringResource(Res.string.memorization_active_poems),
             subtitle = headerSubtitle,

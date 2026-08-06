@@ -1,14 +1,16 @@
 package abkabk.azbarkon.features.poets.list
 
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
-import abkabk.azbarkon.core.ui_base.ObserveAsEvents
-import abkabk.azbarkon.core.ui_base.UiText
-import abkabk.azbarkon.core.ui_base.asString
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.core.uidata.UiText
+import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.poets.FeaturedPoetUi
 import abkabk.azbarkon.features.poets.PoetListItemUi
-import abkabk.azbarkon.ui.components.AzbarkonSecondaryButton
+import abkabk.azbarkon.ui.components.AzbarkonButton
+import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,6 +26,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,8 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.chat_bubble
 import azbarkoncmp.shared.generated.resources.cd_chat
+import azbarkoncmp.shared.generated.resources.chat_bubble
 import azbarkoncmp.shared.generated.resources.poets_filter_placeholder
 import azbarkoncmp.shared.generated.resources.poets_view_works
 import org.jetbrains.compose.resources.painterResource
@@ -156,7 +161,7 @@ private fun FeaturedPoetCard(
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(LightColorScheme.primary)
                 .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
@@ -182,12 +187,12 @@ private fun FeaturedPoetCard(
                 Text(
                     text = poet.name,
                     style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = LightColorScheme.onPrimary,
                 )
                 Text(
                     text = poet.description,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.9f),
+                    color = LightColorScheme.onPrimary.copy(alpha = 0.9f),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -196,7 +201,7 @@ private fun FeaturedPoetCard(
                         modifier = Modifier.fillMaxWidth(),
                         text = poet.stats,
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        color = LightColorScheme.surfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -210,20 +215,28 @@ private fun FeaturedPoetCard(
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
-            Icon(
-                painter = painterResource(Res.drawable.chat_bubble),
-                contentDescription = stringResource(Res.string.cd_chat),
-                tint = MaterialTheme.colorScheme.surface,
-                modifier =
-                    Modifier
-                        .clip(CircleShape)
-                        .clickable(onClick = onChatClick)
-                        .padding(4.dp),
-            )
+            if (poet.canChat) {
+                Icon(
+                    painter = painterResource(Res.drawable.chat_bubble),
+                    contentDescription = stringResource(Res.string.cd_chat),
+                    tint = LightColorScheme.surfaceVariant,
+                    modifier =
+                        Modifier
+                            .clip(CircleShape)
+                            .clickable(onClick = onChatClick)
+                            .padding(4.dp),
+                )
+            }
 
-            AzbarkonSecondaryButton(
+            AzbarkonButton(
                 text = stringResource(Res.string.poets_view_works),
                 onClick = onClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = LightColorScheme.secondary,
+                    contentColor = LightColorScheme.onSecondary,
+                    disabledContainerColor = LightColorScheme.secondary,
+                    disabledContentColor = LightColorScheme.onSecondary,
+                ),
                 modifier = Modifier.fillMaxWidth(),
             )
         }
@@ -238,63 +251,65 @@ private fun PoetListRow(
     onChatClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(16.dp),
-                ).clickable(onClick = onClick)
-                .padding(horizontal = 14.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
-    ) {
-
-        PoetAvatar(
-            imageUrl = poet.imageUrl,
-            modifier = Modifier.size(52.dp),
-        )
-
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalAlignment = Alignment.End,
+    Card(
+        modifier = modifier.fillMaxWidth().clickable(onClick = onClick),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        elevation =  CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ){
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = poet.name,
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Start,
+
+            PoetAvatar(
+                imageUrl = poet.imageUrl,
+                modifier = Modifier.size(52.dp),
             )
-            if (poet.worksSummary.isNotBlank()) {
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.End,
+            ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = poet.worksSummary,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text = poet.name,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Start,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                )
+                if (poet.worksSummary.isNotBlank()) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = poet.worksSummary,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Start,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+
+            if (poet.canChat) {
+                Icon(
+                    painter = painterResource(Res.drawable.chat_bubble),
+                    contentDescription = stringResource(Res.string.cd_chat),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier =
+                        Modifier
+                            .clip(CircleShape)
+                            .clickable(onClick = onChatClick)
+                            .padding(4.dp),
                 )
             }
         }
-
-        Icon(
-            painter = painterResource(Res.drawable.chat_bubble),
-            contentDescription = stringResource(Res.string.cd_chat),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier =
-                Modifier
-                    .clip(CircleShape)
-                    .clickable(onClick = onChatClick)
-                    .padding(4.dp),
-        )
     }
+
 }
 
 @Preview
@@ -311,6 +326,7 @@ private fun PoetsListScreenPreview() {
                                 name = "سعدی شیرازی",
                                 worksSummary = "گلستان و 1 اثر دیگر",
                                 imageUrl = null,
+                                canChat = false,
                             ),
                         ),
                     featuredPoet =
@@ -320,6 +336,7 @@ private fun PoetsListScreenPreview() {
                             description = "غزل‌سرای بزرگ ایران",
                             stats = "قطعات و 4 اثر دیگر",
                             imageUrl = null,
+                            canChat = true,
                         ),
                 ),
             onAction = {},

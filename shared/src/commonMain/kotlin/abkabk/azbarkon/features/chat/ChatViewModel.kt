@@ -2,21 +2,21 @@ package abkabk.azbarkon.features.chat
 
 import abkabk.azbarkon.core.domain.result.onFailure
 import abkabk.azbarkon.core.domain.result.onSuccess
-import abkabk.azbarkon.core.ui_base.BaseViewModel
-import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.UiText
-import abkabk.azbarkon.core.ui_base.toUiText
+import abkabk.azbarkon.core.uidata.BaseViewModel
+import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.uidata.UiText
+import abkabk.azbarkon.core.uidata.toUiText
 import abkabk.azbarkon.core.util.currentTimeMillis
 import abkabk.azbarkon.domain.platform.ClipboardService
 import abkabk.azbarkon.domain.repository.ChatRepository
 import abkabk.azbarkon.domain.repository.PoetRepository
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.poem_copied
 import androidx.lifecycle.viewModelScope
+import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.chat_persian_only
+import azbarkoncmp.shared.generated.resources.poem_copied
 import kotlin.random.Random
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 class ChatViewModel(
     private val poetRepository: PoetRepository,
     private val chatRepository: ChatRepository,
@@ -80,6 +80,18 @@ class ChatViewModel(
         val trimmedInput = state.value.inputText.trim()
         if (trimmedInput.isEmpty()) return
 
+        val lastLetter = extractLastPersianLetter(trimmedInput)
+        if (lastLetter == null) {
+            viewModelScope.launch {
+                sendEvent(
+                    ChatEvent.ShowSnackbar(
+                        UiText.Resource(Res.string.chat_persian_only),
+                    ),
+                )
+            }
+            return
+        }
+
         val userMessage =
             ChatMessageUi(
                 id = nextMessageId(),
@@ -98,17 +110,11 @@ class ChatViewModel(
 
         viewModelScope.launch {
             delay(replyDelayMillis)
-            replyToUser(trimmedInput)
+            replyToUser(lastLetter)
         }
     }
 
-    private suspend fun replyToUser(userMessage: String) {
-        val lastLetter = extractLastPersianLetter(userMessage)
-
-        if (lastLetter == null) {
-            appendPoetMessage(text = "😐\n\n$userMessage")
-            return
-        }
+    private suspend fun replyToUser(lastLetter: Char) {
 
         chatRepository
             .findDistichByLastLetter(

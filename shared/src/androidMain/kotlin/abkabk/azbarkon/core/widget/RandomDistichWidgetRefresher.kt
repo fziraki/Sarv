@@ -3,8 +3,8 @@ package abkabk.azbarkon.core.widget
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -12,6 +12,7 @@ import org.koin.core.component.inject
 class RandomDistichWidgetRefresher :
     KoinComponent {
     private val updater: RandomDistichWidgetUpdater by inject()
+    private val ioDispatcher: CoroutineDispatcher by inject()
 
     suspend fun updateAllWidgets(context: Context) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -29,7 +30,7 @@ class RandomDistichWidgetRefresher :
     }
 
     fun updateAllWidgetsAsync(context: Context) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(ioDispatcher).launch {
             updateAllWidgets(context.applicationContext)
         }
     }

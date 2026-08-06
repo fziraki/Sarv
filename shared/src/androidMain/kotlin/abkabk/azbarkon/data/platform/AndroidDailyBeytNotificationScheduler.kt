@@ -7,6 +7,7 @@ import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import abkabk.azbarkon.domain.repository.DailyBeytRepository
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
 import android.content.Context
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -18,6 +19,7 @@ class AndroidDailyBeytNotificationScheduler(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val dailyBeytRepository: DailyBeytRepository,
     private val notificationPresenter: DailyBeytNotificationPresenter,
+    private val ioDispatcher: CoroutineDispatcher,
 ) : DailyBeytNotificationScheduler {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var deliveryHour: Int = DEFAULT_HOUR
@@ -38,7 +40,7 @@ class AndroidDailyBeytNotificationScheduler(
 
         if (showImmediately) {
             scope.launch {
-                withContext(Dispatchers.IO) {
+                withContext(ioDispatcher) {
                     dailyBeytRepository.getTodayDistich()
                 }.onSuccess { distich ->
                     notificationPresenter.show(distich)

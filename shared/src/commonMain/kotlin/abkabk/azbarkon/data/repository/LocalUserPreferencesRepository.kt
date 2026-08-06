@@ -18,7 +18,6 @@ class LocalUserPreferencesRepository(
 ) : UserPreferencesRepository {
     private val gameStatsRefresh = MutableSharedFlow<Unit>(replay = 1).apply { tryEmit(Unit) }
     private val themeModeRefresh = MutableSharedFlow<Unit>(replay = 1).apply { tryEmit(Unit) }
-    private val avatarRefresh = MutableSharedFlow<Int>(replay = 1).apply { tryEmit(getAvatarIndex()) }
 
     override fun isDailyBeytNotificationEnabled(): Boolean =
         keyValueStore.getBoolean(KEY_DAILY_BEYT_NOTIFICATIONS_ENABLED)
@@ -115,16 +114,6 @@ class LocalUserPreferencesRepository(
             ThemeMode.System
         }
 
-    override fun getAvatarIndex(): Int =
-        keyValueStore.getInt(KEY_AVATAR_INDEX, default = -1)
-
-    override fun setAvatarIndex(index: Int) {
-        keyValueStore.putInt(KEY_AVATAR_INDEX, index)
-        avatarRefresh.tryEmit(index)
-    }
-
-    override fun observeAvatarIndex(): Flow<Int> = avatarRefresh
-
     internal companion object {
         const val KEY_DAILY_BEYT_NOTIFICATIONS_ENABLED = "daily_beyt_notifications_enabled"
         const val KEY_MEMORIZATION_REMINDER_ENABLED = "memorization_reminder_enabled"
@@ -138,6 +127,5 @@ class LocalUserPreferencesRepository(
         const val KEY_GAME_COMPLETED_SESSIONS = "game_completed_sessions"
         const val KEY_GAME_PERFECT_SESSIONS = "game_perfect_sessions"
         const val INVALID_DAY_KEY = -1
-        const val KEY_AVATAR_INDEX = "avatar_index"
     }
 }

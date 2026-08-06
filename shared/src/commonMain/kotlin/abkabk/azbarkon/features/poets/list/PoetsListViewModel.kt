@@ -2,9 +2,9 @@ package abkabk.azbarkon.features.poets.list
 
 import abkabk.azbarkon.core.domain.result.onFailure
 import abkabk.azbarkon.core.domain.result.onSuccess
-import abkabk.azbarkon.core.ui_base.BaseViewModel
-import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.toUiText
+import abkabk.azbarkon.core.uidata.BaseViewModel
+import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.uidata.toUiText
 import abkabk.azbarkon.domain.model.PoetWithRootCategories
 import abkabk.azbarkon.domain.repository.PoetRepository
 import abkabk.azbarkon.features.poets.FeaturedPoetUi

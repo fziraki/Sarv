@@ -8,13 +8,14 @@ import org.junit.jupiter.api.Test
 
 class BadgeCatalogTest {
     @Test
-    fun `first ghazal badge earned when any poem is fully reviewed`() {
+    fun `first ghazal badge earned only when a ghazal is fully reviewed`() {
         assertThat(
             BadgeCatalog.resolveEarned(
                 badgeId = 1,
-                hasCompletedMemorizationPoem = true,
+                hasCompletedGhazal = true,
                 reviewedVersesCount = 0,
                 gameVisitStreak = 0,
+                completedPoemCount = 0,
                 perfectGameSessions = 0,
             ),
         ).isTrue()
@@ -22,9 +23,10 @@ class BadgeCatalogTest {
         assertThat(
             BadgeCatalog.resolveEarned(
                 badgeId = 1,
-                hasCompletedMemorizationPoem = false,
+                hasCompletedGhazal = false,
                 reviewedVersesCount = 200,
                 gameVisitStreak = 10,
+                completedPoemCount = 10,
                 perfectGameSessions = 10,
             ),
         ).isFalse()
@@ -35,9 +37,10 @@ class BadgeCatalogTest {
         assertThat(
             BadgeCatalog.resolveEarned(
                 badgeId = 2,
-                hasCompletedMemorizationPoem = false,
+                hasCompletedGhazal = false,
                 reviewedVersesCount = 99,
                 gameVisitStreak = 0,
+                completedPoemCount = 0,
                 perfectGameSessions = 0,
             ),
         ).isFalse()
@@ -45,9 +48,10 @@ class BadgeCatalogTest {
         assertThat(
             BadgeCatalog.resolveEarned(
                 badgeId = 2,
-                hasCompletedMemorizationPoem = false,
+                hasCompletedGhazal = false,
                 reviewedVersesCount = 100,
                 gameVisitStreak = 0,
+                completedPoemCount = 0,
                 perfectGameSessions = 0,
             ),
         ).isTrue()
@@ -58,9 +62,10 @@ class BadgeCatalogTest {
         assertThat(
             BadgeCatalog.resolveEarned(
                 badgeId = 3,
-                hasCompletedMemorizationPoem = false,
+                hasCompletedGhazal = false,
                 reviewedVersesCount = 0,
                 gameVisitStreak = 6,
+                completedPoemCount = 0,
                 perfectGameSessions = 0,
             ),
         ).isFalse()
@@ -68,25 +73,38 @@ class BadgeCatalogTest {
         assertThat(
             BadgeCatalog.resolveEarned(
                 badgeId = 3,
-                hasCompletedMemorizationPoem = false,
+                hasCompletedGhazal = false,
                 reviewedVersesCount = 0,
                 gameVisitStreak = 7,
+                completedPoemCount = 0,
                 perfectGameSessions = 0,
             ),
         ).isTrue()
     }
 
     @Test
-    fun `poetry lover badge is always unearned`() {
+    fun `poetry lover badge earned after five completed poems`() {
         assertThat(
             BadgeCatalog.resolveEarned(
                 badgeId = 4,
-                hasCompletedMemorizationPoem = true,
+                hasCompletedGhazal = true,
                 reviewedVersesCount = 500,
                 gameVisitStreak = 30,
+                completedPoemCount = 4,
                 perfectGameSessions = 20,
             ),
         ).isFalse()
+
+        assertThat(
+            BadgeCatalog.resolveEarned(
+                badgeId = 4,
+                hasCompletedGhazal = true,
+                reviewedVersesCount = 500,
+                gameVisitStreak = 30,
+                completedPoemCount = 5,
+                perfectGameSessions = 20,
+            ),
+        ).isTrue()
     }
 
     @Test
@@ -94,9 +112,10 @@ class BadgeCatalogTest {
         assertThat(
             BadgeCatalog.resolveEarned(
                 badgeId = 5,
-                hasCompletedMemorizationPoem = false,
+                hasCompletedGhazal = false,
                 reviewedVersesCount = 0,
                 gameVisitStreak = 0,
+                completedPoemCount = 0,
                 perfectGameSessions = 4,
             ),
         ).isFalse()
@@ -104,9 +123,10 @@ class BadgeCatalogTest {
         assertThat(
             BadgeCatalog.resolveEarned(
                 badgeId = 5,
-                hasCompletedMemorizationPoem = false,
+                hasCompletedGhazal = false,
                 reviewedVersesCount = 0,
                 gameVisitStreak = 0,
+                completedPoemCount = 0,
                 perfectGameSessions = 5,
             ),
         ).isTrue()
@@ -119,9 +139,10 @@ class BadgeCatalogTest {
         val ui =
             BadgeCatalog.toBadgeUi(
                 badge = badge,
-                hasCompletedMemorizationPoem = false,
+                hasCompletedGhazal = false,
                 reviewedVersesCount = 100,
                 gameVisitStreak = 0,
+                completedPoemCount = 0,
                 perfectGameSessions = 0,
             )
 

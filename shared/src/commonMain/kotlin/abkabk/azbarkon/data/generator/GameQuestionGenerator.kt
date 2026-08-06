@@ -8,6 +8,10 @@ import abkabk.azbarkon.domain.model.games.PoetOption
 import kotlin.random.Random
 
 internal object GameQuestionGenerator {
+    private const val DISTRACTOR_COUNT = 3
+    private const val COMPLETE_POEM_OPTION_COUNT = 4
+    private const val ORGANIZE_LINE_COUNT = 4
+
     fun buildNextVerseQuestion(
         promptLine: String,
         poetName: String,
@@ -39,8 +43,8 @@ internal object GameQuestionGenerator {
             allPoets
                 .filter { it.id != null && it.id != correctId && !it.name.isNullOrBlank() }
                 .shuffled(Random(seed))
-                .take(3)
-        if (distractorPoets.size < 3) return null
+                .take(DISTRACTOR_COUNT)
+        if (distractorPoets.size < DISTRACTOR_COUNT) return null
         val options =
             (listOf(correctPoet) + distractorPoets)
                 .map { poet ->
@@ -66,11 +70,9 @@ internal object GameQuestionGenerator {
         seed: Long,
     ): GameQuestion.CompletePoem? {
         val line2Words = line2.splitWords()
-        if (line2Words.size < 2) return null
-
         val candidateIndices =
             line2Words.indices.filter { line2Words[it].length >= GameConstants.MIN_WORD_LENGTH }
-        if (candidateIndices.size < 2) return null
+        if (line2Words.size < 2 || candidateIndices.size < 2) return null
 
         val random = Random(seed)
         val selectedIndices = candidateIndices.shuffled(random).take(2).sorted()
@@ -96,10 +98,8 @@ internal object GameQuestionGenerator {
                 }.distinct()
 
         val distractors = distractorPool.shuffled(random).take(2)
-        if (distractors.size < 2) return null
-
         val options = (listOf(word1, word2) + distractors).shuffled(random)
-        if (options.toSet().size < 4) return null
+        if (options.toSet().size < COMPLETE_POEM_OPTION_COUNT) return null
 
         return GameQuestion.CompletePoem(
             line1 = line1,
@@ -117,7 +117,7 @@ internal object GameQuestionGenerator {
         lines: List<String>,
         seed: Long,
     ): GameQuestion.OrganizePoem? {
-        if (lines.size != 4 || lines.any { it.isBlank() }) return null
+        if (lines.size != ORGANIZE_LINE_COUNT || lines.any { it.isBlank() }) return null
         val organizeLines =
             lines.mapIndexed { index, text ->
                 OrganizeLine(
@@ -152,8 +152,8 @@ internal object GameQuestionGenerator {
             distractors
                 .filter { it.isNotBlank() && it != correct }
                 .distinct()
-                .take(3)
-        if (uniqueDistractors.size < 3) return null
+                .take(DISTRACTOR_COUNT)
+        if (uniqueDistractors.size < DISTRACTOR_COUNT) return null
         return (listOf(correct) + uniqueDistractors).shuffled(Random(seed))
     }
 

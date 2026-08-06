@@ -33,6 +33,8 @@ import azbarkoncmp.shared.generated.resources.keep
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+private const val POEM_LINE_COUNT = 4
+
 @Composable
 fun OrganizePoemContent(
     question: GameQuestion.OrganizePoem,
@@ -140,7 +142,7 @@ private fun OrganizePoemCardContent(
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         if (answerPhase == QuizAnswerPhase.Answering) {
             if (orderedLineIds == initialOrderedLineIds) {
-                repeat(4) {
+                repeat(POEM_LINE_COUNT) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = "…",

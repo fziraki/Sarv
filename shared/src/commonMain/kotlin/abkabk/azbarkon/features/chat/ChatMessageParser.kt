@@ -1,14 +1,7 @@
 package abkabk.azbarkon.features.chat
 
-private val PERSIAN_PUNCTUATION = Regex("[؟!،؛,ءًٌٍَُِئأإؤ]")
-private val NON_ARABIC_SCRIPT = Regex("[^؀-ۿ]")
+val PERSIAN_SCRIPT_RANGE = 0x0600..0x06FF
 
 fun extractLastPersianLetter(message: String): Char? {
-    val pure =
-        message
-            .replace(Regex("\\s+$"), "")
-            .replace(NON_ARABIC_SCRIPT, "")
-            .replace(PERSIAN_PUNCTUATION, "")
-
-    return pure.lastOrNull()
+    return message.filter { it.isLetter() }.lastOrNull { it.code in PERSIAN_SCRIPT_RANGE }
 }

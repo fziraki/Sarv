@@ -1,8 +1,8 @@
 package abkabk.azbarkon.features.games.session
 
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.ObserveAsEvents
-import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.domain.model.games.GameQuestion
 import abkabk.azbarkon.domain.model.games.GameSessionSummary
 import abkabk.azbarkon.domain.model.games.GameType
@@ -34,6 +34,7 @@ fun GameSessionRoot(
     gameTypeRoute: GameTypeRoute,
     onBackClick: () -> Unit,
     onNavigateToResult: (GameType, GameSessionSummary) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val viewModel: GameSessionViewModel =
         koinViewModel {
@@ -52,6 +53,7 @@ fun GameSessionRoot(
     BaseScreen(
         screenState = state.screenState,
         onRetry = { viewModel.onAction(GameSessionAction.OnRetryClick) },
+        modifier = modifier,
     ) {
         GameSessionScreen(
             state = state,
@@ -79,7 +81,6 @@ fun GameSessionScreen(
         },
         bottomBar = {
             GameSessionBottomBar(
-                gameType = state.gameType,
                 canUseHint = state.canUseHint,
                 hasSelection = state.hasSelection,
                 isRevealing = state.isRevealing,
@@ -109,7 +110,7 @@ fun GameSessionScreen(
                         disabledOptionIndices = state.disabledOptionIndices,
                         answerPhase = state.answerPhase,
                         enabled = state.isAnswering,
-                        onOptionSelected = { onAction(GameSessionAction.OnOptionSelected(it)) },
+                        onOptionSelect = { onAction(GameSessionAction.OnOptionSelected(it)) },
                         modifier = Modifier.fillMaxSize(),
                     )
 
@@ -120,7 +121,7 @@ fun GameSessionScreen(
                         disabledOptionIndices = state.disabledOptionIndices,
                         answerPhase = state.answerPhase,
                         enabled = state.isAnswering,
-                        onPoetSelected = { onAction(GameSessionAction.OnPoetSelected(it)) },
+                        onPoetSelect = { onAction(GameSessionAction.OnPoetSelected(it)) },
                         modifier = Modifier.fillMaxSize(),
                     )
 
@@ -131,7 +132,7 @@ fun GameSessionScreen(
                         disabledOptionIndices = state.disabledOptionIndices,
                         answerPhase = state.answerPhase,
                         enabled = state.isAnswering,
-                        onWordSelected = { onAction(GameSessionAction.OnWordSelected(it)) },
+                        onWordSelect = { onAction(GameSessionAction.OnWordSelected(it)) },
                         modifier = Modifier.fillMaxSize(),
                     )
 

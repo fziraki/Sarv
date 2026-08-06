@@ -1,15 +1,17 @@
 package abkabk.azbarkon.features.poets.details
 
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
-import abkabk.azbarkon.core.ui_base.ObserveAsEvents
-import abkabk.azbarkon.core.ui_base.UiText
-import abkabk.azbarkon.core.ui_base.asString
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.core.uidata.UiText
+import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.poets.PoetCategoryRowUi
 import abkabk.azbarkon.features.poets.list.PoetAvatar
 import abkabk.azbarkon.features.poets.list.PoetsSectionTitle
 import abkabk.azbarkon.ui.components.Header
+import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -116,7 +118,7 @@ fun PoetDetailScreen(
         Header(
             title = state.name,
             onBackClick = onBackClick,
-            onSearchClick = onSearchClick
+            action = HeaderAction.Search(onSearchClick),
         )
 
         LazyColumn(
@@ -186,7 +188,7 @@ private fun PoetDetailHero(
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,
@@ -207,24 +209,26 @@ private fun PoetDetailHero(
             textAlign = TextAlign.Center,
         )
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier =
-                Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .clickable { onAction(PoetDetailAction.OnChatClick) }
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
-        ) {
-            Text(
-                text = stringResource(Res.string.chat_with_poet),
-                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
-                color = MaterialTheme.colorScheme.primaryContainer
-            )
-            Icon(
-                painter = painterResource(Res.drawable.chat_bubble),
-                contentDescription = stringResource(Res.string.cd_chat),
-                tint = MaterialTheme.colorScheme.primaryContainer
-            )
+        if (state.canChat) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier =
+                    Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable { onAction(PoetDetailAction.OnChatClick) }
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+            ) {
+                Text(
+                    text = stringResource(Res.string.chat_with_poet),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Icon(
+                    painter = painterResource(Res.drawable.chat_bubble),
+                    contentDescription = stringResource(Res.string.cd_chat),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
         }
 
         if (state.bio.isNotBlank()) {
@@ -268,7 +272,7 @@ private fun PoetBioText(
                         .clickable { isExpanded = true },
                 text = stringResource(Res.string.poet_bio_read_more),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
             )
         }

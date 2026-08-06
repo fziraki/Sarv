@@ -18,6 +18,10 @@ dependencies {
 
     implementation(libs.compose.uiToolingPreview)
     debugImplementation(libs.compose.uiTooling)
+    lintChecks(libs.compose.lint.checks)
+
+    implementation(libs.androidx.core.splashscreen)
+
 }
 
 android {

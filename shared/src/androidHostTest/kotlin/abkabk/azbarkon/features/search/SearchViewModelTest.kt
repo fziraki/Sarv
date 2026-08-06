@@ -1,6 +1,6 @@
 package abkabk.azbarkon.features.search
 
-import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.domain.model.CatNode
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.PoetCategoryNode

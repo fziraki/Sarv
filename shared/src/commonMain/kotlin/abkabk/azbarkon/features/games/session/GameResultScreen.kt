@@ -1,7 +1,7 @@
 package abkabk.azbarkon.features.games.session
 
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.domain.model.games.GameConstants
 import abkabk.azbarkon.domain.model.games.GameType
 import abkabk.azbarkon.ui.components.AzbarkonButtonDefaults
@@ -60,19 +60,23 @@ import azbarkoncmp.shared.generated.resources.whois_poet_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+private const val PERCENT_MULTIPLIER = 100
+
 @Composable
 fun GameResultRoot(
-    gameType: GameType,
     correctCount: Int,
     wrongCount: Int,
     noAnswerCount: Int,
     scoreDelta: Int,
     onReplayClick: () -> Unit,
     onBackToListClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    BaseScreen(screenState = UiScreenState.Success) {
+    BaseScreen(
+        screenState = UiScreenState.Success,
+        modifier = modifier,
+    ) {
         GameResultScreen(
-            gameType = gameType,
             correctCount = correctCount,
             wrongCount = wrongCount,
             noAnswerCount = noAnswerCount,
@@ -86,7 +90,6 @@ fun GameResultRoot(
 
 @Composable
 fun GameResultScreen(
-    gameType: GameType,
     correctCount: Int,
     wrongCount: Int,
     noAnswerCount: Int,
@@ -142,7 +145,7 @@ private fun GameResultScoreCard(
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(MaterialTheme.colorScheme.primary)
                 .padding(20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -156,7 +159,7 @@ private fun GameResultScoreCard(
             Text(
                 text = scoreDelta.toString(),
                 style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = MaterialTheme.colorScheme.onPrimary,
             )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -170,7 +173,7 @@ private fun GameResultScoreCard(
                 Text(
                     text = stringResource(Res.string.game_result_score),
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = MaterialTheme.colorScheme.onPrimary,
                 )
                 Text(
                     text = "◆",
@@ -255,7 +258,7 @@ private fun GameResultProgressCard(
     modifier: Modifier = Modifier,
 ) {
     val answeredCount = correctCount + wrongCount
-    val percent = (answeredCount * 100) / GameConstants.QUIZ_COUNT
+    val percent = (answeredCount * PERCENT_MULTIPLIER) / GameConstants.QUIZ_COUNT
 
     Row(
         modifier =
@@ -319,7 +322,7 @@ private fun GameResultCircularProgress(
     percent: Int,
     modifier: Modifier = Modifier,
 ) {
-    val trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
+    val trackColor = MaterialTheme.colorScheme.surfaceVariant
     val progressColor = MaterialTheme.colorScheme.primary
 
     Box(
@@ -386,7 +389,7 @@ private fun GameResultSegmentedBar(
                             if (index < filledCount) {
                                 MaterialTheme.colorScheme.primary
                             } else {
-                                MaterialTheme.colorScheme.surfaceContainerHighest
+                                MaterialTheme.colorScheme.surfaceVariant
                             },
                         ),
             )
@@ -451,21 +454,11 @@ private fun GameResultBackToListButton(
     }
 }
 
-@Composable
-private fun gameTitle(gameType: GameType): String =
-    when (gameType) {
-        GameType.NEXT_VERSE -> stringResource(Res.string.next_line_title)
-        GameType.FIND_POET -> stringResource(Res.string.whois_poet_title)
-        GameType.COMPLETE_POEM -> stringResource(Res.string.complete_poem_title)
-        GameType.ORGANIZE_POEM -> stringResource(Res.string.poetry_arrangement_title)
-    }
-
 @Preview
 @Composable
 private fun GameResultScreenPreview() {
     AzbarkonTheme {
         GameResultScreen(
-            gameType = GameType.NEXT_VERSE,
             correctCount = 2,
             wrongCount = 1,
             noAnswerCount = 7,

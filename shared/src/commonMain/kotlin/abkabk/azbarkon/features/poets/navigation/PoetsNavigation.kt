@@ -7,7 +7,7 @@ import abkabk.azbarkon.features.poets.details.PoetDetailRoot
 import abkabk.azbarkon.features.poets.list.PoetsListRoot
 import abkabk.azbarkon.features.memorization.navigation.navigateToMemorizationPractice
 import abkabk.azbarkon.features.search.navigation.navigateToSearch
-import abkabk.azbarkon.features.tasvir_negar.navigation.TasvirNegarRoute
+import abkabk.azbarkon.features.tasvirNegar.navigation.TasvirNegarRoute
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable

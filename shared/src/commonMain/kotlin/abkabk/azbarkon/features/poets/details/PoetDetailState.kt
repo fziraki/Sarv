@@ -1,7 +1,7 @@
 package abkabk.azbarkon.features.poets.details
 
-import abkabk.azbarkon.core.ui_base.UiScreenState
-import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.features.poets.PoetCategoryRowUi
 import androidx.compose.runtime.Stable
 
@@ -12,6 +12,7 @@ data class PoetDetailState(
     val bio: String = "",
     val imageUrl: String? = null,
     val categories: List<PoetCategoryRowUi> = emptyList(),
+    val canChat: Boolean = false,
 )
 
 sealed interface PoetDetailAction {

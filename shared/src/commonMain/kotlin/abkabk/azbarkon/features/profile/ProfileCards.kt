@@ -4,6 +4,7 @@ import abkabk.azbarkon.domain.model.profile.BadgeUi
 import abkabk.azbarkon.domain.model.profile.GameProfileStats
 import abkabk.azbarkon.domain.model.profile.MemorizationProfileStats
 import abkabk.azbarkon.domain.model.profile.ProfileLevelProgress
+import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,6 +31,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -44,20 +47,22 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.cd_levels
-import azbarkoncmp.shared.generated.resources.default_avatar
-import azbarkoncmp.shared.generated.resources.gordafarid_avatar
 import azbarkoncmp.shared.generated.resources.ic_help
 import azbarkoncmp.shared.generated.resources.beyt100_badge
 import azbarkoncmp.shared.generated.resources.first_badge
 import azbarkoncmp.shared.generated.resources.hafez_star_badge
+import azbarkoncmp.shared.generated.resources.level1
+import azbarkoncmp.shared.generated.resources.level2
+import azbarkoncmp.shared.generated.resources.level3
+import azbarkoncmp.shared.generated.resources.level4
+import azbarkoncmp.shared.generated.resources.level5
+import azbarkoncmp.shared.generated.resources.level6
+import azbarkoncmp.shared.generated.resources.level7
+import azbarkoncmp.shared.generated.resources.level8
 import azbarkoncmp.shared.generated.resources.night_badge
 import azbarkoncmp.shared.generated.resources.palette
 import azbarkoncmp.shared.generated.resources.poetry_lover_badge
 import azbarkoncmp.shared.generated.resources.profile_game_status_title
-import azbarkoncmp.shared.generated.resources.rostam_avatar
-import azbarkoncmp.shared.generated.resources.siavash_avatar
-import azbarkoncmp.shared.generated.resources.sohrab_avatar
-import azbarkoncmp.shared.generated.resources.tahmine_avatar
 import azbarkoncmp.shared.generated.resources.profile_game_streak
 import azbarkoncmp.shared.generated.resources.profile_game_total_points
 import azbarkoncmp.shared.generated.resources.profile_level_format
@@ -66,38 +71,53 @@ import azbarkoncmp.shared.generated.resources.profile_mem_streak
 import azbarkoncmp.shared.generated.resources.profile_memorization_status_title
 import azbarkoncmp.shared.generated.resources.profile_view_all_badges
 import azbarkoncmp.shared.generated.resources.profile_xp_format
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+
+private const val WEEKLY_STREAK_BADGE_ID = 3
+private const val POETRY_LOVER_BADGE_ID = 4
+private const val PERFECT_GAMES_BADGE_ID = 5
+
+internal val levelImages: List<DrawableResource> =
+    listOf(
+        Res.drawable.level1,
+        Res.drawable.level2,
+        Res.drawable.level3,
+        Res.drawable.level4,
+        Res.drawable.level5,
+        Res.drawable.level6,
+        Res.drawable.level7,
+        Res.drawable.level8,
+    )
+
+internal fun levelImageResource(levelId: Int): DrawableResource? =
+    levelImages.getOrNull(levelId - 1)
 
 @Composable
 fun ProfileHeader(
     levelProgress: ProfileLevelProgress,
-    avatarIndex: Int,
-    onAvatarClick: () -> Unit,
     onLevelsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val avatarResources = listOf(
-        Res.drawable.rostam_avatar,
-        Res.drawable.tahmine_avatar,
-        Res.drawable.sohrab_avatar,
-        Res.drawable.siavash_avatar,
-        Res.drawable.gordafarid_avatar,
-    )
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
-            painter = if (avatarIndex == -1) painterResource(Res.drawable.default_avatar)
-                    else painterResource(avatarResources[avatarIndex]),
-            contentDescription = null,
-            modifier = Modifier.size(96.dp).clip(CircleShape).clickable(onClick = onAvatarClick),
-        )
+        levelImageResource(levelProgress.levelId)?.let { drawable ->
+            Image(
+                painter = painterResource(drawable),
+                contentDescription = null,
+                modifier = Modifier.size(96.dp).clickable(onClick = onLevelsClick),
+            )
+        }
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onLevelsClick),
             horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -110,7 +130,7 @@ fun ProfileHeader(
             )
             Box(modifier = Modifier.size(3.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.scrim,
+                    color = MaterialTheme.colorScheme.onSurface,
                     shape = CircleShape
                 ))
             Text(
@@ -146,8 +166,7 @@ fun ProfileHeader(
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp)
                         .height(8.dp),
-                color = ProgressIndicatorDefaults.linearColor,
-                trackColor = ProgressIndicatorDefaults.linearTrackColor,
+                trackColor = LightColorScheme.outlineVariant,
                 strokeCap = StrokeCap.Round,
                 drawStopIndicator = {},
                 gapSize = (-4).dp,
@@ -162,7 +181,7 @@ fun ProfileHeader(
                     levelProgress.currentXp,
                     levelProgress.targetXp,
                 ),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center,
         )
@@ -207,46 +226,49 @@ private fun ProfileStatusCard(
     items: List<Pair<Int, String>>,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    shape = RoundedCornerShape(12.dp),
-                ).padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        tonalElevation = 1.dp,
+        shadowElevation = 1.dp,
+        color = MaterialTheme.colorScheme.surfaceVariant
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = title,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Start,
-        )
-
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(IntrinsicSize.Min),
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            items.forEachIndexed { index, (value, label) ->
-                ProfileStatItem(
-                    modifier = Modifier.weight(1f),
-                    value = value,
-                    label = label,
-                )
-                if (index < items.lastIndex) {
-                    VerticalDivider(
-                        modifier = Modifier.fillMaxHeight(),
-                        thickness = 1.dp,
-                        color = MaterialTheme.colorScheme.surface,
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = title,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.secondary,
+                textAlign = TextAlign.Start,
+            )
+
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Min),
+            ) {
+                items.forEachIndexed { index, (value, label) ->
+                    ProfileStatItem(
+                        modifier = Modifier.weight(1f),
+                        value = value,
+                        label = label,
                     )
+                    if (index < items.lastIndex) {
+                        VerticalDivider(
+                            modifier = Modifier.fillMaxHeight(),
+                            thickness = 1.dp,
+                            color = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
                 }
             }
         }
     }
+
 }
 
 @Composable
@@ -262,13 +284,13 @@ private fun ProfileStatItem(
     ) {
         Text(
             text = value.toString(),
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
         )
         Text(
             text = label,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
         )
@@ -281,42 +303,50 @@ fun ProfileBadges(
     onViewAllClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    shape = RoundedCornerShape(12.dp),
-                ).padding(vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalAlignment = Alignment.End,
-    ) {
-        Text(
-            modifier = Modifier.clickable(onClick = onViewAllClick).padding(end = 16.dp),
-            text = stringResource(Res.string.profile_view_all_badges),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.End,
-        )
 
-        LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(
-                items = badges,
-                key = { badge -> badge.id },
-            ) { badge ->
-                BadgeItem(badge)
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        tonalElevation = 1.dp,
+        shadowElevation = 1.dp,
+        color = MaterialTheme.colorScheme.surfaceVariant
+    ) {
+        Column(
+            modifier = Modifier.padding(vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.End,
+        ) {
+            Text(
+                modifier = Modifier.clickable(onClick = onViewAllClick).padding(end = 16.dp),
+                text = stringResource(Res.string.profile_view_all_badges),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.secondary,
+                textAlign = TextAlign.End,
+            )
+
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                items(
+                    items = badges,
+                    key = { badge -> badge.id },
+                ) { badge ->
+                    BadgeItem(item = badge)
+                }
             }
         }
     }
+
+
 }
 
 @Composable
-fun BadgeItem(item: BadgeUi) {
+fun BadgeItem(
+    item: BadgeUi,
+    modifier: Modifier = Modifier,
+) {
     BadgeIcon(
         badgeId = item.id,
         isEarned = item.isEarned,
-        modifier = Modifier.width(80.dp),
+        modifier = modifier.width(80.dp),
         showName = true,
         name = item.name,
     )
@@ -378,9 +408,9 @@ private fun BadgeIcon(
         when (badgeId) {
             1 -> Res.drawable.first_badge
             2 -> Res.drawable.beyt100_badge
-            3 -> Res.drawable.night_badge
-            4 -> Res.drawable.poetry_lover_badge
-            5 -> Res.drawable.hafez_star_badge
+            WEEKLY_STREAK_BADGE_ID -> Res.drawable.night_badge
+            POETRY_LOVER_BADGE_ID -> Res.drawable.poetry_lover_badge
+            PERFECT_GAMES_BADGE_ID -> Res.drawable.hafez_star_badge
             else -> Res.drawable.first_badge
         }
     Column(

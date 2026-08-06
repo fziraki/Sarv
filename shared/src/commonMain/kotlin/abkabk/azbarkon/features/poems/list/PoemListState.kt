@@ -1,6 +1,6 @@
 package abkabk.azbarkon.features.poems.list
 
-import abkabk.azbarkon.core.ui_base.UiText
+import abkabk.azbarkon.core.uidata.UiText
 import androidx.compose.runtime.Stable
 
 @Stable

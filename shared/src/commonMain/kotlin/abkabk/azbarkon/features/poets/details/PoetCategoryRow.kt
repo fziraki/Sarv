@@ -38,13 +38,13 @@ fun PoetCategoryRow(
     val isChildRow = category.depth > 0
     val backgroundColor =
         if (isChildRow) {
-            MaterialTheme.colorScheme.secondaryContainer
+            MaterialTheme.colorScheme.secondary
         } else {
-            MaterialTheme.colorScheme.surfaceContainerHigh
+            MaterialTheme.colorScheme.surfaceVariant
         }
     val contentColor =
         if (isChildRow) {
-            MaterialTheme.colorScheme.onSecondaryContainer
+            MaterialTheme.colorScheme.onSecondary
         } else {
             MaterialTheme.colorScheme.onBackground
         }

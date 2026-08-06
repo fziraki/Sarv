@@ -1,6 +1,6 @@
 package abkabk.azbarkon.features.poems.list
 
-import abkabk.azbarkon.core.ui_base.BaseViewModel
+import abkabk.azbarkon.core.uidata.BaseViewModel
 import abkabk.azbarkon.domain.repository.PoemRepository
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData

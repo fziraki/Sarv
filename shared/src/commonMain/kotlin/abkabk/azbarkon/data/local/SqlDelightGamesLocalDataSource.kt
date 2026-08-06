@@ -19,6 +19,10 @@ import com.azbarkon.db.PoetQueries
 import com.azbarkon.db.VerseQueries
 import kotlin.random.Random
 
+private const val SEED_STRIDE = 9973L
+private const val SEED_SALT = 17L
+private const val DISTRACTOR_COUNT = 3
+
 class SqlDelightGamesLocalDataSource(
     private val verseQueries: VerseQueries,
     private val poemQueries: PoemQueries,
@@ -117,7 +121,7 @@ class SqlDelightGamesLocalDataSource(
         cache: GameGenerationCache,
     ): Result<GameQuestion, DataError.Local> {
         repeat(MAX_GENERATION_ATTEMPTS) { attempt ->
-            val attemptSeed = seed + attempt * 9973L
+            val attemptSeed = seed + attempt * SEED_STRIDE
             val question =
                 when (gameType) {
                     GameType.NEXT_VERSE -> generateNextVerse(attemptSeed, quizIndex, cache)
@@ -157,10 +161,10 @@ class SqlDelightGamesLocalDataSource(
         quizIndex: Int,
         cache: GameGenerationCache,
     ): GameQuestion.FindPoet? {
-        val bundle = cache.poemBundles[quizIndex] ?: return null
-        if (bundle.distichs.isEmpty()) return null
-
-        val distich = bundle.distichs[bundleIndex(seed, bundle.distichs.size)]
+        val distich =
+            cache.poemBundles[quizIndex]?.let { bundle ->
+                bundle.distichs.getOrNull(bundleIndex(seed, bundle.distichs.size))
+            } ?: return null
         val allPoets = cache.cachedPoets ?: return null
         val correctPoet = allPoets.firstOrNull { it.id?.toLong() == distich.poetId } ?: return null
 
@@ -225,11 +229,11 @@ class SqlDelightGamesLocalDataSource(
                         text != distich.firstHemistich
                 }.distinct()
 
-        if (candidates.size < 3) return null
+        if (candidates.size < DISTRACTOR_COUNT) return null
 
         return candidates
-            .shuffled(Random(seed + 17L))
-            .take(3)
+            .shuffled(Random(seed + SEED_SALT))
+            .take(DISTRACTOR_COUNT)
     }
 
     private fun bundleIndex(

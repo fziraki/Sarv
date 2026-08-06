@@ -1,7 +1,7 @@
 package abkabk.azbarkon.features.profile
 
-import abkabk.azbarkon.core.ui_base.BaseViewModel
-import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.core.uidata.BaseViewModel
+import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.model.ThemeMode
 import abkabk.azbarkon.domain.model.profile.BadgeCatalog
@@ -13,6 +13,7 @@ import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
 import abkabk.azbarkon.domain.repository.MemorizationRepository
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
+import abkabk.azbarkon.features.poets.GHAZAL_CATEGORY
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -36,7 +37,6 @@ class ProfileViewModel(
     init {
         onAction(ProfileAction.OnLoad)
         observeProfileData()
-        observeAvatar()
     }
 
     override fun onAction(action: ProfileAction) {
@@ -81,15 +81,6 @@ class ProfileViewModel(
             is ProfileAction.OnNotificationPermissionResult -> {
                 handleNotificationPermissionResult(action.granted)
             }
-
-            ProfileAction.OnAvatarClick -> {
-                setState { copy(activeSheet = ProfileSheet.Avatar) }
-            }
-
-            is ProfileAction.OnAvatarSelected -> {
-                userPreferencesRepository.setAvatarIndex(action.index)
-                setState { copy(activeSheet = null, avatarIndex = action.index) }
-            }
         }
     }
 
@@ -123,11 +114,12 @@ class ProfileViewModel(
                     is abkabk.azbarkon.core.domain.result.Result.Error -> emptyList()
                 }
             }
-        val completedPoemCount =
-            activePoems.count { poem ->
+        val completedPoems =
+            activePoems.filter { poem ->
                 poem.totalCards > 0 && poem.reviewedCards >= poem.totalCards
             }
-        val hasCompletedPoem = completedPoemCount > 0
+        val completedPoemCount = completedPoems.size
+        val hasCompletedGhazal = completedPoems.any { it.categoryName == GHAZAL_CATEGORY }
         setState {
             copy(
                 screenState = UiScreenState.Success,
@@ -144,7 +136,7 @@ class ProfileViewModel(
                     ),
                 gameStats = snapshot.gameStats,
                 reviewedVersesCount = reviewedVerses,
-                hasCompletedMemorizationPoem = hasCompletedPoem,
+                hasCompletedGhazal = hasCompletedGhazal,
             )
         }
         rebuildDerivedUi()
@@ -156,9 +148,10 @@ class ProfileViewModel(
             BadgeCatalog.badges.map { badge ->
                 BadgeCatalog.toBadgeUi(
                     badge = badge,
-                    hasCompletedMemorizationPoem = current.hasCompletedMemorizationPoem,
+                    hasCompletedGhazal = current.hasCompletedGhazal,
                     reviewedVersesCount = current.reviewedVersesCount,
                     gameVisitStreak = current.gameStats.visitStreak,
+                    completedPoemCount = current.memorizationStats.completedPoemCount,
                     perfectGameSessions = current.gameStats.perfectGameSessions,
                 )
             }
@@ -226,14 +219,6 @@ class ProfileViewModel(
         dailyBeytNotificationScheduler.disable()
         setState {
             copy(isDailyBeytNotificationEnabled = false)
-        }
-    }
-
-    private fun observeAvatar() {
-        viewModelScope.launch {
-            userPreferencesRepository.observeAvatarIndex().collect { index ->
-                setState { copy(avatarIndex = index) }
-            }
         }
     }
 

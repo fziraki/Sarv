@@ -23,6 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+private const val SHIMMER_ROW_COUNT = 4
+
 @Composable
 fun GameContentShimmer(
     gameType: GameType,
@@ -50,7 +52,7 @@ private fun NextVerseContentShimmer(modifier: Modifier = Modifier) {
 
         ShimmerInstructionBar()
 
-        repeat(4) {
+        repeat(SHIMMER_ROW_COUNT) {
             ShimmerBar(
                 height = 48.dp,
                 shape = RoundedCornerShape(12.dp),
@@ -148,7 +150,7 @@ private fun OrganizePoemContentShimmer(modifier: Modifier = Modifier) {
         GamePoemCard {
             ShimmerBar(height = 14.dp, widthFraction = 0.35f)
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                repeat(4) {
+                repeat(SHIMMER_ROW_COUNT) {
                     ShimmerBar(height = 20.dp)
                 }
             }
@@ -157,7 +159,7 @@ private fun OrganizePoemContentShimmer(modifier: Modifier = Modifier) {
         ShimmerInstructionBar()
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            repeat(4) {
+            repeat(SHIMMER_ROW_COUNT) {
                 Row(
                     modifier =
                         Modifier
@@ -197,8 +199,8 @@ private fun ShimmerInstructionBar(
 
 @Composable
 private fun ShimmerBar(
-    modifier: Modifier = Modifier,
     height: Dp,
+    modifier: Modifier = Modifier,
     widthFraction: Float? = null,
     shape: Shape = RoundedCornerShape(8.dp),
 ) {

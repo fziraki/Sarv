@@ -1,6 +1,6 @@
 package abkabk.azbarkon.features.poets
 
-import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.domain.model.CatNode
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.PoetWithRootCategories
@@ -17,6 +17,7 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
+import assertk.assertions.isTrue
 import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -90,6 +91,20 @@ class PoetsListViewModelTest {
                 .isEqualTo("قطعات و 4 اثر دیگر")
             assertThat(state.poets.first { it.name == "سعدی شیرازی" }.worksSummary)
                 .isEqualTo("گلستان و 1 اثر دیگر")
+        }
+
+    @Test
+    fun `chat is available only for poets with ghazal category`() =
+        runTest {
+            val repository =
+                FakePoetRepository().apply {
+                    poetsWithRootCategories = samplePoetsWithRootCategories()
+                }
+            val viewModel = PoetsListViewModel(repository)
+
+            val state = viewModel.state.value
+            assertThat(state.poets.first { it.name == "حافظ شیرازی" }.canChat).isTrue()
+            assertThat(state.poets.first { it.name == "سعدی شیرازی" }.canChat).isFalse()
         }
 
     @Test

@@ -15,10 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 
+private const val GRADIENT_LENGTH = 300f
+
 @Composable
 fun ShimmerPlaceholder(modifier: Modifier = Modifier) {
-    val baseColor = MaterialTheme.colorScheme.surfaceContainerHigh
-    val highlightColor = MaterialTheme.colorScheme.surfaceContainerHighest
+    val baseColor = MaterialTheme.colorScheme.surfaceVariant
+    val highlightColor = MaterialTheme.colorScheme.surfaceVariant
     val transition = rememberInfiniteTransition(label = "shimmer")
     val translate by transition.animateFloat(
         initialValue = -400f,
@@ -38,7 +40,7 @@ fun ShimmerPlaceholder(modifier: Modifier = Modifier) {
                     Brush.linearGradient(
                         colors = listOf(baseColor, highlightColor, baseColor),
                         start = Offset(translate, 0f),
-                        end = Offset(translate + 300f, 0f),
+                        end = Offset(translate + GRADIENT_LENGTH, 0f),
                     ),
             ),
     )

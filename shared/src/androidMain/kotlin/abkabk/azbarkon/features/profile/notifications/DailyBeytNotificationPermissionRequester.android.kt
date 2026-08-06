@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
@@ -22,13 +23,14 @@ actual fun rememberDailyBeytNotificationPermissionRequester(
     val context = LocalContext.current
     val permissionGateway: NotificationPermissionGateway = koinInject()
     var shouldRequest by remember { mutableStateOf(false) }
+    val currentOnResult by rememberUpdatedState(onResult)
 
     val permissionLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission(),
         ) { granted ->
             shouldRequest = false
-            onResult(granted)
+            currentOnResult(granted)
         }
 
     LaunchedEffect(shouldRequest) {
@@ -37,7 +39,7 @@ actual fun rememberDailyBeytNotificationPermissionRequester(
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             shouldRequest = false
             val enabled = permissionGateway.areNotificationsEnabled()
-            onResult(enabled)
+            currentOnResult(enabled)
             return@LaunchedEffect
         }
 
@@ -48,7 +50,7 @@ actual fun rememberDailyBeytNotificationPermissionRequester(
             ) == android.content.pm.PackageManager.PERMISSION_GRANTED
         ) {
             shouldRequest = false
-            onResult(true)
+            currentOnResult(true)
         } else {
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }

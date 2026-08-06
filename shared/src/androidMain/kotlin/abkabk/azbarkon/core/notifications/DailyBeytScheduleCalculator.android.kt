@@ -21,5 +21,7 @@ internal object DailyBeytScheduleCalculator {
         return next.timeInMillis - now.timeInMillis
     }
 
-    val repeatIntervalMillis: Long = TimeUnit.HOURS.toMillis(24)
+    const val PERIODIC_INTERVAL_HOURS: Long = 24
+
+    val repeatIntervalMillis: Long = TimeUnit.HOURS.toMillis(PERIODIC_INTERVAL_HOURS)
 }

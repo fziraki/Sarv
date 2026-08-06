@@ -1,6 +1,7 @@
 package abkabk.azbarkon.features.memorization
 
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.feather
 import azbarkoncmp.shared.generated.resources.forward
 import azbarkoncmp.shared.generated.resources.ic_delete
 import azbarkoncmp.shared.generated.resources.memorization_due_cards_format
@@ -41,10 +43,11 @@ import azbarkoncmp.shared.generated.resources.memorization_select_hero_title
 import azbarkoncmp.shared.generated.resources.memorization_status_format
 import azbarkoncmp.shared.generated.resources.ornoment30
 import azbarkoncmp.shared.generated.resources.search
-import azbarkoncmp.shared.generated.resources.siahmashghkhat
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+
+private const val LABEL_WIDTH_FRACTION = 0.9f
 
 @Composable
 fun MemorizationHeroSection(
@@ -56,7 +59,7 @@ fun MemorizationHeroSection(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Image(
-            painter = painterResource(Res.drawable.siahmashghkhat),
+            painter = painterResource(Res.drawable.feather),
             contentDescription = null,
         )
 
@@ -88,7 +91,7 @@ fun QuickStartCard(
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(LightColorScheme.primary)
                 .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -96,13 +99,13 @@ fun QuickStartCard(
         Text(
             text = stringResource(Res.string.memorization_quick_start),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            color = LightColorScheme.onPrimary,
         )
 
         Text(
             text = stringResource(Res.string.memorization_quick_start_desc),
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f),
+            color = LightColorScheme.onPrimary.copy(alpha = 0.85f),
         )
 
         Row(
@@ -148,13 +151,13 @@ fun QuickStartCategoryTile(
                 Modifier
                     .size(56.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)),
+                    .background(LightColorScheme.surface.copy(alpha = 0.2f)),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 painter = painterResource(Res.drawable.ornoment30),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                tint = LightColorScheme.onPrimary,
                 modifier = Modifier.size(42.dp),
             )
         }
@@ -162,9 +165,9 @@ fun QuickStartCategoryTile(
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            color = LightColorScheme.onPrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(0.9f),
+            modifier = Modifier.fillMaxWidth(LABEL_WIDTH_FRACTION),
         )
     }
 }
@@ -182,7 +185,7 @@ fun MemorizationOptionRow(
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,
@@ -199,13 +202,13 @@ fun MemorizationOptionRow(
                 Modifier
                     .size(44.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.secondaryContainer),
+                    .background(LightColorScheme.secondary),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 painter = painterResource(icon),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                tint = LightColorScheme.onSecondary,
                 modifier = Modifier.size(24.dp),
             )
         }
@@ -253,7 +256,7 @@ fun ActivePoemCard(
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,
@@ -289,6 +292,8 @@ fun ActivePoemCard(
             LinearProgressIndicator(
                 progress = { progress.coerceIn(0f, 1f) },
                 modifier = Modifier.fillMaxWidth(),
+                trackColor = LightColorScheme.outlineVariant,
+                gapSize = (-4).dp
             )
             if (dueCards > 0) {
                 Text(

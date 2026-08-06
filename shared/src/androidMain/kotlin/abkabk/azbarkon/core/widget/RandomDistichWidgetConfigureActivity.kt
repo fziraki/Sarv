@@ -28,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -66,7 +67,7 @@ class RandomDistichWidgetConfigureActivity :
             AzbarkonTheme {
                 RandomDistichWidgetConfigureScreen(
                     loadPoets = poetRepository::getPoets,
-                    onPoetSelected = ::onPoetSelected,
+                    onPoetSelect = ::onPoetSelected,
                 )
             }
         }
@@ -93,13 +94,14 @@ class RandomDistichWidgetConfigureActivity :
 @Composable
 private fun RandomDistichWidgetConfigureScreen(
     loadPoets: suspend () -> Result<List<Poet>, DataError.Local>,
-    onPoetSelected: (Int) -> Unit,
+    onPoetSelect: (Int) -> Unit,
 ) {
     var poets by remember { mutableStateOf<List<Poet>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
+    val currentLoadPoets by rememberUpdatedState(loadPoets)
 
     LaunchedEffect(Unit) {
-        when (val result = loadPoets()) {
+        when (val result = currentLoadPoets()) {
             is Result.Success -> {
                 poets = result.data
                 isLoading = false
@@ -126,36 +128,49 @@ private fun RandomDistichWidgetConfigureScreen(
                 }
             }
             else -> {
-                LazyColumn(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(padding),
-                ) {
-                    item {
-                        Text(
-                            text = stringResource(R.string.widget_random_distich_config_title),
-                            style = MaterialTheme.typography.headlineMedium,
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                        )
-                    }
-                    item {
-                        PoetConfigRow(
-                            name = stringResource(R.string.widget_random_distich_all_poets),
-                            onClick = { onPoetSelected(RandomDistichWidgetConstants.ALL_POETS_ID) },
-                        )
-                    }
-                    items(poets.filter { it.id != null && it.name != null }, key = { it.id!! }) { poet ->
-                        PoetConfigRow(
-                            name = poet.name!!,
-                            onClick = { onPoetSelected(poet.id!!) },
-                        )
-                    }
-                }
+                PoetSelectionList(
+                    poets = poets,
+                    onPoetSelect = onPoetSelect,
+                    padding = padding,
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun PoetSelectionList(
+    poets: List<Poet>,
+    onPoetSelect: (Int) -> Unit,
+    padding: androidx.compose.foundation.layout.PaddingValues,
+) {
+    LazyColumn(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(padding),
+    ) {
+        item {
+            Text(
+                text = stringResource(R.string.widget_random_distich_config_title),
+                style = MaterialTheme.typography.headlineMedium,
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+            )
+        }
+        item {
+            PoetConfigRow(
+                name = stringResource(R.string.widget_random_distich_all_poets),
+                onClick = { onPoetSelect(RandomDistichWidgetConstants.ALL_POETS_ID) },
+            )
+        }
+        items(poets.filter { it.id != null && it.name != null }, key = { it.id!! }) { poet ->
+            PoetConfigRow(
+                name = poet.name!!,
+                onClick = { onPoetSelect(poet.id!!) },
+            )
         }
     }
 }

@@ -15,13 +15,15 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 object HttpClientFactory {
+    private const val REQUEST_TIMEOUT_MILLIS = 30_000L
+
     fun create(
         engine: HttpClientEngine,
         authProvider: AuthProvider,
     ): HttpClient =
         HttpClient(engine) {
             install(HttpTimeout) {
-                requestTimeoutMillis = 30_000
+                requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS
             }
 
             install(ContentNegotiation) {

@@ -1,17 +1,18 @@
 package abkabk.azbarkon.features.poems.details
 
 import abkabk.azbarkon.core.designsystem.secondary
-import abkabk.azbarkon.core.designsystem.secondaryFixed
 import abkabk.azbarkon.core.ui.FindTextField
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.LocalAzbarkonAppState
-import abkabk.azbarkon.core.ui_base.ObserveAsEvents
-import abkabk.azbarkon.core.ui_base.UiText
-import abkabk.azbarkon.core.ui_base.asString
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.core.uidata.UiText
+import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.domain.model.PoemAudioTrack
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.Header
+import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +46,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,6 +68,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+
+private const val TRACK_MIN_DIVISOR = 0.001f
+private const val MILLIS_PER_SECOND = 1000L
+private const val SECONDS_PER_MINUTE = 60
 
 @Composable
 fun PoemDetailRoot(
@@ -119,13 +125,14 @@ fun PoemDetailScreen(
 ) {
     val listState = rememberLazyListState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val currentOnAction by rememberUpdatedState(onAction)
 
     LaunchedEffect(state.scrollToVerseId, state.verses) {
         val targetVerseId = state.scrollToVerseId ?: return@LaunchedEffect
         val targetIndex = state.verses.indexOfFirst { it.id == targetVerseId }
         if (targetIndex >= 0) {
             listState.animateScrollToItem(targetIndex)
-            onAction(PoemDetailAction.OnScrollConsumed)
+            currentOnAction(PoemDetailAction.OnScrollConsumed)
         }
     }
 
@@ -139,8 +146,10 @@ fun PoemDetailScreen(
             title = state.poetName,
             subtitle = state.subtitle,
             onBackClick = onBackClick,
-            isBookmarked = state.isBookmarked,
-            onBookmarkClick = { onAction(PoemDetailAction.OnBookmarkClick) },
+            action =
+                HeaderAction.Bookmark(isBookmarked = state.isBookmarked) {
+                    onAction(PoemDetailAction.OnBookmarkClick)
+                },
         )
 
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -206,8 +215,8 @@ fun PoemDetailScreen(
             AudioTracksList(
                 tracks = audioState.tracks,
                 onPlayPauseClick = { onAction(PoemDetailAction.OnTrackPlayPauseClick(it)) },
-                onSeekChanged = { track, p -> onAction(PoemDetailAction.OnTrackSeekChanged(track, p)) },
-                onSeekFinished = { track, p -> onAction(PoemDetailAction.OnTrackSeekFinished(track, p)) },
+                onSeekChange = { track, p -> onAction(PoemDetailAction.OnTrackSeekChanged(track, p)) },
+                onSeekFinish = { track, p -> onAction(PoemDetailAction.OnTrackSeekFinished(track, p)) },
             )
 
             PoemActionBar(
@@ -234,8 +243,8 @@ fun PoemDetailScreen(
 fun AudioTracksList(
     tracks: List<TrackPlaybackUiState>,
     onPlayPauseClick: (PoemAudioTrack) -> Unit,
-    onSeekChanged: (PoemAudioTrack, Float) -> Unit,
-    onSeekFinished: (PoemAudioTrack, Float) -> Unit,
+    onSeekChange: (PoemAudioTrack, Float) -> Unit,
+    onSeekFinish: (PoemAudioTrack, Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -246,8 +255,8 @@ fun AudioTracksList(
             TrackPlayerCard(
                 state = trackState,
                 onPlayPauseClick = { onPlayPauseClick(trackState.track) },
-                onSeekChanged = { onSeekChanged(trackState.track, it) },
-                onSeekFinished = { onSeekFinished(trackState.track, it) },
+                onSeekChange = { onSeekChange(trackState.track, it) },
+                onSeekFinish = { onSeekFinish(trackState.track, it) },
             )
         }
     }
@@ -258,12 +267,11 @@ fun AudioTracksList(
 private fun TrackPlayerCard(
     state: TrackPlaybackUiState,
     onPlayPauseClick: () -> Unit,
-    onSeekChanged: (Float) -> Unit,
-    onSeekFinished: (Float) -> Unit,
+    onSeekChange: (Float) -> Unit,
+    onSeekFinish: (Float) -> Unit,
 ) {
     var dragProgress by remember { mutableStateOf<Float?>(null) }
     val displayedProgress = dragProgress ?: state.progress
-    val isActive = state.isPlaying || state.isLoading
 
     Row(
         modifier = Modifier
@@ -277,7 +285,6 @@ private fun TrackPlayerCard(
         PlayPauseButton(
             isPlaying = state.isPlaying,
             isLoading = state.isLoading,
-            isActive = isActive,
             onClick = onPlayPauseClick,
         )
         Column(modifier = Modifier.weight(1f)) {
@@ -304,11 +311,11 @@ private fun TrackPlayerCard(
                 value = displayedProgress.coerceIn(0f, 1f),
                 onValueChange = {
                     dragProgress = it
-                    onSeekChanged(it)
+                    onSeekChange(it)
                 },
                 onValueChangeFinished = {
                     val finalValue = dragProgress ?: state.progress
-                    onSeekFinished(finalValue)
+                    onSeekFinish(finalValue)
                     dragProgress = null
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -330,14 +337,14 @@ private fun TrackPlayerCard(
                 track = { sliderState ->
                     val trackProgress =
                         (sliderState.value - sliderState.valueRange.start) /
-                                (sliderState.valueRange.endInclusive - sliderState.valueRange.start).coerceAtLeast(0.001f)
+                                (sliderState.valueRange.endInclusive - sliderState.valueRange.start).coerceAtLeast(TRACK_MIN_DIVISOR)
 
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(4.dp)
                             .clip(RoundedCornerShape(percent = 50))
-                            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+                            .background(LightColorScheme.outlineVariant),
                     ) {
                         if (trackProgress > 0f) {
                             Box(
@@ -366,25 +373,16 @@ private fun TrackPlayerCard(
 private fun PlayPauseButton(
     isPlaying: Boolean,
     isLoading: Boolean,
-    isActive: Boolean,
     onClick: () -> Unit,
 ) {
-    val backgroundColor = if (isActive) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.surfaceContainerHighest
-    }
-    val iconTint = if (isActive) {
-        MaterialTheme.colorScheme.onPrimary
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
+
+    val iconTint = MaterialTheme.colorScheme.tertiary
 
     Box(
         modifier = Modifier
             .size(40.dp)
             .clip(CircleShape)
-            .background(backgroundColor)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
@@ -411,9 +409,9 @@ private fun PlayPauseButton(
 }
 
 private fun formatMs(ms: Long): String {
-    val totalSeconds = ms / 1000
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
+    val totalSeconds = ms / MILLIS_PER_SECOND
+    val minutes = totalSeconds / SECONDS_PER_MINUTE
+    val seconds = totalSeconds % SECONDS_PER_MINUTE
     return "$minutes:${seconds.toString().padStart(2, '0')}"
 }
 

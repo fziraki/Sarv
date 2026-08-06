@@ -1,9 +1,8 @@
 package abkabk.azbarkon.features.games
 
 import abkabk.azbarkon.domain.model.games.GameType
-import abkabk.azbarkon.domain.model.games.baseScore
-import abkabk.azbarkon.core.ui_base.BaseScreen
-import abkabk.azbarkon.core.ui_base.UiScreenState
+import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.features.games.navigation.toRoute
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,6 +42,7 @@ import azbarkoncmp.shared.generated.resources.whois_poet_title
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Surface
 import androidx.compose.ui.layout.ContentScale
 import azbarkoncmp.shared.generated.resources.guess_poet_icon
 import azbarkoncmp.shared.generated.resources.incomplete_icon
@@ -52,6 +52,9 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+
+private const val GAME_CARD_IMAGE_WEIGHT = 0.3f
+private const val GAME_CARD_CONTENT_WEIGHT = 0.7f
 
 @Composable
 fun GamesRoot(
@@ -65,9 +68,10 @@ fun GamesRoot(
 @Composable
 fun GamesScreen(
     onNavigateToGame: (GameType) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp),
     ) {
@@ -122,79 +126,78 @@ fun GameItem(
     desc: StringResource,
     icon: DrawableResource,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier =
-            Modifier
-                .clickable {
-                    onClick()
-                }.fillMaxWidth()
-                .height(IntrinsicSize.Min)
-                .clip(RoundedCornerShape(12.dp))
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    shape = RoundedCornerShape(12.dp),
-                ),
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min).clickable { onClick() },
+        shape = RoundedCornerShape(12.dp),
+        tonalElevation = 1.dp,
+        shadowElevation = 1.dp,
+        color = MaterialTheme.colorScheme.surfaceVariant
     ) {
-        Image(
-            modifier =
-                Modifier
-                    .weight(0.3f)
-                    .fillMaxHeight()
-                    .background(
-                        color = MaterialTheme.colorScheme.secondary,
-                    )
-                    .clip(RoundedCornerShape(
-                        topStart = 12.dp, bottomStart = 12.dp,
-                        topEnd = 0.dp, bottomEnd = 0.dp
-                    )),
-            painter = painterResource(icon),
-            contentDescription = null,
-            contentScale = ContentScale.Crop
-        )
-
-        Column(
-            modifier =
-                Modifier
-                    .weight(0.7f)
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceContainer,
-                    ).padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            horizontalAlignment = Alignment.End,
-        ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(title),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Start,
-            )
-
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(desc),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Start,
-            )
-
-            Text(
+        Row {
+            Image(
                 modifier =
                     Modifier
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.tertiary,
-                            shape = RoundedCornerShape(8.dp),
-                        ).padding(horizontal = 8.dp, vertical = 4.dp),
-                text = "${gameType.baseScore()} امتیاز ",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.End,
+                        .weight(GAME_CARD_IMAGE_WEIGHT)
+                        .fillMaxHeight()
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary,
+                        )
+                        .clip(RoundedCornerShape(
+                            topStart = 12.dp, bottomStart = 12.dp,
+                            topEnd = 0.dp, bottomEnd = 0.dp
+                        )),
+                painter = painterResource(icon),
+                contentDescription = null,
+                contentScale = ContentScale.Crop
             )
+
+            Column(
+                modifier =
+                    Modifier
+                        .weight(GAME_CARD_CONTENT_WEIGHT)
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                        ).padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.End,
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(title),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Start,
+                )
+
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(desc),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Start,
+                )
+
+                Text(
+                    modifier =
+                        Modifier
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                shape = RoundedCornerShape(8.dp),
+                            ).padding(horizontal = 8.dp, vertical = 4.dp),
+                    text = "${gameType.baseScore} امتیاز ",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.End,
+                )
+            }
         }
     }
+
 }
 
 @Preview

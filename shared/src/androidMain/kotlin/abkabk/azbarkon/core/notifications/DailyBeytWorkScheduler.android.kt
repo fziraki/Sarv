@@ -13,7 +13,10 @@ internal object DailyBeytWorkScheduler {
         deliveryMinute: Int,
     ) {
         val request =
-            PeriodicWorkRequestBuilder<DailyBeytWorker>(24, TimeUnit.HOURS)
+            PeriodicWorkRequestBuilder<DailyBeytWorker>(
+                DailyBeytScheduleCalculator.PERIODIC_INTERVAL_HOURS,
+                TimeUnit.HOURS,
+            )
                 .setInitialDelay(
                     DailyBeytScheduleCalculator.initialDelayMillis(
                         deliveryHour = deliveryHour,
