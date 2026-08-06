@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.feather
 import azbarkoncmp.shared.generated.resources.forward
 import azbarkoncmp.shared.generated.resources.ic_delete
 import azbarkoncmp.shared.generated.resources.memorization_due_cards_format
@@ -42,7 +43,6 @@ import azbarkoncmp.shared.generated.resources.memorization_select_hero_title
 import azbarkoncmp.shared.generated.resources.memorization_status_format
 import azbarkoncmp.shared.generated.resources.ornoment30
 import azbarkoncmp.shared.generated.resources.search
-import azbarkoncmp.shared.generated.resources.siahmashghkhat
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -59,7 +59,7 @@ fun MemorizationHeroSection(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Image(
-            painter = painterResource(Res.drawable.siahmashghkhat),
+            painter = painterResource(Res.drawable.feather),
             contentDescription = null,
         )
 

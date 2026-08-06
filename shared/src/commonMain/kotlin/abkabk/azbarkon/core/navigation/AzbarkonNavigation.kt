@@ -54,8 +54,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -140,8 +142,6 @@ private fun AzbarkonTopBar(
 
             }
 
-
-
             currentItem?.subtitle?.let {
                 Text(
                     text = stringResource(it),
@@ -185,6 +185,7 @@ private fun AzbarkonBottomBar(
     NavigationBar(
         modifier =
             Modifier
+                .shadow(spotColor = MaterialTheme.colorScheme.tertiary, elevation = 1.dp)
                 .windowInsetsPadding(WindowInsets.navigationBars)
                 .fillMaxWidth()
                 .height(64.dp),
