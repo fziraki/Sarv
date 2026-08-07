@@ -5,6 +5,7 @@ import abkabk.azbarkon.shared.R
 import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.widget.RemoteViews
@@ -32,7 +33,7 @@ class DailyBeytNotificationPresenter(
                 .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandedView)
-                .setContentIntent(contentIntent())
+                .setContentIntent(contentIntent(distich))
                 .setAutoCancel(true)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -58,13 +59,19 @@ class DailyBeytNotificationPresenter(
             ) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun contentIntent(): PendingIntent =
-        PendingIntent.getActivity(
+    private fun contentIntent(distich: RandomDistich): PendingIntent {
+        val launchIntent =
+            context.packageManager.getLaunchIntentForPackage(context.packageName)
+                ?: Intent()
+        launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        launchIntent.putExtra(DailyBeytNotificationPayload.KEY_POEM_ID, distich.poemId)
+        return PendingIntent.getActivity(
             context,
-            0,
-            context.packageManager.getLaunchIntentForPackage(context.packageName),
+            distich.poemId,
+            launchIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
+    }
 
     private fun buildRemoteViews(
         distich: RandomDistich,

@@ -337,6 +337,9 @@ fun AzbarkonNavigation(
                             onNavigateToPoetDetail = { poetId ->
                                 navController.navigate(PoetDetailRoute(poetId))
                             },
+                            onNavigateToPoemDetail = { poemId ->
+                                navController.navigate(PoemDetailRoute(poemId = poemId))
+                            },
                             onNavigateToMyPoems = {
                                 navController.navigate(MyPoemsRoute)
                             },

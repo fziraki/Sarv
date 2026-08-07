@@ -43,6 +43,8 @@ sealed interface HomeAction {
     data object OnReviewClick : HomeAction
 
     data object OnChallengeClick : HomeAction
+
+    data object OnBeytOfDayClick : HomeAction
 }
 
 sealed interface HomeEvent {
@@ -54,6 +56,10 @@ sealed interface HomeEvent {
 
     data class NavigateToPoetDetail(
         val poetId: Int,
+    ) : HomeEvent
+
+    data class NavigateToPoemDetail(
+        val poemId: Int,
     ) : HomeEvent
 
     data object NavigateToMyPoems : HomeEvent
