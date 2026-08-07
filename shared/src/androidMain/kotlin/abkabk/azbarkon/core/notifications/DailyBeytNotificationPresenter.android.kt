@@ -29,7 +29,6 @@ class DailyBeytNotificationPresenter(
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(context.getString(R.string.daily_beyt_notification_title))
                 .setContentText(distichBody(distich))
-                .setSubText(distich.poetName)
                 .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandedView)
