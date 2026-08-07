@@ -109,6 +109,16 @@
         />
 
 
-
+    <TextView
+        android:id="@+id/widget_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/widget_random_distich_loading"
+        android:gravity="center"
+        android:textColor="@color/widget_surface"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        />
 
 </RelativeLayout>
