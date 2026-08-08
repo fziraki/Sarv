@@ -277,7 +277,7 @@ fun PoemActionBar(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(16.dp),
-                ).padding(vertical = 12.dp, horizontal = 8.dp),
+                ).padding(vertical = 8.dp, horizontal = 6.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {

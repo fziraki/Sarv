@@ -210,7 +210,7 @@
     <string name="coming_soon">به‌زودی</string>
     <string name="cd_bookmark">نشان‌گذاری</string>
     <string name="cd_add_poem">افزودن شعر به حفظ</string>
-    <string name="cd_menu">منو</string>
+    <string name="cd_select_track">انتخاب تلاوت</string>    <string name="cd_menu">منو</string>
     <string name="cd_copy">کپی شعر</string>
     <string name="cd_share">اشتراک‌گذاری شعر</string>
     <string name="cd_like">پسندیدن شعر</string>

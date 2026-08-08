@@ -20,6 +20,7 @@ import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.memorization_max_active_error
 import azbarkoncmp.shared.generated.resources.search_empty_query
 import azbarkoncmp.shared.generated.resources.search_not_found_in_poem
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,6 +28,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
+
+private const val MIN_RING_VISIBLE_MS = 800L
 
 class PoemDetailViewModel(
     private val poemRepository: PoemRepository,
@@ -42,6 +45,9 @@ class PoemDetailViewModel(
     private val _audioState = MutableStateFlow(AudioPlayerUiState())
     val audioState: StateFlow<AudioPlayerUiState> = _audioState.asStateFlow()
 
+    private var preparedTrackUrl: String? = null
+    private var loadingJob: Job? = null
+
     private val playerListener = object : AudioPlayerListener {
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -52,8 +58,12 @@ class PoemDetailViewModel(
         override fun onStateChanged(state: AudioPlaybackState) {
             val activeUrl = _audioState.value.activeTrackUrl ?: return
             when (state) {
-                AudioPlaybackState.BUFFERING -> updateTrack(activeUrl) { it.copy(isLoading = true) }
-                AudioPlaybackState.READY -> updateTrack(activeUrl) { it.copy(isLoading = false) }
+                AudioPlaybackState.BUFFERING -> startLoading(activeUrl)
+                AudioPlaybackState.READY -> {
+                    if (loadingJob == null) {
+                        updateTrack(activeUrl) { it.copy(isLoading = false) }
+                    }
+                }
                 AudioPlaybackState.ENDED -> updateTrack(activeUrl) {
                     it.copy(isPlaying = false, progress = 1f)
                 }
@@ -111,6 +121,7 @@ class PoemDetailViewModel(
                 -> loadPoemDetail()
 
             is PoemDetailAction.OnTrackPlayPauseClick -> togglePlayPause(action.track)
+            is PoemDetailAction.OnTrackSelect -> onTrackSelect(action.track)
             is PoemDetailAction.OnTrackSeekChanged -> onSeekChanged(action.track, action.progress)
             is PoemDetailAction.OnTrackSeekFinished -> onSeekFinished(action.track, action.progress)
 
@@ -144,14 +155,23 @@ class PoemDetailViewModel(
         viewModelScope.launch {
             poemRepository.getPoemRecitations(poemId)
                 .onSuccess { tracks ->
+                    val trackStates = tracks.map { track -> TrackPlaybackUiState(track = track) }
                     _audioState.update {
-                        it.copy(tracks = tracks.map { track -> TrackPlaybackUiState(track = track) })
+                        it.copy(
+                            tracks = trackStates,
+                            activeTrackUrl = trackStates.firstOrNull()?.track?.url,
+                        )
                     }
                 }
                 .onFailure { error ->
                     sendEvent(PoemDetailEvent.ShowSnackbar(error.toUiText()))
                 }
         }
+    }
+
+    private fun onTrackSelect(track: PoemAudioTrack) {
+        if (_audioState.value.activeTrackUrl == track.url) return
+        switchToTrack(track)
     }
 
     private fun togglePlayPause(track: PoemAudioTrack) {
@@ -165,8 +185,12 @@ class PoemDetailViewModel(
             }
 
             isThisTrackActive && !player.isPlaying -> {
-                player.play()
-                updateTrack(track.url) { it.copy(isPlaying = true) }
+                if (preparedTrackUrl == track.url) {
+                    player.play()
+                    updateTrack(track.url) { it.copy(isPlaying = true) }
+                } else {
+                    switchToTrack(track)
+                }
             }
 
             else -> switchToTrack(track)
@@ -201,9 +225,12 @@ class PoemDetailViewModel(
         // callbacks (onStateChanged/onIsPlayingChanged) route to the
         // correct track instead of the one we just paused.
         _audioState.update { it.copy(activeTrackUrl = track.url) }
-        updateTrack(track.url) { it.copy(isLoading = true) }
+        startLoading(track.url)
 
-        track.url?.let { player.setMediaUrl(it) }
+        track.url?.let { url ->
+            player.setMediaUrl(url)
+            preparedTrackUrl = url
+        }
 
         if (targetState.positionMs > 0) {
             player.seekTo(targetState.positionMs)
@@ -212,10 +239,24 @@ class PoemDetailViewModel(
 
         updateTrack(track.url) {
             it.copy(
-                isLoading = false,
                 isPlaying = true,
                 durationMs = if (player.duration > 0) player.duration else it.durationMs,
             )
+        }
+    }
+
+    private fun startLoading(trackUrl: String?) {
+        if (trackUrl == null) return
+        loadingJob?.cancel()
+        updateTrack(trackUrl) { it.copy(isLoading = true) }
+        loadingJob = viewModelScope.launch {
+            delay(MIN_RING_VISIBLE_MS)
+            loadingJob = null
+            if (player.playbackState == AudioPlaybackState.BUFFERING) {
+                // Still buffering: keep the ring; the READY event clears it.
+                return@launch
+            }
+            updateTrack(trackUrl) { it.copy(isLoading = false) }
         }
     }
     private fun onSeekChanged(track: PoemAudioTrack, progress: Float) {

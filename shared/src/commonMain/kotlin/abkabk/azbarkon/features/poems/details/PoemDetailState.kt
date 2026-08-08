@@ -39,6 +39,7 @@ sealed interface PoemDetailAction {
     data object OnRetryClick : PoemDetailAction
 
     data class OnTrackPlayPauseClick(val track: PoemAudioTrack) : PoemDetailAction
+    data class OnTrackSelect(val track: PoemAudioTrack) : PoemDetailAction
     data class OnTrackSeekChanged(val track: PoemAudioTrack, val progress: Float) : PoemDetailAction
     data class OnTrackSeekFinished(val track: PoemAudioTrack, val progress: Float) : PoemDetailAction
 
