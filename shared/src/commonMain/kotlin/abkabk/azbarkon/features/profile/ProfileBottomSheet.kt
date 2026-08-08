@@ -70,6 +70,12 @@ fun ProfileSheets(
     val sheet = state.activeSheet ?: return
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val openWidgetPicker = rememberWidgetPickerLauncher()
+    val onAddWidgetClick = openWidgetPicker?.let { picker ->
+        {
+            onAction(ProfileAction.OnDismissSheet)
+            picker()
+        }
+    }
 
     ModalBottomSheet(
         onDismissRequest = { onAction(ProfileAction.OnDismissSheet) },
@@ -85,10 +91,7 @@ fun ProfileSheets(
                     onDailyBeytToggle = { onAction(ProfileAction.OnDailyBeytNotificationToggle(it)) },
                     onMemorizationReminderToggle = { onAction(ProfileAction.OnMemorizationReminderToggle(it)) },
                     onThemeModeSelect = { onAction(ProfileAction.OnThemeModeSelected(it)) },
-                    onAddWidgetClick = {
-                        onAction(ProfileAction.OnDismissSheet)
-                        openWidgetPicker()
-                    },
+                    onAddWidgetClick = onAddWidgetClick,
                 )
 
             ProfileSheet.Badges ->
@@ -108,7 +111,7 @@ private fun ProfileSettingsSheetContent(
     onDailyBeytToggle: (Boolean) -> Unit,
     onMemorizationReminderToggle: (Boolean) -> Unit,
     onThemeModeSelect: (ThemeMode) -> Unit,
-    onAddWidgetClick: () -> Unit,
+    onAddWidgetClick: (() -> Unit)?,
 ) {
     Column(
         modifier =
@@ -143,30 +146,32 @@ private fun ProfileSettingsSheetContent(
             onCheckedChange = onMemorizationReminderToggle,
         )
 
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .clickable(onClick = onAddWidgetClick)
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        if (onAddWidgetClick != null) {
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .clickable(onClick = onAddWidgetClick)
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
 
-            Icon(
-                painter = painterResource(Res.drawable.add_box_24px),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                text = stringResource(Res.string.profile_add_widget),
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier,
-                textAlign = TextAlign.Start,
-            )
+                Icon(
+                    painter = painterResource(Res.drawable.add_box_24px),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+                Text(
+                    text = stringResource(Res.string.profile_add_widget),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier,
+                    textAlign = TextAlign.Start,
+                )
 
+            }
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp),
