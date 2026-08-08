@@ -8,7 +8,6 @@ import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.domain.model.PoemAudioTrack
-import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
@@ -63,7 +62,6 @@ import azbarkoncmp.shared.generated.resources.close
 import azbarkoncmp.shared.generated.resources.find_in_poem_hint
 import azbarkoncmp.shared.generated.resources.pause
 import azbarkoncmp.shared.generated.resources.play
-import azbarkoncmp.shared.generated.resources.poem_memorize_practice
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -225,15 +223,7 @@ fun PoemDetailScreen(
                 onShareClick = { onAction(PoemDetailAction.OnShareClick) },
                 onLikeClick = { onAction(PoemDetailAction.OnLikeClick) },
                 onImageCreatorClick = { onAction(PoemDetailAction.OnImageCreatorClick) },
-            )
-
-            AzbarkonPrimaryButton(
-                text = stringResource(Res.string.poem_memorize_practice),
-                onClick = { onAction(PoemDetailAction.OnMemorizeClick) },
-                modifier =
-                    Modifier
-                        .fillMaxWidth().padding(horizontal = 16.dp)
-                        .height(52.dp),
+                onMemorizeClick = { onAction(PoemDetailAction.OnMemorizeClick) },
             )
         }
     }
