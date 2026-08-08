@@ -34,6 +34,24 @@ class TextDiffHighlighterTest {
     }
 
     @Test
+    fun `suggestGradeFromChars ignores zwnj vs plain space`() {
+        val grade = TextDiffHighlighter.suggestGradeFromChars("مشکل\u200Cها", "مشکل ها")
+
+        assertThat(grade).isEqualTo(abkabk.azbarkon.domain.model.memorization.SrsGrade.EASY)
+    }
+
+    @Test
+    fun `suggestGradeFromChars lowers grade for typo and skipped words`() {
+        val grade =
+            TextDiffHighlighter.suggestGradeFromChars(
+                "ادر کاسا و ناولها",
+                "اشر کاساس ناولها",
+            )
+
+        assertThat(grade).isEqualTo(abkabk.azbarkon.domain.model.memorization.SrsGrade.AGAIN)
+    }
+
+    @Test
     fun `normalizeForComparison strips combining marks`() {
         val normalized = TextDiffHighlighter.normalizeForComparison("بِخُرْ")
 
@@ -83,6 +101,92 @@ class TextDiffHighlighterTest {
     }
 
     @Test
+    fun `diffUserWords keeps later words green after a wrong word`() {
+        val tokens = TextDiffHighlighter.diffUserWords("ادر کاسا و ناولها", "در کاسا و ناولها")
+
+        assertThat(tokens.map { it.type }).isEqualTo(
+            listOf(
+                DiffTokenType.WRONG,
+                DiffTokenType.CORRECT,
+                DiffTokenType.CORRECT,
+                DiffTokenType.CORRECT,
+            ),
+        )
+    }
+
+    @Test
+    fun `diffUserWords colors typo red and keeps the rest green`() {
+        val tokens =
+            TextDiffHighlighter.diffUserWords(
+                "ادر کاسا و ناولها",
+                "اشر کاساس ناولها",
+            )
+
+        assertThat(tokens).isEqualTo(
+            listOf(
+                DiffToken("اشر", DiffTokenType.WRONG),
+                DiffToken("کاساس", DiffTokenType.WRONG),
+                DiffToken("و", DiffTokenType.MISSING),
+                DiffToken("ناولها", DiffTokenType.CORRECT),
+            ),
+        )
+    }
+
+    @Test
+    fun `diffUserWords colors skipped word as missing and keeps the rest green`() {
+        val tokens =
+            TextDiffHighlighter.diffUserWords(
+                "ادر کاسا و ناولها",
+                "ادر ناولها",
+            )
+
+        assertThat(tokens).isEqualTo(
+            listOf(
+                DiffToken("ادر", DiffTokenType.CORRECT),
+                DiffToken("کاسا", DiffTokenType.MISSING),
+                DiffToken("و", DiffTokenType.MISSING),
+                DiffToken("ناولها", DiffTokenType.CORRECT),
+            ),
+        )
+    }
+
+    @Test
+    fun `diffUserWords shows remaining words as missing after a short answer`() {
+        val tokens =
+            TextDiffHighlighter.diffUserWords(
+                "ادر کاسا و ناولها",
+                "ادر",
+            )
+
+        assertThat(tokens).isEqualTo(
+            listOf(
+                DiffToken("ادر", DiffTokenType.CORRECT),
+                DiffToken("کاسا", DiffTokenType.MISSING),
+                DiffToken("و", DiffTokenType.MISSING),
+                DiffToken("ناولها", DiffTokenType.MISSING),
+            ),
+        )
+    }
+
+    @Test
+    fun `diffUserWords colors longer and shorter words red, rest green`() {
+        val tokens =
+            TextDiffHighlighter.diffUserWords(
+                "ادر کاسا و ناولها",
+                "اد کاساس و ناول",
+            )
+
+        assertThat(tokens.map { it.type }).isEqualTo(
+            listOf(
+                DiffTokenType.WRONG,
+                DiffTokenType.WRONG,
+                DiffTokenType.CORRECT,
+                DiffTokenType.WRONG,
+            ),
+        )
+    }
+
+    @Test
     fun `diffUserWords ignores extra spaces between words`() {
         val tokens = TextDiffHighlighter.diffUserWords("سه چهار", "سه  چهار")
 
@@ -97,6 +201,13 @@ class TextDiffHighlighterTest {
     @Test
     fun `diffUserWords matches letters despite punctuation in actual`() {
         val tokens = TextDiffHighlighter.diffUserWords("ولی افتاد", "ولی، افتاد!")
+
+        assertThat(tokens.all { it.type == DiffTokenType.CORRECT }).isEqualTo(true)
+    }
+
+    @Test
+    fun `diffUserWords ignores zwnj vs plain space`() {
+        val tokens = TextDiffHighlighter.diffUserWords("مشکل\u200Cها", "مشکل ها")
 
         assertThat(tokens.all { it.type == DiffTokenType.CORRECT }).isEqualTo(true)
     }

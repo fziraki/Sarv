@@ -9,6 +9,7 @@ enum class DiffTokenType {
 data class DiffToken(
     val text: String,
     val type: DiffTokenType,
+    val coveredWords: Int = 1,
 )
 
 object TextDiffHighlighter {
@@ -46,19 +47,15 @@ object TextDiffHighlighter {
         return builder.toString()
     }
 
-    fun charMatchRatio(expected: String, actual: String): Double {
-        val expectedLetters = extractAlphabeticLetters(expected)
-        val actualLetters = extractAlphabeticLetters(actual)
-        if (expectedLetters.isEmpty()) return 1.0
-        val lcsLength = longestCommonSubsequenceLength(expectedLetters, actualLetters, ignoreCase = true)
-        return lcsLength.toDouble() / expectedLetters.length
-    }
-
     fun suggestGradeFromChars(
         expected: String,
         actual: String,
     ): abkabk.azbarkon.domain.model.memorization.SrsGrade {
-        val ratio = charMatchRatio(expected, actual)
+        val tokens = diffUserWords(expected, actual)
+        val expectedWords = splitDisplayWords(expected)
+        if (expectedWords.isEmpty()) return abkabk.azbarkon.domain.model.memorization.SrsGrade.EASY
+        val covered = tokens.filter { it.type == DiffTokenType.CORRECT }.sumOf { it.coveredWords }
+        val ratio = covered.toDouble() / expectedWords.size
         return when {
             ratio >= EASY_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.EASY
             ratio >= GOOD_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.GOOD
@@ -68,24 +65,57 @@ object TextDiffHighlighter {
     }
 
     fun diffUserWords(expected: String, actual: String): List<DiffToken> {
-        val expectedLetters = extractAlphabeticLetters(expected)
+        val expectedWords = splitDisplayWords(expected)
         val actualWords = splitDisplayWords(actual)
         if (actualWords.isEmpty()) return emptyList()
 
+        val tokens = mutableListOf<DiffToken>()
         var expectedIndex = 0
-        return actualWords.map { word ->
+        actualWords.forEach { word ->
             val wordLetters = extractAlphabeticLetters(word)
-            val matched =
-                wordLetters.isNotEmpty() &&
-                    expectedIndex + wordLetters.length <= expectedLetters.length &&
-                    expectedLetters
-                        .substring(expectedIndex, expectedIndex + wordLetters.length)
-                        .equals(wordLetters, ignoreCase = true)
-            if (wordLetters.isNotEmpty()) {
-                expectedIndex += wordLetters.length
+            if (wordLetters.isEmpty()) {
+                tokens.add(DiffToken(word, DiffTokenType.WRONG))
+            } else {
+                val covered = matchSpan(expectedWords, wordLetters, expectedIndex)
+                if (covered > 0) {
+                    tokens.add(DiffToken(word, DiffTokenType.CORRECT, covered))
+                    expectedIndex += covered
+                } else {
+                    val skipped =
+                        (expectedIndex + 1..expectedWords.lastIndex).firstOrNull { i ->
+                            matchSpan(expectedWords, wordLetters, i) > 0
+                        }
+                    if (skipped != null) {
+                        (expectedIndex until skipped).forEach { i ->
+                            tokens.add(DiffToken(expectedWords[i], DiffTokenType.MISSING))
+                        }
+                        val skippedCovered = matchSpan(expectedWords, wordLetters, skipped)
+                        tokens.add(DiffToken(word, DiffTokenType.CORRECT, skippedCovered))
+                        expectedIndex = skipped + skippedCovered
+                    } else {
+                        tokens.add(DiffToken(word, DiffTokenType.WRONG))
+                        if (expectedIndex < expectedWords.size) expectedIndex++
+                    }
+                }
             }
-            DiffToken(word, if (matched) DiffTokenType.CORRECT else DiffTokenType.WRONG)
         }
+        if (expectedIndex < expectedWords.size) {
+            (expectedIndex until expectedWords.size).forEach { i ->
+                tokens.add(DiffToken(expectedWords[i], DiffTokenType.MISSING))
+            }
+        }
+        return tokens
+    }
+
+    private fun matchSpan(expectedWords: List<String>, wordLetters: String, index: Int): Int {
+        if (index >= expectedWords.size) return 0
+        for (length in 1..3) {
+            val end = index + length
+            if (end > expectedWords.size) break
+            val span = expectedWords.subList(index, end).joinToString("") { extractAlphabeticLetters(it) }
+            if (span.equals(wordLetters, ignoreCase = true)) return length
+        }
+        return 0
     }
 
     fun diff(expected: String, actual: String): List<DiffToken> {
@@ -116,6 +146,8 @@ object TextDiffHighlighter {
 
     private fun splitDisplayWords(text: String): List<String> =
         text
+            .replace('\u0640', ' ')
+            .replace('\u200C', ' ')
             .trim()
             .split(Regex("\\s+"))
             .filter { it.isNotBlank() }
@@ -125,34 +157,6 @@ object TextDiffHighlighter {
             .trim()
             .split(Regex("\\s+"))
             .filter { it.isNotBlank() }
-
-    private fun longestCommonSubsequenceLength(
-        first: String,
-        second: String,
-        ignoreCase: Boolean,
-    ): Int {
-        val m = first.length
-        val n = second.length
-        val dp = Array(m + 1) { IntArray(n + 1) }
-
-        for (i in 1..m) {
-            for (j in 1..n) {
-                dp[i][j] =
-                    if (charsMatch(first[i - 1], second[j - 1], ignoreCase)) {
-                        dp[i - 1][j - 1] + 1
-                    } else {
-                        maxOf(dp[i - 1][j], dp[i][j - 1])
-                    }
-            }
-        }
-        return dp[m][n]
-    }
-
-    private fun charsMatch(
-        first: Char,
-        second: Char,
-        ignoreCase: Boolean,
-    ): Boolean = if (ignoreCase) first.equals(second, ignoreCase = true) else first == second
 
     private fun alignWords(
         expected: List<String>,
