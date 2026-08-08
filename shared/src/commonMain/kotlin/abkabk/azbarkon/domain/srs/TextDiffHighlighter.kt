@@ -16,6 +16,7 @@ object TextDiffHighlighter {
     private const val EASY_THRESHOLD = 0.95
     private const val GOOD_THRESHOLD = 0.75
     private const val HARD_THRESHOLD = 0.45
+    private const val MAX_SPAN_LENGTH = 3
 
     fun normalizeForComparison(text: String): String {
         val withoutJoiners = text.replace('\u0640', ' ').replace('\u200C', ' ')
@@ -72,45 +73,50 @@ object TextDiffHighlighter {
 
         val diffTokens = mutableListOf<DiffToken>()
         var expectedWordIndex = 0
-        actualWords.forEach { typedWord ->
-            val typedWordLetters = extractAlphabeticLetters(typedWord)
-            if (typedWordLetters.isEmpty()) {
-                diffTokens.add(DiffToken(typedWord, DiffTokenType.WRONG))
-            } else {
-                val coveredWordCount = matchSpan(expectedWords, typedWordLetters, expectedWordIndex)
-                if (coveredWordCount > 0) {
-                    diffTokens.add(DiffToken(typedWord, DiffTokenType.CORRECT, coveredWordCount))
-                    expectedWordIndex += coveredWordCount
-                } else {
-                    val matchedIndex =
-                        (expectedWordIndex + 1..expectedWords.lastIndex).firstOrNull { i ->
-                            matchSpan(expectedWords, typedWordLetters, i) > 0
-                        }
-                    if (matchedIndex != null) {
-                        (expectedWordIndex until matchedIndex).forEach { i ->
-                            diffTokens.add(DiffToken(expectedWords[i], DiffTokenType.MISSING))
-                        }
-                        val matchedSpanLength = matchSpan(expectedWords, typedWordLetters, matchedIndex)
-                        diffTokens.add(DiffToken(typedWord, DiffTokenType.CORRECT, matchedSpanLength))
-                        expectedWordIndex = matchedIndex + matchedSpanLength
-                    } else {
-                        diffTokens.add(DiffToken(typedWord, DiffTokenType.WRONG))
-                        if (expectedWordIndex < expectedWords.size) expectedWordIndex++
-                    }
-                }
-            }
+        for (typedWord in actualWords) {
+            expectedWordIndex = appendTokenForWord(diffTokens, expectedWords, typedWord, expectedWordIndex)
         }
-        if (expectedWordIndex < expectedWords.size) {
-            (expectedWordIndex until expectedWords.size).forEach { i ->
-                diffTokens.add(DiffToken(expectedWords[i], DiffTokenType.MISSING))
-            }
+        for (i in expectedWordIndex until expectedWords.size) {
+            diffTokens.add(DiffToken(expectedWords[i], DiffTokenType.MISSING))
         }
         return diffTokens
     }
 
+    private fun appendTokenForWord(
+        diffTokens: MutableList<DiffToken>,
+        expectedWords: List<String>,
+        typedWord: String,
+        expectedWordIndex: Int,
+    ): Int {
+        val typedWordLetters = extractAlphabeticLetters(typedWord)
+        if (typedWordLetters.isEmpty()) {
+            diffTokens.add(DiffToken(typedWord, DiffTokenType.WRONG))
+            return expectedWordIndex
+        }
+        val coveredWordCount = matchSpan(expectedWords, typedWordLetters, expectedWordIndex)
+        if (coveredWordCount > 0) {
+            diffTokens.add(DiffToken(typedWord, DiffTokenType.CORRECT, coveredWordCount))
+            return expectedWordIndex + coveredWordCount
+        }
+        val matchedIndex =
+            (expectedWordIndex + 1..expectedWords.lastIndex).firstOrNull { i ->
+                matchSpan(expectedWords, typedWordLetters, i) > 0
+            }
+        if (matchedIndex != null) {
+            for (i in expectedWordIndex until matchedIndex) {
+                diffTokens.add(DiffToken(expectedWords[i], DiffTokenType.MISSING))
+            }
+            val matchedSpanLength = matchSpan(expectedWords, typedWordLetters, matchedIndex)
+            diffTokens.add(DiffToken(typedWord, DiffTokenType.CORRECT, matchedSpanLength))
+            return matchedIndex + matchedSpanLength
+        }
+        diffTokens.add(DiffToken(typedWord, DiffTokenType.WRONG))
+        return if (expectedWordIndex < expectedWords.size) expectedWordIndex + 1 else expectedWordIndex
+    }
+
     private fun matchSpan(expectedWords: List<String>, typedWordLetters: String, startIndex: Int): Int {
         if (startIndex >= expectedWords.size) return 0
-        for (spanLength in 1..3) {
+        for (spanLength in 1..MAX_SPAN_LENGTH) {
             val spanEnd = startIndex + spanLength
             if (spanEnd > expectedWords.size) break
             val spanLetters = expectedWords.subList(startIndex, spanEnd).joinToString("") { extractAlphabeticLetters(it) }
