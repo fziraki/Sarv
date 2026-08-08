@@ -9,6 +9,7 @@ enum class DiffTokenType {
 data class DiffToken(
     val text: String,
     val type: DiffTokenType,
+    val coveredWords: Int = 1,
 )
 
 object TextDiffHighlighter {
@@ -17,14 +18,14 @@ object TextDiffHighlighter {
     private const val HARD_THRESHOLD = 0.45
 
     fun normalizeForComparison(text: String): String {
-        val withoutSpecials = text.replace('\u0640', ' ').replace('\u200C', ' ')
-        val builder = StringBuilder(withoutSpecials.length)
-        withoutSpecials.forEach { char ->
+        val withoutJoiners = text.replace('\u0640', ' ').replace('\u200C', ' ')
+        val normalized = StringBuilder(withoutJoiners.length)
+        withoutJoiners.forEach { char ->
             if (char.category != CharCategory.NON_SPACING_MARK) {
-                builder.append(normalizeArabicLetter(char))
+                normalized.append(normalizeArabicLetter(char))
             }
         }
-        return builder.toString()
+        return normalized.toString()
     }
 
     private fun normalizeArabicLetter(char: Char): Char =
@@ -37,55 +38,85 @@ object TextDiffHighlighter {
         }
 
     fun extractAlphabeticLetters(text: String): String {
-        val builder = StringBuilder()
+        val letters = StringBuilder()
         normalizeForComparison(text).forEach { char ->
             if (char.isLetter()) {
-                builder.append(char)
+                letters.append(char)
             }
         }
-        return builder.toString()
-    }
-
-    fun charMatchRatio(expected: String, actual: String): Double {
-        val expectedLetters = extractAlphabeticLetters(expected)
-        val actualLetters = extractAlphabeticLetters(actual)
-        if (expectedLetters.isEmpty()) return 1.0
-        val lcsLength = longestCommonSubsequenceLength(expectedLetters, actualLetters, ignoreCase = true)
-        return lcsLength.toDouble() / expectedLetters.length
+        return letters.toString()
     }
 
     fun suggestGradeFromChars(
         expected: String,
         actual: String,
     ): abkabk.azbarkon.domain.model.memorization.SrsGrade {
-        val ratio = charMatchRatio(expected, actual)
+        val diffTokens = diffUserWords(expected, actual)
+        val expectedWords = splitDisplayWords(expected)
+        if (expectedWords.isEmpty()) return abkabk.azbarkon.domain.model.memorization.SrsGrade.EASY
+        val coveredWordCount =
+            diffTokens.filter { it.type == DiffTokenType.CORRECT }.sumOf { it.coveredWords }
+        val coveredRatio = coveredWordCount.toDouble() / expectedWords.size
         return when {
-            ratio >= EASY_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.EASY
-            ratio >= GOOD_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.GOOD
-            ratio >= HARD_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.HARD
+            coveredRatio >= EASY_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.EASY
+            coveredRatio >= GOOD_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.GOOD
+            coveredRatio >= HARD_THRESHOLD -> abkabk.azbarkon.domain.model.memorization.SrsGrade.HARD
             else -> abkabk.azbarkon.domain.model.memorization.SrsGrade.AGAIN
         }
     }
 
     fun diffUserWords(expected: String, actual: String): List<DiffToken> {
-        val expectedLetters = extractAlphabeticLetters(expected)
+        val expectedWords = splitDisplayWords(expected)
         val actualWords = splitDisplayWords(actual)
         if (actualWords.isEmpty()) return emptyList()
 
-        var expectedIndex = 0
-        return actualWords.map { word ->
-            val wordLetters = extractAlphabeticLetters(word)
-            val matched =
-                wordLetters.isNotEmpty() &&
-                    expectedIndex + wordLetters.length <= expectedLetters.length &&
-                    expectedLetters
-                        .substring(expectedIndex, expectedIndex + wordLetters.length)
-                        .equals(wordLetters, ignoreCase = true)
-            if (wordLetters.isNotEmpty()) {
-                expectedIndex += wordLetters.length
+        val diffTokens = mutableListOf<DiffToken>()
+        var expectedWordIndex = 0
+        actualWords.forEach { typedWord ->
+            val typedWordLetters = extractAlphabeticLetters(typedWord)
+            if (typedWordLetters.isEmpty()) {
+                diffTokens.add(DiffToken(typedWord, DiffTokenType.WRONG))
+            } else {
+                val coveredWordCount = matchSpan(expectedWords, typedWordLetters, expectedWordIndex)
+                if (coveredWordCount > 0) {
+                    diffTokens.add(DiffToken(typedWord, DiffTokenType.CORRECT, coveredWordCount))
+                    expectedWordIndex += coveredWordCount
+                } else {
+                    val matchedIndex =
+                        (expectedWordIndex + 1..expectedWords.lastIndex).firstOrNull { i ->
+                            matchSpan(expectedWords, typedWordLetters, i) > 0
+                        }
+                    if (matchedIndex != null) {
+                        (expectedWordIndex until matchedIndex).forEach { i ->
+                            diffTokens.add(DiffToken(expectedWords[i], DiffTokenType.MISSING))
+                        }
+                        val matchedSpanLength = matchSpan(expectedWords, typedWordLetters, matchedIndex)
+                        diffTokens.add(DiffToken(typedWord, DiffTokenType.CORRECT, matchedSpanLength))
+                        expectedWordIndex = matchedIndex + matchedSpanLength
+                    } else {
+                        diffTokens.add(DiffToken(typedWord, DiffTokenType.WRONG))
+                        if (expectedWordIndex < expectedWords.size) expectedWordIndex++
+                    }
+                }
             }
-            DiffToken(word, if (matched) DiffTokenType.CORRECT else DiffTokenType.WRONG)
         }
+        if (expectedWordIndex < expectedWords.size) {
+            (expectedWordIndex until expectedWords.size).forEach { i ->
+                diffTokens.add(DiffToken(expectedWords[i], DiffTokenType.MISSING))
+            }
+        }
+        return diffTokens
+    }
+
+    private fun matchSpan(expectedWords: List<String>, typedWordLetters: String, startIndex: Int): Int {
+        if (startIndex >= expectedWords.size) return 0
+        for (spanLength in 1..3) {
+            val spanEnd = startIndex + spanLength
+            if (spanEnd > expectedWords.size) break
+            val spanLetters = expectedWords.subList(startIndex, spanEnd).joinToString("") { extractAlphabeticLetters(it) }
+            if (spanLetters.equals(typedWordLetters, ignoreCase = true)) return spanLength
+        }
+        return 0
     }
 
     fun diff(expected: String, actual: String): List<DiffToken> {
@@ -98,10 +129,10 @@ object TextDiffHighlighter {
     }
 
     fun score(expected: String, actual: String): Double {
-        val tokens = diff(expected, actual)
-        if (tokens.isEmpty()) return 1.0
-        val correct = tokens.count { it.type == DiffTokenType.CORRECT }
-        return correct.toDouble() / tokens.size.coerceAtLeast(1)
+        val diffTokens = diff(expected, actual)
+        if (diffTokens.isEmpty()) return 1.0
+        val correctCount = diffTokens.count { it.type == DiffTokenType.CORRECT }
+        return correctCount.toDouble() / diffTokens.size.coerceAtLeast(1)
     }
 
     fun suggestGrade(expected: String, actual: String): abkabk.azbarkon.domain.model.memorization.SrsGrade {
@@ -116,6 +147,8 @@ object TextDiffHighlighter {
 
     private fun splitDisplayWords(text: String): List<String> =
         text
+            .replace('\u0640', ' ')
+            .replace('\u200C', ' ')
             .trim()
             .split(Regex("\\s+"))
             .filter { it.isNotBlank() }
@@ -126,44 +159,16 @@ object TextDiffHighlighter {
             .split(Regex("\\s+"))
             .filter { it.isNotBlank() }
 
-    private fun longestCommonSubsequenceLength(
-        first: String,
-        second: String,
-        ignoreCase: Boolean,
-    ): Int {
-        val m = first.length
-        val n = second.length
-        val dp = Array(m + 1) { IntArray(n + 1) }
-
-        for (i in 1..m) {
-            for (j in 1..n) {
-                dp[i][j] =
-                    if (charsMatch(first[i - 1], second[j - 1], ignoreCase)) {
-                        dp[i - 1][j - 1] + 1
-                    } else {
-                        maxOf(dp[i - 1][j], dp[i][j - 1])
-                    }
-            }
-        }
-        return dp[m][n]
-    }
-
-    private fun charsMatch(
-        first: Char,
-        second: Char,
-        ignoreCase: Boolean,
-    ): Boolean = if (ignoreCase) first.equals(second, ignoreCase = true) else first == second
-
     private fun alignWords(
         expected: List<String>,
         actual: List<String>,
     ): List<DiffToken> {
-        val m = expected.size
-        val n = actual.size
-        val dp = Array(m + 1) { IntArray(n + 1) }
+        val expectedCount = expected.size
+        val actualCount = actual.size
+        val dp = Array(expectedCount + 1) { IntArray(actualCount + 1) }
 
-        for (i in 1..m) {
-            for (j in 1..n) {
+        for (i in 1..expectedCount) {
+            for (j in 1..actualCount) {
                 dp[i][j] =
                     if (wordsMatch(expected[i - 1], actual[j - 1])) {
                         dp[i - 1][j - 1] + 1
@@ -173,27 +178,32 @@ object TextDiffHighlighter {
             }
         }
 
-        val result = mutableListOf<DiffToken>()
-        var i = m
-        var j = n
-        while (i > 0 || j > 0) {
+        val tokens = mutableListOf<DiffToken>()
+        var expectedIndex = expectedCount
+        var actualIndex = actualCount
+        while (expectedIndex > 0 || actualIndex > 0) {
             when {
-                i > 0 && j > 0 && wordsMatch(expected[i - 1], actual[j - 1]) -> {
-                    result.add(DiffToken(expected[i - 1], DiffTokenType.CORRECT))
-                    i--
-                    j--
+                expectedIndex > 0 &&
+                    actualIndex > 0 &&
+                    wordsMatch(expected[expectedIndex - 1], actual[actualIndex - 1])
+                -> {
+                    tokens.add(DiffToken(expected[expectedIndex - 1], DiffTokenType.CORRECT))
+                    expectedIndex--
+                    actualIndex--
                 }
-                j > 0 && (i == 0 || dp[i][j - 1] >= dp[i - 1][j]) -> {
-                    result.add(DiffToken(actual[j - 1], DiffTokenType.WRONG))
-                    j--
+                actualIndex > 0 &&
+                    (expectedIndex == 0 || dp[expectedIndex][actualIndex - 1] >= dp[expectedIndex - 1][actualIndex])
+                -> {
+                    tokens.add(DiffToken(actual[actualIndex - 1], DiffTokenType.WRONG))
+                    actualIndex--
                 }
-                i > 0 -> {
-                    result.add(DiffToken(expected[i - 1], DiffTokenType.MISSING))
-                    i--
+                expectedIndex > 0 -> {
+                    tokens.add(DiffToken(expected[expectedIndex - 1], DiffTokenType.MISSING))
+                    expectedIndex--
                 }
             }
         }
-        return result.asReversed()
+        return tokens.asReversed()
     }
 
     private fun wordsMatch(expected: String, actual: String): Boolean =
