@@ -10,6 +10,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import android.view.View
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -31,6 +32,7 @@ class RandomDistichWidgetUpdater :
                 WidgetDistichSource.Random -> randomDistichSeed(appWidgetId)
             }
         val views = buildRemoteViews(context, appWidgetId, distich = null)
+        appWidgetManager.updateAppWidget(appWidgetId, views)
 
         when (val result = dailyBeytRepository.getRandomDistich(seed = seed, poetId = poetId)) {
             is Result.Success -> {
@@ -43,9 +45,10 @@ class RandomDistichWidgetUpdater :
                 appWidgetManager.updateAppWidget(appWidgetId, successViews)
             }
             is Result.Error -> {
-                views.setTextViewText(R.id.widget_right_line, context.getString(R.string.widget_random_distich_error))
-                views.setTextViewText(R.id.widget_left_line, "")
-                views.setTextViewText(R.id.widget_poet_name, "")
+                views.setViewVisibility(R.id.widget_loading, View.VISIBLE)
+                views.setViewVisibility(R.id.widget_content, View.GONE)
+                views.setViewVisibility(R.id.widget_poet_name, View.GONE)
+                views.setTextViewText(R.id.widget_loading, context.getString(R.string.widget_random_distich_error))
                 appWidgetManager.updateAppWidget(appWidgetId, views)
             }
         }
@@ -60,10 +63,14 @@ class RandomDistichWidgetUpdater :
             setTextViewText(R.id.widget_title, context.getString(R.string.widget_random_distich_title))
 
             if (distich == null) {
-                setTextViewText(R.id.widget_right_line, context.getString(R.string.widget_random_distich_loading))
-                setTextViewText(R.id.widget_left_line, "")
-                setTextViewText(R.id.widget_poet_name, "")
+                setViewVisibility(R.id.widget_loading, View.VISIBLE)
+                setViewVisibility(R.id.widget_content, View.GONE)
+                setViewVisibility(R.id.widget_poet_name, View.GONE)
+                setTextViewText(R.id.widget_loading, context.getString(R.string.widget_random_distich_loading))
             } else {
+                setViewVisibility(R.id.widget_loading, View.GONE)
+                setViewVisibility(R.id.widget_content, View.VISIBLE)
+                setViewVisibility(R.id.widget_poet_name, View.VISIBLE)
                 setTextViewText(R.id.widget_right_line, distich.rightText)
                 setTextViewText(R.id.widget_left_line, distich.leftText)
                 setTextViewText(R.id.widget_poet_name, distich.poetName)

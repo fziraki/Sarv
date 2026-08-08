@@ -6,6 +6,7 @@ import abkabk.azbarkon.domain.model.profile.GameLevelCatalog
 import abkabk.azbarkon.domain.model.profile.LevelListItemUi
 import abkabk.azbarkon.domain.model.profile.LevelRowState
 import abkabk.azbarkon.domain.model.profile.ProfileSheet
+import abkabk.azbarkon.features.profile.widget.rememberWidgetPickerLauncher
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,17 +25,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalContext
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -42,8 +40,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.add_box_24px
 import azbarkoncmp.shared.generated.resources.check_circle
 import azbarkoncmp.shared.generated.resources.lock
+import azbarkoncmp.shared.generated.resources.profile_add_widget
 import azbarkoncmp.shared.generated.resources.profile_badges_title
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_subtitle
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_title
@@ -69,6 +69,7 @@ fun ProfileSheets(
 ) {
     val sheet = state.activeSheet ?: return
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val openWidgetPicker = rememberWidgetPickerLauncher()
 
     ModalBottomSheet(
         onDismissRequest = { onAction(ProfileAction.OnDismissSheet) },
@@ -84,6 +85,10 @@ fun ProfileSheets(
                     onDailyBeytToggle = { onAction(ProfileAction.OnDailyBeytNotificationToggle(it)) },
                     onMemorizationReminderToggle = { onAction(ProfileAction.OnMemorizationReminderToggle(it)) },
                     onThemeModeSelect = { onAction(ProfileAction.OnThemeModeSelected(it)) },
+                    onAddWidgetClick = {
+                        onAction(ProfileAction.OnDismissSheet)
+                        openWidgetPicker()
+                    },
                 )
 
             ProfileSheet.Badges ->
@@ -103,6 +108,7 @@ private fun ProfileSettingsSheetContent(
     onDailyBeytToggle: (Boolean) -> Unit,
     onMemorizationReminderToggle: (Boolean) -> Unit,
     onThemeModeSelect: (ThemeMode) -> Unit,
+    onAddWidgetClick: () -> Unit,
 ) {
     Column(
         modifier =
@@ -136,6 +142,32 @@ private fun ProfileSettingsSheetContent(
             checked = isMemorizationReminderEnabled,
             onCheckedChange = onMemorizationReminderToggle,
         )
+
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .clickable(onClick = onAddWidgetClick)
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+
+            Icon(
+                painter = painterResource(Res.drawable.add_box_24px),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                text = stringResource(Res.string.profile_add_widget),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier,
+                textAlign = TextAlign.Start,
+            )
+
+        }
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.Start) {

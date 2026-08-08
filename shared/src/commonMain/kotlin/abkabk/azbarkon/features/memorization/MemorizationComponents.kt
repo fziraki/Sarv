@@ -1,5 +1,6 @@
 package abkabk.azbarkon.features.memorization
 
+import abkabk.azbarkon.core.designsystem.brown
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.Image
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -58,10 +60,22 @@ fun MemorizationHeroSection(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
+
+        Box(contentAlignment = Alignment.Center){
+
+            Box(
+                modifier = Modifier.size(92.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        shape = CircleShape
+                    ),
+            )
+
         Image(
             painter = painterResource(Res.drawable.feather),
             contentDescription = null,
         )
+        }
 
         Text(
             text = stringResource(Res.string.memorization_select_hero_title),

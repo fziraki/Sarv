@@ -134,4 +134,21 @@ class HomeViewModelTest {
                 assertThat(event).isInstanceOf(HomeEvent.ShowSnackbar::class)
             }
         }
+
+    @Test
+    fun `beyt of day click emits poem detail navigation with today distich poem id`() =
+        runTest {
+            val dailyBeytRepository =
+                FakeDailyBeytRepository().apply {
+                    todayDistich = todayDistich.copy(poemId = 42)
+                }
+            val viewModel = HomeViewModel(FakePoetRepository(), FakeMemorizationRepository(), dailyBeytRepository)
+
+            viewModel.onAction(HomeAction.OnBeytOfDayClick)
+
+            viewModel.events.test {
+                val event = awaitItem()
+                assertThat(event).isEqualTo(HomeEvent.NavigateToPoemDetail(poemId = 42))
+            }
+        }
 }

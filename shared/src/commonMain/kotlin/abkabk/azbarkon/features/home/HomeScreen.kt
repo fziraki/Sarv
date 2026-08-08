@@ -104,6 +104,7 @@ private const val SLIDER_BUTTON_WIDTH_FRACTION = 0.6f
 data class HomeCallbacks(
     val onNavigateToPoetsList: () -> Unit,
     val onNavigateToPoetDetail: (Int) -> Unit,
+    val onNavigateToPoemDetail: (Int) -> Unit,
     val onNavigateToMyPoems: () -> Unit,
     val onNavigateToSearch: () -> Unit,
     val onNavigateToTasvirNegar: () -> Unit,
@@ -131,6 +132,8 @@ fun HomeRoot(
             HomeEvent.NavigateToPoetsList -> callbacks.onNavigateToPoetsList()
 
             is HomeEvent.NavigateToPoetDetail -> callbacks.onNavigateToPoetDetail(event.poetId)
+
+            is HomeEvent.NavigateToPoemDetail -> callbacks.onNavigateToPoemDetail(event.poemId)
 
             HomeEvent.NavigateToMyPoems -> callbacks.onNavigateToMyPoems()
 
@@ -189,6 +192,7 @@ fun HomeScreen(
         todayDistich = state.todayDistich,
         onTasvirNegarClick = { onAction(HomeAction.OnTasvirNegarClick) },
         onChallengeClick = { onAction(HomeAction.OnChallengeClick) },
+        onBeytOfDayClick = { onAction(HomeAction.OnBeytOfDayClick) },
     )
         }
         item {
@@ -496,6 +500,7 @@ fun TopSlider(
     todayDistich: RandomDistich? = null,
     onTasvirNegarClick: () -> Unit = {},
     onChallengeClick: () -> Unit = {},
+    onBeytOfDayClick: () -> Unit = {},
 ) {
     if (items.isEmpty()) return
 
@@ -538,7 +543,7 @@ fun TopSlider(
             val item = getItem(page)
 
             when (item) {
-                is SliderPage.BeytOfDay -> BeytOfDaySlide(distich = todayDistich)
+                is SliderPage.BeytOfDay -> BeytOfDaySlide(distich = todayDistich, onClick = onBeytOfDayClick)
 
                 is SliderPage.Challenge -> ChallengeSlide(onClick = onChallengeClick)
 
@@ -712,6 +717,7 @@ fun ChallengeSlide(
 fun BeytOfDaySlide(
     modifier: Modifier = Modifier,
     distich: RandomDistich? = null,
+    onClick: () -> Unit = {},
 ) {
     val beytText = buildString {
         distich?.rightText?.let { append(it) }
@@ -726,7 +732,9 @@ fun BeytOfDaySlide(
             elevation = 1.dp,
             spotColor = MaterialTheme.colorScheme.tertiary,
             ambientColor = MaterialTheme.colorScheme.tertiary
-        ).fillMaxSize()
+        )
+        .clickable(enabled = distich != null, onClick = onClick)
+        .fillMaxSize()
     ){
 
         Image(

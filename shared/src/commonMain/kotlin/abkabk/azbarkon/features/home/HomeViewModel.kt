@@ -89,6 +89,14 @@ class HomeViewModel(
                     sendEvent(HomeEvent.NavigateToGame)
                 }
             }
+
+            HomeAction.OnBeytOfDayClick -> {
+                viewModelScope.launch {
+                    state.value.todayDistich?.poemId?.let { poemId ->
+                        sendEvent(HomeEvent.NavigateToPoemDetail(poemId))
+                    }
+                }
+            }
         }
     }
 
