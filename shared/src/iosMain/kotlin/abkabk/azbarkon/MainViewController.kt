@@ -1,8 +1,11 @@
 package abkabk.azbarkon
 
 import abkabk.azbarkon.core.di.initKoinIfNeeded
+import abkabk.azbarkon.core.notifications.IosNotificationDelegate
 import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.window.ComposeUIViewController
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -21,6 +24,7 @@ private object IosAppBootstrap : KoinComponent {
     fun onLaunch() {
         initKoinIfNeeded()
         Napier.base(DebugAntilog())
+        IosNotificationDelegate.install()
         dailyBeytNotificationScheduler.rescheduleIfEnabled()
         scope.launch {
             reviewNotificationCoordinator.sync()
@@ -31,5 +35,10 @@ private object IosAppBootstrap : KoinComponent {
 fun MainViewController() =
     ComposeUIViewController {
         IosAppBootstrap.onLaunch()
-        App()
+        val poemId by IosNotificationDelegate.poemId.collectAsState()
+        val openMemorizationPractice by IosNotificationDelegate.openMemorizationPractice.collectAsState()
+        App(
+            initialPoemId = poemId,
+            openMemorizationPractice = openMemorizationPractice,
+        )
     }

@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
-actual fun rememberWidgetPickerLauncher(): () -> Unit {
+actual fun rememberWidgetPickerLauncher(): (() -> Unit)? {
     val context = LocalContext.current
     return remember {
         {

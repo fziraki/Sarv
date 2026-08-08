@@ -5,21 +5,41 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
 import platform.UserNotifications.UNAuthorizationOptionSound
+import platform.UserNotifications.UNAuthorizationStatusAuthorized
+import platform.UserNotifications.UNAuthorizationStatusProvisional
 import platform.UserNotifications.UNUserNotificationCenter
 import kotlin.coroutines.resume
 
 class IosNotificationPermissionGateway : NotificationPermissionGateway {
-    override fun areNotificationsEnabled(): Boolean = true
+    @Volatile
+    private var notificationsEnabled = false
+
+    init {
+        refreshEnabledState()
+    }
+
+    override fun areNotificationsEnabled(): Boolean = notificationsEnabled
 
     override suspend fun requestPermission(): Boolean =
         suspendCancellableCoroutine { continuation ->
             UNUserNotificationCenter.currentNotificationCenter().requestAuthorizationWithOptions(
                 options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge,
                 completionHandler = { granted, _ ->
+                    refreshEnabledState()
                     if (continuation.isActive) {
                         continuation.resume(granted)
                     }
                 },
             )
         }
+
+    private fun refreshEnabledState() {
+        UNUserNotificationCenter.currentNotificationCenter()
+            .getNotificationSettingsWithCompletionHandler { settings ->
+                val status = settings.authorizationStatus
+                notificationsEnabled =
+                    status == UNAuthorizationStatusAuthorized ||
+                        status == UNAuthorizationStatusProvisional
+            }
+    }
 }

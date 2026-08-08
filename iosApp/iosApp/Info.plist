@@ -6,5 +6,9 @@
 	<true/>
 	<key>NSUserNotificationUsageDescription</key>
 	<string>برای ارسال بیت روزانه به ساعت ۸ صبح به اجازه اعلان نیاز داریم.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>برای ذخیره تصویر ساخته‌شده در گالری به اجازه دسترسی به گالری نیاز داریم.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>برای انتخاب تصویر از گالری به اجازه دسترسی به گالری نیاز داریم.</string>
 </dict>
 </plist>
