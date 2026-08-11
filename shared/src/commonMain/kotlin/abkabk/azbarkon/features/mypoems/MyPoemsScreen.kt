@@ -5,6 +5,7 @@ import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.core.uidata.asString
+import abkabk.azbarkon.ui.components.AzbarkonAlertDialog
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
@@ -30,7 +31,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -193,7 +193,7 @@ fun MyPoemsScreen(
     }
 
     if (state.showClearDialog) {
-        AlertDialog(
+        AzbarkonAlertDialog(
             onDismissRequest = { onAction(MyPoemsAction.OnClearAllDismiss) },
             title = { Text(stringResource(Res.string.clear_dialog_title)) },
             text = { Text(clearDialogBody) },
