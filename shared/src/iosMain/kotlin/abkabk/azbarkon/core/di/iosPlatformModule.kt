@@ -80,5 +80,5 @@ val iosPlatformModule =
             IosNotificationPermissionGateway()
         }
 
-        single<AudioPlayer> { AvAudioPlayer() }
+        factory<AudioPlayer> { AvAudioPlayer() }
     }

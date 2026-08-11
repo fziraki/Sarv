@@ -1,5 +1,6 @@
 package abkabk.azbarkon.core.player
 
+import androidx.media3.common.AudioAttributes
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -12,6 +13,9 @@ class Media3AudioPlayer(
     private val listeners = mutableSetOf<AudioPlayerListener>()
 
     init {
+        // ponytail: permanent focus gain - pauses other apps' audio for good;
+        // user resumes their own music manually
+        exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT, true)
         exoPlayer.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 listeners.forEach { it.onIsPlayingChanged(isPlaying) }
@@ -24,6 +28,9 @@ class Media3AudioPlayer(
                     Player.STATE_READY -> AudioPlaybackState.READY
                     Player.STATE_ENDED -> AudioPlaybackState.ENDED
                     else -> AudioPlaybackState.IDLE
+                }
+                if (mapped == AudioPlaybackState.ENDED) {
+                    exoPlayer.pause()
                 }
                 listeners.forEach { it.onStateChanged(mapped) }
             }

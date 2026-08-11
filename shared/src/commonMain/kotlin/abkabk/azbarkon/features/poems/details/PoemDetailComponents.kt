@@ -26,11 +26,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.add_box_24px
+import azbarkoncmp.shared.generated.resources.cd_add_poem
 import azbarkoncmp.shared.generated.resources.cd_context_search
 import azbarkoncmp.shared.generated.resources.cd_image_creator
 import azbarkoncmp.shared.generated.resources.cd_like
 import azbarkoncmp.shared.generated.resources.cd_share
-import azbarkoncmp.shared.generated.resources.context_search
 import azbarkoncmp.shared.generated.resources.heart
 import azbarkoncmp.shared.generated.resources.heart_filled
 import azbarkoncmp.shared.generated.resources.ornoment230l
@@ -39,6 +40,7 @@ import azbarkoncmp.shared.generated.resources.ornoment30
 import azbarkoncmp.shared.generated.resources.palette
 import azbarkoncmp.shared.generated.resources.poem_image_creator
 import azbarkoncmp.shared.generated.resources.poem_liked
+import azbarkoncmp.shared.generated.resources.poem_memorize
 import azbarkoncmp.shared.generated.resources.poem_share
 import azbarkoncmp.shared.generated.resources.search
 import azbarkoncmp.shared.generated.resources.share
@@ -262,6 +264,7 @@ fun PoemActionBar(
     onShareClick: () -> Unit,
     onLikeClick: () -> Unit,
     onImageCreatorClick: () -> Unit,
+    onMemorizeClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -274,17 +277,10 @@ fun PoemActionBar(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(16.dp),
-                ).padding(vertical = 12.dp, horizontal = 8.dp),
+                ).padding(vertical = 8.dp, horizontal = 6.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-
-        PoemActionItem(
-            icon = Res.drawable.palette,
-            label = Res.string.poem_image_creator,
-            contentDescription = Res.string.cd_image_creator,
-            onClick = onImageCreatorClick,
-        )
 
         PoemActionItem(
             icon = if (isLiked) Res.drawable.heart_filled else Res.drawable.heart,
@@ -293,6 +289,24 @@ fun PoemActionBar(
             tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
             labelColor = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
             onClick = onLikeClick,
+        )
+
+
+        PoemActionItem(
+            icon = Res.drawable.palette,
+            label = Res.string.poem_image_creator,
+            contentDescription = Res.string.cd_image_creator,
+            onClick = onImageCreatorClick,
+        )
+
+
+        PoemActionItem(
+            icon = Res.drawable.add_box_24px,
+            label = Res.string.poem_memorize,
+            contentDescription = Res.string.cd_add_poem,
+            onClick = onMemorizeClick,
+            tint = MaterialTheme.colorScheme.primary,
+            labelColor = MaterialTheme.colorScheme.primary,
         )
 
         PoemActionItem(
@@ -304,7 +318,7 @@ fun PoemActionBar(
 
         PoemActionItem(
             icon = Res.drawable.search,
-            label = Res.string.context_search,
+            label = Res.string.search,
             contentDescription = Res.string.cd_context_search,
             onClick = onSearchClick,
         )
@@ -324,7 +338,7 @@ private fun PoemActionItem(
     Column(
         modifier =
             modifier
-                .width(72.dp)
+                .width(64.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .clickable(onClick = onClick)
                 .padding(vertical = 4.dp),

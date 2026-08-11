@@ -23,7 +23,6 @@
     <string name="pic_negar">تصویر نگار</string>
     <string name="review">مرور شعر</string>
 
-    <string name="context_search">جستجو در متن</string>
     <string name="cd_context_search">جستجو در متن شعر</string>
 
 
@@ -206,10 +205,12 @@
     <string name="poem_liked">پسندیدم</string>
     <string name="poem_image_creator">تصویر نگار</string>
     <string name="poem_memorize_practice">تمرین حفظ این شعر</string>
+    <string name="poem_memorize">حفظ</string>
     <string name="poem_copied">شعر کپی شد</string>
     <string name="coming_soon">به‌زودی</string>
     <string name="cd_bookmark">نشان‌گذاری</string>
-    <string name="cd_menu">منو</string>
+    <string name="cd_add_poem">افزودن شعر به حفظ</string>
+    <string name="cd_select_track">انتخاب تلاوت</string>    <string name="cd_menu">منو</string>
     <string name="cd_copy">کپی شعر</string>
     <string name="cd_share">اشتراک‌گذاری شعر</string>
     <string name="cd_like">پسندیدن شعر</string>

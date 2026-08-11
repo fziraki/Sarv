@@ -133,7 +133,7 @@ val androidPlatformModule =
         workerOf(::DailyBeytWorker)
         workerOf(::MemorizationReviewWorker)
 
-        single<AudioPlayer> {
+        factory<AudioPlayer> {
             Media3AudioPlayer(ExoPlayer.Builder(androidContext()).build())
         }
     }

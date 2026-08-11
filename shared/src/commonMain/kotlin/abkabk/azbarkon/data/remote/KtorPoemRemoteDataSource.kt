@@ -20,7 +20,7 @@ class KtorPoemRemoteDataSource(
         return httpClient.getResult<List<RecitationDto>>(
             route = "/api/ganjoor/poem/$poemId/recitations",
         ).map {
-            it.map { it.toPoemAudioTrack() }.filter { it.artist == "سهیل قاسمی" }
+            it.map { it.toPoemAudioTrack() }
         }.let { result ->
             if (result is Result.Error && result.error == DataError.Network.NOT_FOUND) {
                 Result.Success(emptyList())
