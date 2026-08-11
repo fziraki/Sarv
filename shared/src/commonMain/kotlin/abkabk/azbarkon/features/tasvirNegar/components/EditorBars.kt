@@ -3,6 +3,7 @@ package abkabk.azbarkon.features.tasvirNegar.components
 import abkabk.azbarkon.core.designsystem.secondary
 import abkabk.azbarkon.core.designsystem.surfaceVariant
 import abkabk.azbarkon.features.tasvirNegar.TasvirNegarAction
+import abkabk.azbarkon.ui.components.AzbarkonSlider
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,39 +11,27 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.layout
-import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import azbarkoncmp.shared.generated.resources.Res
@@ -76,8 +65,6 @@ import org.jetbrains.compose.resources.stringResource
 
 private const val MIN_TEXT_SIZE = 12f
 private const val MAX_TEXT_SIZE = 32f
-private const val TRACK_MIN_DIVISOR = 0.001f
-private const val VERTICAL_ROTATION_DEGREES = 270f
 private const val PREVIEW_PROGRESS = 22f
 
 @Composable
@@ -250,7 +237,6 @@ private fun ToolbarIcon(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VerticalSizeSlider(
     progress: Float,
@@ -258,10 +244,6 @@ fun VerticalSizeSlider(
     modifier: Modifier = Modifier,
 ) {
     val valueRange = MIN_TEXT_SIZE..MAX_TEXT_SIZE
-    val sliderLength = 200.dp
-    val touchWidth = 32.dp
-    val thumbSize = 16.dp
-    val trackHeight = 4.dp
     val sliderValue = progress.coerceIn(valueRange.start, valueRange.endInclusive)
     val samim = samimFontFamily()
 
@@ -275,102 +257,23 @@ fun VerticalSizeSlider(
                 androidx.compose.ui.text.TextStyle(
                     fontFamily = samim,
                     fontSize = 12.sp,
-                    color = Color.Black,
+                    color = Color.White,
+                    shadow = Shadow(Color.Black.copy(alpha = 0.6f), offset = Offset(0f, 1f), blurRadius = 2f),
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                 ),
         )
 
-        Box(
-            modifier =
-                Modifier
-                    .width(touchWidth)
-                    .height(sliderLength),
-            contentAlignment = Alignment.Center,
-        ) {
-            // Keep LTR for the rotated horizontal Slider so vertical drag maps correctly in RTL screens.
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                Slider(
-                    value = sliderValue,
-                    onValueChange = onProgressChange,
-                    valueRange = valueRange,
-                    modifier =
-                        Modifier
-                            .verticalSliderTransform()
-                            .width(sliderLength)
-                            .height(touchWidth),
-                    colors =
-                        SliderDefaults.colors(
-                            thumbColor = Color.Transparent,
-                            activeTrackColor = Color.Transparent,
-                            inactiveTrackColor = Color.Transparent,
-                        ),
-                    thumb = {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .size(thumbSize)
-                                    .background(
-                                        color = surfaceVariant,
-                                        shape = CircleShape,
-                                    ),
-                        )
-                    },
-                    track = { sliderState ->
-                        val trackProgress =
-                            (sliderState.value - valueRange.start) /
-                                (valueRange.endInclusive - valueRange.start).coerceAtLeast(TRACK_MIN_DIVISOR)
-                        Row(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .height(trackHeight)
-                                    .clip(RoundedCornerShape(percent = 50))
-                                    .background(Color.Gray.copy(alpha = 0.25f)),
-                        ) {
-                            if (trackProgress > 0f) {
-                                Box(
-                                    modifier =
-                                        Modifier
-                                            .fillMaxHeight()
-                                            .weight(trackProgress)
-                                            .background(secondary),
-                                )
-                            }
-                            if (trackProgress < 1f) {
-                                Spacer(
-                                    modifier =
-                                        Modifier
-                                            .fillMaxHeight()
-                                            .weight(1f - trackProgress),
-                                )
-                            }
-                        }
-                    },
-                )
-            }
-        }
+        AzbarkonSlider(
+            value = sliderValue,
+            onValueChange = onProgressChange,
+            valueRange = valueRange,
+            vertical = true,
+            activeTrackColor = secondary,
+            inactiveTrackColor = Color.Gray.copy(alpha = 0.25f),
+            thumbColor = surfaceVariant,
+        )
     }
 }
-
-private fun Modifier.verticalSliderTransform(): Modifier =
-    this
-        .graphicsLayer {
-            rotationZ = VERTICAL_ROTATION_DEGREES
-            transformOrigin = TransformOrigin(0f, 0f)
-        }.layout { measurable, constraints ->
-            val placeable =
-                measurable.measure(
-                    Constraints(
-                        minWidth = constraints.minHeight,
-                        maxWidth = constraints.maxHeight,
-                        minHeight = constraints.minWidth,
-                        maxHeight = constraints.maxHeight,
-                    ),
-                )
-            layout(placeable.height, placeable.width) {
-                placeable.place(-placeable.width, 0)
-            }
-        }
 
 @Preview
 @Composable
