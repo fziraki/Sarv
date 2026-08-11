@@ -1,0 +1,13 @@
+#!/bin/sh
+# Runs quality checks before allowing a push.
+# Exit non-zero aborts the push.
+
+./gradlew detekt --console=plain -q
+STATUS=$?
+
+if [ $STATUS -ne 0 ]; then
+    echo "detekt failed - push aborted. Fix the violations and try again."
+    exit 1
+fi
+
+exit 0
