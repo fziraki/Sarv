@@ -79,6 +79,8 @@ private const val MIN_LAYER_WIDTH_FRACTION = 0.2f
 private const val MAX_LAYER_WIDTH_FRACTION = 0.95f
 private const val STICKER_SIZE_SCALE_FACTOR = 4
 private const val GRID_THIRDS = 3f
+private const val MIN_SOLID_COLOR_ALPHA = 0.05f
+private const val LUMINANCE_CONTRAST_THRESHOLD = 0.5f
 
 data class EditorCallbacks(
     val onLayerSelect: (LayerId?) -> Unit,
@@ -105,13 +107,13 @@ private fun selectionPalette(
         background is EditorBackground.GalleryImage || background is EditorBackground.CatalogTexture
     val solidColor =
         (background as? EditorBackground.SolidColor)
-            ?.takeIf { it.color.alpha > 0.05f }
+            ?.takeIf { it.color.alpha > MIN_SOLID_COLOR_ALPHA }
             ?.let { lerp(it.color, fallbackColor, 1f - it.color.alpha) }
     val contrastBase = solidColor ?: fallbackColor
     return if (isImage) {
         SelectionPalette(Color.Black.copy(alpha = 0.45f), Color.White.copy(alpha = 0.45f))
     } else {
-        val contrast = if (contrastBase.luminance() > 0.5f) Color.Black else Color.White
+        val contrast = if (contrastBase.luminance() > LUMINANCE_CONTRAST_THRESHOLD) Color.Black else Color.White
         SelectionPalette(contrast.copy(alpha = 0.5f), null)
     }
 }
@@ -125,6 +127,11 @@ data class DraggableLayerCallbacks(
     val onDrag: (LayerOffset) -> Unit,
     val onTextGravityChange: ((TextGravity) -> Unit)? = null,
     val onToggleBold: (() -> Unit)? = null,
+)
+
+private data class TextFormattingControls(
+    val visible: Boolean = false,
+    val isBold: Boolean = false,
 )
 
 @Composable
@@ -280,13 +287,15 @@ private fun PoemTextLayer(
                 onTextGravityChange = callbacks.onTextGravityChange,
                 onToggleBold = callbacks.onToggleTextBold,
             ),
-        showTextControls = showEditOverlays && document.selectedLayer == LayerId.PoemText,
-        isBold = document.poemText.isBold,
+        textFormatting =
+            TextFormattingControls(
+                visible = showEditOverlays && document.selectedLayer == LayerId.PoemText,
+                isBold = document.poemText.isBold,
+            ),
         minWidth = minLayerWidth,
     ) {
         DirectionalTextField(
-            value = document.poemText.text,
-            onValueChange = callbacks.onPoemTextChange,
+            value = document.poemText.text,            onValueChange = callbacks.onPoemTextChange,
             readOnly = !isPoemEditing,
             textStyle =
                 TextStyle(
@@ -438,8 +447,7 @@ private fun DraggableLayer(
     minWidth: Dp,
     selectionPalette: SelectionPalette,
     alignment: Alignment = Alignment.Center,
-    showTextControls: Boolean = false,
-    isBold: Boolean = false,
+    textFormatting: TextFormattingControls = TextFormattingControls(),
     content: @Composable () -> Unit,
 ) {
     val density = LocalDensity.current
@@ -531,10 +539,10 @@ private fun DraggableLayer(
 
             if (displaySelected) {
                 val showFormattingControls =
-                    showTextControls && callbacks.onTextGravityChange != null && callbacks.onToggleBold != null
+                    textFormatting.visible && callbacks.onTextGravityChange != null && callbacks.onToggleBold != null
                 if (showFormattingControls) {
                     TextFormattingBar(
-                        isBold = isBold,
+                        isBold = textFormatting.isBold,
                         onTextGravityChange = callbacks.onTextGravityChange,
                         onToggleBold = callbacks.onToggleBold,
                     )

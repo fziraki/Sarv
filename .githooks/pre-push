@@ -2,7 +2,7 @@
 # Runs quality checks before allowing a push.
 # Exit non-zero aborts the push.
 
-./gradlew detekt --console=plain -q
+./gradlew detektCheckAll --console=plain -q
 STATUS=$?
 
 if [ $STATUS -ne 0 ]; then
