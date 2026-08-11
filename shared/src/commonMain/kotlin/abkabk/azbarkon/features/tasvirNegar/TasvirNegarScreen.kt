@@ -12,6 +12,8 @@ import abkabk.azbarkon.features.tasvirNegar.components.EditorFooter
 import abkabk.azbarkon.features.tasvirNegar.components.EditorHeader
 import abkabk.azbarkon.features.tasvirNegar.components.OptionsRow
 import abkabk.azbarkon.features.tasvirNegar.components.VerticalSizeSlider
+import abkabk.azbarkon.features.tasvirNegar.model.EditorDocument
+import abkabk.azbarkon.features.tasvirNegar.model.LayerId
 import abkabk.azbarkon.features.tasvirNegar.util.TasvirCustomColorPicker
 import abkabk.azbarkon.features.tasvirNegar.util.rememberTasvirNegarGalleryLauncher
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
@@ -170,9 +172,12 @@ fun TasvirNegarScreen(
                 modifier = Modifier.fillMaxSize(),
             )
 
-            if (!state.isExporting && state.document.isEditPanelExpanded) {
+            if (!state.isExporting &&
+                state.document.isEditPanelExpanded &&
+                state.document.selectedLayer != null
+            ) {
                 VerticalSizeSlider(
-                    progress = state.document.sizeProgress,
+                    progress = sizeProgressFor(state.document),
                     onProgressChange = { onAction(TasvirNegarAction.OnSizeProgressChange(it)) },
                     modifier =
                         Modifier
@@ -183,6 +188,16 @@ fun TasvirNegarScreen(
         }
     }
 }
+
+private fun sizeProgressFor(document: EditorDocument): Float =
+    when (document.selectedLayer) {
+        LayerId.PoemText -> document.poemText.sizeProgress
+        LayerId.PoetName -> document.poetName.sizeProgress
+        LayerId.Sticker -> document.sticker.sizeProgress
+        LayerId.TopDivider -> document.topDivider.sizeProgress
+        LayerId.BottomDivider -> document.bottomDivider.sizeProgress
+        null -> 0f
+    }
 
 @Preview
 @Composable

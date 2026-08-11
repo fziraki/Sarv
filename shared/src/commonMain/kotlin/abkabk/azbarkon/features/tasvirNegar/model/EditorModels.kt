@@ -43,6 +43,7 @@ data class TextLayer(
     val text: String = "",
     val offset: LayerOffset = LayerOffset(),
     val baseFontSizeSp: Float = 16f,
+    val sizeProgress: Float = 12f,
     val color: Color = Color.White,
     val gravity: TextGravity = TextGravity.Center,
     val isBold: Boolean = false,
@@ -54,6 +55,7 @@ data class PoetNameLayer(
     val text: String = "",
     val offset: LayerOffset = LayerOffset(y = 120.dp),
     val baseFontSizeSp: Float = 14f,
+    val sizeProgress: Float = 12f,
     val color: Color = Color.White,
     val visible: Boolean = false,
 )
@@ -64,6 +66,7 @@ data class StickerLayer(
     val galleryUri: String? = null,
     val offset: LayerOffset = LayerOffset(),
     val baseSizeDp: Dp = 48.dp,
+    val sizeProgress: Float = 12f,
     val colorFilter: Color? = null,
     val visible: Boolean = false,
 )
@@ -73,6 +76,7 @@ data class DividerLayer(
     val assetId: String? = null,
     val offset: LayerOffset = LayerOffset(),
     val baseWidthDp: Dp = 120.dp,
+    val sizeProgress: Float = 12f,
     val colorFilter: Color? = null,
     val visible: Boolean = false,
 )
@@ -104,7 +108,6 @@ data class EditorDocument(
     val fontPreset: EditorFontPreset = EditorFontPreset.Yekan,
     val showAlignmentGrid: Boolean = false,
     val selectedLayer: LayerId? = null,
-    val sizeProgress: Float = 12f,
     val activeOptionPanel: OptionPanelMode = OptionPanelMode.None,
     val isEditPanelExpanded: Boolean = false,
 )

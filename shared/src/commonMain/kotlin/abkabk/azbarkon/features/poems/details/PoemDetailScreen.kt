@@ -8,10 +8,10 @@ import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.domain.model.PoemAudioTrack
+import abkabk.azbarkon.ui.components.AzbarkonSlider
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
-import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -22,8 +22,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,8 +41,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -81,7 +77,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-private const val TRACK_MIN_DIVISOR = 0.001f
 private const val RING_SPIN_DURATION_MS = 3000
 private const val MILLIS_PER_SECOND = 1000L
 private const val SECONDS_PER_MINUTE = 60
@@ -411,8 +406,8 @@ private fun TrackPlayerCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                Slider(
-                    value = displayedProgress.coerceIn(0f, 1f),
+                AzbarkonSlider(
+                    value = displayedProgress,
                     onValueChange = {
                         dragProgress = it
                         onSeekChange(activeTrack.track, it)
@@ -423,50 +418,6 @@ private fun TrackPlayerCard(
                         dragProgress = null
                     },
                     modifier = Modifier.weight(1f).height(16.dp),
-                    colors = SliderDefaults.colors(
-                        thumbColor = Color.Transparent,
-                        activeTrackColor = Color.Transparent,
-                        inactiveTrackColor = Color.Transparent,
-                    ),
-                    thumb = {
-                        Box(
-                            modifier = Modifier
-                                .size(16.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = CircleShape,
-                                ),
-                        )
-                    },
-                    track = { sliderState ->
-                        val trackProgress =
-                            (sliderState.value - sliderState.valueRange.start) /
-                                    (sliderState.valueRange.endInclusive - sliderState.valueRange.start).coerceAtLeast(TRACK_MIN_DIVISOR)
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(4.dp)
-                                .clip(RoundedCornerShape(percent = 50))
-                                .background(LightColorScheme.outlineVariant),
-                        ) {
-                            if (trackProgress > 0f) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .weight(trackProgress)
-                                        .background(MaterialTheme.colorScheme.primary),
-                                )
-                            }
-                            if (trackProgress < 1f) {
-                                Spacer(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .weight(1f - trackProgress),
-                                )
-                            }
-                        }
-                    },
                 )
 
                 Text(

@@ -60,6 +60,8 @@ class TasvirNegarViewModel(
             TasvirNegarAction.OnEraserClick -> {
                 if (state.value.document.selectedLayer != null) {
                     removeSelectedLayer()
+                } else {
+                    removeBackground()
                 }
             }
 
@@ -202,22 +204,32 @@ class TasvirNegarViewModel(
                         color = Color.White,
                         gravity = TextGravity.Center,
                         isBold = false,
+                        sizeProgress = 12f,
                         visible = poemText.text.isNotBlank(),
                     ),
                 poetName =
                     poetName.copy(
                         offset = LayerOffset(y = 120.dp),
                         color = Color.White,
+                        sizeProgress = 12f,
                         visible = poetName.text.isNotBlank(),
                     ),
-                sticker = StickerLayer(),
-                topDivider = DividerLayer(),
-                bottomDivider = DividerLayer(),
+                sticker =
+                    StickerLayer().copy(
+                        sizeProgress = 12f,
+                    ),
+                topDivider =
+                    DividerLayer().copy(
+                        sizeProgress = 12f,
+                    ),
+                bottomDivider =
+                    DividerLayer().copy(
+                        sizeProgress = 12f,
+                    ),
                 background = EditorBackground.SolidColor(Color.Transparent),
                 fontPreset = EditorFontPreset.Yekan,
                 showAlignmentGrid = false,
                 selectedLayer = null,
-                sizeProgress = 12f,
                 activeOptionPanel = OptionPanelMode.None,
             )
         }
@@ -263,7 +275,17 @@ class TasvirNegarViewModel(
     }
 
     private fun updateSizeProgress(progress: Float) {
-        updateDocument { copy(sizeProgress = progress.coerceIn(MIN_TEXT_SIZE, MAX_TEXT_SIZE)) }
+        val value = progress.coerceIn(MIN_TEXT_SIZE, MAX_TEXT_SIZE)
+        updateDocument {
+            when (selectedLayer) {
+                LayerId.PoemText -> copy(poemText = poemText.copy(sizeProgress = value))
+                LayerId.PoetName -> copy(poetName = poetName.copy(sizeProgress = value))
+                LayerId.Sticker -> copy(sticker = sticker.copy(sizeProgress = value))
+                LayerId.TopDivider -> copy(topDivider = topDivider.copy(sizeProgress = value))
+                LayerId.BottomDivider -> copy(bottomDivider = bottomDivider.copy(sizeProgress = value))
+                null -> this
+            }
+        }
     }
 
     private fun handleColorOption(index: Int) {
@@ -356,16 +378,19 @@ class TasvirNegarViewModel(
         }
     }
 
+    private fun removeBackground() {
+        updateDocument {
+            copy(background = EditorBackground.SolidColor(Color.Transparent))
+        }
+    }
+
     private fun toggleGrid() {
         updateDocument { copy(showAlignmentGrid = !showAlignmentGrid) }
     }
 
     private fun requestGalleryPick() {
         updateDocument {
-            copy(
-                selectedLayer = null,
-                activeOptionPanel = OptionPanelMode.None,
-            )
+            copy(activeOptionPanel = OptionPanelMode.None)
         }
         emitEvent(TasvirNegarEvent.RequestGalleryPick)
     }
@@ -373,7 +398,11 @@ class TasvirNegarViewModel(
     private fun applyGalleryImage(uri: String?) {
         if (uri.isNullOrBlank()) return
         updateDocument {
-            copy(background = EditorBackground.GalleryImage(uri))
+            if (selectedLayer == LayerId.Sticker) {
+                copy(sticker = sticker.copy(galleryUri = uri, assetId = null, visible = true))
+            } else {
+                copy(background = EditorBackground.GalleryImage(uri))
+            }
         }
     }
 

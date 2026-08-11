@@ -7,6 +7,7 @@ import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.memorization.ActivePoemCard
 import abkabk.azbarkon.features.memorization.MemorizationHeroSection
 import abkabk.azbarkon.features.memorization.MemorizationOptionRow
+import abkabk.azbarkon.ui.components.AzbarkonAlertDialog
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
@@ -17,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -77,7 +77,7 @@ fun ActiveMemorizationRoot(
     }
 
     if (state.poemToDelete != null) {
-        AlertDialog(
+        AzbarkonAlertDialog(
             onDismissRequest = { viewModel.onAction(ActiveMemorizationAction.OnDeleteDismiss) },
             title = { Text(stringResource(Res.string.memorization_remove_confirm_title)) },
             text = { Text(stringResource(Res.string.memorization_remove_confirm_body)) },
