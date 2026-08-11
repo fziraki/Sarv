@@ -74,7 +74,6 @@ import azbarkoncmp.shared.generated.resources.close
 import azbarkoncmp.shared.generated.resources.find_in_poem_hint
 import azbarkoncmp.shared.generated.resources.pause
 import azbarkoncmp.shared.generated.resources.play
-import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -92,8 +91,6 @@ fun PoemDetailRoot(
     onNavigateToMemorizationPractice: (Int) -> Unit,
     viewModel: PoemDetailViewModel = koinViewModel { parametersOf(poemId) },
 ) {
-
-    println("poemId : $poemId")
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val audioState by viewModel.audioState.collectAsStateWithLifecycle()
@@ -498,14 +495,7 @@ private fun PlayPauseButton(
 
         if (isLoading) {
 
-            println("tagg isLoading")
-            Napier.d( message = "isLoading: $isLoading", throwable = null, tag = "tagg")
-
             val ringProgress = remember { Animatable(0f) }
-
-            println("tagg ringProgress")
-
-            Napier.d( message = "ringProgress: $isLoading", throwable = null, tag = "tagg")
 
             LaunchedEffect(Unit) {
                 ringProgress.snapTo(0f)

@@ -1,6 +1,8 @@
 package abkabk.azbarkon.core.player
 
 import kotlinx.cinterop.ExperimentalForeignApi
+import platform.AVFAudio.AVAudioSession
+import platform.AVFAudio.AVAudioSessionCategoryPlayback
 import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerItem
 import platform.AVFoundation.AVPlayerItemDidPlayToEndTimeNotification
@@ -50,6 +52,8 @@ class AvAudioPlayer : AudioPlayer {
     override fun setMediaUrl(url: String) {
         release()
 
+        AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, error = null)
+
         val nsUrl = NSURL.URLWithString(url) ?: return
         val item = AVPlayerItem(uRL = nsUrl)
         player = AVPlayer(playerItem = item)
@@ -63,6 +67,7 @@ class AvAudioPlayer : AudioPlayer {
         ) {
             playbackState = AudioPlaybackState.ENDED
             notifyStateChanged()
+            deactivateSession()
         }
 
         // NOTE: True readiness detection needs KVO on AVPlayerItem.status,
@@ -71,6 +76,7 @@ class AvAudioPlayer : AudioPlayer {
     }
 
     override fun play() {
+        AVAudioSession.sharedInstance().setActive(true, error = null)
         player?.play()
         playbackState = AudioPlaybackState.READY
         notifyIsPlayingChanged(true)
@@ -79,6 +85,7 @@ class AvAudioPlayer : AudioPlayer {
 
     override fun pause() {
         player?.pause()
+        deactivateSession()
         notifyIsPlayingChanged(false)
     }
 
@@ -102,6 +109,12 @@ class AvAudioPlayer : AudioPlayer {
         player?.pause()
         player = null
         playbackState = AudioPlaybackState.IDLE
+        deactivateSession()
+    }
+
+    private fun deactivateSession() {
+        // ponytail: no notifyOthersOnDeactivation - other apps stay paused until the user replays them
+        AVAudioSession.sharedInstance().setActive(false, error = null)
     }
 
     private fun notifyStateChanged() {

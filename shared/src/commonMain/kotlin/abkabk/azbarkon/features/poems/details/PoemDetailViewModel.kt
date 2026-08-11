@@ -76,6 +76,14 @@ class PoemDetailViewModel(
                 }
             }
         }
+
+        override fun onError(message: String) {
+            val activeUrl = _audioState.value.activeTrackUrl ?: return
+            updateTrack(activeUrl) { it.copy(isLoading = false, isPlaying = false) }
+            viewModelScope.launch {
+                sendEvent(PoemDetailEvent.ShowSnackbar(UiText.DynamicString("پخش صدا با خطا مواجه شد")))
+            }
+        }
     }
 
     init {
@@ -186,6 +194,10 @@ class PoemDetailViewModel(
 
             isThisTrackActive && !player.isPlaying -> {
                 if (preparedTrackUrl == track.url) {
+                    if (player.playbackState == AudioPlaybackState.ENDED) {
+                        player.seekTo(0)
+                        updateTrack(track.url) { it.copy(progress = 0f, positionMs = 0L) }
+                    }
                     player.play()
                     updateTrack(track.url) { it.copy(isPlaying = true) }
                 } else {
@@ -238,10 +250,7 @@ class PoemDetailViewModel(
         player.play()
 
         updateTrack(track.url) {
-            it.copy(
-                isPlaying = true,
-                durationMs = if (player.duration > 0) player.duration else it.durationMs,
-            )
+            it.copy(isPlaying = true)
         }
     }
 
