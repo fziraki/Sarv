@@ -224,7 +224,7 @@
     <string name="clear_dialog_title">پاک کردن همه</string>
     <string name="clear_dialog_liked_body">همهٔ شعرهای پسندیده‌شده حذف شوند؟</string>
     <string name="clear_dialog_bookmarked_body">همهٔ شعرهای نشان‌گذاری‌شده حذف شوند؟</string>
-    <string name="clear_confirm">بله، پاک شود</string>
+    <string name="clear_confirm">تایید</string>
     <string name="clear_cancel">انصراف</string>
     <string name="cd_clear_all">پاک کردن همه</string>
     <string name="cd_clear_liked">پاک کردن پسندیده</string>
