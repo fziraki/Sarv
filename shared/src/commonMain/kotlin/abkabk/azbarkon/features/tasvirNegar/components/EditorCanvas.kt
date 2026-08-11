@@ -211,7 +211,6 @@ fun EditorCanvas(
                         selected = document.selectedLayer == LayerId.TopDivider,
                         callbacks = callbacks,
                         minLayerWidth = minLayerWidth,
-                        sizeProgress = document.sizeProgress,
                         showEditOverlays = showEditOverlays,
                         flipVertical = false,
                         selectionPalette = palette,
@@ -225,7 +224,6 @@ fun EditorCanvas(
                         selected = document.selectedLayer == LayerId.BottomDivider,
                         callbacks = callbacks,
                         minLayerWidth = minLayerWidth,
-                        sizeProgress = document.sizeProgress,
                         showEditOverlays = showEditOverlays,
                         flipVertical = true,
                         selectionPalette = palette,
@@ -293,7 +291,7 @@ private fun PoemTextLayer(
             textStyle =
                 TextStyle(
                     color = document.poemText.color,
-                    fontSize = (document.poemText.baseFontSizeSp + document.sizeProgress).sp,
+                    fontSize = (document.poemText.baseFontSizeSp + document.poemText.sizeProgress).sp,
                     fontWeight =
                         if (document.poemText.isBold) {
                             FontWeight.Bold
@@ -342,7 +340,7 @@ private fun PoetNameLayer(
             textStyle =
                 TextStyle(
                     color = document.poetName.color,
-                    fontSize = (document.poetName.baseFontSizeSp + document.sizeProgress).sp,
+                    fontSize = (document.poetName.baseFontSizeSp + document.poetName.sizeProgress).sp,
                     textAlign = TextAlign.Center,
                     fontFamily = fontFamily,
                 ),
@@ -361,7 +359,6 @@ private fun CanvasDividerLayer(
     selected: Boolean,
     callbacks: EditorCallbacks,
     minLayerWidth: Dp,
-    sizeProgress: Float,
     showEditOverlays: Boolean,
     flipVertical: Boolean,
     selectionPalette: SelectionPalette,
@@ -381,7 +378,7 @@ private fun CanvasDividerLayer(
     ) {
         DividerImage(
             assetId = divider.assetId.orEmpty(),
-            width = divider.baseWidthDp + (sizeProgress * 4).dp,
+            width = divider.baseWidthDp + (divider.sizeProgress * 4).dp,
             colorFilter = divider.colorFilter,
             flipVertical = flipVertical,
         )
@@ -589,7 +586,7 @@ private fun FormattingIcon(
 @Composable
 private fun StickerContent(document: EditorDocument) {
     val sticker = document.sticker
-    val sizeModifier = Modifier.size(sticker.baseSizeDp + (document.sizeProgress * STICKER_SIZE_SCALE_FACTOR).dp)
+    val sizeModifier = Modifier.size(sticker.baseSizeDp + (sticker.sizeProgress * STICKER_SIZE_SCALE_FACTOR).dp)
     val colorFilter = sticker.colorFilter?.let { ColorFilter.tint(it) }
 
     when {

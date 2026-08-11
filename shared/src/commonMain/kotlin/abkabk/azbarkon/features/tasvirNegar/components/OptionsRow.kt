@@ -105,7 +105,7 @@ private fun ColorOptionItem(
     ) {
         if (option.isCustomPicker) {
             Icon(
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(36.dp),
                 painter = painterResource(Res.drawable.add_box_24px),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant)
