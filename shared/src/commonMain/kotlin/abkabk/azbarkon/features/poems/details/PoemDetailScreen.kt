@@ -56,12 +56,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -80,6 +82,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 private const val TRACK_MIN_DIVISOR = 0.001f
+private const val RING_SPIN_DURATION_MS = 3000
 private const val MILLIS_PER_SECOND = 1000L
 private const val SECONDS_PER_MINUTE = 60
 
@@ -179,67 +182,15 @@ fun PoemDetailScreen(
             }
         },
         bottomBar = {
-            Column(
-                modifier =
-                    Modifier
-                        .keyboardAboveIme()
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                if (state.isFindBarVisible) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-
-                        FindTextField(
-                            modifier = Modifier.weight(1f).focusRequester(findFocusRequester),
-                            value = state.findInput,
-                            placeholder = stringResource(Res.string.find_in_poem_hint),
-                            onValueChange = { query -> onAction(PoemDetailAction.OnFindQueryChange(query)) },
-                            onSearch = {
-                                onAction(PoemDetailAction.OnFindSubmit)
-                            },
-                        )
-
-                        IconButton(onClick = {
-                            keyboardController?.hide()
-                            focusManager.clearFocus()
-                            onAction(PoemDetailAction.OnFindBarClose)
-                        }) {
-                            Icon(
-                                painter = painterResource(Res.drawable.close),
-                                contentDescription = stringResource(Res.string.cd_close_find_bar),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
-                }else{
-
-                    TrackPlayerCard(
-                        tracks = audioState.tracks,
-                        activeTrackUrl = audioState.activeTrackUrl,
-                        onPlayPauseClick = { onAction(PoemDetailAction.OnTrackPlayPauseClick(it)) },
-                        onSelectTrack = { onAction(PoemDetailAction.OnTrackSelect(it)) },
-                        onSeekChange = { track, p -> onAction(PoemDetailAction.OnTrackSeekChanged(track, p)) },
-                        onSeekFinish = { track, p -> onAction(PoemDetailAction.OnTrackSeekFinished(track, p)) },
-                    )
-
-                    PoemActionBar(
-                        isLiked = state.isLiked,
-                        onSearchClick = { onAction(PoemDetailAction.OnSearchClick) },
-                        onShareClick = { onAction(PoemDetailAction.OnShareClick) },
-                        onLikeClick = { onAction(PoemDetailAction.OnLikeClick) },
-                        onImageCreatorClick = { onAction(PoemDetailAction.OnImageCreatorClick) },
-                        onMemorizeClick = { onAction(PoemDetailAction.OnMemorizeClick) },
-                    )
-                }
-
-            }
-        }
+            PoemDetailBottomBar(
+                state = state,
+                audioState = audioState,
+                findFocusRequester = findFocusRequester,
+                keyboardController = keyboardController,
+                focusManager = focusManager,
+                onAction = onAction,
+            )
+        },
     ) { paddingValues ->
 
         LazyColumn(
@@ -268,6 +219,77 @@ fun PoemDetailScreen(
                     modifier = Modifier.padding(top = 24.dp),
                 )
             }
+        }
+
+    }
+}
+
+@Composable
+private fun PoemDetailBottomBar(
+    state: PoemDetailState,
+    audioState: AudioPlayerUiState,
+    findFocusRequester: FocusRequester,
+    keyboardController: SoftwareKeyboardController?,
+    focusManager: FocusManager,
+    onAction: (PoemDetailAction) -> Unit,
+) {
+    Column(
+        modifier =
+            Modifier
+                .keyboardAboveIme()
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        if (state.isFindBarVisible) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+
+                FindTextField(
+                    modifier = Modifier.weight(1f).focusRequester(findFocusRequester),
+                    value = state.findInput,
+                    placeholder = stringResource(Res.string.find_in_poem_hint),
+                    onValueChange = { query -> onAction(PoemDetailAction.OnFindQueryChange(query)) },
+                    onSearch = {
+                        onAction(PoemDetailAction.OnFindSubmit)
+                    },
+                )
+
+                IconButton(onClick = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                    onAction(PoemDetailAction.OnFindBarClose)
+                }) {
+                    Icon(
+                        painter = painterResource(Res.drawable.close),
+                        contentDescription = stringResource(Res.string.cd_close_find_bar),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        } else {
+
+            TrackPlayerCard(
+                tracks = audioState.tracks,
+                activeTrackUrl = audioState.activeTrackUrl,
+                onPlayPauseClick = { onAction(PoemDetailAction.OnTrackPlayPauseClick(it)) },
+                onSelectTrack = { onAction(PoemDetailAction.OnTrackSelect(it)) },
+                onSeekChange = { track, p -> onAction(PoemDetailAction.OnTrackSeekChanged(track, p)) },
+                onSeekFinish = { track, p -> onAction(PoemDetailAction.OnTrackSeekFinished(track, p)) },
+            )
+
+            PoemActionBar(
+                isLiked = state.isLiked,
+                onSearchClick = { onAction(PoemDetailAction.OnSearchClick) },
+                onShareClick = { onAction(PoemDetailAction.OnShareClick) },
+                onLikeClick = { onAction(PoemDetailAction.OnLikeClick) },
+                onImageCreatorClick = { onAction(PoemDetailAction.OnImageCreatorClick) },
+                onMemorizeClick = { onAction(PoemDetailAction.OnMemorizeClick) },
+            )
         }
 
     }
@@ -499,7 +521,7 @@ private fun PlayPauseButton(
 
             LaunchedEffect(Unit) {
                 ringProgress.snapTo(0f)
-                ringProgress.animateTo(1f, animationSpec = tween(3000))
+                ringProgress.animateTo(1f, animationSpec = tween(RING_SPIN_DURATION_MS))
             }
             CircularProgressIndicator(
                 progress = { ringProgress.value },
