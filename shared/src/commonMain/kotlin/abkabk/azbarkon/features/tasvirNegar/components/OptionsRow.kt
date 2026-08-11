@@ -23,18 +23,22 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.add_box_24px
 import azbarkoncmp.shared.generated.resources.tasvir_font_1
 import azbarkoncmp.shared.generated.resources.tasvir_font_2
 import azbarkoncmp.shared.generated.resources.tasvir_font_3
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -67,7 +71,7 @@ private fun ColorOptionsRow(
     onColorClick: (Int) -> Unit,
 ) {
     LazyRow(
-        modifier = Modifier.padding(vertical = 8.dp),
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         itemsIndexed(TasvirNegarCatalog.colorOptions) { index, option ->
@@ -90,14 +94,21 @@ private fun ColorOptionItem(
                 .then(
                     if (option.color != null) {
                         Modifier.background(option.color)
-                    } else {
+                    } else if (!option.isCustomPicker) {
                         Modifier.background(MaterialTheme.colorScheme.onSurfaceVariant)
+                    } else {
+                        // custom picker: outline only, no fill
+                        Modifier
                     },
                 ).clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         if (option.isCustomPicker) {
-            Text(text = "+", style = MaterialTheme.typography.labelMedium)
+            Icon(
+                modifier = Modifier.size(40.dp),
+                painter = painterResource(Res.drawable.add_box_24px),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

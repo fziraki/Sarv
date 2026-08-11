@@ -18,6 +18,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +36,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -48,7 +52,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -83,6 +90,36 @@ data class EditorCallbacks(
     val onCaptureReady: (suspend () -> ByteArray?) -> Unit,
 )
 
+private data class SelectionPalette(
+    val main: Color,
+    val halo: Color?,
+)
+
+// ponytail: image backgrounds have no known pixel color, so the halo (white ring /
+// offset line) keeps overlays visible on any image. Pixel sampling is the upgrade path.
+private fun selectionPalette(
+    background: EditorBackground,
+    fallbackColor: Color,
+): SelectionPalette {
+    val isImage =
+        background is EditorBackground.GalleryImage || background is EditorBackground.CatalogTexture
+    val solidColor =
+        (background as? EditorBackground.SolidColor)
+            ?.takeIf { it.color.alpha > 0.05f }
+            ?.let { lerp(it.color, fallbackColor, 1f - it.color.alpha) }
+    val contrastBase = solidColor ?: fallbackColor
+    return if (isImage) {
+        SelectionPalette(Color.Black.copy(alpha = 0.45f), Color.White.copy(alpha = 0.45f))
+    } else {
+        val contrast = if (contrastBase.luminance() > 0.5f) Color.Black else Color.White
+        SelectionPalette(contrast.copy(alpha = 0.5f), null)
+    }
+}
+
+private fun selectionBorderModifier(palette: SelectionPalette): Modifier =
+    (palette.halo?.let { Modifier.border(2.dp, it) } ?: Modifier)
+        .border(1.5.dp, palette.main)
+
 data class DraggableLayerCallbacks(
     val onSelect: () -> Unit,
     val onDrag: (LayerOffset) -> Unit,
@@ -99,6 +136,11 @@ fun EditorCanvas(
 ) {
     val captureModifier = rememberCanvasCaptureModifier(onCaptureReady = callbacks.onCaptureReady)
     val fontFamily = editorFontFamily(document.fontPreset)
+    val fallbackColor = MaterialTheme.colorScheme.background
+    val palette =
+        remember(document.background, fallbackColor) {
+            selectionPalette(document.background, fallbackColor)
+        }
 
     BoxWithConstraints(
         modifier = modifier,
@@ -135,7 +177,18 @@ fun EditorCanvas(
                 )
 
                 if (document.showAlignmentGrid && showEditOverlays) {
-                    AlignmentGrid(modifier = Modifier.fillMaxSize())
+                    AlignmentGrid(
+                        palette = palette,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+
+                if (showEditOverlays && document.selectedLayer == null) {
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .then(selectionBorderModifier(palette)),
+                    )
                 }
 
                 if (document.poemText.visible) {
@@ -147,6 +200,7 @@ fun EditorCanvas(
                         maxLayerWidth = maxLayerWidth,
                         isPoemEditing = isPoemEditing,
                         showEditOverlays = showEditOverlays,
+                        selectionPalette = palette,
                     )
                 }
 
@@ -160,6 +214,7 @@ fun EditorCanvas(
                         sizeProgress = document.sizeProgress,
                         showEditOverlays = showEditOverlays,
                         flipVertical = false,
+                        selectionPalette = palette,
                     )
                 }
 
@@ -173,6 +228,7 @@ fun EditorCanvas(
                         sizeProgress = document.sizeProgress,
                         showEditOverlays = showEditOverlays,
                         flipVertical = true,
+                        selectionPalette = palette,
                     )
                 }
 
@@ -185,6 +241,7 @@ fun EditorCanvas(
                         maxLayerWidth = maxLayerWidth,
                         isPoetEditing = isPoetEditing,
                         showEditOverlays = showEditOverlays,
+                        selectionPalette = palette,
                     )
                 }
 
@@ -194,6 +251,7 @@ fun EditorCanvas(
                         callbacks = callbacks,
                         minLayerWidth = minLayerWidth,
                         showEditOverlays = showEditOverlays,
+                        selectionPalette = palette,
                     )
                 }
             }
@@ -210,11 +268,13 @@ private fun PoemTextLayer(
     maxLayerWidth: Dp,
     isPoemEditing: Boolean,
     showEditOverlays: Boolean,
+    selectionPalette: SelectionPalette,
 ) {
     DraggableLayer(
         offset = document.poemText.offset,
         selected = document.selectedLayer == LayerId.PoemText,
         showLayerControls = showEditOverlays,
+        selectionPalette = selectionPalette,
         callbacks =
             DraggableLayerCallbacks(
                 onSelect = { callbacks.onLayerSelect(LayerId.PoemText) },
@@ -260,11 +320,13 @@ private fun PoetNameLayer(
     maxLayerWidth: Dp,
     isPoetEditing: Boolean,
     showEditOverlays: Boolean,
+    selectionPalette: SelectionPalette,
 ) {
     DraggableLayer(
         offset = document.poetName.offset,
         selected = document.selectedLayer == LayerId.PoetName,
         showLayerControls = showEditOverlays,
+        selectionPalette = selectionPalette,
         callbacks =
             DraggableLayerCallbacks(
                 onSelect = { callbacks.onLayerSelect(LayerId.PoetName) },
@@ -302,11 +364,13 @@ private fun CanvasDividerLayer(
     sizeProgress: Float,
     showEditOverlays: Boolean,
     flipVertical: Boolean,
+    selectionPalette: SelectionPalette,
 ) {
     DraggableLayer(
         offset = divider.offset,
         selected = selected,
         showLayerControls = showEditOverlays,
+        selectionPalette = selectionPalette,
         callbacks =
             DraggableLayerCallbacks(
                 onSelect = { callbacks.onLayerSelect(layerId) },
@@ -330,11 +394,13 @@ private fun StickerLayer(
     callbacks: EditorCallbacks,
     minLayerWidth: Dp,
     showEditOverlays: Boolean,
+    selectionPalette: SelectionPalette,
 ) {
     DraggableLayer(
         offset = document.sticker.offset,
         selected = document.selectedLayer == LayerId.Sticker,
         showLayerControls = showEditOverlays,
+        selectionPalette = selectionPalette,
         callbacks =
             DraggableLayerCallbacks(
                 onSelect = { callbacks.onLayerSelect(LayerId.Sticker) },
@@ -373,6 +439,7 @@ private fun DraggableLayer(
     showLayerControls: Boolean,
     callbacks: DraggableLayerCallbacks,
     minWidth: Dp,
+    selectionPalette: SelectionPalette,
     alignment: Alignment = Alignment.Center,
     showTextControls: Boolean = false,
     isBold: Boolean = false,
@@ -426,13 +493,24 @@ private fun DraggableLayer(
                         .widthIn(min = minWidth)
                         .wrapContentWidth()
                         .padding(4.dp)
-                        .then(if (displaySelected) Modifier.border(1.dp, Color.White) else Modifier)
+                        .then(if (displaySelected) selectionBorderModifier(selectionPalette) else Modifier)
                         .padding(8.dp)
                         .then(
                             if (showLayerControls) {
                                 Modifier
                                     .pointerInput(Unit) {
-                                        detectTapGestures { callbacks.onSelect() }
+                                        // Initial pass fires before the text field consumes the
+                                        // down event, so tapping the text selects the layer while
+                                        // cursor/focus behavior stays untouched (nothing consumed).
+                                        awaitEachGesture {
+                                            awaitFirstDown(
+                                                pass = PointerEventPass.Initial,
+                                                requireUnconsumed = false,
+                                            )
+                                            if (waitForUpOrCancellation(pass = PointerEventPass.Initial) != null) {
+                                                callbacks.onSelect()
+                                            }
+                                        }
                                     }.pointerInput(Unit) {
                                         detectDragGestures(
                                             onDragStart = {
@@ -600,24 +678,22 @@ private fun DividerImage(
 }
 
 @Composable
-private fun AlignmentGrid(modifier: Modifier = Modifier) {
+private fun AlignmentGrid(
+    palette: SelectionPalette,
+    modifier: Modifier = Modifier,
+) {
     Canvas(modifier = modifier) {
         val thirdW = size.width / GRID_THIRDS
         val thirdH = size.height / GRID_THIRDS
-        val gridColor = Color.White.copy(alpha = 0.35f)
         for (i in 1..2) {
-            drawLine(
-                color = gridColor,
-                start = Offset(thirdW * i, 0f),
-                end = Offset(thirdW * i, size.height),
-                strokeWidth = 1f,
-            )
-            drawLine(
-                color = gridColor,
-                start = Offset(0f, thirdH * i),
-                end = Offset(size.width, thirdH * i),
-                strokeWidth = 1f,
-            )
+            val x = thirdW * i
+            val y = thirdH * i
+            palette.halo?.let {
+                drawLine(it, Offset(x - 1f, 0f), Offset(x - 1f, size.height), strokeWidth = 1f)
+                drawLine(it, Offset(0f, y - 1f), Offset(size.width, y - 1f), strokeWidth = 1f)
+            }
+            drawLine(palette.main, Offset(x, 0f), Offset(x, size.height), strokeWidth = 1f)
+            drawLine(palette.main, Offset(0f, y), Offset(size.width, y), strokeWidth = 1f)
         }
     }
 }

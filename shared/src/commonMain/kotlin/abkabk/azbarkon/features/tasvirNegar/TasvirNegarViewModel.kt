@@ -60,6 +60,8 @@ class TasvirNegarViewModel(
             TasvirNegarAction.OnEraserClick -> {
                 if (state.value.document.selectedLayer != null) {
                     removeSelectedLayer()
+                } else {
+                    removeBackground()
                 }
             }
 
@@ -356,16 +358,19 @@ class TasvirNegarViewModel(
         }
     }
 
+    private fun removeBackground() {
+        updateDocument {
+            copy(background = EditorBackground.SolidColor(Color.Transparent))
+        }
+    }
+
     private fun toggleGrid() {
         updateDocument { copy(showAlignmentGrid = !showAlignmentGrid) }
     }
 
     private fun requestGalleryPick() {
         updateDocument {
-            copy(
-                selectedLayer = null,
-                activeOptionPanel = OptionPanelMode.None,
-            )
+            copy(activeOptionPanel = OptionPanelMode.None)
         }
         emitEvent(TasvirNegarEvent.RequestGalleryPick)
     }
@@ -373,7 +378,11 @@ class TasvirNegarViewModel(
     private fun applyGalleryImage(uri: String?) {
         if (uri.isNullOrBlank()) return
         updateDocument {
-            copy(background = EditorBackground.GalleryImage(uri))
+            if (selectedLayer == LayerId.Sticker) {
+                copy(sticker = sticker.copy(galleryUri = uri, assetId = null, visible = true))
+            } else {
+                copy(background = EditorBackground.GalleryImage(uri))
+            }
         }
     }
 
