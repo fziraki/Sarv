@@ -212,14 +212,12 @@ fun PoemDetailScreen(
             SelectionContainer {
                 LazyColumn(
                     state = listState,
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding =
-                        PaddingValues(
-                            top = paddingValues.calculateTopPadding() + 16.dp,
-                            bottom = paddingValues.calculateBottomPadding() + 16.dp,
-                            start = 16.dp,
-                            end = 16.dp,
+                    modifier = Modifier.fillMaxSize()
+                        .padding(
+                            top = paddingValues.calculateTopPadding(),
+                            bottom = paddingValues.calculateBottomPadding()
                         ),
+                    contentPadding = PaddingValues(16.dp),
                 ) {
                     items(
                         items = state.verses,
