@@ -69,6 +69,9 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+private const val SHIMMER_ROW_COUNT = 7
+private val SHIMMER_ROW_HEIGHT = 64.dp
+
 @Composable
 fun SearchRoot(
     initialPoetId: Int?,
@@ -297,10 +300,10 @@ private fun SearchResultsShimmer() {
                 .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        repeat(7) {
+        repeat(SHIMMER_ROW_COUNT) {
             ShimmerPlaceholder(
                 modifier =
-                    Modifier.fillMaxWidth().height(64.dp)
+                    Modifier.fillMaxWidth().height(SHIMMER_ROW_HEIGHT)
                         .clip(RoundedCornerShape(14.dp)),
             )
         }
