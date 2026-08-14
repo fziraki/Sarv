@@ -64,7 +64,13 @@ class SqlDelightPoetLocalDataSource(
                 ).executeAsList()
                 .map { it.toCatNode() }
 
-        return PoetWithRootCategories(poet = poet, rootCategories = rootCategories)
+        val allCategories =
+            catQueries
+                .selectAllByPoetId(poet_id = poetId.toLong())
+                .executeAsList()
+                .map { it.toCatNode() }
+
+        return PoetWithRootCategories(poet = poet, rootCategories = rootCategories, allCategories = allCategories)
     }
 
     private fun buildPoetWithCategories(poet: Poet): PoetWithCategories {

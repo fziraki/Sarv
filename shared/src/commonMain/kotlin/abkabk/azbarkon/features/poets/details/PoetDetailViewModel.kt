@@ -6,6 +6,7 @@ import abkabk.azbarkon.core.uidata.BaseViewModel
 import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.core.uidata.toUiText
 import abkabk.azbarkon.domain.model.PoetCategoryNode
+import abkabk.azbarkon.domain.model.hasCategory
 import abkabk.azbarkon.domain.repository.PoetRepository
 import abkabk.azbarkon.features.poets.GHAZAL_CATEGORY
 import abkabk.azbarkon.features.poets.flattenPoetCategories
@@ -66,7 +67,7 @@ class PoetDetailViewModel(
                             name = poetWithCategories.poet.name.orEmpty(),
                             bio = poetWithCategories.poet.description.orEmpty(),
                             imageUrl = poetWithCategories.poet.imageUrl,
-                            canChat = poetWithCategories.categories.any { it.text == GHAZAL_CATEGORY },
+                            canChat = poetWithCategories.categories.any { it.hasCategory(GHAZAL_CATEGORY) },
                             categories =
                                 flattenPoetCategories(
                                     nodes = categoryTree,

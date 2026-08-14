@@ -33,7 +33,7 @@ fun PoetWithRootCategories.toListItemUi(): PoetListItemUi =
         name = poet.name.orEmpty(),
         worksSummary = rootCategoriesSummary(rootCategories),
         imageUrl = poet.imageUrl,
-        canChat = rootCategories.any { it.text == GHAZAL_CATEGORY },
+        canChat = allCategories.any { it.text == GHAZAL_CATEGORY },
     )
 
 fun PoetWithRootCategories.toFeaturedPoetUi(): FeaturedPoetUi =
@@ -43,5 +43,5 @@ fun PoetWithRootCategories.toFeaturedPoetUi(): FeaturedPoetUi =
         description = poet.description?.take(FEATURED_POET_DESCRIPTION_MAX_LENGTH).orEmpty(),
         stats = rootCategoriesSummary(rootCategories),
         imageUrl = poet.imageUrl,
-        canChat = rootCategories.any { it.text == GHAZAL_CATEGORY },
+        canChat = allCategories.any { it.text == GHAZAL_CATEGORY },
     )

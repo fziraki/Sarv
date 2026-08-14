@@ -12,7 +12,9 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -130,6 +132,78 @@ class PoetDetailViewModelTest {
             assertThat(state.categories).hasSize(2)
             assertThat(state.categories.last().title).isEqualTo("غزل ۱")
             assertThat(state.categories.last().depth).isEqualTo(1)
+        }
+
+    @Test
+    fun `chat available when ghazal category is nested under a subcategory`() =
+        runTest {
+            val repository =
+                FakePoetRepository().apply {
+                    poetsWithCategories =
+                        listOf(
+                            PoetWithCategories(
+                                poet =
+                                    Poet(
+                                        id = 7,
+                                        name = "سعدی شیرازی",
+                                        description = null,
+                                        rootCatId = 118,
+                                        imageUrl = null,
+                                    ),
+                                categories =
+                                    listOf(
+                                        PoetCategoryNode(
+                                            id = 122,
+                                            text = "دیوان اشعار",
+                                            url = "/divan",
+                                            children =
+                                                listOf(
+                                                    PoetCategoryNode(
+                                                        id = 124,
+                                                        text = "غزلیات",
+                                                        url = "/ghazals",
+                                                    ),
+                                                ),
+                                        ),
+                                    ),
+                            ),
+                        )
+                }
+            val viewModel = PoetDetailViewModel(repository, poetId = 7)
+
+            assertThat(viewModel.state.value.canChat).isTrue()
+        }
+
+    @Test
+    fun `chat unavailable when poet has no ghazal category`() =
+        runTest {
+            val repository =
+                FakePoetRepository().apply {
+                    poetsWithCategories =
+                        listOf(
+                            PoetWithCategories(
+                                poet =
+                                    Poet(
+                                        id = 7,
+                                        name = "سعدی شیرازی",
+                                        description = null,
+                                        rootCatId = 118,
+                                        imageUrl = null,
+                                    ),
+                                categories =
+                                    listOf(
+                                        PoetCategoryNode(
+                                            id = 123,
+                                            text = "بوستان",
+                                            url = "/boostan",
+                                        ),
+                                    ),
+                            ),
+                        )
+                }
+            val viewModel = PoetDetailViewModel(repository, poetId = 7)
+
+            assertThat(viewModel.state.value.canChat).isFalse()
         }
 
     @Test
