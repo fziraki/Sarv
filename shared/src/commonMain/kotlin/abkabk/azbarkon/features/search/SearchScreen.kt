@@ -29,7 +29,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -70,8 +69,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 private const val SHIMMER_ROW_COUNT = 7
-private val SHIMMER_ROW_HEIGHT = 64.dp
-
 @Composable
 fun SearchRoot(
     initialPoetId: Int?,
@@ -275,15 +272,13 @@ private fun SearchResultsList(
 
                 if (searchResults.loadState.append is LoadState.Loading) {
                     item {
-                        Box(
+                        ShimmerPlaceholder(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 16.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator()
-                        }
+                                    .height(64.dp)
+                                    .clip(RoundedCornerShape(14.dp)),
+                        )
                     }
                 }
             }
@@ -303,7 +298,7 @@ private fun SearchResultsShimmer() {
         repeat(SHIMMER_ROW_COUNT) {
             ShimmerPlaceholder(
                 modifier =
-                    Modifier.fillMaxWidth().height(SHIMMER_ROW_HEIGHT)
+                    Modifier.fillMaxWidth().height(64.dp)
                         .clip(RoundedCornerShape(14.dp)),
             )
         }

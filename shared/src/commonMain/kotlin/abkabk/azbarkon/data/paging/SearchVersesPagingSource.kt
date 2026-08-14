@@ -1,10 +1,12 @@
 package abkabk.azbarkon.data.paging
 
 import abkabk.azbarkon.core.domain.result.Result
+import abkabk.azbarkon.core.paging.MIN_PAGE_LOAD_MILLIS
 import abkabk.azbarkon.domain.datasource.SearchLocalDataSource
 import abkabk.azbarkon.domain.model.SearchHit
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import kotlinx.coroutines.delay
 
 class SearchVersesPagingSource(
     private val localDataSource: SearchLocalDataSource,
@@ -13,6 +15,9 @@ class SearchVersesPagingSource(
     private val categoryIds: Set<Int>?,
 ) : PagingSource<Int, SearchHit>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SearchHit> {
+        if (params is LoadParams.Append) {
+            delay(MIN_PAGE_LOAD_MILLIS)
+        }
         val offset = params.key ?: 0
         return when (
             val result =
