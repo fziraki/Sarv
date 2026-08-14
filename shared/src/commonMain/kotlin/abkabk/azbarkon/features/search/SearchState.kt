@@ -13,6 +13,7 @@ data class SearchState(
     val selectedCategoryId: Int? = null,
     val isCategoryPickerEnabled: Boolean = false,
     val isInitializing: Boolean = true,
+    val isSearching: Boolean = false,
 )
 
 sealed interface SearchAction {
