@@ -16,6 +16,7 @@ data class PoemDetailState(
     val findInput: String = "",
     val highlightQuery: String = "",
     val scrollToVerseId: String? = null,
+    val copiedText: String? = null,
 )
 
 
@@ -50,6 +51,7 @@ sealed interface PoemDetailAction {
     data object OnScrollConsumed : PoemDetailAction
 
     data object OnShareClick : PoemDetailAction
+    data class OnTextCopied(val text: String) : PoemDetailAction
     data object OnLikeClick : PoemDetailAction
     data object OnBookmarkClick : PoemDetailAction
     data object OnImageCreatorClick : PoemDetailAction
@@ -58,5 +60,5 @@ sealed interface PoemDetailAction {
 sealed interface PoemDetailEvent {
     data class ShowSnackbar(val message: UiText) : PoemDetailEvent
     data object NavigateToMemorizationPractice : PoemDetailEvent
-    data object NavigateToTasvirNegar : PoemDetailEvent
+    data class NavigateToTasvirNegar(val initialText: String? = null) : PoemDetailEvent
 }

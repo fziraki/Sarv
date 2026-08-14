@@ -38,6 +38,7 @@ class TasvirNegarViewModel(
     private val shareService: ShareService,
     private val imageExportService: ImageExportService,
     private val poemId: Int?,
+    private val initialText: String? = null,
 ) : BaseViewModel<TasvirNegarAction, TasvirNegarState, TasvirNegarEvent>(
         initialState = TasvirNegarState(),
     ) {
@@ -138,13 +139,31 @@ class TasvirNegarViewModel(
 
     private fun loadInitialDocument() {
         val poemIdValue = poemId
-        if (poemIdValue == null) {
+        val initialTextValue = initialText
+        if (poemIdValue == null && initialTextValue == null) {
             setState {
                 copy(
                     screenState = UiScreenState.Success,
                     document =
                         EditorDocument(
                             poemText = document.poemText.copy(visible = true),
+                        ),
+                )
+            }
+            return
+        }
+
+        if (poemIdValue == null) {
+            setState {
+                copy(
+                    screenState = UiScreenState.Success,
+                    document =
+                        EditorDocument(
+                            poemText =
+                                TextLayer(
+                                    text = initialTextValue.orEmpty(),
+                                    visible = true,
+                                ),
                         ),
                 )
             }
@@ -163,7 +182,7 @@ class TasvirNegarViewModel(
                                 EditorDocument(
                                     poemText =
                                         TextLayer(
-                                            text = detail.verses.joinToString("\n") { it.text },
+                                            text = initialTextValue ?: detail.verses.joinToString("\n") { it.text },
                                             visible = true,
                                         ),
                                     poetName =
@@ -227,7 +246,7 @@ class TasvirNegarViewModel(
                         sizeProgress = 12f,
                     ),
                 background = EditorBackground.SolidColor(Color.Transparent),
-                fontPreset = EditorFontPreset.Yekan,
+                fontPreset = EditorFontPreset.Shekasteh,
                 showAlignmentGrid = false,
                 selectedLayer = null,
                 activeOptionPanel = OptionPanelMode.None,

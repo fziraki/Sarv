@@ -257,6 +257,87 @@ class PoemDetailViewModelTest {
             assertThat(shareService.lastSharedTitle).isEqualTo("غزل شماره ۷")
         }
 
+    @Test
+    fun `share uses copied text when text was copied`() =
+        runTest {
+            val repository =
+                FakePoemRepository().apply {
+                    poemDetails = mapOf(77 to samplePoemDetail())
+                }
+            val shareService = FakeShareService()
+            val viewModel =
+                PoemDetailViewModel(
+                    poemRepository = repository,
+                    savedPoemRepository = FakeSavedPoemRepository(),
+                    memorizationRepository = FakeMemorizationRepository(),
+                    shareService = shareService,
+                    poemId = 77,
+                    player = FakeAudioPlayer(),
+                )
+
+            viewModel.onAction(PoemDetailAction.OnTextCopied("متن انتخابی از شعر"))
+            viewModel.onAction(PoemDetailAction.OnShareClick)
+
+            assertThat(shareService.lastSharedText).isEqualTo(
+                "حافظ\nغزل شماره ۷\n\nمتن انتخابی از شعر",
+            )
+        }
+
+    @Test
+    fun `tasvirnegar with copied text emits event carrying it`() =
+        runTest {
+            val repository =
+                FakePoemRepository().apply {
+                    poemDetails = mapOf(77 to samplePoemDetail())
+                }
+            val viewModel =
+                PoemDetailViewModel(
+                    poemRepository = repository,
+                    savedPoemRepository = FakeSavedPoemRepository(),
+                    memorizationRepository = FakeMemorizationRepository(),
+                    shareService = FakeShareService(),
+                    poemId = 77,
+                    player = FakeAudioPlayer(),
+                )
+
+            viewModel.events.test {
+                viewModel.onAction(PoemDetailAction.OnTextCopied("متن انتخابی از شعر"))
+                viewModel.onAction(PoemDetailAction.OnImageCreatorClick)
+
+                assertThat(awaitItem()).isEqualTo(
+                    PoemDetailEvent.NavigateToTasvirNegar(
+                        initialText = "متن انتخابی از شعر",
+                    ),
+                )
+            }
+        }
+
+    @Test
+    fun `tasvirnegar without copied text emits event with null initial text`() =
+        runTest {
+            val repository =
+                FakePoemRepository().apply {
+                    poemDetails = mapOf(77 to samplePoemDetail(singleVerse = true))
+                }
+            val viewModel =
+                PoemDetailViewModel(
+                    poemRepository = repository,
+                    savedPoemRepository = FakeSavedPoemRepository(),
+                    memorizationRepository = FakeMemorizationRepository(),
+                    shareService = FakeShareService(),
+                    poemId = 77,
+                    player = FakeAudioPlayer(),
+                )
+
+            viewModel.events.test {
+                viewModel.onAction(PoemDetailAction.OnImageCreatorClick)
+
+                assertThat(awaitItem()).isEqualTo(
+                    PoemDetailEvent.NavigateToTasvirNegar(initialText = null),
+                )
+            }
+        }
+
     private fun samplePoemDetail(singleVerse: Boolean = false): PoemDetail =
         if (singleVerse) {
             PoemDetail(

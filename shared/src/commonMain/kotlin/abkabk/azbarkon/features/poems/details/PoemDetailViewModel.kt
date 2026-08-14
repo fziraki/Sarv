@@ -149,6 +149,8 @@ class PoemDetailViewModel(
 
             PoemDetailAction.OnShareClick -> sharePoem()
 
+            is PoemDetailAction.OnTextCopied -> setState { copy(copiedText = action.text) }
+
             PoemDetailAction.OnLikeClick -> toggleLike()
 
             PoemDetailAction.OnBookmarkClick -> toggleBookmark()
@@ -420,7 +422,7 @@ class PoemDetailViewModel(
     }
 
     private fun sharePoem() {
-        val text = buildShareText()
+        val text = buildShareText(state.value.copiedText)
         if (text.isBlank()) return
 
         shareService.shareText(
@@ -440,14 +442,22 @@ class PoemDetailViewModel(
     }
 
     private fun navigateToTasvirNegar() {
+        val initialText = state.value.copiedText
         viewModelScope.launch {
-            sendEvent(PoemDetailEvent.NavigateToTasvirNegar)
+            sendEvent(PoemDetailEvent.NavigateToTasvirNegar(initialText))
         }
     }
 
-    private fun buildShareText(): String {
+    private fun buildShareText(verseText: String? = null): String {
         val currentState = state.value
-        if (currentState.verses.isEmpty()) return ""
+        if (currentState.verses.isEmpty() && verseText.isNullOrBlank()) return ""
+
+        val body =
+            if (verseText.isNullOrBlank()) {
+                currentState.verses.joinToString("\n") { it.text }
+            } else {
+                verseText
+            }
 
         return buildString {
             if (currentState.poetName.isNotBlank()) {
@@ -458,7 +468,7 @@ class PoemDetailViewModel(
                 append(currentState.subtitle)
             }
             if (isNotEmpty()) append("\n\n")
-            append(currentState.verses.joinToString("\n") { it.text })
+            append(body)
         }
     }
 }

@@ -105,7 +105,7 @@ data class EditorDocument(
     val topDivider: DividerLayer = DividerLayer(),
     val bottomDivider: DividerLayer = DividerLayer(),
     val background: EditorBackground = EditorBackground.SolidColor(Color.Transparent),
-    val fontPreset: EditorFontPreset = EditorFontPreset.Yekan,
+    val fontPreset: EditorFontPreset = EditorFontPreset.Shekasteh,
     val showAlignmentGrid: Boolean = false,
     val selectedLayer: LayerId? = null,
     val activeOptionPanel: OptionPanelMode = OptionPanelMode.None,

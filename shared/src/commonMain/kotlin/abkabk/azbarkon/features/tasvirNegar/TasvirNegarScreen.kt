@@ -44,8 +44,9 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun TasvirNegarRoot(
     poemId: Int?,
+    initialText: String?,
     onBackClick: () -> Unit,
-    viewModel: TasvirNegarViewModel = koinViewModel { parametersOf(poemId) },
+    viewModel: TasvirNegarViewModel = koinViewModel { parametersOf(poemId, initialText) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val appState = LocalAzbarkonAppState.current

@@ -12,6 +12,7 @@ fun NavGraphBuilder.tasvirNegarGraph(
         val route = backStackEntry.toRoute<TasvirNegarRoute>()
         TasvirNegarRoot(
             poemId = route.poemId,
+            initialText = route.initialText,
             onBackClick = onBackClick,
         )
     }

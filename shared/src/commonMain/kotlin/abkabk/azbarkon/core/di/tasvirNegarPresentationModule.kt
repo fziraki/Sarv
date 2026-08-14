@@ -12,6 +12,7 @@ val tasvirNegarPresentationModule =
                 shareService = get(),
                 imageExportService = get(),
                 poemId = parameters.getOrNull<Int>(),
+                initialText = parameters.getOrNull<String>(),
             )
         }
     }
