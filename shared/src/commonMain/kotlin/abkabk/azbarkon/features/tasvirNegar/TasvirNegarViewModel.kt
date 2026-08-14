@@ -30,7 +30,7 @@ import azbarkoncmp.shared.generated.resources.tasvir_negar_save_failed
 import azbarkoncmp.shared.generated.resources.tasvir_negar_share_failed
 import kotlinx.coroutines.launch
 
-private const val MIN_TEXT_SIZE = 12f
+private const val MIN_TEXT_SIZE = 1f
 private const val MAX_TEXT_SIZE = 32f
 
 class TasvirNegarViewModel(
@@ -223,27 +223,27 @@ class TasvirNegarViewModel(
                         color = Color.White,
                         gravity = TextGravity.Center,
                         isBold = false,
-                        sizeProgress = 12f,
+                        sizeProgress = 1f,
                         visible = poemText.text.isNotBlank(),
                     ),
                 poetName =
                     poetName.copy(
                         offset = LayerOffset(y = 120.dp),
                         color = Color.White,
-                        sizeProgress = 12f,
+                        sizeProgress = 1f,
                         visible = poetName.text.isNotBlank(),
                     ),
                 sticker =
                     StickerLayer().copy(
-                        sizeProgress = 12f,
+                        sizeProgress = 1f,
                     ),
                 topDivider =
                     DividerLayer().copy(
-                        sizeProgress = 12f,
+                        sizeProgress = 1f,
                     ),
                 bottomDivider =
                     DividerLayer().copy(
-                        sizeProgress = 12f,
+                        sizeProgress = 1f,
                     ),
                 background = EditorBackground.SolidColor(Color.Transparent),
                 fontPreset = EditorFontPreset.Shekasteh,

@@ -63,7 +63,7 @@ import azbarkoncmp.shared.generated.resources.text_fields
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-private const val MIN_TEXT_SIZE = 12f
+private const val MIN_TEXT_SIZE = 1f
 private const val MAX_TEXT_SIZE = 32f
 private const val PREVIEW_PROGRESS = 22f
 
