@@ -7,6 +7,8 @@ import abkabk.azbarkon.data.mapper.toStorageValue
 import abkabk.azbarkon.domain.datasource.MemorizationLocalDataSource
 import abkabk.azbarkon.domain.model.memorization.SrsCard
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
+import abkabk.azbarkon.domain.model.memorization.StoredActivePoem
+import abkabk.azbarkon.domain.model.memorization.StoredReviewLog
 import abkabk.azbarkon.core.util.consecutiveDayStreak
 import abkabk.azbarkon.core.util.dayKeyFromMillis
 import com.azbarkon.db.CatQueries
@@ -170,6 +172,73 @@ class SqlDelightMemorizationLocalDataSource(
 
     override suspend fun countReviewedVerses(): Int =
         reviewLogQueries.countReviewedVerses().executeAsOne().toInt()
+
+    override suspend fun dumpActivePoems(): List<StoredActivePoem> =
+        activePoemQueries.selectAll().executeAsList().map { row ->
+            StoredActivePoem(
+                poemId = row.poem_id.toInt(),
+                addedAtMillis = row.added_at,
+                status = row.status,
+            )
+        }
+
+    override suspend fun dumpCards(): List<SrsCard> =
+        cardQueries.selectAllCards().executeAsList().map { it.toSrsCard() }
+
+    override suspend fun dumpReviewLogs(): List<StoredReviewLog> =
+        reviewLogQueries.selectAllReviewLogs().executeAsList().map { row ->
+            StoredReviewLog(
+                id = row.id,
+                cardId = row.card_id,
+                grade = row.grade,
+                previousInterval = row.previous_interval.toInt(),
+                newInterval = row.new_interval.toInt(),
+                reviewTimeMillis = row.review_time,
+            )
+        }
+
+    override suspend fun replaceAll(
+        activePoems: List<StoredActivePoem>,
+        cards: List<SrsCard>,
+        reviewLogs: List<StoredReviewLog>,
+    ) {
+        database.transaction {
+            activePoemQueries.deleteAll()
+            cardQueries.deleteAllCards()
+            reviewLogQueries.deleteAllReviewLogs()
+
+            activePoems.forEach { poem ->
+                activePoemQueries.insertActivePoem(
+                    poem_id = poem.poemId.toLong(),
+                    added_at = poem.addedAtMillis,
+                    status = poem.status,
+                )
+            }
+            cards.forEach { card ->
+                cardQueries.insertCardWithId(
+                    id = card.id,
+                    poem_id = card.poemId.toLong(),
+                    card_index = card.cardIndex.toLong(),
+                    front = card.front,
+                    back = card.back,
+                    interval = card.interval.toLong(),
+                    ease = card.ease,
+                    due_date = card.dueDateMillis,
+                    consecutive_correct = card.consecutiveCorrect.toLong(),
+                )
+            }
+            reviewLogs.forEach { log ->
+                reviewLogQueries.insertReviewLogWithId(
+                    id = log.id,
+                    card_id = log.cardId,
+                    grade = log.grade,
+                    previous_interval = log.previousInterval.toLong(),
+                    new_interval = log.newInterval.toLong(),
+                    review_time = log.reviewTimeMillis,
+                )
+            }
+        }
+    }
 
     override suspend fun findPoetIdByName(nameFragment: String): Result<Int, DataError.Local> =
         try {

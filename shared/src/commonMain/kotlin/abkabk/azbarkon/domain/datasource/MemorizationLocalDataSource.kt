@@ -4,6 +4,8 @@ import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.domain.model.memorization.SrsCard
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
+import abkabk.azbarkon.domain.model.memorization.StoredActivePoem
+import abkabk.azbarkon.domain.model.memorization.StoredReviewLog
 
 interface MemorizationLocalDataSource {
     suspend fun countActivePoems(): Int
@@ -57,6 +59,18 @@ interface MemorizationLocalDataSource {
     suspend fun getReviewDayKeys(): List<Int>
 
     suspend fun countReviewedVerses(): Int
+
+    suspend fun dumpActivePoems(): List<StoredActivePoem>
+
+    suspend fun dumpCards(): List<SrsCard>
+
+    suspend fun dumpReviewLogs(): List<StoredReviewLog>
+
+    suspend fun replaceAll(
+        activePoems: List<StoredActivePoem>,
+        cards: List<SrsCard>,
+        reviewLogs: List<StoredReviewLog>,
+    )
 
     suspend fun findPoetIdByName(nameFragment: String): Result<Int, DataError.Local>
 

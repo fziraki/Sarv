@@ -21,7 +21,6 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -174,14 +173,7 @@ fun EditorCanvas(
         ) {
             // Canvas uses physical LTR coordinates so pan/drag matches finger movement on RTL screens.
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                CanvasBackground(
-                    document = document,
-                    onBackgroundTap = {
-                        if (showEditOverlays) {
-                            callbacks.onLayerSelect(null)
-                        }
-                    },
-                )
+                CanvasBackground(document = document)
 
                 if (document.showAlignmentGrid && showEditOverlays) {
                     AlignmentGrid(
@@ -620,29 +612,23 @@ private fun StickerContent(document: EditorDocument) {
 @Composable
 private fun CanvasBackground(
     document: EditorDocument,
-    onBackgroundTap: () -> Unit,
 ) {
-    val tapModifier =
-        Modifier
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTapGestures { onBackgroundTap() }
-            }
-
     when (val background = document.background) {
         is EditorBackground.None -> {
-            Box(modifier = tapModifier)
+            Box(modifier = Modifier.fillMaxSize())
         }
         is EditorBackground.SolidColor -> {
             Box(
                 modifier =
-                    tapModifier.background(background.color),
+                    Modifier
+                        .fillMaxSize()
+                        .background(background.color),
             )
         }
         is EditorBackground.GalleryImage -> {
             LocalGalleryImage(
                 uri = background.uri,
-                modifier = tapModifier,
+                modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
             )
         }
@@ -650,7 +636,7 @@ private fun CanvasBackground(
             Image(
                 painter = tasvirNegarPainter(background.drawableName),
                 contentDescription = null,
-                modifier = tapModifier,
+                modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
             )
         }

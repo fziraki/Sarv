@@ -64,8 +64,8 @@ fun NavGraphBuilder.poetsGraph(
         PoemDetailRoot(
             poemId = route.poemId,
             onBackClick = navController::navigateUp,
-            onNavigateToTasvirNegar = { poemId ->
-                navController.navigate(TasvirNegarRoute(poemId = poemId))
+            onNavigateToTasvirNegar = { poemId, initialText ->
+                navController.navigate(TasvirNegarRoute(poemId = poemId, initialText = initialText))
             },
             onNavigateToMemorizationPractice = { poemId ->
                 navController.navigateToMemorizationPractice(poemId = poemId)

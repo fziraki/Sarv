@@ -1,6 +1,7 @@
 package abkabk.azbarkon.features.tasvirNegar.util
 
 import abkabk.azbarkon.ui.components.AzbarkonButton
+import abkabk.azbarkon.ui.components.AzbarkonModalBottomSheet
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.AzbarkonSlider
 import androidx.compose.foundation.background
@@ -14,11 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -41,7 +39,6 @@ expect fun TasvirCustomColorPicker(
     onColorSelect: (Color) -> Unit,
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HsvColorPickerContent(
     onDismiss: () -> Unit,
@@ -52,13 +49,9 @@ internal fun HsvColorPickerContent(
     var value by remember { mutableFloatStateOf(1f) }
     val selectedColor = remember(hue, saturation, value) { Color.hsv(hue, saturation, value) }
 
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
+    AzbarkonModalBottomSheet(
         onDismissRequest = {},
-        sheetState = sheetState,
         sheetGesturesEnabled = false,
-        containerColor = MaterialTheme.colorScheme.surface,
     ) {
         Column(
             modifier =

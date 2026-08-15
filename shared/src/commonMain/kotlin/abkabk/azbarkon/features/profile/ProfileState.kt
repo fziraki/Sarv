@@ -25,6 +25,7 @@ data class ProfileState(
     val allLevels: List<LevelListItemUi> = emptyList(),
     val reviewedVersesCount: Int = 0,
     val hasCompletedGhazal: Boolean = false,
+    val pendingImportJson: String? = null,
 )
 
 sealed interface ProfileAction {
@@ -55,6 +56,16 @@ sealed interface ProfileAction {
     data class OnNotificationPermissionResult(
         val granted: Boolean,
     ) : ProfileAction
+
+    data object OnExportData : ProfileAction
+
+    data class OnImportDataSelected(
+        val json: String,
+    ) : ProfileAction
+
+    data object OnConfirmImport : ProfileAction
+
+    data object OnCancelImport : ProfileAction
 }
 
 sealed interface ProfileEvent {

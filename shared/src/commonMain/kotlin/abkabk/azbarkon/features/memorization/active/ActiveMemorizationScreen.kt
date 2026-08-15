@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -79,18 +78,11 @@ fun ActiveMemorizationRoot(
     if (state.poemToDelete != null) {
         AzbarkonAlertDialog(
             onDismissRequest = { viewModel.onAction(ActiveMemorizationAction.OnDeleteDismiss) },
-            title = { Text(stringResource(Res.string.memorization_remove_confirm_title)) },
-            text = { Text(stringResource(Res.string.memorization_remove_confirm_body)) },
-            confirmButton = {
-                TextButton(onClick = { viewModel.onAction(ActiveMemorizationAction.OnDeleteConfirm) }) {
-                    Text(stringResource(Res.string.clear_confirm))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { viewModel.onAction(ActiveMemorizationAction.OnDeleteDismiss) }) {
-                    Text(stringResource(Res.string.clear_cancel))
-                }
-            },
+            title = stringResource(Res.string.memorization_remove_confirm_title),
+            text = stringResource(Res.string.memorization_remove_confirm_body),
+            confirmLabel = stringResource(Res.string.clear_confirm),
+            onConfirm = { viewModel.onAction(ActiveMemorizationAction.OnDeleteConfirm) },
+            dismissLabel = stringResource(Res.string.clear_cancel),
         )
     }
 

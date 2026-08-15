@@ -1,7 +1,10 @@
 package abkabk.azbarkon.features.profile
 
+import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.core.uidata.BaseViewModel
 import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.uidata.UiText
+import abkabk.azbarkon.data.backup.UserBackupManager
 import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.model.ThemeMode
 import abkabk.azbarkon.domain.model.profile.BadgeCatalog
@@ -11,10 +14,15 @@ import abkabk.azbarkon.domain.model.profile.MemorizationProfileStats
 import abkabk.azbarkon.domain.model.profile.ProfileSheet
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
+import abkabk.azbarkon.domain.platform.ShareService
 import abkabk.azbarkon.domain.repository.MemorizationRepository
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
 import abkabk.azbarkon.features.poets.GHAZAL_CATEGORY
 import androidx.lifecycle.viewModelScope
+import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.profile_export_success
+import azbarkoncmp.shared.generated.resources.profile_import_failed
+import azbarkoncmp.shared.generated.resources.profile_import_success
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -24,6 +32,8 @@ class ProfileViewModel(
     private val dailyBeytNotificationScheduler: DailyBeytNotificationScheduler,
     private val notificationPermissionGateway: NotificationPermissionGateway,
     private val memorizationReviewNotificationCoordinator: MemorizationReviewNotificationCoordinator,
+    private val userBackupManager: UserBackupManager,
+    private val shareService: ShareService,
 ) : BaseViewModel<ProfileAction, ProfileState, ProfileEvent>(
         initialState =
             ProfileState(
@@ -80,6 +90,75 @@ class ProfileViewModel(
 
             is ProfileAction.OnNotificationPermissionResult -> {
                 handleNotificationPermissionResult(action.granted)
+            }
+
+            ProfileAction.OnExportData -> {
+                exportData()
+            }
+
+            is ProfileAction.OnImportDataSelected -> {
+                setState { copy(pendingImportJson = action.json) }
+            }
+
+            ProfileAction.OnConfirmImport -> {
+                state.value.pendingImportJson?.let { json ->
+                    setState { copy(pendingImportJson = null) }
+                    importData(json)
+                }
+            }
+
+            ProfileAction.OnCancelImport -> {
+                setState { copy(pendingImportJson = null) }
+            }
+        }
+    }
+
+    private fun exportData() {
+        viewModelScope.launch {
+            val json = userBackupManager.exportJson()
+            shareService.shareFile(
+                bytes = json.encodeToByteArray(),
+                fileName = "azbarkon-backup.json",
+                mimeType = "application/json",
+                title = null,
+            )
+            sendEvent(
+                ProfileEvent.ShowSnackbar(UiText.Resource(Res.string.profile_export_success)),
+            )
+        }
+    }
+
+    private fun importData(json: String) {
+        viewModelScope.launch {
+            when (val result = userBackupManager.importJson(json)) {
+                is Result.Success -> {
+                    val prefs = result.data.prefs
+                    userPreferencesRepository.setThemeMode(
+                        ThemeMode.entries.getOrElse(prefs.themeMode) { ThemeMode.System },
+                    )
+                    userPreferencesRepository.adjustCoinBalance(0)
+                    memorizationReviewNotificationCoordinator.sync()
+                    if (prefs.dailyBeytNotificationsEnabled) {
+                        dailyBeytNotificationScheduler.enable(showImmediately = false)
+                    } else {
+                        dailyBeytNotificationScheduler.disable()
+                    }
+                    setState {
+                        copy(
+                            isDailyBeytNotificationEnabled = prefs.dailyBeytNotificationsEnabled,
+                            isMemorizationReminderEnabled = prefs.memorizationReminderEnabled,
+                        )
+                    }
+                    sendEvent(
+                        ProfileEvent.ShowSnackbar(UiText.Resource(Res.string.profile_import_success)),
+                    )
+                }
+
+                is Result.Error -> {
+                    sendEvent(
+                        ProfileEvent.ShowSnackbar(UiText.Resource(Res.string.profile_import_failed)),
+                    )
+                }
             }
         }
     }

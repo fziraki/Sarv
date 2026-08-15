@@ -34,7 +34,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -195,18 +194,11 @@ fun MyPoemsScreen(
     if (state.showClearDialog) {
         AzbarkonAlertDialog(
             onDismissRequest = { onAction(MyPoemsAction.OnClearAllDismiss) },
-            title = { Text(stringResource(Res.string.clear_dialog_title)) },
-            text = { Text(clearDialogBody) },
-            confirmButton = {
-                TextButton(onClick = { onAction(MyPoemsAction.OnClearAllConfirm) }) {
-                    Text(stringResource(Res.string.clear_confirm))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { onAction(MyPoemsAction.OnClearAllDismiss) }) {
-                    Text(stringResource(Res.string.clear_cancel))
-                }
-            },
+            title = stringResource(Res.string.clear_dialog_title),
+            text = clearDialogBody,
+            confirmLabel = stringResource(Res.string.clear_confirm),
+            onConfirm = { onAction(MyPoemsAction.OnClearAllConfirm) },
+            dismissLabel = stringResource(Res.string.clear_cancel),
         )
     }
 }

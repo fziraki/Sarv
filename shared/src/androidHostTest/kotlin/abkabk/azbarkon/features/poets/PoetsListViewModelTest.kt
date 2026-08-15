@@ -94,17 +94,37 @@ class PoetsListViewModelTest {
         }
 
     @Test
-    fun `chat is available only for poets with ghazal category`() =
+    fun `chat is available for poets with ghazal category at any depth`() =
         runTest {
             val repository =
                 FakePoetRepository().apply {
-                    poetsWithRootCategories = samplePoetsWithRootCategories()
+                    poetsWithRootCategories =
+                        samplePoetsWithRootCategories() +
+                            PoetWithRootCategories(
+                                poet =
+                                    Poet(
+                                        id = 8,
+                                        name = "شاعر بدون غزل",
+                                        description = null,
+                                        rootCatId = 300,
+                                        imageUrl = null,
+                                    ),
+                                rootCategories =
+                                    listOf(
+                                        cat(id = 301, poetId = 8, text = "قصاید", parentId = 300),
+                                    ),
+                                allCategories =
+                                    listOf(
+                                        cat(id = 301, poetId = 8, text = "قصاید", parentId = 300),
+                                    ),
+                            )
                 }
             val viewModel = PoetsListViewModel(repository)
 
             val state = viewModel.state.value
             assertThat(state.poets.first { it.name == "حافظ شیرازی" }.canChat).isTrue()
-            assertThat(state.poets.first { it.name == "سعدی شیرازی" }.canChat).isFalse()
+            assertThat(state.poets.first { it.name == "سعدی شیرازی" }.canChat).isTrue()
+            assertThat(state.poets.first { it.name == "شاعر بدون غزل" }.canChat).isFalse()
         }
 
     @Test
@@ -238,6 +258,15 @@ class PoetsListViewModelTest {
                         cat(id = 27, poetId = 2, text = "قصاید", parentId = 9),
                         cat(id = 28, poetId = 2, text = "اشعار منتسب", parentId = 9),
                     ),
+                allCategories =
+                    listOf(
+                        cat(id = 0, poetId = 2, text = "حافظ", parentId = 9),
+                        cat(id = 24, poetId = 2, text = "غزلیات", parentId = 9),
+                        cat(id = 25, poetId = 2, text = "قطعات", parentId = 9),
+                        cat(id = 26, poetId = 2, text = "رباعیات", parentId = 9),
+                        cat(id = 27, poetId = 2, text = "قصاید", parentId = 9),
+                        cat(id = 28, poetId = 2, text = "اشعار منتسب", parentId = 9),
+                    ),
             ),
             PoetWithRootCategories(
                 poet =
@@ -252,6 +281,13 @@ class PoetsListViewModelTest {
                     listOf(
                         cat(id = 1665, poetId = 7, text = "گلستان", parentId = 118),
                         cat(id = 123, poetId = 7, text = "بوستان", parentId = 118),
+                    ),
+                allCategories =
+                    listOf(
+                        cat(id = 1665, poetId = 7, text = "گلستان", parentId = 118),
+                        cat(id = 123, poetId = 7, text = "بوستان", parentId = 118),
+                        cat(id = 122, poetId = 7, text = "دیوان اشعار", parentId = 118),
+                        cat(id = 124, poetId = 7, text = "غزلیات", parentId = 122),
                     ),
             ),
         )

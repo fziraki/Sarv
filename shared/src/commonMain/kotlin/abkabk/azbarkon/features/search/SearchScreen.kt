@@ -7,7 +7,9 @@ import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.core.uidata.asString
+import abkabk.azbarkon.ui.components.AzbarkonModalBottomSheet
 import abkabk.azbarkon.ui.components.Header
+import abkabk.azbarkon.ui.components.ShimmerPlaceholder
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,21 +21,20 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -67,6 +68,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+private const val SHIMMER_ROW_COUNT = 7
 @Composable
 fun SearchRoot(
     initialPoetId: Int?,
@@ -114,13 +116,13 @@ fun SearchRoot(
         SearchScreen(
             state = state,
             searchResults = searchResults,
+            isSearching = state.isSearching,
             onAction = viewModel::onAction,
             onBackClick = onBackClick,
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     state: SearchState,
@@ -128,6 +130,7 @@ fun SearchScreen(
     onAction: (SearchAction) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isSearching: Boolean = false
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val listState = rememberLazyListState()
@@ -202,6 +205,7 @@ fun SearchScreen(
         SearchResultsList(
             searchResults = searchResults,
             submittedQuery = state.submittedQuery,
+            isSearching = isSearching,
             showNoResults = showNoResults,
             onResultClick = { poemId -> onAction(SearchAction.OnResultClick(poemId)) },
             listState = listState,
@@ -224,11 +228,14 @@ fun SearchScreen(
 private fun SearchResultsList(
     searchResults: LazyPagingItems<SearchResultUi>,
     submittedQuery: String,
+    isSearching: Boolean,
     showNoResults: Boolean,
     onResultClick: (Int) -> Unit,
     listState: LazyListState,
 ) {
     when {
+        isSearching -> SearchResultsShimmer()
+
         showNoResults -> {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -264,18 +271,35 @@ private fun SearchResultsList(
 
                 if (searchResults.loadState.append is LoadState.Loading) {
                     item {
-                        Box(
+                        ShimmerPlaceholder(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 16.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator()
-                        }
+                                    .height(64.dp)
+                                    .clip(RoundedCornerShape(14.dp)),
+                        )
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun SearchResultsShimmer() {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        repeat(SHIMMER_ROW_COUNT) {
+            ShimmerPlaceholder(
+                modifier =
+                    Modifier.fillMaxWidth().height(64.dp)
+                        .clip(RoundedCornerShape(14.dp)),
+            )
         }
     }
 }
@@ -472,24 +496,20 @@ private fun SearchResultRow(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchOptionSheet(
     title: String,
     onDismiss: () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
+    AzbarkonModalBottomSheet(
         onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surface,
     ) {
         Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),

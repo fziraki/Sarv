@@ -5,6 +5,9 @@ import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.profile.notifications.rememberDailyBeytNotificationPermissionRequester
+import abkabk.azbarkon.features.profile.util.rememberBackupImportLauncher
+import abkabk.azbarkon.features.profile.util.showToast
+import abkabk.azbarkon.ui.components.AzbarkonAlertDialog
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.clear_cancel
+import azbarkoncmp.shared.generated.resources.clear_confirm
+import azbarkoncmp.shared.generated.resources.profile_import_confirm_body
+import azbarkoncmp.shared.generated.resources.profile_import_confirm_title
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -33,6 +42,12 @@ fun ProfileRoot(
     val requestNotificationPermission =
         rememberDailyBeytNotificationPermissionRequester { granted ->
             viewModel.onAction(ProfileAction.OnNotificationPermissionResult(granted))
+        }
+    val openImportPicker =
+        rememberBackupImportLauncher { json ->
+            if (json != null) {
+                viewModel.onAction(ProfileAction.OnImportDataSelected(json))
+            }
         }
 
     DisposableEffect(viewModel) {
@@ -59,7 +74,7 @@ fun ProfileRoot(
     snackbarMessage?.let { message ->
         val resolvedMessage = message.asString()
         LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
+            showToast(resolvedMessage)
             snackbarMessage = null
         }
     }
@@ -75,6 +90,19 @@ fun ProfileRoot(
         ProfileSheets(
             state = state,
             onAction = viewModel::onAction,
+            onExportData = { viewModel.onAction(ProfileAction.OnExportData) },
+            onImportData = openImportPicker,
+        )
+    }
+
+    if (state.pendingImportJson != null) {
+        AzbarkonAlertDialog(
+            onDismissRequest = { viewModel.onAction(ProfileAction.OnCancelImport) },
+            title = stringResource(Res.string.profile_import_confirm_title),
+            text = stringResource(Res.string.profile_import_confirm_body),
+            confirmLabel = stringResource(Res.string.clear_confirm),
+            onConfirm = { viewModel.onAction(ProfileAction.OnConfirmImport) },
+            dismissLabel = stringResource(Res.string.clear_cancel),
         )
     }
 }

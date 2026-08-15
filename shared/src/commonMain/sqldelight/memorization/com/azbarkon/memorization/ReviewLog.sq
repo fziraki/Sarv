@@ -11,6 +11,18 @@ insertReviewLog:
 INSERT INTO review_log(card_id, grade, previous_interval, new_interval, review_time)
 VALUES (?, ?, ?, ?, ?);
 
+insertReviewLogWithId:
+INSERT INTO review_log(id, card_id, grade, previous_interval, new_interval, review_time)
+VALUES (?, ?, ?, ?, ?, ?);
+
+selectAllReviewLogs:
+SELECT id, card_id, grade, previous_interval, new_interval, review_time
+FROM review_log
+ORDER BY id;
+
+deleteAllReviewLogs:
+DELETE FROM review_log;
+
 selectReviewDayKeys:
 SELECT review_time FROM review_log ORDER BY review_time DESC;
 

@@ -15,12 +15,15 @@ import androidx.paging.map as pagingMap
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.search_empty_query
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 class SearchViewModel(
     private val searchRepository: SearchRepository,
@@ -32,6 +35,7 @@ class SearchViewModel(
     ) {
     private var categoryTree: List<PoetCategoryNode> = emptyList()
     private val searchParams = MutableStateFlow<SearchParams?>(null)
+    private var searchLoadingJob: Job? = null
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val searchResults: Flow<PagingData<SearchResultUi>> =
@@ -190,7 +194,7 @@ class SearchViewModel(
             }
             return
         }
-        setState { copy(submittedQuery = query) }
+        setState { copy(submittedQuery = query, isSearching = true) }
         updateSearchParams(query)
     }
 
@@ -208,6 +212,12 @@ class SearchViewModel(
                 poetId = state.value.selectedPoetId,
                 categoryIds = resolveCategoryFilterIds(),
             )
+        searchLoadingJob?.cancel()
+        searchLoadingJob =
+            viewModelScope.launch {
+                delay(MIN_SEARCH_LOADING_MILLIS)
+                setState { copy(isSearching = false) }
+            }
     }
 
     private fun resolveCategoryFilterIds(): Set<Int>? {
@@ -218,5 +228,6 @@ class SearchViewModel(
     private companion object {
         const val ALL_POETS_LABEL = "همه"
         const val ALL_CATEGORIES_LABEL = "همه"
+        val MIN_SEARCH_LOADING_MILLIS = 1.seconds
     }
 }

@@ -52,6 +52,14 @@ object TextDiffHighlighter {
         expected: String,
         actual: String,
     ): abkabk.azbarkon.domain.model.memorization.SrsGrade {
+        val actualLetters = extractAlphabeticLetters(actual)
+        val expectedLetters = extractAlphabeticLetters(expected)
+        if (expectedLetters.isNotEmpty() &&
+            actualLetters.length > expectedLetters.length &&
+            actualLetters.contains(expectedLetters)
+        ) {
+            return abkabk.azbarkon.domain.model.memorization.SrsGrade.EASY
+        }
         val diffTokens = diffUserWords(expected, actual)
         val expectedWords = splitDisplayWords(expected)
         if (expectedWords.isEmpty()) return abkabk.azbarkon.domain.model.memorization.SrsGrade.EASY

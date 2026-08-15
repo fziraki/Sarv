@@ -129,6 +129,20 @@ class MemorizationReviewNotificationCoordinatorTest {
 
         override suspend fun countReviewedVerses(): Int = 0
 
+        override suspend fun dumpActivePoems(): List<abkabk.azbarkon.domain.model.memorization.StoredActivePoem> =
+            emptyList()
+
+        override suspend fun dumpCards(): List<SrsCard> = emptyList()
+
+        override suspend fun dumpReviewLogs(): List<abkabk.azbarkon.domain.model.memorization.StoredReviewLog> =
+            emptyList()
+
+        override suspend fun replaceAll(
+            activePoems: List<abkabk.azbarkon.domain.model.memorization.StoredActivePoem>,
+            cards: List<SrsCard>,
+            reviewLogs: List<abkabk.azbarkon.domain.model.memorization.StoredReviewLog>,
+        ) = Unit
+
         override suspend fun findPoetIdByName(nameFragment: String): Result<Int, DataError.Local> =
             Result.Error(DataError.Local.UNKNOWN)
 

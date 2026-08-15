@@ -30,7 +30,7 @@ import azbarkoncmp.shared.generated.resources.tasvir_negar_save_failed
 import azbarkoncmp.shared.generated.resources.tasvir_negar_share_failed
 import kotlinx.coroutines.launch
 
-private const val MIN_TEXT_SIZE = 12f
+private const val MIN_TEXT_SIZE = 1f
 private const val MAX_TEXT_SIZE = 32f
 
 class TasvirNegarViewModel(
@@ -38,6 +38,7 @@ class TasvirNegarViewModel(
     private val shareService: ShareService,
     private val imageExportService: ImageExportService,
     private val poemId: Int?,
+    private val initialText: String? = null,
 ) : BaseViewModel<TasvirNegarAction, TasvirNegarState, TasvirNegarEvent>(
         initialState = TasvirNegarState(),
     ) {
@@ -138,13 +139,31 @@ class TasvirNegarViewModel(
 
     private fun loadInitialDocument() {
         val poemIdValue = poemId
-        if (poemIdValue == null) {
+        val initialTextValue = initialText
+        if (poemIdValue == null && initialTextValue == null) {
             setState {
                 copy(
                     screenState = UiScreenState.Success,
                     document =
                         EditorDocument(
                             poemText = document.poemText.copy(visible = true),
+                        ),
+                )
+            }
+            return
+        }
+
+        if (poemIdValue == null) {
+            setState {
+                copy(
+                    screenState = UiScreenState.Success,
+                    document =
+                        EditorDocument(
+                            poemText =
+                                TextLayer(
+                                    text = initialTextValue.orEmpty(),
+                                    visible = true,
+                                ),
                         ),
                 )
             }
@@ -163,7 +182,7 @@ class TasvirNegarViewModel(
                                 EditorDocument(
                                     poemText =
                                         TextLayer(
-                                            text = detail.verses.joinToString("\n") { it.text },
+                                            text = initialTextValue ?: detail.verses.joinToString("\n") { it.text },
                                             visible = true,
                                         ),
                                     poetName =
@@ -204,30 +223,30 @@ class TasvirNegarViewModel(
                         color = Color.White,
                         gravity = TextGravity.Center,
                         isBold = false,
-                        sizeProgress = 12f,
+                        sizeProgress = 1f,
                         visible = poemText.text.isNotBlank(),
                     ),
                 poetName =
                     poetName.copy(
                         offset = LayerOffset(y = 120.dp),
                         color = Color.White,
-                        sizeProgress = 12f,
+                        sizeProgress = 1f,
                         visible = poetName.text.isNotBlank(),
                     ),
                 sticker =
                     StickerLayer().copy(
-                        sizeProgress = 12f,
+                        sizeProgress = 1f,
                     ),
                 topDivider =
                     DividerLayer().copy(
-                        sizeProgress = 12f,
+                        sizeProgress = 1f,
                     ),
                 bottomDivider =
                     DividerLayer().copy(
-                        sizeProgress = 12f,
+                        sizeProgress = 1f,
                     ),
                 background = EditorBackground.SolidColor(Color.Transparent),
-                fontPreset = EditorFontPreset.Yekan,
+                fontPreset = EditorFontPreset.Shekasteh,
                 showAlignmentGrid = false,
                 selectedLayer = null,
                 activeOptionPanel = OptionPanelMode.None,

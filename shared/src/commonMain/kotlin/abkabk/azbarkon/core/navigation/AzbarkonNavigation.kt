@@ -77,14 +77,14 @@ import azbarkoncmp.shared.generated.resources.settings
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+// ponytail: null destination = start destination not yet resolved; treat as a root tab
+// so top/bottom bars render on the first frame and the content never reflows.
 private fun NavDestination?.isRootTabDestination(): Boolean =
-    this != null &&
-        (
-            hasRoute<HomeRoute>() ||
-                hasRoute<PoetsListRoute>() ||
-                hasRoute<GamesRoute>() ||
-                hasRoute<ProfileRoute>()
-        )
+    this == null ||
+        hasRoute<HomeRoute>() ||
+        hasRoute<PoetsListRoute>() ||
+        hasRoute<GamesRoute>() ||
+        hasRoute<ProfileRoute>()
 
 private val bottomNavItems =
     listOf(
@@ -287,7 +287,7 @@ fun AzbarkonNavigation(
                 BottomNavItem.Games -> currentDestination?.hasRoute<GamesRoute>() == true
                 BottomNavItem.Profile -> currentDestination?.hasRoute<ProfileRoute>() == true
             }
-        }
+        } ?: BottomNavItem.Home
 
     CompositionLocalProvider(LocalAzbarkonAppState provides appState) {
         Scaffold(

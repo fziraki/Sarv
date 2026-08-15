@@ -15,4 +15,11 @@ actual class ClipboardManager(
     actual fun copyToClipboard(text: String) {
         clipboard.setPrimaryClip(ClipData.newPlainText("poem", text))
     }
+
+    actual fun readClipboardText(): String? =
+        clipboard.primaryClip
+            ?.getItemAt(0)
+            ?.text
+            ?.toString()
+            ?.takeIf { it.isNotBlank() }
 }

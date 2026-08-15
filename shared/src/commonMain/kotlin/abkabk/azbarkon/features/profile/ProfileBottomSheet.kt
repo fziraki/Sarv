@@ -7,27 +7,28 @@ import abkabk.azbarkon.domain.model.profile.LevelListItemUi
 import abkabk.azbarkon.domain.model.profile.LevelRowState
 import abkabk.azbarkon.domain.model.profile.ProfileSheet
 import abkabk.azbarkon.features.profile.widget.rememberWidgetPickerLauncher
+import abkabk.azbarkon.ui.components.AzbarkonModalBottomSheet
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -35,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
@@ -42,11 +44,17 @@ import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.add_box_24px
 import azbarkoncmp.shared.generated.resources.check_circle
+import azbarkoncmp.shared.generated.resources.download
 import azbarkoncmp.shared.generated.resources.lock
 import azbarkoncmp.shared.generated.resources.profile_add_widget
+import azbarkoncmp.shared.generated.resources.profile_add_widget_subtitle
 import azbarkoncmp.shared.generated.resources.profile_badges_title
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_subtitle
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_title
+import azbarkoncmp.shared.generated.resources.profile_export_data
+import azbarkoncmp.shared.generated.resources.profile_export_data_subtitle
+import azbarkoncmp.shared.generated.resources.profile_import_data
+import azbarkoncmp.shared.generated.resources.profile_import_data_subtitle
 import azbarkoncmp.shared.generated.resources.profile_level_format
 import azbarkoncmp.shared.generated.resources.profile_level_score_required
 import azbarkoncmp.shared.generated.resources.profile_level_start
@@ -58,17 +66,18 @@ import azbarkoncmp.shared.generated.resources.profile_theme_dark
 import azbarkoncmp.shared.generated.resources.profile_theme_light
 import azbarkoncmp.shared.generated.resources.profile_theme_system
 import azbarkoncmp.shared.generated.resources.profile_theme_title
+import azbarkoncmp.shared.generated.resources.upload
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileSheets(
     state: ProfileState,
     onAction: (ProfileAction) -> Unit,
+    onExportData: () -> Unit,
+    onImportData: () -> Unit,
 ) {
     val sheet = state.activeSheet ?: return
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val openWidgetPicker = rememberWidgetPickerLauncher()
     val onAddWidgetClick = openWidgetPicker?.let { picker ->
         {
@@ -77,10 +86,8 @@ fun ProfileSheets(
         }
     }
 
-    ModalBottomSheet(
+    AzbarkonModalBottomSheet(
         onDismissRequest = { onAction(ProfileAction.OnDismissSheet) },
-        sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surface
     ) {
         when (sheet) {
             ProfileSheet.Settings ->
@@ -92,6 +99,8 @@ fun ProfileSheets(
                     onMemorizationReminderToggle = { onAction(ProfileAction.OnMemorizationReminderToggle(it)) },
                     onThemeModeSelect = { onAction(ProfileAction.OnThemeModeSelected(it)) },
                     onAddWidgetClick = onAddWidgetClick,
+                    onExportData = onExportData,
+                    onImportData = onImportData,
                 )
 
             ProfileSheet.Badges ->
@@ -112,17 +121,20 @@ private fun ProfileSettingsSheetContent(
     onMemorizationReminderToggle: (Boolean) -> Unit,
     onThemeModeSelect: (ThemeMode) -> Unit,
     onAddWidgetClick: (() -> Unit)?,
+    onExportData: () -> Unit,
+    onImportData: () -> Unit,
 ) {
     Column(
         modifier =
             Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.Start
     ) {
-
 
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -147,32 +159,27 @@ private fun ProfileSettingsSheetContent(
         )
 
         if (onAddWidgetClick != null) {
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .clickable(onClick = onAddWidgetClick)
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-
-                Icon(
-                    painter = painterResource(Res.drawable.add_box_24px),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                    text = stringResource(Res.string.profile_add_widget),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier,
-                    textAlign = TextAlign.Start,
-                )
-
-            }
+            ProfileDataActionRow(
+                icon = painterResource(Res.drawable.add_box_24px),
+                title = stringResource(Res.string.profile_add_widget),
+                subtitle = stringResource(Res.string.profile_add_widget_subtitle),
+                onClick = onAddWidgetClick,
+            )
         }
+
+        ProfileDataActionRow(
+            icon = painterResource(Res.drawable.upload),
+            title = stringResource(Res.string.profile_export_data),
+            subtitle = stringResource(Res.string.profile_export_data_subtitle),
+            onClick = onExportData,
+        )
+
+        ProfileDataActionRow(
+            icon = painterResource(Res.drawable.download),
+            title = stringResource(Res.string.profile_import_data),
+            subtitle = stringResource(Res.string.profile_import_data_subtitle),
+            onClick = onImportData,
+        )
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.Start) {
@@ -207,8 +214,7 @@ private fun ProfileSettingToggleRow(
     subtitle: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-) {
-    Row(
+) {    Row(
         modifier =
             Modifier
                 .fillMaxWidth()
@@ -234,6 +240,50 @@ private fun ProfileSettingToggleRow(
             )
         }
 
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start,
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProfileDataActionRow(
+    icon: Painter,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .clickable(onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            painter = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+        )
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -328,6 +378,7 @@ private fun ProfileLevelsSheetContent(levels: List<LevelListItemUi>) {
         modifier =
             Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),

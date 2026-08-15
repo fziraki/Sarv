@@ -19,4 +19,13 @@ class PlatformShareService(
     ) {
         shareManager.shareImage(imageBytes = imageBytes, title = title)
     }
+
+    override fun shareFile(
+        bytes: ByteArray,
+        fileName: String,
+        mimeType: String,
+        title: String?,
+    ) {
+        shareManager.shareFile(bytes = bytes, fileName = fileName, mimeType = mimeType, title = title)
+    }
 }

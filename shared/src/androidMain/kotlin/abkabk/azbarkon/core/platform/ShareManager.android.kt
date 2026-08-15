@@ -48,4 +48,31 @@ actual class ShareManager(
             }
         context.startActivity(Intent.createChooser(intent, title).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
+
+    actual fun shareFile(
+        bytes: ByteArray,
+        fileName: String,
+        mimeType: String,
+        title: String?,
+    ) {
+        val cacheDir = File(context.cacheDir, "shared_images").apply { mkdirs() }
+        val file = File(cacheDir, fileName)
+        file.writeBytes(bytes)
+
+        val uri =
+            FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                file,
+            )
+
+        val intent =
+            Intent(Intent.ACTION_SEND).apply {
+                type = mimeType
+                putExtra(Intent.EXTRA_STREAM, uri)
+                title?.let { putExtra(Intent.EXTRA_TITLE, it) }
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        context.startActivity(Intent.createChooser(intent, title).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    }
 }

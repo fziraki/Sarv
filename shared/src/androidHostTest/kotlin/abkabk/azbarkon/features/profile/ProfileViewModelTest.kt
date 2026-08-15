@@ -2,20 +2,26 @@ package abkabk.azbarkon.features.profile
 
 import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.core.domain.result.Result
+import abkabk.azbarkon.data.backup.UserBackupManager
 import abkabk.azbarkon.domain.datasource.MemorizationLocalDataSource
 import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.model.ThemeMode
-import abkabk.azbarkon.domain.model.profile.ProfileSheet
 import abkabk.azbarkon.domain.model.memorization.SrsCard
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
+import abkabk.azbarkon.domain.model.memorization.StoredActivePoem
+import abkabk.azbarkon.domain.model.memorization.StoredReviewLog
+import abkabk.azbarkon.domain.model.profile.ProfileSheet
 import abkabk.azbarkon.testing.FakeDailyBeytNotificationScheduler
 import abkabk.azbarkon.testing.FakeMemorizationRepository
 import abkabk.azbarkon.testing.FakeMemorizationReviewNotificationScheduler
 import abkabk.azbarkon.testing.FakeNotificationPermissionGateway
+import abkabk.azbarkon.testing.FakeShareService
+import abkabk.azbarkon.testing.FakeUserBackupManager
 import abkabk.azbarkon.testing.FakeUserPreferencesRepository
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
+import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import kotlinx.coroutines.Dispatchers
@@ -144,10 +150,89 @@ class ProfileViewModelTest {
             assertThat(preferences.isMemorizationReminderEnabled()).isFalse()
         }
 
+    @Test
+    fun `export data shares backup json`() =
+        runTest {
+            val backupManager = FakeUserBackupManager()
+            val shareService = FakeShareService()
+            val viewModel = createViewModel(backupManager = backupManager, shareService = shareService)
+
+            viewModel.onAction(ProfileAction.OnExportData)
+
+            assertThat(shareService.lastSharedFileBytes).isNotNull()
+            assertThat(shareService.lastSharedFileName).isEqualTo("azbarkon-backup.json")
+            assertThat(shareService.lastSharedFileMimeType).isEqualTo("application/json")
+        }
+
+    @Test
+    fun `import selection asks for confirmation then imports`() =
+        runTest {
+            val backupManager = FakeUserBackupManager()
+            val preferences = FakeUserPreferencesRepository()
+            val viewModel = createViewModel(backupManager = backupManager, preferences = preferences)
+            val json = backupManager.exportJson()
+
+            viewModel.onAction(ProfileAction.OnImportDataSelected(json))
+            assertThat(viewModel.state.value.pendingImportJson).isEqualTo(json)
+
+            viewModel.onAction(ProfileAction.OnConfirmImport)
+
+            assertThat(viewModel.state.value.pendingImportJson).isNull()
+            assertThat(backupManager.importCallCount).isEqualTo(1)
+            assertThat(backupManager.lastImportedJson).isEqualTo(json)
+        }
+
+    @Test
+    fun `import cancel clears pending json without importing`() =
+        runTest {
+            val backupManager = FakeUserBackupManager()
+            val viewModel = createViewModel(backupManager = backupManager)
+
+            viewModel.onAction(ProfileAction.OnImportDataSelected("json"))
+            viewModel.onAction(ProfileAction.OnCancelImport)
+
+            assertThat(viewModel.state.value.pendingImportJson).isNull()
+            assertThat(backupManager.importCallCount).isEqualTo(0)
+        }
+
+    @Test
+    fun `successful import applies imported prefs and shows success snackbar`() =
+        runTest {
+            val preferences = FakeUserPreferencesRepository()
+            val backupManager =
+                FakeUserBackupManager(preferences = preferences)
+            val viewModel = createViewModel(backupManager = backupManager, preferences = preferences)
+            val json = backupManager.exportJson()
+
+            viewModel.onAction(ProfileAction.OnImportDataSelected(json))
+            viewModel.onAction(ProfileAction.OnConfirmImport)
+
+            assertThat(viewModel.state.value.isDailyBeytNotificationEnabled).isTrue()
+            assertThat(preferences.isDailyBeytNotificationEnabled()).isTrue()
+        }
+
+    @Test
+    fun `failed import shows error snackbar and keeps prefs`() =
+        runTest {
+            val preferences = FakeUserPreferencesRepository()
+            val backupManager = FakeUserBackupManager(failImport = true)
+            val viewModel = createViewModel(backupManager = backupManager, preferences = preferences)
+            val json = backupManager.exportJson()
+
+            viewModel.onAction(ProfileAction.OnImportDataSelected(json))
+            viewModel.onAction(ProfileAction.OnConfirmImport)
+
+            assertThat(viewModel.state.value.pendingImportJson).isNull()
+            assertThat(preferences.isDailyBeytNotificationEnabled()).isFalse()
+            assertThat(backupManager.lastImportedJson).isEqualTo(json)
+        }
+
     private fun createViewModel(
         preferences: FakeUserPreferencesRepository = FakeUserPreferencesRepository(),
         dailyBeytScheduler: FakeDailyBeytNotificationScheduler = FakeDailyBeytNotificationScheduler(),
         permissionGateway: FakeNotificationPermissionGateway = FakeNotificationPermissionGateway(granted = true),
+        backupManager: UserBackupManager = FakeUserBackupManager(),
+        shareService: abkabk.azbarkon.domain.platform.ShareService = FakeShareService(),
     ): ProfileViewModel {
         val memorizationRepository = FakeMemorizationRepository()
         val reviewScheduler = FakeMemorizationReviewNotificationScheduler()
@@ -163,6 +248,8 @@ class ProfileViewModelTest {
             dailyBeytNotificationScheduler = dailyBeytScheduler,
             notificationPermissionGateway = permissionGateway,
             memorizationReviewNotificationCoordinator = coordinator,
+            userBackupManager = backupManager,
+            shareService = shareService,
         )
     }
 
@@ -218,6 +305,18 @@ class ProfileViewModelTest {
         override suspend fun getReviewDayKeys(): List<Int> = emptyList()
 
         override suspend fun countReviewedVerses(): Int = 0
+
+        override suspend fun dumpActivePoems(): List<StoredActivePoem> = emptyList()
+
+        override suspend fun dumpCards(): List<SrsCard> = emptyList()
+
+        override suspend fun dumpReviewLogs(): List<StoredReviewLog> = emptyList()
+
+        override suspend fun replaceAll(
+            activePoems: List<StoredActivePoem>,
+            cards: List<SrsCard>,
+            reviewLogs: List<StoredReviewLog>,
+        ) = Unit
 
         override suspend fun findPoetIdByName(nameFragment: String): Result<Int, DataError.Local> =
             Result.Error(DataError.Local.UNKNOWN)

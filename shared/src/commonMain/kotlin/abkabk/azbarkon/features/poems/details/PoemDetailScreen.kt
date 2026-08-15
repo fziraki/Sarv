@@ -32,6 +32,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -43,6 +44,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +58,9 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.Clipboard
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -74,6 +79,7 @@ import azbarkoncmp.shared.generated.resources.pause
 import azbarkoncmp.shared.generated.resources.play
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -85,7 +91,7 @@ private const val SECONDS_PER_MINUTE = 60
 fun PoemDetailRoot(
     poemId: Int,
     onBackClick: () -> Unit,
-    onNavigateToTasvirNegar: (Int) -> Unit,
+    onNavigateToTasvirNegar: (poemId: Int, initialText: String?) -> Unit,
     onNavigateToMemorizationPractice: (Int) -> Unit,
     viewModel: PoemDetailViewModel = koinViewModel { parametersOf(poemId) },
 ) {
@@ -98,7 +104,7 @@ fun PoemDetailRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is PoemDetailEvent.ShowSnackbar -> snackbarMessage = event.message
-            PoemDetailEvent.NavigateToTasvirNegar -> onNavigateToTasvirNegar(poemId)
+            is PoemDetailEvent.NavigateToTasvirNegar -> onNavigateToTasvirNegar(poemId, event.initialText)
             PoemDetailEvent.NavigateToMemorizationPractice -> onNavigateToMemorizationPractice(poemId)
         }
     }
@@ -188,34 +194,49 @@ fun PoemDetailScreen(
         },
     ) { paddingValues ->
 
-        LazyColumn(
-            state = listState,
-            modifier = Modifier.fillMaxSize(),
-            contentPadding =
-                PaddingValues(
-                    top = paddingValues.calculateTopPadding() + 16.dp,
-                    bottom = paddingValues.calculateBottomPadding() + 16.dp,
-                    start = 16.dp,
-                    end = 16.dp,
-                ),
-        ) {
-            items(
-                items = state.verses,
-                key = { verse -> verse.id },
-            ) { verse ->
-                PoemVerseItem(
-                    verse = verse,
-                    highlightQuery = state.highlightQuery,
-                )
+        val realClipboard = LocalClipboard.current
+        val clipboardManager = koinInject<abkabk.azbarkon.core.platform.ClipboardManager>()
+        val capturingClipboard =
+            remember(realClipboard) {
+                object : Clipboard by realClipboard {
+                    override suspend fun setClipEntry(clipEntry: ClipEntry?) {
+                        realClipboard.setClipEntry(clipEntry)
+                        clipboardManager.readClipboardText()?.let { text ->
+                            currentOnAction(PoemDetailAction.OnTextCopied(text))
+                        }
+                    }
+                }
             }
 
-            item {
-                PoemOrnamentalDivider(
-                    modifier = Modifier.padding(top = 24.dp),
-                )
+        CompositionLocalProvider(LocalClipboard provides capturingClipboard) {
+            SelectionContainer {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize()
+                        .padding(
+                            top = paddingValues.calculateTopPadding(),
+                            bottom = paddingValues.calculateBottomPadding()
+                        ),
+                    contentPadding = PaddingValues(16.dp),
+                ) {
+                    items(
+                        items = state.verses,
+                        key = { verse -> verse.id },
+                    ) { verse ->
+                        PoemVerseItem(
+                            verse = verse,
+                            highlightQuery = state.highlightQuery,
+                        )
+                    }
+
+                    item {
+                        PoemOrnamentalDivider(
+                            modifier = Modifier.padding(top = 24.dp),
+                        )
+                    }
+                }
             }
         }
-
     }
 }
 

@@ -53,7 +53,7 @@ class LocalSavedPoemRepository(
             this + id
         }
 
-    private companion object {
+    internal companion object {
         const val KEY_LIKED = "liked_poem_ids"
         const val KEY_BOOKMARKED = "bookmarked_poem_ids"
     }

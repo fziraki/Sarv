@@ -37,3 +37,10 @@ isPoemActive:
 SELECT COUNT(*) > 0
 FROM active_srs_poem
 WHERE poem_id = ? AND status = 'ACTIVE';
+
+selectAll:
+SELECT poem_id, added_at, status
+FROM active_srs_poem;
+
+deleteAll:
+DELETE FROM active_srs_poem;
