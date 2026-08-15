@@ -46,6 +46,7 @@ import azbarkoncmp.shared.generated.resources.check_circle
 import azbarkoncmp.shared.generated.resources.download
 import azbarkoncmp.shared.generated.resources.lock
 import azbarkoncmp.shared.generated.resources.profile_add_widget
+import azbarkoncmp.shared.generated.resources.profile_add_widget_subtitle
 import azbarkoncmp.shared.generated.resources.profile_badges_title
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_subtitle
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_title
@@ -64,7 +65,7 @@ import azbarkoncmp.shared.generated.resources.profile_theme_dark
 import azbarkoncmp.shared.generated.resources.profile_theme_light
 import azbarkoncmp.shared.generated.resources.profile_theme_system
 import azbarkoncmp.shared.generated.resources.profile_theme_title
-import azbarkoncmp.shared.generated.resources.share
+import azbarkoncmp.shared.generated.resources.upload
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -160,35 +161,16 @@ private fun ProfileSettingsSheetContent(
         )
 
         if (onAddWidgetClick != null) {
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .clickable(onClick = onAddWidgetClick)
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-
-                Icon(
-                    painter = painterResource(Res.drawable.add_box_24px),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                    text = stringResource(Res.string.profile_add_widget),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier,
-                    textAlign = TextAlign.Start,
-                )
-
-            }
+            ProfileDataActionRow(
+                icon = painterResource(Res.drawable.add_box_24px),
+                title = stringResource(Res.string.profile_add_widget),
+                subtitle = stringResource(Res.string.profile_add_widget_subtitle),
+                onClick = onAddWidgetClick,
+            )
         }
 
         ProfileDataActionRow(
-            icon = painterResource(Res.drawable.share),
+            icon = painterResource(Res.drawable.upload),
             title = stringResource(Res.string.profile_export_data),
             subtitle = stringResource(Res.string.profile_export_data_subtitle),
             onClick = onExportData,

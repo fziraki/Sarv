@@ -6,6 +6,7 @@ import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.profile.notifications.rememberDailyBeytNotificationPermissionRequester
 import abkabk.azbarkon.features.profile.util.rememberBackupImportLauncher
+import abkabk.azbarkon.features.profile.util.showToast
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
@@ -75,7 +76,7 @@ fun ProfileRoot(
     snackbarMessage?.let { message ->
         val resolvedMessage = message.asString()
         LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
+            showToast(resolvedMessage)
             snackbarMessage = null
         }
     }
