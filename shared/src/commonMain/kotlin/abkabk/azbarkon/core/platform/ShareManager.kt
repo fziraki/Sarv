@@ -12,4 +12,11 @@ expect class ShareManager {
         imageBytes: ByteArray,
         title: String?,
     )
+
+    fun shareFile(
+        bytes: ByteArray,
+        fileName: String,
+        mimeType: String,
+        title: String?,
+    )
 }

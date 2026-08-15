@@ -23,6 +23,28 @@ INSERT INTO srs_poem_card(
 )
 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
+insertCardWithId:
+INSERT INTO srs_poem_card(
+    id,
+    poem_id,
+    card_index,
+    front,
+    back,
+    interval,
+    ease,
+    due_date,
+    consecutive_correct
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAllCards:
+SELECT id, poem_id, card_index, front, back, interval, ease, due_date, consecutive_correct
+FROM srs_poem_card
+ORDER BY id;
+
+deleteAllCards:
+DELETE FROM srs_poem_card;
+
 selectCardById:
 SELECT id, poem_id, card_index, front, back, interval, ease, due_date, consecutive_correct
 FROM srs_poem_card

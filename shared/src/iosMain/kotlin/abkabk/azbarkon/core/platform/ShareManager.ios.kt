@@ -4,6 +4,12 @@ package abkabk.azbarkon.core.platform
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreGraphics.CGRectZero
+import platform.Foundation.NSCachesDirectory
+import platform.Foundation.NSSearchPathForDirectoriesInDomains
+import platform.Foundation.NSURL
+import platform.Foundation.NSUserDomainMask
+import platform.Foundation.dataWithBytes
+import platform.Foundation.writeToFile
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
 import platform.UIKit.UIImage
@@ -22,6 +28,21 @@ actual class ShareManager {
     ) {
         val image = UIImage(data = imageBytes.toNSData()) ?: return
         presentShareSheet(listOf(image))
+    }
+
+    actual fun shareFile(
+        bytes: ByteArray,
+        fileName: String,
+        mimeType: String,
+        title: String?,
+    ) {
+        val cacheDir =
+            NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true)
+                .firstOrNull() as? String ?: return
+        val path = "$cacheDir/$fileName"
+        val data = bytes.toNSData()
+        if (!data.writeToFile(path, atomically = true)) return
+        presentShareSheet(listOf(NSURL.fileURLWithPath(path)))
     }
 
     private fun presentShareSheet(items: List<*>) {

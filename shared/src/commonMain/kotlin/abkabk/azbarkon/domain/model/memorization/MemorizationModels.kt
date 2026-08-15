@@ -1,5 +1,7 @@
 package abkabk.azbarkon.domain.model.memorization
 
+import kotlinx.serialization.Serializable
+
 enum class SrsGrade {
     AGAIN,
     HARD,
@@ -12,6 +14,7 @@ enum class ActiveMemorizationStatus {
     PAUSED,
 }
 
+@Serializable
 data class SrsCard(
     val id: Long,
     val poemId: Int,
@@ -22,6 +25,23 @@ data class SrsCard(
     val ease: Double,
     val dueDateMillis: Long,
     val consecutiveCorrect: Int,
+)
+
+@Serializable
+data class StoredActivePoem(
+    val poemId: Int,
+    val addedAtMillis: Long,
+    val status: String,
+)
+
+@Serializable
+data class StoredReviewLog(
+    val id: Long,
+    val cardId: Long,
+    val grade: String,
+    val previousInterval: Int,
+    val newInterval: Int,
+    val reviewTimeMillis: Long,
 )
 
 data class MemorizationSummary(

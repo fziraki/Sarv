@@ -6,6 +6,9 @@ class FakeShareService : ShareService {
     var lastSharedText: String? = null
     var lastSharedTitle: String? = null
     var lastSharedImageBytes: ByteArray? = null
+    var lastSharedFileBytes: ByteArray? = null
+    var lastSharedFileName: String? = null
+    var lastSharedFileMimeType: String? = null
 
     override fun shareText(
         text: String,
@@ -20,6 +23,18 @@ class FakeShareService : ShareService {
         title: String?,
     ) {
         lastSharedImageBytes = imageBytes
+        lastSharedTitle = title
+    }
+
+    override fun shareFile(
+        bytes: ByteArray,
+        fileName: String,
+        mimeType: String,
+        title: String?,
+    ) {
+        lastSharedFileBytes = bytes
+        lastSharedFileName = fileName
+        lastSharedFileMimeType = mimeType
         lastSharedTitle = title
     }
 }

@@ -5,11 +5,15 @@ import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.profile.notifications.rememberDailyBeytNotificationPermissionRequester
+import abkabk.azbarkon.features.profile.util.rememberBackupImportLauncher
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.clear_cancel
+import azbarkoncmp.shared.generated.resources.clear_confirm
+import azbarkoncmp.shared.generated.resources.profile_import_confirm_body
+import azbarkoncmp.shared.generated.resources.profile_import_confirm_title
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -33,6 +43,12 @@ fun ProfileRoot(
     val requestNotificationPermission =
         rememberDailyBeytNotificationPermissionRequester { granted ->
             viewModel.onAction(ProfileAction.OnNotificationPermissionResult(granted))
+        }
+    val openImportPicker =
+        rememberBackupImportLauncher { json ->
+            if (json != null) {
+                viewModel.onAction(ProfileAction.OnImportDataSelected(json))
+            }
         }
 
     DisposableEffect(viewModel) {
@@ -75,6 +91,26 @@ fun ProfileRoot(
         ProfileSheets(
             state = state,
             onAction = viewModel::onAction,
+            onExportData = { viewModel.onAction(ProfileAction.OnExportData) },
+            onImportData = openImportPicker,
+        )
+    }
+
+    if (state.pendingImportJson != null) {
+        AlertDialog(
+            onDismissRequest = { viewModel.onAction(ProfileAction.OnCancelImport) },
+            title = { Text(stringResource(Res.string.profile_import_confirm_title)) },
+            text = { Text(stringResource(Res.string.profile_import_confirm_body)) },
+            confirmButton = {
+                TextButton(onClick = { viewModel.onAction(ProfileAction.OnConfirmImport) }) {
+                    Text(stringResource(Res.string.clear_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.onAction(ProfileAction.OnCancelImport) }) {
+                    Text(stringResource(Res.string.clear_cancel))
+                }
+            },
         )
     }
 }

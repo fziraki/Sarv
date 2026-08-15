@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
@@ -42,11 +43,16 @@ import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.add_box_24px
 import azbarkoncmp.shared.generated.resources.check_circle
+import azbarkoncmp.shared.generated.resources.download
 import azbarkoncmp.shared.generated.resources.lock
 import azbarkoncmp.shared.generated.resources.profile_add_widget
 import azbarkoncmp.shared.generated.resources.profile_badges_title
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_subtitle
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_title
+import azbarkoncmp.shared.generated.resources.profile_export_data
+import azbarkoncmp.shared.generated.resources.profile_export_data_subtitle
+import azbarkoncmp.shared.generated.resources.profile_import_data
+import azbarkoncmp.shared.generated.resources.profile_import_data_subtitle
 import azbarkoncmp.shared.generated.resources.profile_level_format
 import azbarkoncmp.shared.generated.resources.profile_level_score_required
 import azbarkoncmp.shared.generated.resources.profile_level_start
@@ -58,6 +64,7 @@ import azbarkoncmp.shared.generated.resources.profile_theme_dark
 import azbarkoncmp.shared.generated.resources.profile_theme_light
 import azbarkoncmp.shared.generated.resources.profile_theme_system
 import azbarkoncmp.shared.generated.resources.profile_theme_title
+import azbarkoncmp.shared.generated.resources.share
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -66,6 +73,8 @@ import org.jetbrains.compose.resources.stringResource
 fun ProfileSheets(
     state: ProfileState,
     onAction: (ProfileAction) -> Unit,
+    onExportData: () -> Unit,
+    onImportData: () -> Unit,
 ) {
     val sheet = state.activeSheet ?: return
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -92,6 +101,8 @@ fun ProfileSheets(
                     onMemorizationReminderToggle = { onAction(ProfileAction.OnMemorizationReminderToggle(it)) },
                     onThemeModeSelect = { onAction(ProfileAction.OnThemeModeSelected(it)) },
                     onAddWidgetClick = onAddWidgetClick,
+                    onExportData = onExportData,
+                    onImportData = onImportData,
                 )
 
             ProfileSheet.Badges ->
@@ -112,6 +123,8 @@ private fun ProfileSettingsSheetContent(
     onMemorizationReminderToggle: (Boolean) -> Unit,
     onThemeModeSelect: (ThemeMode) -> Unit,
     onAddWidgetClick: (() -> Unit)?,
+    onExportData: () -> Unit,
+    onImportData: () -> Unit,
 ) {
     Column(
         modifier =
@@ -174,6 +187,20 @@ private fun ProfileSettingsSheetContent(
             }
         }
 
+        ProfileDataActionRow(
+            icon = painterResource(Res.drawable.share),
+            title = stringResource(Res.string.profile_export_data),
+            subtitle = stringResource(Res.string.profile_export_data_subtitle),
+            onClick = onExportData,
+        )
+
+        ProfileDataActionRow(
+            icon = painterResource(Res.drawable.download),
+            title = stringResource(Res.string.profile_import_data),
+            subtitle = stringResource(Res.string.profile_import_data_subtitle),
+            onClick = onImportData,
+        )
+
         Column(verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.Start) {
             Text(
@@ -207,8 +234,7 @@ private fun ProfileSettingToggleRow(
     subtitle: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-) {
-    Row(
+) {    Row(
         modifier =
             Modifier
                 .fillMaxWidth()
@@ -234,6 +260,50 @@ private fun ProfileSettingToggleRow(
             )
         }
 
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start,
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProfileDataActionRow(
+    icon: Painter,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .clickable(onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            painter = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+        )
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp),
