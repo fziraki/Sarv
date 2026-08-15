@@ -13,12 +13,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -90,7 +93,7 @@ fun ProfileSheets(
     ModalBottomSheet(
         onDismissRequest = { onAction(ProfileAction.OnDismissSheet) },
         sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.surface,
     ) {
         when (sheet) {
             ProfileSheet.Settings ->
@@ -131,12 +134,13 @@ private fun ProfileSettingsSheetContent(
         modifier =
             Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.Start
     ) {
-
 
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -380,6 +384,7 @@ private fun ProfileLevelsSheetContent(levels: List<LevelListItemUi>) {
         modifier =
             Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
