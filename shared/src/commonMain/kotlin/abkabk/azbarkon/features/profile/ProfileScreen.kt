@@ -7,14 +7,12 @@ import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.profile.notifications.rememberDailyBeytNotificationPermissionRequester
 import abkabk.azbarkon.features.profile.util.rememberBackupImportLauncher
 import abkabk.azbarkon.features.profile.util.showToast
+import abkabk.azbarkon.ui.components.AzbarkonAlertDialog
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -98,20 +96,13 @@ fun ProfileRoot(
     }
 
     if (state.pendingImportJson != null) {
-        AlertDialog(
+        AzbarkonAlertDialog(
             onDismissRequest = { viewModel.onAction(ProfileAction.OnCancelImport) },
-            title = { Text(stringResource(Res.string.profile_import_confirm_title)) },
-            text = { Text(stringResource(Res.string.profile_import_confirm_body)) },
-            confirmButton = {
-                TextButton(onClick = { viewModel.onAction(ProfileAction.OnConfirmImport) }) {
-                    Text(stringResource(Res.string.clear_confirm))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { viewModel.onAction(ProfileAction.OnCancelImport) }) {
-                    Text(stringResource(Res.string.clear_cancel))
-                }
-            },
+            title = stringResource(Res.string.profile_import_confirm_title),
+            text = stringResource(Res.string.profile_import_confirm_body),
+            confirmLabel = stringResource(Res.string.clear_confirm),
+            onConfirm = { viewModel.onAction(ProfileAction.OnConfirmImport) },
+            dismissLabel = stringResource(Res.string.clear_cancel),
         )
     }
 }
