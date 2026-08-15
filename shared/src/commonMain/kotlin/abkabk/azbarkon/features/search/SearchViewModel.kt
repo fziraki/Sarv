@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class SearchViewModel(
     private val searchRepository: SearchRepository,
@@ -228,6 +228,6 @@ class SearchViewModel(
     private companion object {
         const val ALL_POETS_LABEL = "همه"
         const val ALL_CATEGORIES_LABEL = "همه"
-        val MIN_SEARCH_LOADING_MILLIS = 900.milliseconds
+        val MIN_SEARCH_LOADING_MILLIS = 1.seconds
     }
 }

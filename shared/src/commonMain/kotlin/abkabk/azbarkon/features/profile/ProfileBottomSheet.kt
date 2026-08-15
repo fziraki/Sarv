@@ -7,6 +7,7 @@ import abkabk.azbarkon.domain.model.profile.LevelListItemUi
 import abkabk.azbarkon.domain.model.profile.LevelRowState
 import abkabk.azbarkon.domain.model.profile.ProfileSheet
 import abkabk.azbarkon.features.profile.widget.rememberWidgetPickerLauncher
+import abkabk.azbarkon.ui.components.AzbarkonModalBottomSheet
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,15 +23,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -72,7 +70,6 @@ import azbarkoncmp.shared.generated.resources.upload
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileSheets(
     state: ProfileState,
@@ -81,7 +78,6 @@ fun ProfileSheets(
     onImportData: () -> Unit,
 ) {
     val sheet = state.activeSheet ?: return
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val openWidgetPicker = rememberWidgetPickerLauncher()
     val onAddWidgetClick = openWidgetPicker?.let { picker ->
         {
@@ -90,10 +86,8 @@ fun ProfileSheets(
         }
     }
 
-    ModalBottomSheet(
+    AzbarkonModalBottomSheet(
         onDismissRequest = { onAction(ProfileAction.OnDismissSheet) },
-        sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surface,
     ) {
         when (sheet) {
             ProfileSheet.Settings ->

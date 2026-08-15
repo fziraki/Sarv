@@ -7,6 +7,7 @@ import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.core.uidata.asString
+import abkabk.azbarkon.ui.components.AzbarkonModalBottomSheet
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.ShimmerPlaceholder
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
@@ -31,12 +32,9 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -125,7 +123,6 @@ fun SearchRoot(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     state: SearchState,
@@ -499,19 +496,14 @@ private fun SearchResultRow(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchOptionSheet(
     title: String,
     onDismiss: () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
+    AzbarkonModalBottomSheet(
         onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surface,
     ) {
         Column(
             modifier =
