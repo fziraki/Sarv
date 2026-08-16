@@ -26,6 +26,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        // ponytail: test crash, uncomment to verify Crashlytics reports
+        // throw RuntimeException("Test crash")
+
         readNavigationIntent(intent)
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
