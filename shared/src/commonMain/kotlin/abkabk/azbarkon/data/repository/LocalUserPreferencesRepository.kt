@@ -33,6 +33,16 @@ class LocalUserPreferencesRepository(
         keyValueStore.putBoolean(KEY_MEMORIZATION_REMINDER_ENABLED, enabled)
     }
 
+    override fun getNotificationPermissionDeclineCount(): Int =
+        keyValueStore.getInt(KEY_NOTIFICATION_PERMISSION_DECLINE_COUNT)
+
+    override fun incrementNotificationPermissionDeclineCount() {
+        keyValueStore.putInt(
+            KEY_NOTIFICATION_PERMISSION_DECLINE_COUNT,
+            keyValueStore.getInt(KEY_NOTIFICATION_PERMISSION_DECLINE_COUNT) + 1,
+        )
+    }
+
     override fun getThemeMode(): ThemeMode = readThemeMode()
 
     override fun setThemeMode(mode: ThemeMode) {
@@ -117,6 +127,7 @@ class LocalUserPreferencesRepository(
     internal companion object {
         const val KEY_DAILY_BEYT_NOTIFICATIONS_ENABLED = "daily_beyt_notifications_enabled"
         const val KEY_MEMORIZATION_REMINDER_ENABLED = "memorization_reminder_enabled"
+        const val KEY_NOTIFICATION_PERMISSION_DECLINE_COUNT = "notification_permission_decline_count"
         const val KEY_THEME_MODE = "theme_mode"
         const val KEY_COIN_BALANCE = "game_coin_balance"
         const val KEY_COIN_INITIALIZED = "game_coin_initialized"

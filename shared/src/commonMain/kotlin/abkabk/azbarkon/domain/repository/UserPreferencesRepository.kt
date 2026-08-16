@@ -13,6 +13,10 @@ interface UserPreferencesRepository {
 
     fun setMemorizationReminderEnabled(enabled: Boolean)
 
+    fun getNotificationPermissionDeclineCount(): Int
+
+    fun incrementNotificationPermissionDeclineCount()
+
     fun getThemeMode(): ThemeMode
 
     fun setThemeMode(mode: ThemeMode)

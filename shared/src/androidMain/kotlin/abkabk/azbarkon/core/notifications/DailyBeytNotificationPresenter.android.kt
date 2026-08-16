@@ -2,24 +2,24 @@ package abkabk.azbarkon.core.notifications
 
 import abkabk.azbarkon.domain.model.RandomDistich
 import abkabk.azbarkon.shared.R
-import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 
 class DailyBeytNotificationPresenter(
     private val context: Context,
 ) {
     fun show(distich: RandomDistich) {
-        if (!canPostNotifications()) return
+        if (!context.canPostNotifications()) return
 
-        DailyBeytNotificationChannels.ensureCreated(context)
+        context.ensureNotificationChannel(
+            DailyBeytNotificationPayload.CHANNEL_ID,
+            context.getString(R.string.daily_beyt_notification_channel_name),
+            context.getString(R.string.daily_beyt_notification_channel_description),
+            lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC,
+        )
 
         val expandedView = buildRemoteViews(distich, expanded = true)
         val collapsedView = buildRemoteViews(distich, expanded = false)
@@ -33,7 +33,11 @@ class DailyBeytNotificationPresenter(
                 .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandedView)
-                .setContentIntent(contentIntent(distich))
+                .setContentIntent(
+                    context.launchAppPendingIntent(distich.poemId) {
+                        putExtra(DailyBeytNotificationPayload.KEY_POEM_ID, distich.poemId)
+                    },
+                )
                 .setAutoCancel(true)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -47,31 +51,6 @@ class DailyBeytNotificationPresenter(
 
     private fun distichBody(distich: RandomDistich): String =
         "${distich.rightText}\n${distich.leftText}"
-
-    private fun canPostNotifications(): Boolean {
-        val notificationManager = NotificationManagerCompat.from(context)
-        if (!notificationManager.areNotificationsEnabled()) return false
-
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.POST_NOTIFICATIONS,
-            ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun contentIntent(distich: RandomDistich): PendingIntent {
-        val launchIntent =
-            context.packageManager.getLaunchIntentForPackage(context.packageName)
-                ?: Intent()
-        launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        launchIntent.putExtra(DailyBeytNotificationPayload.KEY_POEM_ID, distich.poemId)
-        return PendingIntent.getActivity(
-            context,
-            distich.poemId,
-            launchIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
-    }
 
     private fun buildRemoteViews(
         distich: RandomDistich,

@@ -46,6 +46,8 @@ import azbarkoncmp.shared.generated.resources.add_box_24px
 import azbarkoncmp.shared.generated.resources.check_circle
 import azbarkoncmp.shared.generated.resources.download
 import azbarkoncmp.shared.generated.resources.lock
+import azbarkoncmp.shared.generated.resources.notifications
+import azbarkoncmp.shared.generated.resources.notifications_outlined
 import azbarkoncmp.shared.generated.resources.profile_add_widget
 import azbarkoncmp.shared.generated.resources.profile_add_widget_subtitle
 import azbarkoncmp.shared.generated.resources.profile_badges_title
@@ -61,6 +63,8 @@ import azbarkoncmp.shared.generated.resources.profile_level_start
 import azbarkoncmp.shared.generated.resources.profile_levels_title
 import azbarkoncmp.shared.generated.resources.profile_memorization_reminder_subtitle
 import azbarkoncmp.shared.generated.resources.profile_memorization_reminder_title
+import azbarkoncmp.shared.generated.resources.profile_remote_notification_subtitle
+import azbarkoncmp.shared.generated.resources.profile_remote_notification_title
 import azbarkoncmp.shared.generated.resources.profile_settings_title
 import azbarkoncmp.shared.generated.resources.profile_theme_dark
 import azbarkoncmp.shared.generated.resources.profile_theme_light
@@ -94,9 +98,11 @@ fun ProfileSheets(
                 ProfileSettingsSheetContent(
                     isDailyBeytEnabled = state.isDailyBeytNotificationEnabled,
                     isMemorizationReminderEnabled = state.isMemorizationReminderEnabled,
+                    isRemoteNotificationGranted = state.isRemoteNotificationGranted,
                     themeMode = state.themeMode,
                     onDailyBeytToggle = { onAction(ProfileAction.OnDailyBeytNotificationToggle(it)) },
                     onMemorizationReminderToggle = { onAction(ProfileAction.OnMemorizationReminderToggle(it)) },
+                    onRemoteNotificationClick = { onAction(ProfileAction.OnRemoteNotificationClick) },
                     onThemeModeSelect = { onAction(ProfileAction.OnThemeModeSelected(it)) },
                     onAddWidgetClick = onAddWidgetClick,
                     onExportData = onExportData,
@@ -112,13 +118,16 @@ fun ProfileSheets(
     }
 }
 
+@Suppress("LongParameterList")
 @Composable
 private fun ProfileSettingsSheetContent(
     isDailyBeytEnabled: Boolean,
     isMemorizationReminderEnabled: Boolean,
+    isRemoteNotificationGranted: Boolean,
     themeMode: ThemeMode,
     onDailyBeytToggle: (Boolean) -> Unit,
     onMemorizationReminderToggle: (Boolean) -> Unit,
+    onRemoteNotificationClick: () -> Unit,
     onThemeModeSelect: (ThemeMode) -> Unit,
     onAddWidgetClick: (() -> Unit)?,
     onExportData: () -> Unit,
@@ -156,6 +165,15 @@ private fun ProfileSettingsSheetContent(
             subtitle = stringResource(Res.string.profile_memorization_reminder_subtitle),
             checked = isMemorizationReminderEnabled,
             onCheckedChange = onMemorizationReminderToggle,
+        )
+
+        ProfileDataActionRow(
+            icon = painterResource(Res.drawable.notifications_outlined),
+            iconFilled = painterResource(Res.drawable.notifications),
+            filled = isRemoteNotificationGranted,
+            title = stringResource(Res.string.profile_remote_notification_title),
+            subtitle = stringResource(Res.string.profile_remote_notification_subtitle),
+            onClick = onRemoteNotificationClick,
         )
 
         if (onAddWidgetClick != null) {
@@ -267,6 +285,8 @@ private fun ProfileDataActionRow(
     title: String,
     subtitle: String,
     onClick: () -> Unit,
+    iconFilled: Painter = icon,
+    filled: Boolean = true,
 ) {
     Row(
         modifier =
@@ -280,9 +300,14 @@ private fun ProfileDataActionRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            painter = icon,
+            painter = if (filled) iconFilled else icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
+            tint =
+                if (filled) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
         )
         Column(
             modifier = Modifier.weight(1f),

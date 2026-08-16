@@ -13,6 +13,7 @@ class AzbarkonAppState(
     private val scope: CoroutineScope,
 ) {
     var onProfileSettingsClick: (() -> Unit)? = null
+    var notificationPermissionSheetShownThisLaunch: Boolean = false
 
     fun showSnackbar(message: String) {
         scope.launch {

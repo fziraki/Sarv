@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 class FakeUserPreferencesRepository : UserPreferencesRepository {
     private var dailyBeytEnabled: Boolean = false
     private var memorizationReminderEnabled: Boolean = true
+    private var notificationPermissionDeclineCount: Int = 0
     private var themeMode: ThemeMode = ThemeMode.System
     private var coinBalance: Int = 700
     private var visitStreak: Int = 0
@@ -42,6 +43,12 @@ class FakeUserPreferencesRepository : UserPreferencesRepository {
 
     override fun setMemorizationReminderEnabled(enabled: Boolean) {
         memorizationReminderEnabled = enabled
+    }
+
+    override fun getNotificationPermissionDeclineCount(): Int = notificationPermissionDeclineCount
+
+    override fun incrementNotificationPermissionDeclineCount() {
+        notificationPermissionDeclineCount += 1
     }
 
     override fun getThemeMode(): ThemeMode = themeMode

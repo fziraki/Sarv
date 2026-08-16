@@ -4,6 +4,7 @@ import abkabk.azbarkon.core.notifications.DailyBeytNotificationPayload
 import abkabk.azbarkon.core.notifications.MemorizationReviewNotificationPayload
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : ComponentActivity() {
     private var initialPoemId by mutableIntStateOf(-1)
@@ -25,6 +27,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         readNavigationIntent(intent)
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d("FirebaseMessaging", "FCM token: ${task.result}")
+            }
+        }
 
         setContent {
             App(
