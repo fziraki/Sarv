@@ -98,7 +98,12 @@ class ProfileViewModelTest {
                 )
 
             viewModel.onAction(ProfileAction.OnDailyBeytNotificationToggle(enabled = true))
-            viewModel.onAction(ProfileAction.OnNotificationPermissionResult(granted = false))
+            viewModel.onAction(
+                ProfileAction.OnNotificationPermissionResult(
+                    granted = false,
+                    target = NotificationPermissionTarget.DailyBeyt,
+                ),
+            )
 
             assertThat(viewModel.state.value.isDailyBeytNotificationEnabled).isFalse()
             assertThat(preferences.isDailyBeytNotificationEnabled()).isFalse()

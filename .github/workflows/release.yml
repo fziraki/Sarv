@@ -26,6 +26,10 @@ jobs:
         run: |
           echo -n "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > androidApp/azbarkon.jks
 
+      - name: Decode google-services.json
+        run: |
+          echo -n "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > androidApp/google-services.json
+
       - name: Build Release APK
         env:
           # Resolved by androidApp/build.gradle.kts file() relative to the androidApp module

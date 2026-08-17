@@ -17,6 +17,7 @@ data class ProfileState(
     val themeMode: ThemeMode = ThemeMode.System,
     val isDailyBeytNotificationEnabled: Boolean = false,
     val isMemorizationReminderEnabled: Boolean = true,
+    val isRemoteNotificationGranted: Boolean = false,
     val levelProgress: ProfileLevelProgress = ProfileLevelProgress(levelId = 1, levelName = "", currentXp = 0, targetXp = 900),
     val memorizationStats: MemorizationProfileStats = MemorizationProfileStats(),
     val gameStats: GameProfileStats = GameProfileStats(),
@@ -49,12 +50,15 @@ sealed interface ProfileAction {
         val enabled: Boolean,
     ) : ProfileAction
 
+    data object OnRemoteNotificationClick : ProfileAction
+
     data class OnThemeModeSelected(
         val mode: ThemeMode,
     ) : ProfileAction
 
     data class OnNotificationPermissionResult(
         val granted: Boolean,
+        val target: NotificationPermissionTarget,
     ) : ProfileAction
 
     data object OnExportData : ProfileAction
@@ -73,5 +77,14 @@ sealed interface ProfileEvent {
         val message: abkabk.azbarkon.core.uidata.UiText,
     ) : ProfileEvent
 
-    data object RequestNotificationPermission : ProfileEvent
+    data class RequestNotificationPermission(
+        val target: NotificationPermissionTarget,
+    ) : ProfileEvent
+
+    data object OpenAppNotificationSettings : ProfileEvent
+}
+
+enum class NotificationPermissionTarget {
+    DailyBeyt,
+    Remote,
 }

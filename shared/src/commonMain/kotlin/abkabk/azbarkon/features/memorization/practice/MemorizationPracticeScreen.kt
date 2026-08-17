@@ -9,7 +9,7 @@ import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
-import abkabk.azbarkon.features.memorization.practice.notifications.rememberMemorizationReviewNotificationPermissionRequester
+import abkabk.azbarkon.core.notifications.rememberNotificationPermissionRequester
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
 import abkabk.azbarkon.domain.srs.CardGenerator
 import abkabk.azbarkon.domain.srs.DiffTokenType
@@ -126,7 +126,7 @@ fun MemorizationPracticeRoot(
     var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
     val requestNotificationPermission =
-        rememberMemorizationReviewNotificationPermissionRequester { granted ->
+        rememberNotificationPermissionRequester { granted ->
             notificationsEnabled = granted
             if (granted) {
                 scope.launch {

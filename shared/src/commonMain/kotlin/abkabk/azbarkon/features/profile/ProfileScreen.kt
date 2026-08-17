@@ -4,7 +4,9 @@ import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.asString
-import abkabk.azbarkon.features.profile.notifications.rememberDailyBeytNotificationPermissionRequester
+import abkabk.azbarkon.core.notifications.NotificationPermissionSheet
+import abkabk.azbarkon.core.notifications.openAppNotificationSettings
+import abkabk.azbarkon.core.notifications.rememberNotificationPermissionRequester
 import abkabk.azbarkon.features.profile.util.rememberBackupImportLauncher
 import abkabk.azbarkon.features.profile.util.showToast
 import abkabk.azbarkon.ui.components.AzbarkonAlertDialog
@@ -39,9 +41,15 @@ fun ProfileRoot(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val appState = LocalAzbarkonAppState.current
     var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.uidata.UiText?>(null) }
+    var showRemotePermissionSheet by remember { mutableStateOf(false) }
     val requestNotificationPermission =
-        rememberDailyBeytNotificationPermissionRequester { granted ->
-            viewModel.onAction(ProfileAction.OnNotificationPermissionResult(granted))
+        rememberNotificationPermissionRequester { granted ->
+            viewModel.onAction(
+                ProfileAction.OnNotificationPermissionResult(
+                    granted,
+                    NotificationPermissionTarget.DailyBeyt,
+                ),
+            )
         }
     val openImportPicker =
         rememberBackupImportLauncher { json ->
@@ -65,8 +73,15 @@ fun ProfileRoot(
                 snackbarMessage = event.message
             }
 
-            ProfileEvent.RequestNotificationPermission -> {
-                requestNotificationPermission()
+            is ProfileEvent.RequestNotificationPermission -> {
+                when (event.target) {
+                    NotificationPermissionTarget.DailyBeyt -> requestNotificationPermission()
+                    NotificationPermissionTarget.Remote -> showRemotePermissionSheet = true
+                }
+            }
+
+            ProfileEvent.OpenAppNotificationSettings -> {
+                openAppNotificationSettings()
             }
         }
     }
@@ -103,6 +118,21 @@ fun ProfileRoot(
             confirmLabel = stringResource(Res.string.clear_confirm),
             onConfirm = { viewModel.onAction(ProfileAction.OnConfirmImport) },
             dismissLabel = stringResource(Res.string.clear_cancel),
+        )
+    }
+
+    if (showRemotePermissionSheet) {
+        NotificationPermissionSheet(
+            onDismiss = { showRemotePermissionSheet = false },
+            onResult = { granted ->
+                viewModel.onAction(
+                    ProfileAction.OnNotificationPermissionResult(
+                        granted,
+                        NotificationPermissionTarget.Remote,
+                    ),
+                )
+                showRemotePermissionSheet = false
+            },
         )
     }
 }

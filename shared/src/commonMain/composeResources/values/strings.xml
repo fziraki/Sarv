@@ -3,6 +3,12 @@
     <string name="app_name">ازبرکن</string>
 
     <string name="home">آستان</string>
+    <string name="notification_permission_title">اعلان‌ها را فعال کنید</string>
+    <string name="notification_permission_body">برای آگاهی از بیت روزانه، یادآور مرور و اخبار جدید، اجازه دریافت اعلان را بدهید.</string>
+    <string name="notification_permission_allow">فعال کردن</string>
+    <string name="notification_permission_not_now">بعداً</string>
+    <string name="profile_remote_notification_title">اعلان‌های اخبار ازبرکن</string>
+    <string name="profile_remote_notification_subtitle">دریافت اعلان‌های اخبار ازبرکن</string>
     <string name="treasure">گنجینه</string>
     <string name="games">میدان</string>
     <string name="profile">من</string>

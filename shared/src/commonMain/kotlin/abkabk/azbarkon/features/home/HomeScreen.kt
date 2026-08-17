@@ -1,12 +1,16 @@
 package abkabk.azbarkon.features.home
 
 import abkabk.azbarkon.core.designsystem.brown
+import abkabk.azbarkon.core.notifications.MAX_NOTIFICATION_PERMISSION_DECLINES
+import abkabk.azbarkon.core.notifications.NotificationPermissionSheet
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.RandomDistich
+import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
+import abkabk.azbarkon.domain.repository.UserPreferencesRepository
 import abkabk.azbarkon.ui.components.AzbarkonButton
 import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.components.NetworkImage
@@ -95,6 +99,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 private const val SLIDER_TOP_WEIGHT = 0.4f
@@ -122,6 +127,19 @@ fun HomeRoot(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val appState = LocalAzbarkonAppState.current
     var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.uidata.UiText?>(null) }
+    val permissionGateway: NotificationPermissionGateway = koinInject()
+    val userPreferencesRepository: UserPreferencesRepository = koinInject()
+    var showNotificationPermissionSheet by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if (!appState.notificationPermissionSheetShownThisLaunch &&
+            !permissionGateway.areNotificationsEnabled() &&
+            userPreferencesRepository.getNotificationPermissionDeclineCount() < MAX_NOTIFICATION_PERMISSION_DECLINES
+        ) {
+            appState.notificationPermissionSheetShownThisLaunch = true
+            showNotificationPermissionSheet = true
+        }
+    }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -166,6 +184,13 @@ fun HomeRoot(
         HomeScreen(
             state = state,
             onAction = viewModel::onAction,
+        )
+    }
+
+    if (showNotificationPermissionSheet) {
+        NotificationPermissionSheet(
+            onDismiss = { showNotificationPermissionSheet = false },
+            onResult = { showNotificationPermissionSheet = false },
         )
     }
 }

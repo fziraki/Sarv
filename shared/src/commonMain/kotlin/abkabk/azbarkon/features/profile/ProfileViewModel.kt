@@ -1,6 +1,7 @@
 package abkabk.azbarkon.features.profile
 
 import abkabk.azbarkon.core.domain.result.Result
+import abkabk.azbarkon.core.notifications.MAX_NOTIFICATION_PERMISSION_DECLINES
 import abkabk.azbarkon.core.uidata.BaseViewModel
 import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.core.uidata.UiText
@@ -41,6 +42,8 @@ class ProfileViewModel(
                     userPreferencesRepository.isDailyBeytNotificationEnabled(),
                 isMemorizationReminderEnabled =
                     userPreferencesRepository.isMemorizationReminderEnabled(),
+                isRemoteNotificationGranted =
+                    notificationPermissionGateway.areNotificationsEnabled(),
                 themeMode = userPreferencesRepository.getThemeMode(),
             ),
     ) {
@@ -56,7 +59,13 @@ class ProfileViewModel(
             -> setState { copy(screenState = UiScreenState.Success) }
 
             ProfileAction.OnSettingsClick -> {
-                setState { copy(activeSheet = ProfileSheet.Settings) }
+                setState {
+                    copy(
+                        activeSheet = ProfileSheet.Settings,
+                        isRemoteNotificationGranted =
+                            notificationPermissionGateway.areNotificationsEnabled(),
+                    )
+                }
             }
 
             ProfileAction.OnDismissSheet -> {
@@ -83,13 +92,17 @@ class ProfileViewModel(
                 setMemorizationReminder(action.enabled)
             }
 
+            is ProfileAction.OnRemoteNotificationClick -> {
+                enableRemoteNotifications()
+            }
+
             is ProfileAction.OnThemeModeSelected -> {
                 userPreferencesRepository.setThemeMode(action.mode)
                 setState { copy(themeMode = action.mode) }
             }
 
             is ProfileAction.OnNotificationPermissionResult -> {
-                handleNotificationPermissionResult(action.granted)
+                handleNotificationPermissionResult(action.granted, action.target)
             }
 
             ProfileAction.OnExportData -> {
@@ -272,23 +285,61 @@ class ProfileViewModel(
             dailyBeytNotificationScheduler.enable(showImmediately = true)
         } else {
             viewModelScope.launch {
-                sendEvent(ProfileEvent.RequestNotificationPermission)
+                sendEvent(
+                    ProfileEvent.RequestNotificationPermission(
+                        NotificationPermissionTarget.DailyBeyt,
+                    ),
+                )
             }
         }
     }
 
-    private fun handleNotificationPermissionResult(granted: Boolean) {
-        if (granted) {
-            userPreferencesRepository.setDailyBeytNotificationEnabled(true)
-            dailyBeytNotificationScheduler.enable(showImmediately = true)
-            setState {
-                copy(isDailyBeytNotificationEnabled = true)
+    private fun handleNotificationPermissionResult(
+        granted: Boolean,
+        target: NotificationPermissionTarget,
+    ) {
+        when (target) {
+            NotificationPermissionTarget.DailyBeyt ->
+                if (granted) {
+                    userPreferencesRepository.setDailyBeytNotificationEnabled(true)
+                    dailyBeytNotificationScheduler.enable(showImmediately = true)
+                    setState {
+                        copy(isDailyBeytNotificationEnabled = true)
+                    }
+                } else {
+                    userPreferencesRepository.setDailyBeytNotificationEnabled(false)
+                    dailyBeytNotificationScheduler.disable()
+                    setState {
+                        copy(isDailyBeytNotificationEnabled = false)
+                    }
+                }
+
+            NotificationPermissionTarget.Remote -> {
+                setState {
+                    copy(isRemoteNotificationGranted = granted)
+                }
+            }
+        }
+    }
+
+    private fun enableRemoteNotifications() {
+        if (notificationPermissionGateway.areNotificationsEnabled()) {
+            return
+        }
+
+        if (userPreferencesRepository.getNotificationPermissionDeclineCount() >=
+            MAX_NOTIFICATION_PERMISSION_DECLINES
+        ) {
+            viewModelScope.launch {
+                sendEvent(ProfileEvent.OpenAppNotificationSettings)
             }
         } else {
-            userPreferencesRepository.setDailyBeytNotificationEnabled(false)
-            dailyBeytNotificationScheduler.disable()
-            setState {
-                copy(isDailyBeytNotificationEnabled = false)
+            viewModelScope.launch {
+                sendEvent(
+                    ProfileEvent.RequestNotificationPermission(
+                        NotificationPermissionTarget.Remote,
+                    ),
+                )
             }
         }
     }

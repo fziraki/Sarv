@@ -1,5 +1,8 @@
 [versions]
 agp = "9.3.1"
+firebaseBom = "34.1.0"
+googleServices = "4.4.4"
+firebaseCrashlyticsPlugin = "3.0.3"
 android-compileSdk = "37"
 android-minSdk = "24"
 android-targetSdk = "37"
@@ -35,6 +38,9 @@ detektComposeRules = "0.6.3"
 
 
 [libraries]
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
@@ -96,6 +102,8 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 androidMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 
 
 
