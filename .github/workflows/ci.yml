@@ -22,6 +22,10 @@ jobs:
       - name: Grant permission
         run: chmod +x gradlew
 
+      - name: Decode google-services.json
+        run: |
+          echo -n "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > androidApp/google-services.json
+
       - name: Run Detekt
         run: ./gradlew detektCheckAll
 
