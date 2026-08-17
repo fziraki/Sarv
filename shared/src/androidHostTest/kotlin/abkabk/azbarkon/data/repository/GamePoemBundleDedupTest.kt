@@ -62,9 +62,9 @@ class GamePoemBundleDedupTest {
     private fun resolveBundledDatabaseFile(): File {
         val candidates =
             listOf(
-                File("src/androidMain/assets/ganjoor.s3db"),
-                File("../shared/src/androidMain/assets/ganjoor.s3db"),
-                File("shared/src/androidMain/assets/ganjoor.s3db"),
+                File("sqlite/ganjoor.s3db"),
+                File("../shared/sqlite/ganjoor.s3db"),
+                File("shared/sqlite/ganjoor.s3db"),
             )
         return candidates.firstOrNull { it.exists() }
             ?: error("Bundled ganjoor.s3db not found")
