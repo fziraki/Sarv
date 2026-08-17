@@ -35,15 +35,15 @@ private fun copyBundledDatabase(context: Context, dbFile: File) {
     dbFile.parentFile?.mkdirs()
     try {
         context.assets.open("$DATABASE_NAME.zip").use { input ->
-            ZipInputStream(input).use { zip ->
-                zip.nextEntry ?: return
-                dbFile.outputStream().use { output ->
-                    zip.copyTo(output)
-                }
-            }
+            extractFirstEntry(ZipInputStream(input), dbFile)
         }
     } catch (_: IOException) {
     }
+}
+
+private fun extractFirstEntry(zip: ZipInputStream, dbFile: File) {
+    zip.nextEntry ?: return
+    dbFile.outputStream().use { zip.copyTo(it) }
 }
 
 private fun syncBundledDatabaseVersion(dbPath: String) {

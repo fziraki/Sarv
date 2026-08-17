@@ -27,6 +27,7 @@ class SqlDelightSearchLocalDataSource(
             Result.Error(DataError.Local.UNKNOWN)
         }
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun searchVersesPage(
         query: String,
         poetId: Int?,
