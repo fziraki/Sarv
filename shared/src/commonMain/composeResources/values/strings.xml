@@ -172,6 +172,9 @@
 
     <string name="poets_filter_placeholder">نام شاعر یا اثر</string>
     <string name="poets_view_works">مشاهده آثار</string>
+    <string name="poets_download">دانلود آثار</string>
+    <string name="poets_download_success">دانلود کامل شد</string>
+    <string name="poets_download_failed">دانلود ناموفق بود</string>
     <string name="poets_all_section">همه شاعران</string>
     <string name="poets_works_section">آثار</string>
     <string name="poets_works_summary_other">%1$s و %2$d اثر دیگر</string>

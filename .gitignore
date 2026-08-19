@@ -57,5 +57,8 @@ google-services.json
 
 *.s3db
 
+# poet db builder output
+tools/out/
+
 # graphify generated artifacts
 graphify-out/

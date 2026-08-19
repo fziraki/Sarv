@@ -14,6 +14,7 @@ val poetsPresentationModule =
         viewModel {
             PoetsListViewModel(
                 poetRepository = get(),
+                poetDownloadRepository = get(),
                 random = Random.Default,
             )
         }

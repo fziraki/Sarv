@@ -12,6 +12,7 @@ data class PoetsListState(
     val searchQuery: String = "",
     val poets: List<PoetListItemUi> = emptyList(),
     val featuredPoet: FeaturedPoetUi? = null,
+    val downloadingPoetIds: Set<Int> = emptySet(),
 )
 
 sealed interface PoetsListAction {
@@ -24,6 +25,10 @@ sealed interface PoetsListAction {
     ) : PoetsListAction
 
     data class OnPoetClick(
+        val poetId: Int,
+    ) : PoetsListAction
+
+    data class OnDownloadPoet(
         val poetId: Int,
     ) : PoetsListAction
 

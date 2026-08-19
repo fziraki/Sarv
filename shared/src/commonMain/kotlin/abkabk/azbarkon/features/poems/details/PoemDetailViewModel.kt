@@ -20,6 +20,7 @@ import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.memorization_max_active_error
 import azbarkoncmp.shared.generated.resources.search_empty_query
 import azbarkoncmp.shared.generated.resources.search_not_found_in_poem
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +48,10 @@ class PoemDetailViewModel(
 
     private var preparedTrackUrl: String? = null
     private var loadingJob: Job? = null
+
+    init {
+        Napier.d(message = "PoemDetail opened for poemId=$poemId", tag = "PoemDebug")
+    }
 
     private val playerListener = object : AudioPlayerListener {
 

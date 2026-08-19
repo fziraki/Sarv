@@ -5,15 +5,22 @@ CREATE TABLE poet (
     description TEXT NOT NULL
 );
 
+CREATE TABLE poet_meta (
+    id INTEGER NOT NULL PRIMARY KEY,
+    slug TEXT NOT NULL
+);
+
 selectByIdWithCatUrl:
 SELECT
     poet.id,
     poet.name,
     poet.cat_id,
     poet.description,
-    cat.url AS cat_url
+    COALESCE(cat.url, poet_meta.slug) AS cat_url,
+    cat.id IS NOT NULL AS is_downloaded
 FROM poet
 LEFT JOIN cat ON cat.id = poet.cat_id
+LEFT JOIN poet_meta ON poet_meta.id = poet.id
 WHERE poet.id = ?;
 
 selectAllWithCatUrl:
@@ -22,9 +29,11 @@ SELECT
     poet.name,
     poet.cat_id,
     poet.description,
-    cat.url AS cat_url
+    COALESCE(cat.url, poet_meta.slug) AS cat_url,
+    cat.id IS NOT NULL AS is_downloaded
 FROM poet
-LEFT JOIN cat ON cat.id = poet.cat_id;
+LEFT JOIN cat ON cat.id = poet.cat_id
+LEFT JOIN poet_meta ON poet_meta.id = poet.id;
 
 selectIdByNameLike:
 SELECT id

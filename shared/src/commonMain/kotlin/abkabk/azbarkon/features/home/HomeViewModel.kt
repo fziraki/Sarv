@@ -131,17 +131,21 @@ class HomeViewModel(
 
     private fun loadPoets() {
         viewModelScope.launch {
+            Napier.d("Home: loading poets, current screenState=${state.value.screenState}")
             setState {
                 copy(screenState = UiScreenState.Loading)
             }
 
             poetRepository.getPoets()
                 .onSuccess { poets ->
-                    Napier.d("Loaded ${poets.size} poets from local database")
+                    Napier.d(
+                        message = "Loaded ${poets.size} poets, downloaded=${poets.count { it.isDownloaded }}",
+                        tag = "Home",
+                    )
                     setState {
                         copy(
                             screenState = UiScreenState.Success,
-                            poets = poets,
+                            poets = poets.filter { it.isDownloaded },
                         )
                     }
                 }.onFailure { error ->

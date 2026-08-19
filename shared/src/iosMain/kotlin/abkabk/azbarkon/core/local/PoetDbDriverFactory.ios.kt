@@ -1,0 +1,24 @@
+@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+
+package abkabk.azbarkon.core.local
+
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.native.NativeSqliteDriver
+import co.touchlab.sqliter.DatabaseConfiguration
+import com.azbarkon.db.AzbarKonDatabase
+
+actual class PoetDbDriverFactory {
+    actual fun open(path: String): SqlDriver {
+        val dir = path.substringBeforeLast('/')
+        val name = path.substringAfterLast('/')
+        return NativeSqliteDriver(
+            DatabaseConfiguration(
+                name = name,
+                version = AzbarKonDatabase.Schema.version.toInt(),
+                create = { },
+                upgrade = { _, _ -> },
+                extendedConfig = DatabaseConfiguration.Extended(basePath = dir),
+            ),
+        )
+    }
+}

@@ -15,6 +15,7 @@ data class PoetListItemUi(
     val worksSummary: String,
     val imageUrl: String?,
     val canChat: Boolean,
+    val isDownloaded: Boolean,
 )
 
 @Stable
@@ -34,6 +35,7 @@ fun PoetWithRootCategories.toListItemUi(): PoetListItemUi =
         worksSummary = rootCategoriesSummary(rootCategories),
         imageUrl = poet.imageUrl,
         canChat = allCategories.any { it.text == GHAZAL_CATEGORY },
+        isDownloaded = poet.isDownloaded,
     )
 
 fun PoetWithRootCategories.toFeaturedPoetUi(): FeaturedPoetUi =

@@ -6,4 +6,5 @@ data class Poet(
     val description: String?,
     val rootCatId: Int?,
     val imageUrl: String?,
+    val isDownloaded: Boolean = true,
 )
