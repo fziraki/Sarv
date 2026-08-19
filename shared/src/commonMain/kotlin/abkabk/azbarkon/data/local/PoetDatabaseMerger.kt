@@ -72,7 +72,7 @@ fun mergePoetDatabase(
                     }
                 }
                 Napier.d(
-                    message = "merge: poem source count=$count minId=$minId maxId=$maxId -> first=${minId}",
+                    message = "merge: poem count=$count minId=$minId maxId=$maxId",
                     tag = "PoetDebug",
                 )
                 QueryResult.Unit
@@ -80,6 +80,7 @@ fun mergePoetDatabase(
             parameters = 0,
         )
 
+        var verseCount = 0L
         source.executeQuery(
             identifier = null,
             sql = "SELECT rowid, poem_id, vorder, position, text FROM verse",
@@ -98,11 +99,31 @@ fun mergePoetDatabase(
                         bindLong(0, newRowid)
                         bindString(1, cursor.getString(4))
                     }
+                    verseCount++
                 }
+                Napier.d(
+                    message = "merge: verse count=$verseCount",
+                    tag = "PoetDebug",
+                )
                 QueryResult.Unit
             },
             parameters = 0,
         )
+
+        val catCount =
+            target.executeQuery<Long>(
+                identifier = null,
+                sql = "SELECT COUNT(*) FROM cat WHERE poet_id = $poetId",
+                mapper = { cursor ->
+                    if (cursor.next().value) {
+                        QueryResult.Value(cursor.getLong(0) ?: 0L)
+                    } else {
+                        QueryResult.Value(0L)
+                    }
+                },
+                parameters = 0,
+            ).value
+        Napier.d(message = "merge: done poetId=$poetId cats=$catCount verses=$verseCount", tag = "PoetDebug")
     }
 }
 
