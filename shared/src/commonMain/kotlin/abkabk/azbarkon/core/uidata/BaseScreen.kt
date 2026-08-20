@@ -1,15 +1,20 @@
 package abkabk.azbarkon.core.uidata
 
-import abkabk.azbarkon.ui.components.ShowSnackBar
+import abkabk.azbarkon.ui.components.AzbarkonSnackbarVisuals
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.retry
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun BaseScreen(
@@ -18,6 +23,8 @@ fun BaseScreen(
     onRetry: (() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val snackbarHostState = LocalSnackbarHostState.current
+
     Box(
         modifier =
             modifier
@@ -31,13 +38,26 @@ fun BaseScreen(
         }
 
         if (screenState is UiScreenState.Error) {
-            ShowSnackBar(
-                key = screenState.key,
-                message = screenState.message.asString(),
-                isSuccess = screenState.isSuccess,
-                hasRetry = screenState.retryable && onRetry != null,
-                onRetry = onRetry,
-            )
+            val message = screenState.message.asString()
+            val actionLabel =
+                if (screenState.retryable && onRetry != null) {
+                    stringResource(Res.string.retry)
+                } else {
+                    null
+                }
+            LaunchedEffect(screenState.key) {
+                val result =
+                    snackbarHostState.showSnackbar(
+                        AzbarkonSnackbarVisuals(
+                            message = message,
+                            actionLabel = actionLabel,
+                            isSuccess = screenState.isSuccess,
+                        ),
+                    )
+                if (result == SnackbarResult.ActionPerformed) {
+                    onRetry?.invoke()
+                }
+            }
         }
     }
 }

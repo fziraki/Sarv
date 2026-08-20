@@ -1,7 +1,9 @@
 package abkabk.azbarkon.features.tasvirNegar
 
 import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
 import abkabk.azbarkon.features.tasvirNegar.components.EditToolbar
 import abkabk.azbarkon.features.tasvirNegar.components.EditorCallbacks
 import abkabk.azbarkon.features.tasvirNegar.components.EditorCanvas
@@ -134,6 +136,9 @@ fun TasvirNegarScreen(
                     onShareClick = { onAction(TasvirNegarAction.OnShareClick) },
                 )
             }
+        },
+        snackbarHost = {
+            AzbarkonSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
     ) {
         Box(

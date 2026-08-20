@@ -3,6 +3,8 @@ package abkabk.azbarkon.features.chat
 import abkabk.azbarkon.core.ui.keyboardAboveIme
 import abkabk.azbarkon.core.ui.rememberKeyboardLiftPx
 import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
+import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.features.poets.list.PoetAvatar
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
@@ -167,7 +169,10 @@ fun ChatScreen(
                 onValueChange = { onAction(ChatAction.OnInputChange(it)) },
                 onSendClick = { onAction(ChatAction.OnSendClick) },
             )
-        }
+        },
+        snackbarHost = {
+            AzbarkonSnackbarHost(hostState = LocalSnackbarHostState.current)
+        },
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

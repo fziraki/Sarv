@@ -3,6 +3,8 @@ package abkabk.azbarkon.features.poems.details
 import abkabk.azbarkon.core.ui.FindTextField
 import abkabk.azbarkon.core.ui.keyboardAboveIme
 import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
+import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.domain.model.PoemAudioTrack
 import abkabk.azbarkon.ui.components.AzbarkonSlider
@@ -175,6 +177,9 @@ fun PoemDetailScreen(
                 focusManager = focusManager,
                 onAction = onAction,
             )
+        },
+        snackbarHost = {
+            AzbarkonSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
     ) { paddingValues ->
 

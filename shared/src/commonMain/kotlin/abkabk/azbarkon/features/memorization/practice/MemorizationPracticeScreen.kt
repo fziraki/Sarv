@@ -4,6 +4,8 @@ import abkabk.azbarkon.core.notifications.rememberNotificationPermissionRequeste
 import abkabk.azbarkon.core.ui.keyboardAboveIme
 import abkabk.azbarkon.core.ui.rememberKeyboardLiftPx
 import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
+import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
@@ -179,6 +181,9 @@ fun MemorizationPracticeScreen(
                             .keyboardAboveIme(),
                 )
             }
+        },
+        snackbarHost = {
+            AzbarkonSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
     ) { paddingValues ->
         when (state.phase) {
