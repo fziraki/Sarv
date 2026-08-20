@@ -1,7 +1,6 @@
 package abkabk.azbarkon.features.chat
 
 import abkabk.azbarkon.core.uidata.UiScreenState
-import abkabk.azbarkon.core.uidata.UiText
 import androidx.compose.runtime.Stable
 
 @Stable
@@ -16,8 +15,6 @@ data class ChatState(
 
 sealed interface ChatAction {
     data object OnLoad : ChatAction
-
-    data object OnRetryClick : ChatAction
 
     data object OnBackClick : ChatAction
 
@@ -34,8 +31,4 @@ sealed interface ChatAction {
 
 sealed interface ChatEvent {
     data object NavigateBack : ChatEvent
-
-    data class ShowSnackbar(
-        val message: UiText,
-    ) : ChatEvent
 }

@@ -16,8 +16,10 @@ import androidx.lifecycle.viewModelScope
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.poets_download_failed
 import azbarkoncmp.shared.generated.resources.poets_download_success
-import kotlin.random.Random
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.random.Random
+import kotlin.time.Duration.Companion.milliseconds
 
 class PoetsListViewModel(
     private val poetRepository: PoetRepository,
@@ -35,9 +37,7 @@ class PoetsListViewModel(
 
     override fun onAction(action: PoetsListAction) {
         when (action) {
-            PoetsListAction.OnLoad,
-            PoetsListAction.OnRetryClick,
-            -> loadPoets()
+            PoetsListAction.OnLoad -> loadPoets()
 
             PoetsListAction.OnScreenEnter -> pickAndApplyFeaturedPoet()
 
@@ -86,7 +86,6 @@ class PoetsListViewModel(
                             screenState = UiScreenState.Error(message = message),
                         )
                     }
-                    sendEvent(PoetsListEvent.ShowSnackbar(message))
                 }
         }
     }
@@ -156,13 +155,27 @@ class PoetsListViewModel(
             setState { copy(downloadingPoetIds = downloadingPoetIds + poetId) }
             poetDownloadRepository.downloadPoet(poetId)
                 .onSuccess {
-                    setState { copy(downloadingPoetIds = downloadingPoetIds - poetId) }
-                    sendEvent(PoetsListEvent.ShowSnackbar(UiText.Resource(Res.string.poets_download_success)))
+                    setState {
+                        copy(
+                            downloadingPoetIds = downloadingPoetIds - poetId,
+                            screenState = UiScreenState.Error(
+                                message = UiText.Resource(Res.string.poets_download_success),
+                                isSuccess = true
+                            )
+                        )
+                    }
+                    delay(1000.milliseconds)
                     loadPoets()
                 }
                 .onFailure {
-                    setState { copy(downloadingPoetIds = downloadingPoetIds - poetId) }
-                    sendEvent(PoetsListEvent.ShowSnackbar(UiText.Resource(Res.string.poets_download_failed)))
+                    setState {
+                        copy(
+                            downloadingPoetIds = downloadingPoetIds - poetId,
+                            screenState = UiScreenState.Error(
+                                message = UiText.Resource(Res.string.poets_download_failed),
+                            )
+                        )
+                    }
                 }
         }
     }

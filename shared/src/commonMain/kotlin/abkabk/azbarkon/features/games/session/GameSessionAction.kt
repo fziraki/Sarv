@@ -7,8 +7,6 @@ sealed interface GameSessionAction {
 
     data object OnCheckAnswerClick : GameSessionAction
 
-    data object OnRetryClick : GameSessionAction
-
     data class OnOptionSelected(
         val index: Int,
     ) : GameSessionAction

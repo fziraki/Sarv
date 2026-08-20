@@ -163,16 +163,11 @@ class PoemDetailViewModelTest {
                     player = FakeAudioPlayer(),
                 )
 
-            viewModel.events.test {
-                viewModel.onAction(PoemDetailAction.OnFindQueryChange("زلف"))
-                viewModel.onAction(PoemDetailAction.OnFindSubmit)
+            viewModel.onAction(PoemDetailAction.OnFindQueryChange("زلف"))
+            viewModel.onAction(PoemDetailAction.OnFindSubmit)
 
-                assertThat(awaitItem()).isEqualTo(
-                    PoemDetailEvent.ShowSnackbar(
-                        UiText.Resource(Res.string.search_not_found_in_poem),
-                    ),
-                )
-            }
+            val error = viewModel.state.value.screenState as UiScreenState.Error
+            assertThat(error.message).isEqualTo(UiText.Resource(Res.string.search_not_found_in_poem))
 
             assertThat(viewModel.state.value.highlightQuery).isEqualTo("")
             assertThat(viewModel.state.value.scrollToVerseId).isNull()

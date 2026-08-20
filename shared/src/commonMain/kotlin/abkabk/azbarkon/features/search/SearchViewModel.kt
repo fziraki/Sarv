@@ -3,6 +3,7 @@ package abkabk.azbarkon.features.search
 import abkabk.azbarkon.core.domain.result.onFailure
 import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.core.uidata.BaseViewModel
+import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.data.mapper.collectCatIdsInSubtreeFromTree
 import abkabk.azbarkon.domain.model.PoetCategoryNode
@@ -186,15 +187,15 @@ class SearchViewModel(
         val query = state.value.query.trim()
         if (query.isEmpty()) {
             viewModelScope.launch {
-                sendEvent(
-                    SearchEvent.ShowSnackbar(
-                        UiText.Resource(Res.string.search_empty_query),
-                    ),
-                )
+                setState {
+                    copy(
+                        screenState = UiScreenState.Error(message = UiText.Resource(Res.string.search_empty_query)),
+                    )
+                }
             }
             return
         }
-        setState { copy(submittedQuery = query, isSearching = true) }
+        setState { copy(submittedQuery = query, isSearching = true, screenState = UiScreenState.Idle) }
         updateSearchParams(query)
     }
 

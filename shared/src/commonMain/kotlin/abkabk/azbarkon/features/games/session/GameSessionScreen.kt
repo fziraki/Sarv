@@ -52,7 +52,6 @@ fun GameSessionRoot(
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(GameSessionAction.OnRetryClick) },
         modifier = modifier,
     ) {
         GameSessionScreen(

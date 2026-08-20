@@ -1,18 +1,13 @@
 package abkabk.azbarkon.features.poets.list
 
 import abkabk.azbarkon.core.uidata.BaseScreen
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.core.uidata.UiText
-import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.poets.FeaturedPoetUi
 import abkabk.azbarkon.features.poets.PoetListItemUi
 import abkabk.azbarkon.ui.components.AzbarkonButton
-import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,11 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,22 +57,11 @@ fun PoetsListRoot(
     viewModel: PoetsListViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is PoetsListEvent.NavigateToPoetDetail -> onNavigateToPoetDetail(event.poetId)
             is PoetsListEvent.NavigateToChat -> onNavigateToChat(event.poetId)
-            is PoetsListEvent.ShowSnackbar -> snackbarMessage = event.message
-        }
-    }
-
-    snackbarMessage?.let { message ->
-        val resolvedMessage = message.asString()
-        LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
-            snackbarMessage = null
         }
     }
 
@@ -92,7 +72,6 @@ fun PoetsListRoot(
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(PoetsListAction.OnRetryClick) },
     ) {
         PoetsListScreen(
             state = state,

@@ -96,7 +96,6 @@ fun ProfileRoot(
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(ProfileAction.OnRetryClick) },
     ) {
         ProfileScreen(
             state = state,

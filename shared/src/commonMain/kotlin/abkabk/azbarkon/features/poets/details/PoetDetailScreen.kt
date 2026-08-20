@@ -1,17 +1,13 @@
 package abkabk.azbarkon.features.poets.details
 
 import abkabk.azbarkon.core.uidata.BaseScreen
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.core.uidata.UiText
-import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.poets.PoetCategoryRowUi
 import abkabk.azbarkon.features.poets.list.PoetAvatar
 import abkabk.azbarkon.features.poets.list.PoetsSectionTitle
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
-import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,9 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.cd_chat
 import azbarkoncmp.shared.generated.resources.chat_bubble
 import azbarkoncmp.shared.generated.resources.chat_with_poet
-import azbarkoncmp.shared.generated.resources.cd_chat
 import azbarkoncmp.shared.generated.resources.poet_bio_read_more
 import azbarkoncmp.shared.generated.resources.poets_works_section
 import org.jetbrains.compose.resources.painterResource
@@ -65,8 +60,6 @@ fun PoetDetailRoot(
     viewModel: PoetDetailViewModel = koinViewModel { parametersOf(poetId) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -76,21 +69,11 @@ fun PoetDetailRoot(
 
             is PoetDetailEvent.NavigateToChat -> onNavigateToChat()
 
-            is PoetDetailEvent.ShowSnackbar -> snackbarMessage = event.message
-        }
-    }
-
-    snackbarMessage?.let { message ->
-        val resolvedMessage = message.asString()
-        LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
-            snackbarMessage = null
         }
     }
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(PoetDetailAction.OnRetryClick) },
     ) {
         PoetDetailScreen(
             state = state,

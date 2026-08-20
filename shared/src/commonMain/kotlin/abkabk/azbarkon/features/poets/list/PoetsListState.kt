@@ -1,7 +1,6 @@
 package abkabk.azbarkon.features.poets.list
 
 import abkabk.azbarkon.core.uidata.UiScreenState
-import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.features.poets.FeaturedPoetUi
 import abkabk.azbarkon.features.poets.PoetListItemUi
 import androidx.compose.runtime.Stable
@@ -17,8 +16,6 @@ data class PoetsListState(
 
 sealed interface PoetsListAction {
     data object OnLoad : PoetsListAction
-
-    data object OnRetryClick : PoetsListAction
 
     data class OnSearchQueryChange(
         val query: String,
@@ -50,7 +47,4 @@ sealed interface PoetsListEvent {
         val poetId: Int,
     ) : PoetsListEvent
 
-    data class ShowSnackbar(
-        val message: UiText,
-    ) : PoetsListEvent
 }

@@ -3,10 +3,7 @@ package abkabk.azbarkon.features.chat
 import abkabk.azbarkon.core.ui.keyboardAboveIme
 import abkabk.azbarkon.core.ui.rememberKeyboardLiftPx
 import abkabk.azbarkon.core.uidata.BaseScreen
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.core.uidata.UiText
-import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.poets.list.PoetAvatar
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
@@ -40,9 +37,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -112,27 +106,15 @@ fun ChatRoot(
     viewModel: ChatViewModel = koinViewModel { parametersOf(poetId) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             ChatEvent.NavigateBack -> onBackClick()
-            is ChatEvent.ShowSnackbar -> snackbarMessage = event.message
-        }
-    }
-
-    snackbarMessage?.let { message ->
-        val resolvedMessage = message.asString()
-        LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
-            snackbarMessage = null
         }
     }
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(ChatAction.OnRetryClick) },
     ) {
         ChatScreen(
             state = state,

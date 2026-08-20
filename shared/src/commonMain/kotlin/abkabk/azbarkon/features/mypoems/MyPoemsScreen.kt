@@ -1,10 +1,7 @@
 package abkabk.azbarkon.features.mypoems
 
 import abkabk.azbarkon.core.uidata.BaseScreen
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.core.uidata.UiText
-import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.ui.components.AzbarkonAlertDialog
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
@@ -35,7 +32,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,8 +71,6 @@ fun MyPoemsRoot(
     viewModel: MyPoemsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.onAction(MyPoemsAction.OnResume)
@@ -84,22 +78,12 @@ fun MyPoemsRoot(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is MyPoemsEvent.ShowSnackbar -> snackbarMessage = event.message
             is MyPoemsEvent.NavigateToPoemDetail -> onNavigateToPoemDetail(event.poemId)
-        }
-    }
-
-    snackbarMessage?.let { message ->
-        val resolvedMessage = message.asString()
-        LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
-            snackbarMessage = null
         }
     }
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(MyPoemsAction.OnRetryClick) },
     ) {
         MyPoemsScreen(
             state = state,

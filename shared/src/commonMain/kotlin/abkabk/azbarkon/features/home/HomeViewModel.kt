@@ -29,9 +29,7 @@ class HomeViewModel(
 
     override fun onAction(action: HomeAction) {
         when (action) {
-            HomeAction.OnLoad,
-            HomeAction.OnRetryClick,
-            -> loadPoets()
+            HomeAction.OnLoad -> loadPoets()
 
             HomeAction.OnSeeAllPoetsClick -> {
                 viewModelScope.launch {
@@ -159,7 +157,6 @@ class HomeViewModel(
                                 ),
                         )
                     }
-                    sendEvent(HomeEvent.ShowSnackbar(message))
                 }
         }
     }

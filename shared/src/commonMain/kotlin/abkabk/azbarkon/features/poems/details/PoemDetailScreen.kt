@@ -3,10 +3,7 @@ package abkabk.azbarkon.features.poems.details
 import abkabk.azbarkon.core.ui.FindTextField
 import abkabk.azbarkon.core.ui.keyboardAboveIme
 import abkabk.azbarkon.core.uidata.BaseScreen
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.core.uidata.UiText
-import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.domain.model.PoemAudioTrack
 import abkabk.azbarkon.ui.components.AzbarkonSlider
 import abkabk.azbarkon.ui.components.Header
@@ -56,13 +53,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.Clipboard
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.style.TextOverflow
@@ -98,28 +93,17 @@ fun PoemDetailRoot(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val audioState by viewModel.audioState.collectAsStateWithLifecycle()
-    val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is PoemDetailEvent.ShowSnackbar -> snackbarMessage = event.message
             is PoemDetailEvent.NavigateToTasvirNegar -> onNavigateToTasvirNegar(poemId, event.initialText)
             PoemDetailEvent.NavigateToMemorizationPractice -> onNavigateToMemorizationPractice(poemId)
         }
     }
 
-    snackbarMessage?.let { message ->
-        val resolvedMessage = message.asString()
-        LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
-            snackbarMessage = null
-        }
-    }
-
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(PoemDetailAction.OnRetryClick) },
+        onRetry = { viewModel.onAction(PoemDetailAction.OnRetryLoadTracks) },
     ) {
         PoemDetailScreen(
             state = state,

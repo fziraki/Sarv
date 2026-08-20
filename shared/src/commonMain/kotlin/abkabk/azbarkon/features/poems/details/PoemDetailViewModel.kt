@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-private const val MIN_RING_VISIBLE_MS = 800L
+private val MIN_RING_VISIBLE_MS = 800.milliseconds
 
 class PoemDetailViewModel(
     private val poemRepository: PoemRepository,
@@ -76,7 +76,9 @@ class PoemDetailViewModel(
                 AudioPlaybackState.ERROR -> {
                     updateTrack(activeUrl) { it.copy(isLoading = false, isPlaying = false) }
                     viewModelScope.launch {
-                        sendEvent(PoemDetailEvent.ShowSnackbar(UiText.DynamicString("پخش صدا با خطا مواجه شد")))
+                        setState {
+                            copy(screenState = UiScreenState.Error(message = UiText.DynamicString("پخش صدا با خطا مواجه شد")))
+                        }
                     }
                 }
             }
@@ -86,7 +88,9 @@ class PoemDetailViewModel(
             val activeUrl = _audioState.value.activeTrackUrl ?: return
             updateTrack(activeUrl) { it.copy(isLoading = false, isPlaying = false) }
             viewModelScope.launch {
-                sendEvent(PoemDetailEvent.ShowSnackbar(UiText.DynamicString("پخش صدا با خطا مواجه شد")))
+                setState {
+                    copy(screenState = UiScreenState.Error(message = UiText.DynamicString("پخش صدا با خطا مواجه شد")))
+                }
             }
         }
     }
@@ -129,9 +133,9 @@ class PoemDetailViewModel(
 
     override fun onAction(action: PoemDetailAction) {
         when (action) {
-            PoemDetailAction.OnLoad,
-            PoemDetailAction.OnRetryClick,
-                -> loadPoemDetail()
+            PoemDetailAction.OnLoad -> loadPoemDetail()
+
+            PoemDetailAction.OnRetryLoadTracks -> loadTracks()
 
             is PoemDetailAction.OnTrackPlayPauseClick -> togglePlayPause(action.track)
             is PoemDetailAction.OnTrackSelect -> onTrackSelect(action.track)
@@ -179,7 +183,9 @@ class PoemDetailViewModel(
                     }
                 }
                 .onFailure { error ->
-                    sendEvent(PoemDetailEvent.ShowSnackbar(error.toUiText()))
+                    setState {
+                        copy(screenState = UiScreenState.Error(message = error.toUiText(), retryable = true))
+                    }
                 }
         }
     }
@@ -331,7 +337,6 @@ class PoemDetailViewModel(
                     setState {
                         copy(screenState = UiScreenState.Error(message = message))
                     }
-                    sendEvent(PoemDetailEvent.ShowSnackbar(message))
                 }
             }
         }
@@ -356,7 +361,10 @@ class PoemDetailViewModel(
                                 UiText.Resource(Res.string.memorization_max_active_error)
                             else -> error.toUiText()
                         }
-                    sendEvent(PoemDetailEvent.ShowSnackbar(message))
+
+                    setState {
+                        copy(screenState = UiScreenState.Error(message = message))
+                    }
                 }
         }
     }
@@ -396,11 +404,9 @@ class PoemDetailViewModel(
         val trimmedQuery = query.trim()
         if (trimmedQuery.isEmpty()) {
             viewModelScope.launch {
-                sendEvent(
-                    PoemDetailEvent.ShowSnackbar(
-                        UiText.Resource(Res.string.search_empty_query),
-                    ),
-                )
+                setState {
+                    copy(screenState = UiScreenState.Error(message = UiText.Resource(Res.string.search_empty_query)))
+                }
             }
             return
         }
@@ -408,11 +414,9 @@ class PoemDetailViewModel(
         val matchingVerse = findFirstMatchingVerse(state.value.verses, trimmedQuery)
         if (matchingVerse == null) {
             viewModelScope.launch {
-                sendEvent(
-                    PoemDetailEvent.ShowSnackbar(
-                        UiText.Resource(Res.string.search_not_found_in_poem),
-                    ),
-                )
+                setState {
+                    copy(screenState = UiScreenState.Error(message = UiText.Resource(Res.string.search_not_found_in_poem)))
+                }
             }
             return
         }

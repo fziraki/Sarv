@@ -23,9 +23,7 @@ class ActiveMemorizationViewModel(
 
     override fun onAction(action: ActiveMemorizationAction) {
         when (action) {
-            ActiveMemorizationAction.OnLoad,
-            ActiveMemorizationAction.OnRetryClick,
-            -> loadPoems()
+            ActiveMemorizationAction.OnLoad -> loadPoems()
 
             ActiveMemorizationAction.OnBackClick -> {
                 viewModelScope.launch { sendEvent(ActiveMemorizationEvent.NavigateBack) }
@@ -58,7 +56,9 @@ class ActiveMemorizationViewModel(
                             setState { copy(poemToDelete = null) }
                             loadPoems()
                         }.onFailure {
-                            sendEvent(ActiveMemorizationEvent.ShowSnackbar(UiText.Resource(Res.string.error_unknown)))
+                            setState {
+                                copy(screenState = UiScreenState.Error(message = UiText.Resource(Res.string.error_unknown)))
+                            }
                         }
                 }
             }

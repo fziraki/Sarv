@@ -55,7 +55,6 @@ class ProfileViewModel(
     override fun onAction(action: ProfileAction) {
         when (action) {
             ProfileAction.OnLoad,
-            ProfileAction.OnRetryClick,
             -> setState { copy(screenState = UiScreenState.Success) }
 
             ProfileAction.OnSettingsClick -> {

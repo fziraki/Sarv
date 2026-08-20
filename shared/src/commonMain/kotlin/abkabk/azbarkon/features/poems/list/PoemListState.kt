@@ -1,6 +1,5 @@
 package abkabk.azbarkon.features.poems.list
 
-import abkabk.azbarkon.core.uidata.UiText
 import androidx.compose.runtime.Stable
 
 @Stable
@@ -21,9 +20,6 @@ sealed interface PoemListAction {
 }
 
 sealed interface PoemListEvent {
-    data class ShowSnackbar(
-        val message: UiText,
-    ) : PoemListEvent
 
     data class NavigateToPoemDetail(
         val poemId: Int,

@@ -121,7 +121,7 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun `load failure emits snackbar event`() =
+    fun `load failure sets error state`() =
         runTest {
             val repository =
                 FakePoetRepository().apply {
@@ -129,10 +129,7 @@ class HomeViewModelTest {
                 }
             val viewModel = HomeViewModel(repository, FakeMemorizationRepository(), FakeDailyBeytRepository())
 
-            viewModel.events.test {
-                val event = awaitItem()
-                assertThat(event).isInstanceOf(HomeEvent.ShowSnackbar::class)
-            }
+            assertThat(viewModel.state.value.screenState).isInstanceOf(UiScreenState.Error::class)
         }
 
     @Test

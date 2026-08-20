@@ -44,8 +44,6 @@ class GameSessionViewModel(
 
             GameSessionAction.OnCheckAnswerClick -> onPrimaryActionClick()
 
-            GameSessionAction.OnRetryClick -> loadSession()
-
             is GameSessionAction.OnOptionSelected -> {
                 if (state.value.isAnswering) {
                     setState { copy(selectedOptionIndex = action.index) }
@@ -144,7 +142,6 @@ class GameSessionViewModel(
                             screenState =
                                 UiScreenState.Error(
                                     message = UiText.Resource(Res.string.error_unknown),
-                                    retryable = true,
                                 ),
                         )
                     }
@@ -298,7 +295,6 @@ class GameSessionViewModel(
                         screenState =
                             UiScreenState.Error(
                                 message = UiText.Resource(Res.string.error_unknown),
-                                retryable = true,
                             ),
                     )
                 }

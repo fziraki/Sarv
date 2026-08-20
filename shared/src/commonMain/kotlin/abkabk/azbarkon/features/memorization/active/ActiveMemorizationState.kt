@@ -1,7 +1,6 @@
 package abkabk.azbarkon.features.memorization.active
 
 import abkabk.azbarkon.core.uidata.UiScreenState
-import abkabk.azbarkon.core.uidata.UiText
 import androidx.compose.runtime.Stable
 
 @Stable
@@ -24,8 +23,6 @@ data class ActiveMemorizationState(
 
 sealed interface ActiveMemorizationAction {
     data object OnLoad : ActiveMemorizationAction
-
-    data object OnRetryClick : ActiveMemorizationAction
 
     data object OnBackClick : ActiveMemorizationAction
 
@@ -51,9 +48,5 @@ sealed interface ActiveMemorizationEvent {
 
     data class NavigateToPractice(
         val poemId: Int,
-    ) : ActiveMemorizationEvent
-
-    data class ShowSnackbar(
-        val message: UiText,
     ) : ActiveMemorizationEvent
 }

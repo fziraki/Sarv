@@ -32,8 +32,6 @@ data class ProfileState(
 sealed interface ProfileAction {
     data object OnLoad : ProfileAction
 
-    data object OnRetryClick : ProfileAction
-
     data object OnSettingsClick : ProfileAction
 
     data object OnDismissSheet : ProfileAction

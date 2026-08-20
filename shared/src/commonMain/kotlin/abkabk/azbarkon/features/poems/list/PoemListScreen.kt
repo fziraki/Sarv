@@ -1,11 +1,9 @@
 package abkabk.azbarkon.features.poems.list
 
 import abkabk.azbarkon.core.uidata.BaseScreen
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.core.uidata.UiText
-import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.components.ShimmerPlaceholder
@@ -25,11 +23,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
@@ -58,39 +53,28 @@ fun PoemListRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val poems = viewModel.poems.collectAsLazyPagingItems()
-    val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is PoemListEvent.ShowSnackbar -> snackbarMessage = event.message
             is PoemListEvent.NavigateToPoemDetail -> onNavigateToPoemDetail(event.poemId)
         }
     }
 
-    snackbarMessage?.let { message ->
-        val resolvedMessage = message.asString()
-        LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
-            snackbarMessage = null
-        }
-    }
-
     val screenState =
-        when {
-            poems.loadState.refresh is LoadState.Loading && poems.itemCount == 0 ->
-                UiScreenState.Loading
-            poems.loadState.refresh is LoadState.Error ->
-                UiScreenState.Error(
-                    message = UiText.Resource(Res.string.list_load_error),
-                    retryable = true,
-                )
-            else -> UiScreenState.Success
+        remember(poems.loadState.refresh) {
+            when {
+                poems.loadState.refresh is LoadState.Loading && poems.itemCount == 0 ->
+                    UiScreenState.Loading
+                poems.loadState.refresh is LoadState.Error ->
+                    UiScreenState.Error(
+                        message = UiText.Resource(Res.string.list_load_error),
+                    )
+                else -> UiScreenState.Success
+            }
         }
 
     BaseScreen(
         screenState = screenState,
-        onRetry = { poems.retry() },
     ) {
         PoemListScreen(
             state = state,

@@ -1,7 +1,6 @@
 package abkabk.azbarkon.features.poets.details
 
 import abkabk.azbarkon.core.uidata.UiScreenState
-import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.features.poets.PoetCategoryRowUi
 import androidx.compose.runtime.Stable
 
@@ -17,8 +16,6 @@ data class PoetDetailState(
 
 sealed interface PoetDetailAction {
     data object OnLoad : PoetDetailAction
-
-    data object OnRetryClick : PoetDetailAction
 
     data class OnCategoryToggle(
         val categoryId: Int,
@@ -40,9 +37,5 @@ sealed interface PoetDetailEvent {
 
     data class NavigateToChat(
         val poetId: Int,
-    ) : PoetDetailEvent
-
-    data class ShowSnackbar(
-        val message: UiText,
     ) : PoetDetailEvent
 }

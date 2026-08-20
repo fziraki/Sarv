@@ -14,9 +14,10 @@ import androidx.lifecycle.viewModelScope
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.chat_persian_only
 import azbarkoncmp.shared.generated.resources.poem_copied
-import kotlin.random.Random
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.random.Random
+
 class ChatViewModel(
     private val poetRepository: PoetRepository,
     private val chatRepository: ChatRepository,
@@ -33,9 +34,7 @@ class ChatViewModel(
 
     override fun onAction(action: ChatAction) {
         when (action) {
-            ChatAction.OnLoad,
-            ChatAction.OnRetryClick,
-            -> loadPoet()
+            ChatAction.OnLoad -> loadPoet()
 
             ChatAction.OnBackClick -> {
                 viewModelScope.launch {
@@ -71,7 +70,6 @@ class ChatViewModel(
                     setState {
                         copy(screenState = UiScreenState.Error(message = message))
                     }
-                    sendEvent(ChatEvent.ShowSnackbar(message))
                 }
         }
     }
@@ -83,11 +81,11 @@ class ChatViewModel(
         val lastLetter = extractLastPersianLetter(trimmedInput)
         if (lastLetter == null) {
             viewModelScope.launch {
-                sendEvent(
-                    ChatEvent.ShowSnackbar(
-                        UiText.Resource(Res.string.chat_persian_only),
-                    ),
-                )
+                setState {
+                    copy(screenState = UiScreenState.Error(
+                        message = UiText.Resource(Res.string.chat_persian_only))
+                    )
+                }
             }
             return
         }
@@ -125,8 +123,11 @@ class ChatViewModel(
                     text = "${distich.rightText}\n\n${distich.leftText}",
                 )
             }.onFailure { error ->
-                setState { copy(isPoetTyping = false) }
-                sendEvent(ChatEvent.ShowSnackbar(error.toUiText()))
+                setState {
+                    copy(
+                        isPoetTyping = false,
+                        screenState = UiScreenState.Error(message = error.toUiText()))
+                }
             }
     }
 
@@ -153,11 +154,12 @@ class ChatViewModel(
 
         clipboardService.copyToClipboard(message.text)
         viewModelScope.launch {
-            sendEvent(
-                ChatEvent.ShowSnackbar(
-                    UiText.Resource(Res.string.poem_copied),
-                ),
-            )
+            setState {
+                copy(screenState = UiScreenState.Error(
+                    message = UiText.Resource(Res.string.poem_copied),
+                    isSuccess = true),
+                )
+            }
         }
     }
 
