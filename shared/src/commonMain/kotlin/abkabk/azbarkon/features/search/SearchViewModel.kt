@@ -98,7 +98,7 @@ class SearchViewModel(
                     val poetOptions =
                         buildList {
                             add(SearchPoetOptionUi(id = null, name = ALL_POETS_LABEL))
-                            poets.forEach { poet ->
+                            poets.filter { it.isDownloaded }.forEach { poet ->
                                 val id = poet.id ?: return@forEach
                                 val name = poet.name ?: return@forEach
                                 add(SearchPoetOptionUi(id = id, name = name))

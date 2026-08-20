@@ -103,7 +103,7 @@ private fun RandomDistichWidgetConfigureScreen(
     LaunchedEffect(Unit) {
         when (val result = currentLoadPoets()) {
             is Result.Success -> {
-                poets = result.data
+                poets = result.data.filter { it.isDownloaded }
                 isLoading = false
             }
             is Result.Error -> {
