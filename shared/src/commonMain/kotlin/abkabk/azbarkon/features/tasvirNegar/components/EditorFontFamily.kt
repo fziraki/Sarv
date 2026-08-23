@@ -8,7 +8,6 @@ import azbarkoncmp.shared.generated.resources.B_Yekan
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.Shekasteh
 import azbarkoncmp.shared.generated.resources.Tanha_FD
-import azbarkoncmp.shared.generated.resources.samimfd
 import org.jetbrains.compose.resources.Font
 
 @Composable
@@ -21,6 +20,3 @@ fun editorFontFamily(preset: EditorFontPreset): FontFamily =
         EditorFontPreset.Tanha ->
             FontFamily(Font(Res.font.Tanha_FD, FontWeight.Normal))
     }
-
-@Composable
-fun samimFontFamily(): FontFamily = FontFamily(Font(Res.font.samimfd, FontWeight.Normal))

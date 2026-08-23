@@ -2,6 +2,7 @@ package abkabk.azbarkon.features.tasvirNegar.components
 
 import abkabk.azbarkon.core.designsystem.secondary
 import abkabk.azbarkon.core.designsystem.surfaceVariant
+import abkabk.azbarkon.core.designsystem.vazirmatnFontFamily
 import abkabk.azbarkon.features.tasvirNegar.TasvirNegarAction
 import abkabk.azbarkon.ui.components.AzbarkonSlider
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
@@ -15,8 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -124,7 +123,6 @@ private fun LabeledIconButton(
             text = label,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 10.sp,
-            fontFamily = samimFontFamily(),
         )
     }
 }
@@ -230,7 +228,6 @@ private fun ToolbarIcon(
             text = label,
             color = tint,
             fontSize = 10.sp,
-            fontFamily = samimFontFamily(),
             modifier = Modifier.padding(top = 2.dp),
         )
     }
@@ -245,7 +242,6 @@ fun VerticalSizeSlider(
 ) {
     val valueRange = MIN_TEXT_SIZE..MAX_TEXT_SIZE
     val sliderValue = progress.coerceIn(valueRange.start, valueRange.endInclusive)
-    val samim = samimFontFamily()
 
     Column(
         modifier = modifier,
@@ -255,7 +251,7 @@ fun VerticalSizeSlider(
             text = sliderValue.toInt().toString(),
             style =
                 androidx.compose.ui.text.TextStyle(
-                    fontFamily = samim,
+                    fontFamily = vazirmatnFontFamily(),
                     fontSize = 12.sp,
                     color = Color.White,
                     shadow = Shadow(Color.Black.copy(alpha = 0.6f), offset = Offset(0f, 1f), blurRadius = 2f),
