@@ -15,6 +15,7 @@ import abkabk.azbarkon.features.tasvirNegar.model.EditorDocument
 import abkabk.azbarkon.features.tasvirNegar.model.LayerId
 import abkabk.azbarkon.features.tasvirNegar.util.TasvirCustomColorPicker
 import abkabk.azbarkon.features.tasvirNegar.util.rememberTasvirNegarGalleryLauncher
+import abkabk.azbarkon.features.tasvirNegar.util.rememberTasvirNegarStoragePermission
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -51,10 +52,20 @@ fun TasvirNegarRoot(
     var showColorPicker by remember { mutableStateOf(false) }
     var captureCanvas by remember { mutableStateOf<suspend () -> ByteArray?>({ null }) }
     val captureCanvasState by rememberUpdatedState(captureCanvas)
+    var pendingExportForShare by remember { mutableStateOf<Boolean?>(null) }
 
     val launchGallery =
         rememberTasvirNegarGalleryLauncher { uri ->
             viewModel.onAction(TasvirNegarAction.OnGalleryImagePicked(uri))
+        }
+
+    val requestStoragePermission =
+        rememberTasvirNegarStoragePermission { granted ->
+            val forShare = pendingExportForShare
+            pendingExportForShare = null
+            if (granted && forShare != null) {
+                viewModel.requestExport(forShare)
+            }
         }
 
     ObserveAsEvents(viewModel.events) { event ->
@@ -62,6 +73,10 @@ fun TasvirNegarRoot(
             TasvirNegarEvent.NavigateBack -> onBackClick()
             TasvirNegarEvent.RequestGalleryPick -> launchGallery()
             TasvirNegarEvent.RequestCustomColorPicker -> showColorPicker = true
+            is TasvirNegarEvent.RequestStoragePermission -> {
+                pendingExportForShare = event.forShare
+                requestStoragePermission()
+            }
         }
     }
 

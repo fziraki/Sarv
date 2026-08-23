@@ -51,8 +51,8 @@ class TasvirNegarViewModel(
             TasvirNegarAction.OnLoad -> loadInitialDocument()
 
             TasvirNegarAction.OnBackClick -> emitNavigateBack()
-            TasvirNegarAction.OnSaveClick -> requestExport(forShare = false)
-            TasvirNegarAction.OnShareClick -> requestExport(forShare = true)
+            TasvirNegarAction.OnSaveClick -> emitEvent(TasvirNegarEvent.RequestStoragePermission(forShare = false))
+            TasvirNegarAction.OnShareClick -> emitEvent(TasvirNegarEvent.RequestStoragePermission(forShare = true))
 
             TasvirNegarAction.OnResetCanvas -> resetCanvas()
 
@@ -426,7 +426,7 @@ class TasvirNegarViewModel(
         }
     }
 
-    private fun requestExport(forShare: Boolean) {
+    internal fun requestExport(forShare: Boolean) {
         updateDocument {
             copy(
                 selectedLayer = null,
