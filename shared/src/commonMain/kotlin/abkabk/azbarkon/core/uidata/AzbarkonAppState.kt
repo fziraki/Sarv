@@ -3,23 +3,11 @@ package abkabk.azbarkon.core.uidata
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
-class AzbarkonAppState(
-    val snackbarHostState: SnackbarHostState,
-    private val scope: CoroutineScope,
-) {
+class AzbarkonAppState {
     var onProfileSettingsClick: (() -> Unit)? = null
     var notificationPermissionSheetShownThisLaunch: Boolean = false
-
-    fun showSnackbar(message: String) {
-        scope.launch {
-            snackbarHostState.showSnackbar(message)
-        }
-    }
 }
 
 @Suppress("CompositionLocalAllowlist")
@@ -28,15 +16,10 @@ val LocalAzbarkonAppState =
         error("AzbarkonAppState not provided")
     }
 
-@Composable
-fun rememberAzbarkonAppState(): AzbarkonAppState {
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
+// ponytail: plain default keeps previews alive; the app always provides the real one in AzbarkonNavigation
+@Suppress("CompositionLocalAllowlist")
+val LocalSnackbarHostState =
+    staticCompositionLocalOf<SnackbarHostState> { SnackbarHostState() }
 
-    return remember(snackbarHostState, scope) {
-        AzbarkonAppState(
-            snackbarHostState = snackbarHostState,
-            scope = scope,
-        )
-    }
-}
+@Composable
+fun rememberAzbarkonAppState(): AzbarkonAppState = remember { AzbarkonAppState() }

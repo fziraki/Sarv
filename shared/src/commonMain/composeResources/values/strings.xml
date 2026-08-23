@@ -166,12 +166,16 @@
     <string name="error_disk_full">فضای ذخیره‌سازی کافی نیست</string>
     <string name="error_unknown">خطای ناشناخته</string>
     <string name="retry">تلاش مجدد</string>
-    <string name="list_load_error">خطا در بارگذاری. برای تلاش مجدد لمس کنید.</string>
+    <string name="dismiss">بستن</string>
+    <string name="list_load_error">خطا در بارگذاری</string>
     <string name="cd_back">بازگشت</string>
     <string name="cd_search">رفتن به صفحه جستجو</string>
 
     <string name="poets_filter_placeholder">نام شاعر یا اثر</string>
     <string name="poets_view_works">مشاهده آثار</string>
+    <string name="poets_download">دانلود آثار</string>
+    <string name="poets_download_success">دانلود کامل شد</string>
+    <string name="poets_download_failed">دانلود ناموفق بود</string>
     <string name="poets_all_section">همه شاعران</string>
     <string name="poets_works_section">آثار</string>
     <string name="poets_works_summary_other">%1$s و %2$d اثر دیگر</string>
@@ -180,7 +184,7 @@
     <string name="profile_daily_beyt_title">بیت روزانه</string>
     <string name="profile_daily_beyt_subtitle">هر روز ساعت ۸ صبح یک بیت تصادفی</string>
     <string name="profile_memorization_reminder_title">یادآور مرور حفظ</string>
-    <string name="profile_memorization_reminder_subtitle">یادآوری برای مرور شعرهای در حال حفظ</string>
+    <string name="profile_memorization_reminder_subtitle">هر روز ساعت ۱۰ صبح یادآوری مرور شعرها</string>
     <string name="profile_settings_title">تنظیمات</string>
     <string name="profile_export_data">پشتیبان‌گیری از اطلاعات</string>
     <string name="profile_export_data_subtitle">ذخیره اطلاعات ازبرکن در فایل</string>
@@ -216,6 +220,8 @@
     <string name="daily_beyt_notification_title">بیت امروز</string>
     <string name="daily_beyt_notification_channel_name">بیت روزانه</string>
     <string name="poet_bio_read_more">بیشتر</string>
+    <string name="poet_bio_read_less">کمتر</string>
+    <string name="profile_version">نسخه %1$s</string>
 
     <string name="poem_copy">کپی</string>
     <string name="poem_share">اشتراک</string>

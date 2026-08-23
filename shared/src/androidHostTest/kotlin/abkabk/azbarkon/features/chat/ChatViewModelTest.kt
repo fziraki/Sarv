@@ -96,20 +96,16 @@ class ChatViewModelTest {
                     replyDelayMillis = 0L,
                 )
 
-            viewModel.events.test {
-                viewModel.onAction(ChatAction.OnInputChange("hello"))
-                viewModel.onAction(ChatAction.OnSendClick)
-                advanceUntilIdle()
+            viewModel.onAction(ChatAction.OnInputChange("hello"))
+            viewModel.onAction(ChatAction.OnSendClick)
+            advanceUntilIdle()
 
-                assertThat(viewModel.state.value.messages).hasSize(0)
-                assertThat(viewModel.state.value.isPoetTyping).isFalse()
-                assertThat(viewModel.state.value.inputText).isEqualTo("hello")
-                assertThat(awaitItem()).isEqualTo(
-                    ChatEvent.ShowSnackbar(
-                        UiText.Resource(Res.string.chat_persian_only),
-                    ),
-                )
-            }
+            assertThat(viewModel.state.value.messages).hasSize(0)
+            assertThat(viewModel.state.value.isPoetTyping).isFalse()
+            assertThat(viewModel.state.value.inputText).isEqualTo("hello")
+            val error = viewModel.state.value.screenState as UiScreenState.Error
+            assertThat(error.message).isEqualTo(UiText.Resource(Res.string.chat_persian_only))
+            assertThat(error.isSuccess).isFalse()
         }
 
     @Test
@@ -128,16 +124,12 @@ class ChatViewModelTest {
 
             val poetMessage = viewModel.state.value.messages.last()
 
-            viewModel.events.test {
-                viewModel.onAction(ChatAction.OnPoetMessageLongPress(poetMessage.id))
+            viewModel.onAction(ChatAction.OnPoetMessageLongPress(poetMessage.id))
 
-                assertThat(clipboardService.lastCopiedText).isEqualTo(poetMessage.text)
-                assertThat(awaitItem()).isEqualTo(
-                    ChatEvent.ShowSnackbar(
-                        UiText.Resource(Res.string.poem_copied),
-                    ),
-                )
-            }
+            assertThat(clipboardService.lastCopiedText).isEqualTo(poetMessage.text)
+            val error = viewModel.state.value.screenState as UiScreenState.Error
+            assertThat(error.message).isEqualTo(UiText.Resource(Res.string.poem_copied))
+            assertThat(error.isSuccess).isTrue()
         }
 
     private fun createViewModel(

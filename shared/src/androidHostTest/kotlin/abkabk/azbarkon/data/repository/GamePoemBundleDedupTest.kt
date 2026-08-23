@@ -29,7 +29,7 @@ class GamePoemBundleDedupTest {
 
             assertThat(cache.poemBundles).hasSize(3)
             assertThat(cache.usedPoemIds).hasSize(3)
-            assertThat(cache.usedPoetIds).hasSize(3)
+            assertThat(cache.poetUseCount.values.sum()).isEqualTo(3)
             assertThat(cache.poemBundles.values.map { it.poemId }.toSet()).hasSize(3)
             assertThat(cache.poemBundles.values.map { it.poetId }.toSet()).hasSize(3)
         }
@@ -62,9 +62,9 @@ class GamePoemBundleDedupTest {
     private fun resolveBundledDatabaseFile(): File {
         val candidates =
             listOf(
-                File("src/androidMain/assets/ganjoor.s3db"),
-                File("../shared/src/androidMain/assets/ganjoor.s3db"),
-                File("shared/src/androidMain/assets/ganjoor.s3db"),
+                File("sqlite/ganjoor.s3db"),
+                File("../shared/sqlite/ganjoor.s3db"),
+                File("shared/sqlite/ganjoor.s3db"),
             )
         return candidates.firstOrNull { it.exists() }
             ?: error("Bundled ganjoor.s3db not found")

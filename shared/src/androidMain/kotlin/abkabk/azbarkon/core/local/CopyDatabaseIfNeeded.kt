@@ -3,31 +3,69 @@ package abkabk.azbarkon.core.local
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import com.azbarkon.db.AzbarKonDatabase
+import io.github.aakira.napier.Napier
 import java.io.File
 import java.io.IOException
+import java.util.zip.ZipInputStream
 
 internal const val DATABASE_NAME = "ganjoor.s3db"
 
+// ponytail: no published users and no future db updates, so any version/schema mismatch is
+// destructive like Room's fallback: delete the local db and re-copy the bundled asset
 fun copyDatabaseIfNeeded(context: Context) {
     val dbFile = context.getDatabasePath(DATABASE_NAME)
 
-    if (!dbFile.exists()) {
+    val exists = dbFile.exists()
+    val hasIndex = exists && hasExpectedSchema(dbFile)
+    val version = if (exists) databaseVersion(dbFile) else 0
+    val copy = !exists || !hasIndex || version != AzbarKonDatabase.Schema.version.toInt()
+
+    if (copy) {
+        dbFile.delete()
         copyBundledDatabase(context, dbFile)
     }
-
     syncBundledDatabaseVersion(dbFile.path)
+    Napier.d(
+        message = "db exists=$exists fts=$hasIndex version=$version copy=$copy -> ${dbFile.path}",
+        tag = "PoetDb",
+    )
 }
+
+private fun hasExpectedSchema(dbFile: File): Boolean =
+    try {
+        SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY).use { db ->
+            db.rawQuery(
+                """
+                SELECT COUNT(*) FROM sqlite_master
+                WHERE type = 'table' AND name IN ('verse_fts4', 'poet_meta')
+                """.trimIndent(),
+                null,
+            ).use { it.moveToFirst(); it.getInt(0) == 2 }
+        }
+    } catch (_: Exception) {
+        false
+    }
+
+private fun databaseVersion(dbFile: File): Int =
+    try {
+        SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY).use { it.version }
+    } catch (_: Exception) {
+        0
+    }
 
 private fun copyBundledDatabase(context: Context, dbFile: File) {
     dbFile.parentFile?.mkdirs()
     try {
-        context.assets.open(DATABASE_NAME).use { input ->
-            dbFile.outputStream().use { output ->
-                input.copyTo(output)
-            }
+        context.assets.open("$DATABASE_NAME.zip").use { input ->
+            extractFirstEntry(ZipInputStream(input), dbFile)
         }
     } catch (_: IOException) {
     }
+}
+
+private fun extractFirstEntry(zip: ZipInputStream, dbFile: File) {
+    zip.nextEntry ?: return
+    dbFile.outputStream().use { zip.copyTo(it) }
 }
 
 private fun syncBundledDatabaseVersion(dbPath: String) {
@@ -38,7 +76,7 @@ private fun syncBundledDatabaseVersion(dbPath: String) {
             SQLiteDatabase.OPEN_READWRITE,
         )
     try {
-        if (db.version != 0) return
+        if (db.version >= AzbarKonDatabase.Schema.version.toInt()) return
 
         val hasPoetTable =
             db.rawQuery(

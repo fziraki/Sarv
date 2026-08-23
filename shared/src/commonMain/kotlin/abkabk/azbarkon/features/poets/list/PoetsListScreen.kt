@@ -1,18 +1,13 @@
 package abkabk.azbarkon.features.poets.list
 
 import abkabk.azbarkon.core.uidata.BaseScreen
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.core.uidata.UiText
-import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.poets.FeaturedPoetUi
 import abkabk.azbarkon.features.poets.PoetListItemUi
 import abkabk.azbarkon.ui.components.AzbarkonButton
-import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,15 +24,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +42,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.cd_chat
 import azbarkoncmp.shared.generated.resources.chat_bubble
+import azbarkoncmp.shared.generated.resources.download
+import azbarkoncmp.shared.generated.resources.poets_download
 import azbarkoncmp.shared.generated.resources.poets_filter_placeholder
 import azbarkoncmp.shared.generated.resources.poets_view_works
 import org.jetbrains.compose.resources.painterResource
@@ -63,22 +57,11 @@ fun PoetsListRoot(
     viewModel: PoetsListViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is PoetsListEvent.NavigateToPoetDetail -> onNavigateToPoetDetail(event.poetId)
             is PoetsListEvent.NavigateToChat -> onNavigateToChat(event.poetId)
-            is PoetsListEvent.ShowSnackbar -> snackbarMessage = event.message
-        }
-    }
-
-    snackbarMessage?.let { message ->
-        val resolvedMessage = message.asString()
-        LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
-            snackbarMessage = null
         }
     }
 
@@ -89,7 +72,6 @@ fun PoetsListRoot(
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(PoetsListAction.OnRetryClick) },
     ) {
         PoetsListScreen(
             state = state,
@@ -140,7 +122,15 @@ fun PoetsListScreen(
             ) { poet ->
                 PoetListRow(
                     poet = poet,
-                    onClick = { onAction(PoetsListAction.OnPoetClick(poet.id)) },
+                    isDownloading = poet.id in state.downloadingPoetIds,
+                    onClick = {
+                        if (poet.isDownloaded) {
+                            onAction(PoetsListAction.OnPoetClick(poet.id))
+                        } else {
+                            onAction(PoetsListAction.OnDownloadPoet(poet.id))
+                        }
+                    },
+                    onDownloadClick = { onAction(PoetsListAction.OnDownloadPoet(poet.id)) },
                     onChatClick = { onAction(PoetsListAction.OnChatClick(poet.id)) },
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )
@@ -247,7 +237,9 @@ private fun FeaturedPoetCard(
 @Composable
 private fun PoetListRow(
     poet: PoetListItemUi,
+    isDownloading: Boolean,
     onClick: () -> Unit,
+    onDownloadClick: () -> Unit,
     onChatClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -295,7 +287,25 @@ private fun PoetListRow(
                 }
             }
 
-            if (poet.canChat) {
+            if (!poet.isDownloaded) {
+                if (isDownloading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp,
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(Res.drawable.download),
+                        contentDescription = stringResource(Res.string.poets_download),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier =
+                            Modifier
+                                .clip(CircleShape)
+                                .clickable(onClick = onDownloadClick)
+                                .padding(4.dp),
+                    )
+                }
+            } else if (poet.canChat) {
                 Icon(
                     painter = painterResource(Res.drawable.chat_bubble),
                     contentDescription = stringResource(Res.string.cd_chat),
@@ -327,6 +337,7 @@ private fun PoetsListScreenPreview() {
                                 worksSummary = "گلستان و 1 اثر دیگر",
                                 imageUrl = null,
                                 canChat = false,
+                                isDownloaded = false,
                             ),
                         ),
                     featuredPoet =

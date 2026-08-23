@@ -28,9 +28,7 @@ class PoetDetailViewModel(
 
     override fun onAction(action: PoetDetailAction) {
         when (action) {
-            PoetDetailAction.OnLoad,
-            PoetDetailAction.OnRetryClick,
-            -> loadPoet()
+            PoetDetailAction.OnLoad -> loadPoet()
 
             is PoetDetailAction.OnCategoryToggle -> toggleCategory(action.categoryId)
 
@@ -82,7 +80,6 @@ class PoetDetailViewModel(
                             screenState = UiScreenState.Error(message = message),
                         )
                     }
-                    sendEvent(PoetDetailEvent.ShowSnackbar(message))
                 }
         }
     }

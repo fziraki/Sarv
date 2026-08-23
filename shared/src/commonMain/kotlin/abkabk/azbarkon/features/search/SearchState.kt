@@ -1,10 +1,11 @@
 package abkabk.azbarkon.features.search
 
-import abkabk.azbarkon.core.uidata.UiText
+import abkabk.azbarkon.core.uidata.UiScreenState
 import androidx.compose.runtime.Stable
 
 @Stable
 data class SearchState(
+    val screenState: UiScreenState = UiScreenState.Idle,
     val query: String = "",
     val submittedQuery: String = "",
     val poetOptions: List<SearchPoetOptionUi> = emptyList(),
@@ -39,10 +40,6 @@ sealed interface SearchAction {
 sealed interface SearchEvent {
     data class NavigateToPoemDetail(
         val poemId: Int,
-    ) : SearchEvent
-
-    data class ShowSnackbar(
-        val message: UiText,
     ) : SearchEvent
 }
 

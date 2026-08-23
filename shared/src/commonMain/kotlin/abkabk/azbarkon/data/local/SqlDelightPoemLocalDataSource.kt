@@ -12,27 +12,35 @@ import abkabk.azbarkon.domain.model.PoemDetail
 import abkabk.azbarkon.domain.model.PoemSummary
 import com.azbarkon.db.PoemQueries
 import com.azbarkon.db.VerseQueries
+import io.github.aakira.napier.Napier
 
 class SqlDelightPoemLocalDataSource(
     private val poemQueries: PoemQueries,
     private val verseQueries: VerseQueries,
 ) : PoemLocalDataSource {
+    @Suppress("TooGenericExceptionCaught", "MagicNumber")
     override suspend fun getPoemsByCatIdPage(
         catId: Int,
         offset: Int,
         limit: Int,
     ): Result<List<PoemSummary>, DataError.Local> =
         try {
-            Result.Success(
-                poemQueries
-                    .selectByCatIdPaged(
-                        cat_id = catId.toLong(),
-                        limit = limit.toLong(),
-                        offset = offset.toLong(),
-                    ).executeAsList()
-                    .map { it.toPoemSummary() },
-            )
-        } catch (_: Exception) {
+            poemQueries
+                .selectByCatIdPaged(
+                    cat_id = catId.toLong(),
+                    limit = limit.toLong(),
+                    offset = offset.toLong(),
+                ).executeAsList()
+                .map { it.toPoemSummary() }
+                .also { page ->
+                    Napier.d(
+                        message = "cat=$catId offset=$offset ids=${page.take(10).map { it.id }}",
+                        tag = "PoemDebug",
+                    )
+                }
+                .let { Result.Success(it) }
+        } catch (e: Exception) {
+            Napier.e(message = "getPoemsByCatIdPage failed: ${e.message}", throwable = e, tag = "PoemDebug")
             Result.Error(DataError.Local.UNKNOWN)
         }
 

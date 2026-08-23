@@ -1,7 +1,6 @@
 package abkabk.azbarkon.features.home
 
 import abkabk.azbarkon.core.uidata.UiScreenState
-import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.RandomDistich
 import androidx.compose.runtime.Stable
@@ -23,8 +22,6 @@ data class HomeState(
 
 sealed interface HomeAction {
     data object OnLoad : HomeAction
-
-    data object OnRetryClick : HomeAction
 
     data object OnSeeAllPoetsClick : HomeAction
 
@@ -48,10 +45,6 @@ sealed interface HomeAction {
 }
 
 sealed interface HomeEvent {
-    data class ShowSnackbar(
-        val message: UiText,
-    ) : HomeEvent
-
     data object NavigateToPoetsList : HomeEvent
 
     data class NavigateToPoetDetail(

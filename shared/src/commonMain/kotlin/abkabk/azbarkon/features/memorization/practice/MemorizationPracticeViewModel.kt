@@ -5,7 +5,6 @@ import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.core.uidata.BaseViewModel
 import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.core.uidata.UiText
-import abkabk.azbarkon.core.uidata.toUiText
 import abkabk.azbarkon.domain.model.memorization.MemorizationError
 import abkabk.azbarkon.domain.model.memorization.SrsCard
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
@@ -15,6 +14,7 @@ import abkabk.azbarkon.domain.srs.TextDiffHighlighter
 import androidx.lifecycle.viewModelScope
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.error_unknown
+import azbarkoncmp.shared.generated.resources.memorization_review_notification_enabled
 import kotlinx.coroutines.launch
 
 class MemorizationPracticeViewModel(
@@ -32,9 +32,7 @@ class MemorizationPracticeViewModel(
 
     override fun onAction(action: MemorizationPracticeAction) {
         when (action) {
-            MemorizationPracticeAction.OnLoad,
-            MemorizationPracticeAction.OnRetryClick,
-            -> loadSession()
+            MemorizationPracticeAction.OnLoad -> loadSession()
 
             MemorizationPracticeAction.OnBackClick -> {
                 viewModelScope.launch { sendEvent(MemorizationPracticeEvent.NavigateBack) }
@@ -53,6 +51,17 @@ class MemorizationPracticeViewModel(
             is MemorizationPracticeAction.OnGradeClick -> selectGrade(action.grade)
 
             MemorizationPracticeAction.OnNextCard -> submitAndAdvance()
+
+            MemorizationPracticeAction.OnNotificationPermissionGranted -> {
+                setState {
+                    copy(
+                        screenState = UiScreenState.Error(
+                            message = UiText.Resource(Res.string.memorization_review_notification_enabled),
+                            isSuccess = true,
+                        ),
+                    )
+                }
+            }
         }
     }
 
@@ -89,7 +98,6 @@ class MemorizationPracticeViewModel(
                 }.onFailure { error ->
                     val message = error.toMemorizationUiText()
                     setState { copy(screenState = UiScreenState.Error(message)) }
-                    sendEvent(MemorizationPracticeEvent.ShowSnackbar(message))
                 }
         }
     }
@@ -203,7 +211,9 @@ class MemorizationPracticeViewModel(
                     recordSessionStats(grade)
                     advanceToNextCard()
                 }.onFailure { error ->
-                    sendEvent(MemorizationPracticeEvent.ShowSnackbar(error.toMemorizationUiText()))
+                    setState {
+                        copy(screenState = UiScreenState.Error(message = error.toMemorizationUiText()))
+                    }
                 }
         }
     }

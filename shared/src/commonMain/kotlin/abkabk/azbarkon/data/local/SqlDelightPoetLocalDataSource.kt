@@ -12,6 +12,7 @@ import abkabk.azbarkon.domain.model.PoetWithCategories
 import abkabk.azbarkon.domain.model.PoetWithRootCategories
 import com.azbarkon.db.CatQueries
 import com.azbarkon.db.PoetQueries
+import io.github.aakira.napier.Napier
 
 class SqlDelightPoetLocalDataSource(
     private val poetQueries: PoetQueries,
@@ -22,6 +23,7 @@ class SqlDelightPoetLocalDataSource(
             poetsWithRootCategories.map { it.poet }
         }
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun getPoetsWithRootCategories(): Result<List<PoetWithRootCategories>, DataError.Local> =
         try {
             val poets =
@@ -31,11 +33,10 @@ class SqlDelightPoetLocalDataSource(
                     .map { it.toPoet() }
 
             Result.Success(
-                poets
-                    .map { poet -> buildPoetWithRootCategories(poet) }
-                    .filter { it.rootCategories.isNotEmpty() },
+                poets.map { poet -> buildPoetWithRootCategories(poet) },
             )
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e(message = "getPoetsWithRootCategories failed: ${e.message}", throwable = e, tag = "PoetDb")
             Result.Error(DataError.Local.UNKNOWN)
         }
 

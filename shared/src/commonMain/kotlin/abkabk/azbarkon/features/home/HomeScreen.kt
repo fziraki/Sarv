@@ -6,7 +6,6 @@ import abkabk.azbarkon.core.notifications.NotificationPermissionSheet
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.RandomDistich
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
@@ -126,7 +125,6 @@ fun HomeRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.uidata.UiText?>(null) }
     val permissionGateway: NotificationPermissionGateway = koinInject()
     val userPreferencesRepository: UserPreferencesRepository = koinInject()
     var showNotificationPermissionSheet by remember { mutableStateOf(false) }
@@ -143,10 +141,6 @@ fun HomeRoot(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is HomeEvent.ShowSnackbar -> {
-                snackbarMessage = event.message
-            }
-
             HomeEvent.NavigateToPoetsList -> callbacks.onNavigateToPoetsList()
 
             is HomeEvent.NavigateToPoetDetail -> callbacks.onNavigateToPoetDetail(event.poetId)
@@ -169,17 +163,8 @@ fun HomeRoot(
         }
     }
 
-    snackbarMessage?.let { message ->
-        val resolvedMessage = message.asString()
-        LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
-            snackbarMessage = null
-        }
-    }
-
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(HomeAction.OnRetryClick) },
     ) {
         HomeScreen(
             state = state,

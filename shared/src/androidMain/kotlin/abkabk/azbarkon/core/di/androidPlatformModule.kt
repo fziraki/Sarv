@@ -2,6 +2,8 @@ package abkabk.azbarkon.core.di
 
 import abkabk.azbarkon.core.local.DatabaseDriverFactory
 import abkabk.azbarkon.core.local.MemorizationDatabaseDriverFactory
+import abkabk.azbarkon.core.local.PoetDbDriverFactory
+import abkabk.azbarkon.core.local.PoetDbFileStorage
 import abkabk.azbarkon.core.notifications.DailyBeytNotificationPresenter
 import abkabk.azbarkon.core.notifications.DailyBeytWorker
 import abkabk.azbarkon.core.notifications.MemorizationReviewNotificationPresenter
@@ -44,8 +46,20 @@ val androidPlatformModule =
         }
 
         single {
+            PoetDbFileStorage(context = androidContext())
+        }
+
+        single {
+            PoetDbDriverFactory(context = androidContext())
+        }
+
+        single<app.cash.sqldelight.db.SqlDriver> {
+            get<DatabaseDriverFactory>().createDriver()
+        }
+
+        single {
             AzbarKonDatabase(
-                driver = get<DatabaseDriverFactory>().createDriver(),
+                driver = get(),
             )
         }
 

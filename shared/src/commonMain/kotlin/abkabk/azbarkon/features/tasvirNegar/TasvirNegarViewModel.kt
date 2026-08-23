@@ -25,8 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.tasvir_negar_saved
 import azbarkoncmp.shared.generated.resources.tasvir_negar_save_failed
+import azbarkoncmp.shared.generated.resources.tasvir_negar_saved
 import azbarkoncmp.shared.generated.resources.tasvir_negar_share_failed
 import kotlinx.coroutines.launch
 
@@ -48,9 +48,7 @@ class TasvirNegarViewModel(
 
     override fun onAction(action: TasvirNegarAction) {
         when (action) {
-            TasvirNegarAction.OnLoad,
-            TasvirNegarAction.OnRetryClick,
-            -> loadInitialDocument()
+            TasvirNegarAction.OnLoad -> loadInitialDocument()
 
             TasvirNegarAction.OnBackClick -> emitNavigateBack()
             TasvirNegarAction.OnSaveClick -> requestExport(forShare = false)
@@ -103,14 +101,15 @@ class TasvirNegarViewModel(
         viewModelScope.launch {
             setState { copy(isExporting = false) }
             if (imageBytes == null) {
-                sendEvent(
-                    TasvirNegarEvent.ShowSnackbar(
-                        UiText.Resource(
-                            if (forShare) Res.string.tasvir_negar_share_failed
-                            else Res.string.tasvir_negar_save_failed,
-                        ),
-                    ),
+                val message = UiText.Resource(
+                    if (forShare) Res.string.tasvir_negar_share_failed
+                    else Res.string.tasvir_negar_save_failed,
                 )
+                setState {
+                    copy(
+                        screenState = UiScreenState.Error(message = message),
+                    )
+                }
                 return@launch
             }
 
@@ -125,14 +124,16 @@ class TasvirNegarViewModel(
                         imageBytes = imageBytes,
                         fileName = "azbarkon_${currentTimeMillis()}.png",
                     )
-                sendEvent(
-                    TasvirNegarEvent.ShowSnackbar(
-                        UiText.Resource(
-                            if (saved) Res.string.tasvir_negar_saved
-                            else Res.string.tasvir_negar_save_failed,
-                        ),
-                    ),
+
+                val message = UiText.Resource(
+                    if (saved) Res.string.tasvir_negar_saved
+                    else Res.string.tasvir_negar_save_failed,
                 )
+                setState {
+                    copy(
+                        screenState = UiScreenState.Error(message = message, isSuccess = saved),
+                    )
+                }
             }
         }
     }

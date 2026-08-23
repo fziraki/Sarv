@@ -1,10 +1,9 @@
 package abkabk.azbarkon.features.tasvirNegar
 
 import abkabk.azbarkon.core.uidata.BaseScreen
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.core.uidata.UiText
-import abkabk.azbarkon.core.uidata.asString
+import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
 import abkabk.azbarkon.features.tasvirNegar.components.EditToolbar
 import abkabk.azbarkon.features.tasvirNegar.components.EditorCallbacks
 import abkabk.azbarkon.features.tasvirNegar.components.EditorCanvas
@@ -49,8 +48,6 @@ fun TasvirNegarRoot(
     viewModel: TasvirNegarViewModel = koinViewModel { parametersOf(poemId, initialText) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
     var showColorPicker by remember { mutableStateOf(false) }
     var captureCanvas by remember { mutableStateOf<suspend () -> ByteArray?>({ null }) }
     val captureCanvasState by rememberUpdatedState(captureCanvas)
@@ -62,7 +59,6 @@ fun TasvirNegarRoot(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is TasvirNegarEvent.ShowSnackbar -> snackbarMessage = event.message
             TasvirNegarEvent.NavigateBack -> onBackClick()
             TasvirNegarEvent.RequestGalleryPick -> launchGallery()
             TasvirNegarEvent.RequestCustomColorPicker -> showColorPicker = true
@@ -77,14 +73,6 @@ fun TasvirNegarRoot(
         viewModel.onExportCompleted(captureCanvasState(), forShare = forShare)
     }
 
-    snackbarMessage?.let { message ->
-        val resolvedMessage = message.asString()
-        LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
-            snackbarMessage = null
-        }
-    }
-
     TasvirCustomColorPicker(
         visible = showColorPicker,
         onDismiss = { showColorPicker = false },
@@ -96,7 +84,6 @@ fun TasvirNegarRoot(
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(TasvirNegarAction.OnRetryClick) },
     ) {
         TasvirNegarScreen(
             state = state,
@@ -149,6 +136,9 @@ fun TasvirNegarScreen(
                     onShareClick = { onAction(TasvirNegarAction.OnShareClick) },
                 )
             }
+        },
+        snackbarHost = {
+            AzbarkonSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
     ) {
         Box(

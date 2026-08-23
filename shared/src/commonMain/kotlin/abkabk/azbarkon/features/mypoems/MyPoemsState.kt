@@ -1,7 +1,6 @@
 package abkabk.azbarkon.features.mypoems
 
 import abkabk.azbarkon.core.uidata.UiScreenState
-import abkabk.azbarkon.core.uidata.UiText
 import androidx.compose.runtime.Stable
 
 @Stable
@@ -28,8 +27,6 @@ sealed interface MyPoemsAction {
 
     data object OnResume : MyPoemsAction
 
-    data object OnRetryClick : MyPoemsAction
-
     data class OnTabSelected(
         val tab: MyPoemsTab,
     ) : MyPoemsAction
@@ -50,10 +47,6 @@ sealed interface MyPoemsAction {
 }
 
 sealed interface MyPoemsEvent {
-    data class ShowSnackbar(
-        val message: UiText,
-    ) : MyPoemsEvent
-
     data class NavigateToPoemDetail(
         val poemId: Int,
     ) : MyPoemsEvent

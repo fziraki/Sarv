@@ -5,12 +5,6 @@ import abkabk.azbarkon.domain.model.PoemDetail
 import abkabk.azbarkon.domain.model.PoemSummary
 import abkabk.azbarkon.domain.model.PoemVerse
 
-fun com.azbarkon.db.SelectByCatId.toPoemSummary(): PoemSummary =
-    PoemSummary(
-        id = id.toInt(),
-        title = title,
-    )
-
 fun com.azbarkon.db.SelectByCatIdPaged.toPoemSummary(): PoemSummary =
     PoemSummary(
         id = id.toInt(),

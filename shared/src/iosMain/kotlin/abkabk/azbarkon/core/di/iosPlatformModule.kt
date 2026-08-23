@@ -2,6 +2,8 @@ package abkabk.azbarkon.core.di
 
 import abkabk.azbarkon.core.local.DatabaseDriverFactory
 import abkabk.azbarkon.core.local.MemorizationDatabaseDriverFactory
+import abkabk.azbarkon.core.local.PoetDbDriverFactory
+import abkabk.azbarkon.core.local.PoetDbFileStorage
 import abkabk.azbarkon.core.platform.ClipboardManager
 import abkabk.azbarkon.core.platform.KeyValueStore
 import abkabk.azbarkon.core.platform.ImageExportManager
@@ -28,8 +30,20 @@ val iosPlatformModule =
         }
 
         single {
+            PoetDbFileStorage()
+        }
+
+        single {
+            PoetDbDriverFactory()
+        }
+
+        single<app.cash.sqldelight.db.SqlDriver> {
+            get<DatabaseDriverFactory>().createDriver()
+        }
+
+        single {
             AzbarKonDatabase(
-                driver = get<DatabaseDriverFactory>().createDriver(),
+                driver = get(),
             )
         }
 

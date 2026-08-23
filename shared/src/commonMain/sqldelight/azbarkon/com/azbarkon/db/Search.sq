@@ -1,3 +1,8 @@
+-- FTS4 virtual table for full-text search across all verse text.
+CREATE VIRTUAL TABLE verse_fts4 USING fts4(text, content='verse');
+
+-- Full-text search across verses with optional poet and category filters.
+-- Returns verse text, poem title, poet name, and category name with pagination.
 searchVerses:
 SELECT
     verse.poem_id AS poem_id,
@@ -6,22 +11,13 @@ SELECT
     poem.title AS poem_title,
     poet.name AS poet_name,
     cat.text AS category_name
-FROM verse
+FROM verse_fts4
+INNER JOIN verse ON verse.rowid = verse_fts4.rowid
 INNER JOIN poem ON poem.id = verse.poem_id
 INNER JOIN cat ON cat.id = poem.cat_id
 INNER JOIN poet ON poet.id = cat.poet_id
-WHERE verse.text LIKE '%' || :query || '%'
+WHERE verse_fts4 MATCH :query
 AND (:filter_poet = 0 OR poet.id = :poet_id)
 AND (:filter_cat = 0 OR poem.cat_id IN :cat_ids)
-ORDER BY poet.name, poem.id, verse.vorder, verse.position
+ORDER BY matchinfo(verse_fts4), verse.rowid
 LIMIT :limit OFFSET :offset;
-
-countSearchVerses:
-SELECT COUNT(*)
-FROM verse
-INNER JOIN poem ON poem.id = verse.poem_id
-INNER JOIN cat ON cat.id = poem.cat_id
-INNER JOIN poet ON poet.id = cat.poet_id
-WHERE verse.text LIKE '%' || :query || '%'
-AND (:filter_poet = 0 OR poet.id = :poet_id)
-AND (:filter_cat = 0 OR poem.cat_id IN :cat_ids);

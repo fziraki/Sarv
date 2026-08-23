@@ -1,11 +1,10 @@
 package abkabk.azbarkon.features.tasvirNegar
 
 import abkabk.azbarkon.core.uidata.UiScreenState
-import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.features.tasvirNegar.model.EditorDocument
 import abkabk.azbarkon.features.tasvirNegar.model.LayerId
-import abkabk.azbarkon.features.tasvirNegar.model.TextGravity
 import abkabk.azbarkon.features.tasvirNegar.model.LayerOffset
+import abkabk.azbarkon.features.tasvirNegar.model.TextGravity
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 
@@ -19,8 +18,6 @@ data class TasvirNegarState(
 
 sealed interface TasvirNegarAction {
     data object OnLoad : TasvirNegarAction
-
-    data object OnRetryClick : TasvirNegarAction
 
     data object OnBackClick : TasvirNegarAction
 
@@ -97,9 +94,6 @@ sealed interface TasvirNegarAction {
 }
 
 sealed interface TasvirNegarEvent {
-    data class ShowSnackbar(
-        val message: UiText,
-    ) : TasvirNegarEvent
 
     data object NavigateBack : TasvirNegarEvent
 

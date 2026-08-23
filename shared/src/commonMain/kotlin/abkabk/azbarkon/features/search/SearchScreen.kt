@@ -2,11 +2,9 @@ package abkabk.azbarkon.features.search
 
 import abkabk.azbarkon.core.ui.HighlightedText
 import abkabk.azbarkon.core.uidata.BaseScreen
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.core.uidata.UiText
-import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.ui.components.AzbarkonModalBottomSheet
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.ShimmerPlaceholder
@@ -36,7 +34,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -80,38 +77,33 @@ fun SearchRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val searchResults = viewModel.searchResults.collectAsLazyPagingItems()
-    val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is SearchEvent.NavigateToPoemDetail -> onNavigateToPoemDetail(event.poemId)
-            is SearchEvent.ShowSnackbar -> snackbarMessage = event.message
-        }
-    }
-
-    snackbarMessage?.let { message ->
-        val resolvedMessage = message.asString()
-        LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
-            snackbarMessage = null
         }
     }
 
     val screenState =
-        when {
-            state.isInitializing -> UiScreenState.Loading
-            searchResults.loadState.refresh is LoadState.Error && state.submittedQuery.isNotBlank() ->
-                UiScreenState.Error(
-                    message = UiText.Resource(Res.string.list_load_error),
-                    retryable = true,
-                )
-            else -> UiScreenState.Success
+        remember(
+            state.isInitializing,
+            state.submittedQuery,
+            state.screenState,
+            searchResults.loadState.refresh,
+        ) {
+            when {
+                state.screenState is UiScreenState.Error -> state.screenState
+                state.isInitializing -> UiScreenState.Loading
+                searchResults.loadState.refresh is LoadState.Error && state.submittedQuery.isNotBlank() ->
+                    UiScreenState.Error(
+                        message = UiText.Resource(Res.string.list_load_error),
+                    )
+                else -> UiScreenState.Success
+            }
         }
 
     BaseScreen(
         screenState = screenState,
-        onRetry = { searchResults.retry() },
     ) {
         SearchScreen(
             state = state,

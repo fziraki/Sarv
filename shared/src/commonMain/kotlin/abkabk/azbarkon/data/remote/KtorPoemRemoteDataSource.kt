@@ -9,6 +9,7 @@ import abkabk.azbarkon.data.remote.dto.RecitationDto
 import abkabk.azbarkon.domain.datasource.PoemRemoteDataSource
 import abkabk.azbarkon.domain.model.PoemAudioTrack
 import io.ktor.client.HttpClient
+import io.github.aakira.napier.Napier
 
 class KtorPoemRemoteDataSource(
     private val httpClient: HttpClient,
@@ -17,6 +18,7 @@ class KtorPoemRemoteDataSource(
     override suspend fun getPoemRecitations(
         poemId: Int,
     ): Result<List<PoemAudioTrack>, DataError.Network> {
+        Napier.d(message = "fetching recitations for poemId=$poemId", tag = "PoemDebug")
         return httpClient.getResult<List<RecitationDto>>(
             route = "/api/ganjoor/poem/$poemId/recitations",
         ).map {

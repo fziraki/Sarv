@@ -1,21 +1,17 @@
 package abkabk.azbarkon.core.uidata
 
+import abkabk.azbarkon.ui.components.AzbarkonSnackbarVisuals
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.retry
 import org.jetbrains.compose.resources.stringResource
@@ -27,57 +23,40 @@ fun BaseScreen(
     onRetry: (() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val snackbarHostState = LocalSnackbarHostState.current
+
     Box(
-        modifier = modifier.fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background),
-    ) {
-        content()
-
-        when (screenState) {
-            UiScreenState.Loading -> {
-                LoadingView()
-            }
-
-            is UiScreenState.Error -> {
-                ErrorView(
-                    message = screenState.message.asString(),
-                    showRetry = screenState.retryable,
-                    onRetry = onRetry,
-                )
-            }
-
-            else -> Unit
-        }
-    }
-}
-
-@Composable
-fun ErrorView(
-    message: String,
-    showRetry: Boolean,
-    onRetry: (() -> Unit)?,
-    modifier: Modifier = Modifier,
-) {
-    Column(
         modifier =
             modifier
                 .fillMaxSize()
-                .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+                .background(color = MaterialTheme.colorScheme.background),
     ) {
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center,
-        )
-        if (showRetry && onRetry != null) {
-            TextButton(
-                onClick = onRetry,
-                modifier = Modifier.padding(top = 16.dp),
-            ) {
-                Text(stringResource(Res.string.retry))
+        content()
+
+        if (screenState == UiScreenState.Loading) {
+            LoadingView()
+        }
+
+        if (screenState is UiScreenState.Error) {
+            val message = screenState.message.asString()
+            val actionLabel =
+                if (screenState.retryable && onRetry != null) {
+                    stringResource(Res.string.retry)
+                } else {
+                    null
+                }
+            LaunchedEffect(screenState.key) {
+                val result =
+                    snackbarHostState.showSnackbar(
+                        AzbarkonSnackbarVisuals(
+                            message = message,
+                            actionLabel = actionLabel,
+                            isSuccess = screenState.isSuccess,
+                        ),
+                    )
+                if (result == SnackbarResult.ActionPerformed) {
+                    onRetry?.invoke()
+                }
             }
         }
     }

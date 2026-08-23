@@ -4,18 +4,26 @@ import abkabk.azbarkon.core.domain.result.onFailure
 import abkabk.azbarkon.core.domain.result.onSuccess
 import abkabk.azbarkon.core.uidata.BaseViewModel
 import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.core.uidata.toUiText
 import abkabk.azbarkon.domain.model.PoetWithRootCategories
+import abkabk.azbarkon.domain.repository.PoetDownloadRepository
 import abkabk.azbarkon.domain.repository.PoetRepository
 import abkabk.azbarkon.features.poets.FeaturedPoetUi
 import abkabk.azbarkon.features.poets.toFeaturedPoetUi
 import abkabk.azbarkon.features.poets.toListItemUi
 import androidx.lifecycle.viewModelScope
-import kotlin.random.Random
+import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.poets_download_failed
+import azbarkoncmp.shared.generated.resources.poets_download_success
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.random.Random
+import kotlin.time.Duration.Companion.milliseconds
 
 class PoetsListViewModel(
     private val poetRepository: PoetRepository,
+    private val poetDownloadRepository: PoetDownloadRepository,
     private val random: Random = Random.Default,
 ) : BaseViewModel<PoetsListAction, PoetsListState, PoetsListEvent>(
         initialState = PoetsListState(),
@@ -29,13 +37,13 @@ class PoetsListViewModel(
 
     override fun onAction(action: PoetsListAction) {
         when (action) {
-            PoetsListAction.OnLoad,
-            PoetsListAction.OnRetryClick,
-            -> loadPoets()
+            PoetsListAction.OnLoad -> loadPoets()
 
             PoetsListAction.OnScreenEnter -> pickAndApplyFeaturedPoet()
 
             is PoetsListAction.OnSearchQueryChange -> updateSearch(action.query)
+
+            is PoetsListAction.OnDownloadPoet -> downloadPoet(action.poetId)
 
             is PoetsListAction.OnPoetClick -> {
                 viewModelScope.launch {
@@ -65,7 +73,7 @@ class PoetsListViewModel(
             poetRepository.getPoetsWithRootCategories()
                 .onSuccess { poetsWithRootCategories ->
                     allPoetsWithRootCategories = poetsWithRootCategories
-                    val featured = pickRandomFeatured(poetsWithRootCategories)
+                    val featured = pickRandomFeatured(featuredCandidates(poetsWithRootCategories))
                     applyFilter(
                         query = state.value.searchQuery,
                         source = poetsWithRootCategories,
@@ -78,7 +86,6 @@ class PoetsListViewModel(
                             screenState = UiScreenState.Error(message = message),
                         )
                     }
-                    sendEvent(PoetsListEvent.ShowSnackbar(message))
                 }
         }
     }
@@ -87,7 +94,7 @@ class PoetsListViewModel(
         if (allPoetsWithRootCategories.isEmpty()) return
         if (state.value.searchQuery.trim().isNotEmpty()) return
 
-        val featured = pickRandomFeatured(allPoetsWithRootCategories)
+        val featured = pickRandomFeatured(featuredCandidates(allPoetsWithRootCategories))
         applyFilter(
             query = state.value.searchQuery,
             source = allPoetsWithRootCategories,
@@ -136,6 +143,40 @@ class PoetsListViewModel(
         }
     }
 
+    private fun featuredCandidates(source: List<PoetWithRootCategories>): List<PoetWithRootCategories> =
+        source.filter { it.poet.isDownloaded }
+
     private fun pickRandomFeatured(source: List<PoetWithRootCategories>): FeaturedPoetUi? =
         source.randomOrNull(random)?.toFeaturedPoetUi()
+
+    private fun downloadPoet(poetId: Int) {
+        if (poetId in state.value.downloadingPoetIds) return
+        viewModelScope.launch {
+            setState { copy(downloadingPoetIds = downloadingPoetIds + poetId) }
+            poetDownloadRepository.downloadPoet(poetId)
+                .onSuccess {
+                    setState {
+                        copy(
+                            downloadingPoetIds = downloadingPoetIds - poetId,
+                            screenState = UiScreenState.Error(
+                                message = UiText.Resource(Res.string.poets_download_success),
+                                isSuccess = true
+                            )
+                        )
+                    }
+                    delay(1000.milliseconds)
+                    loadPoets()
+                }
+                .onFailure {
+                    setState {
+                        copy(
+                            downloadingPoetIds = downloadingPoetIds - poetId,
+                            screenState = UiScreenState.Error(
+                                message = UiText.Resource(Res.string.poets_download_failed),
+                            )
+                        )
+                    }
+                }
+        }
+    }
 }

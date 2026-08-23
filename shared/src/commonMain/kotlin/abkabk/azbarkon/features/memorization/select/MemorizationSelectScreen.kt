@@ -61,7 +61,6 @@ fun MemorizationSelectRoot(
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = {},
     ) {
         MemorizationSelectScreen(
             state = state,

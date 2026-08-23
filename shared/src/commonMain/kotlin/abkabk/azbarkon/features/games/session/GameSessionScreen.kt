@@ -1,6 +1,8 @@
 package abkabk.azbarkon.features.games.session
 
 import abkabk.azbarkon.core.uidata.BaseScreen
+import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
+import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.domain.model.games.GameQuestion
@@ -52,7 +54,6 @@ fun GameSessionRoot(
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(GameSessionAction.OnRetryClick) },
         modifier = modifier,
     ) {
         GameSessionScreen(
@@ -88,6 +89,9 @@ fun GameSessionScreen(
                 onHintClick = { onAction(GameSessionAction.OnHintClick) },
                 onCheckAnswerClick = { onAction(GameSessionAction.OnCheckAnswerClick) },
             )
+        },
+        snackbarHost = {
+            AzbarkonSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
     ) { paddingValues ->
         Column(

@@ -63,7 +63,7 @@ class SqlDelightGamesLocalDataSource(
                         .executeAsOneOrNull()
                         ?: return@repeat
 
-                if (poetInfo.poet_id in cache.usedPoetIds) return@repeat
+                if (!cache.isPoetAvailable(poetInfo.poet_id)) return@repeat
 
                 val verses =
                     verseQueries
@@ -105,7 +105,7 @@ class SqlDelightGamesLocalDataSource(
                         poemWords = extraction.poemWords,
                     )
                 cache.usedPoemIds += poemId
-                cache.usedPoetIds += poetInfo.poet_id
+                cache.recordPoetUse(poetInfo.poet_id)
                 return Result.Success(Unit)
             }
             Result.Error(DataError.Local.UNKNOWN)

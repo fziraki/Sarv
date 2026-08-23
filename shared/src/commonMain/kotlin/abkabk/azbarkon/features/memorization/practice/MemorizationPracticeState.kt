@@ -1,7 +1,6 @@
 package abkabk.azbarkon.features.memorization.practice
 
 import abkabk.azbarkon.core.uidata.UiScreenState
-import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
 import abkabk.azbarkon.domain.srs.DiffToken
 import androidx.compose.runtime.Stable
@@ -43,8 +42,6 @@ data class MemorizationPracticeState(
 sealed interface MemorizationPracticeAction {
     data object OnLoad : MemorizationPracticeAction
 
-    data object OnRetryClick : MemorizationPracticeAction
-
     data object OnBackClick : MemorizationPracticeAction
 
     data object OnRevealClick : MemorizationPracticeAction
@@ -62,12 +59,10 @@ sealed interface MemorizationPracticeAction {
     ) : MemorizationPracticeAction
 
     data object OnNextCard : MemorizationPracticeAction
+
+    data object OnNotificationPermissionGranted : MemorizationPracticeAction
 }
 
 sealed interface MemorizationPracticeEvent {
     data object NavigateBack : MemorizationPracticeEvent
-
-    data class ShowSnackbar(
-        val message: UiText,
-    ) : MemorizationPracticeEvent
 }

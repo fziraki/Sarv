@@ -1,9 +1,7 @@
 package abkabk.azbarkon.features.memorization.active
 
 import abkabk.azbarkon.core.uidata.BaseScreen
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.features.memorization.ActivePoemCard
 import abkabk.azbarkon.features.memorization.MemorizationHeroSection
 import abkabk.azbarkon.features.memorization.MemorizationOptionRow
@@ -21,11 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,23 +49,12 @@ fun ActiveMemorizationRoot(
     viewModel: ActiveMemorizationViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val appState = LocalAzbarkonAppState.current
-    var snackbarMessage by remember { mutableStateOf<abkabk.azbarkon.core.uidata.UiText?>(null) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             ActiveMemorizationEvent.NavigateBack -> onBackClick()
             ActiveMemorizationEvent.NavigateToSelect -> onNavigateToSelect()
             is ActiveMemorizationEvent.NavigateToPractice -> onNavigateToPractice(event.poemId)
-            is ActiveMemorizationEvent.ShowSnackbar -> snackbarMessage = event.message
-        }
-    }
-
-    snackbarMessage?.let { message ->
-        val resolvedMessage = message.asString()
-        LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
-            snackbarMessage = null
         }
     }
 
@@ -88,7 +71,6 @@ fun ActiveMemorizationRoot(
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(ActiveMemorizationAction.OnRetryClick) },
     ) {
         ActiveMemorizationScreen(
             state = state,

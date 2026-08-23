@@ -1,5 +1,6 @@
 package abkabk.azbarkon.features.search
 
+import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.domain.model.CatNode
 import abkabk.azbarkon.domain.model.Poet
@@ -127,13 +128,10 @@ class SearchViewModelTest {
                     initialCatId = null,
                 )
 
-            viewModel.events.test {
-                viewModel.onAction(SearchAction.OnSearchSubmit)
+            viewModel.onAction(SearchAction.OnSearchSubmit)
 
-                assertThat(awaitItem()).isEqualTo(
-                    SearchEvent.ShowSnackbar(UiText.Resource(Res.string.search_empty_query)),
-                )
-            }
+            val error = viewModel.state.value.screenState as UiScreenState.Error
+            assertThat(error.message).isEqualTo(UiText.Resource(Res.string.search_empty_query))
         }
 
     @Test

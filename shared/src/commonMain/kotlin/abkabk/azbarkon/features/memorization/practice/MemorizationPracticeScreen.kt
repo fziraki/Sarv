@@ -1,16 +1,15 @@
 package abkabk.azbarkon.features.memorization.practice
 
+import abkabk.azbarkon.core.notifications.rememberNotificationPermissionRequester
 import abkabk.azbarkon.core.ui.keyboardAboveIme
 import abkabk.azbarkon.core.ui.rememberKeyboardLiftPx
 import abkabk.azbarkon.core.uidata.BaseScreen
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
+import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.core.uidata.UiText
-import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
-import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
-import abkabk.azbarkon.core.notifications.rememberNotificationPermissionRequester
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
+import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
 import abkabk.azbarkon.domain.srs.CardGenerator
 import abkabk.azbarkon.domain.srs.DiffTokenType
 import abkabk.azbarkon.ui.components.AzbarkonButton
@@ -40,9 +39,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ButtonDefaults
@@ -61,11 +58,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -90,18 +87,18 @@ import azbarkoncmp.shared.generated.resources.memorization_practice_stat_learned
 import azbarkoncmp.shared.generated.resources.memorization_practice_stat_mistakes
 import azbarkoncmp.shared.generated.resources.memorization_practice_stat_today
 import azbarkoncmp.shared.generated.resources.memorization_practice_title
-import azbarkoncmp.shared.generated.resources.memorization_review_notification_enabled
 import azbarkoncmp.shared.generated.resources.memorization_reveal_content_description
 import azbarkoncmp.shared.generated.resources.memorization_reveal_label
+import azbarkoncmp.shared.generated.resources.memorization_review_notification_enabled
 import azbarkoncmp.shared.generated.resources.memorization_submit_typing
 import azbarkoncmp.shared.generated.resources.memorization_typing_hint
 import azbarkoncmp.shared.generated.resources.reveal_eye
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import kotlinx.coroutines.launch
 
 private const val PROGRESS_FLIP_ROTATION_DEGREES = 180f
 private val CORRECT_DIFF_COLOR = Color(0xFF2E7D32)
@@ -118,12 +115,10 @@ fun MemorizationPracticeRoot(
     viewModel: MemorizationPracticeViewModel = koinViewModel { parametersOf(poemId) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val appState = LocalAzbarkonAppState.current
     val permissionGateway: NotificationPermissionGateway = koinInject()
     val reviewNotificationCoordinator: MemorizationReviewNotificationCoordinator = koinInject()
     val scope = rememberCoroutineScope()
     var notificationsEnabled by remember { mutableStateOf(permissionGateway.areNotificationsEnabled()) }
-    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
     val requestNotificationPermission =
         rememberNotificationPermissionRequester { granted ->
@@ -132,7 +127,7 @@ fun MemorizationPracticeRoot(
                 scope.launch {
                     reviewNotificationCoordinator.sync()
                 }
-                snackbarMessage = UiText.Resource(Res.string.memorization_review_notification_enabled)
+                viewModel.onAction(MemorizationPracticeAction.OnNotificationPermissionGranted)
             }
         }
 
@@ -143,21 +138,11 @@ fun MemorizationPracticeRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             MemorizationPracticeEvent.NavigateBack -> onBackClick()
-            is MemorizationPracticeEvent.ShowSnackbar -> snackbarMessage = event.message
-        }
-    }
-
-    snackbarMessage?.let { message ->
-        val resolvedMessage = message.asString()
-        LaunchedEffect(resolvedMessage) {
-            appState.showSnackbar(resolvedMessage)
-            snackbarMessage = null
         }
     }
 
     BaseScreen(
         screenState = state.screenState,
-        onRetry = { viewModel.onAction(MemorizationPracticeAction.OnRetryClick) },
     ) {
         MemorizationPracticeScreen(
             state = state,
@@ -196,6 +181,9 @@ fun MemorizationPracticeScreen(
                             .keyboardAboveIme(),
                 )
             }
+        },
+        snackbarHost = {
+            AzbarkonSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
     ) { paddingValues ->
         when (state.phase) {

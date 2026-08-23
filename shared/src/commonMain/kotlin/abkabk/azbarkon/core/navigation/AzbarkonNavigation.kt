@@ -2,7 +2,10 @@ package abkabk.azbarkon.core.navigation
 
 import abkabk.azbarkon.core.uidata.AzbarkonAppState
 import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
 import abkabk.azbarkon.core.uidata.rememberAzbarkonAppState
+import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
+import abkabk.azbarkon.features.games.navigation.GamePlayRoute
 import abkabk.azbarkon.features.games.navigation.GameTypeRoute
 import abkabk.azbarkon.features.games.navigation.GamesRoute
 import abkabk.azbarkon.features.games.navigation.gamesGraph
@@ -11,6 +14,8 @@ import abkabk.azbarkon.features.home.HomeCallbacks
 import abkabk.azbarkon.features.home.navigation.HomeRoute
 import abkabk.azbarkon.features.home.navigation.MyPoemsRoute
 import abkabk.azbarkon.features.home.navigation.homeGraph
+import abkabk.azbarkon.features.memorization.navigation.MemorizationPracticeRoute
+import abkabk.azbarkon.features.poets.navigation.ChatRoute
 import abkabk.azbarkon.features.poets.navigation.PoemDetailRoute
 import abkabk.azbarkon.features.poets.navigation.PoetDetailRoute
 import abkabk.azbarkon.features.poets.navigation.PoetsListRoute
@@ -46,12 +51,13 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -93,6 +99,16 @@ private val bottomNavItems =
         BottomNavItem.Games,
         BottomNavItem.Profile,
     )
+
+// Screens with their own Scaffold + bottomBar render the snackbar host themselves,
+// so the root host must not duplicate it there.
+private fun NavDestination?.hasOwnScaffold(): Boolean =
+    this != null &&
+        (hasRoute<PoemDetailRoute>() ||
+            hasRoute<TasvirNegarRoute>() ||
+            hasRoute<ChatRoute>() ||
+            hasRoute<MemorizationPracticeRoute>() ||
+            hasRoute<GamePlayRoute>())
 
 @Composable
 private fun AzbarkonTopBar(
@@ -260,6 +276,7 @@ fun AzbarkonNavigation(
 ) {
     val navController = rememberNavController()
     val appState = rememberAzbarkonAppState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(initialPoemId) {
         initialPoemId?.let { poemId ->
@@ -289,13 +306,16 @@ fun AzbarkonNavigation(
             }
         } ?: BottomNavItem.Home
 
-    CompositionLocalProvider(LocalAzbarkonAppState provides appState) {
+    CompositionLocalProvider(
+        LocalAzbarkonAppState provides appState,
+        LocalSnackbarHostState provides snackbarHostState,
+    ) {
         Scaffold(
             modifier = modifier,
-            snackbarHost = {
-                SnackbarHost(appState.snackbarHostState)
-            },
             containerColor = MaterialTheme.colorScheme.background,
+            snackbarHost = {
+                if (!currentDestination.hasOwnScaffold()) AzbarkonSnackbarHost(hostState = snackbarHostState)
+            },
             topBar = {
                 if (isRootDestination) {
                     AzbarkonTopBar(

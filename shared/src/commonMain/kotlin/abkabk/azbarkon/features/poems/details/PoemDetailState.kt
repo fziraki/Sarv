@@ -37,8 +37,6 @@ data class AudioPlayerUiState(
 
 sealed interface PoemDetailAction {
     data object OnLoad : PoemDetailAction
-    data object OnRetryClick : PoemDetailAction
-
     data class OnTrackPlayPauseClick(val track: PoemAudioTrack) : PoemDetailAction
     data class OnTrackSelect(val track: PoemAudioTrack) : PoemDetailAction
     data class OnTrackSeekChanged(val track: PoemAudioTrack, val progress: Float) : PoemDetailAction
@@ -56,9 +54,9 @@ sealed interface PoemDetailAction {
     data object OnBookmarkClick : PoemDetailAction
     data object OnImageCreatorClick : PoemDetailAction
     data object OnMemorizeClick : PoemDetailAction
+    data object OnRetryLoadTracks : PoemDetailAction
 }
 sealed interface PoemDetailEvent {
-    data class ShowSnackbar(val message: UiText) : PoemDetailEvent
     data object NavigateToMemorizationPractice : PoemDetailEvent
     data class NavigateToTasvirNegar(val initialText: String? = null) : PoemDetailEvent
 }

@@ -9,6 +9,7 @@ import abkabk.azbarkon.domain.model.CatNode
 import abkabk.azbarkon.domain.model.SearchHit
 import com.azbarkon.db.CatQueries
 import com.azbarkon.db.SearchQueries
+import io.github.aakira.napier.Napier
 
 class SqlDelightSearchLocalDataSource(
     private val searchQueries: SearchQueries,
@@ -26,6 +27,7 @@ class SqlDelightSearchLocalDataSource(
             Result.Error(DataError.Local.UNKNOWN)
         }
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun searchVersesPage(
         query: String,
         poetId: Int?,
@@ -34,8 +36,8 @@ class SqlDelightSearchLocalDataSource(
         limit: Int,
     ): Result<List<SearchHit>, DataError.Local> =
         try {
-            val trimmedQuery = query.trim()
-            if (trimmedQuery.isEmpty()) {
+            val ftsQuery = buildFtsQuery(query)
+            if (ftsQuery.isEmpty()) {
                 return Result.Success(emptyList())
             }
 
@@ -46,7 +48,7 @@ class SqlDelightSearchLocalDataSource(
             val hits =
                 searchQueries
                     .searchVerses(
-                        query = trimmedQuery,
+                        query = ftsQuery,
                         filter_poet = filterPoet,
                         poet_id = poetId?.toLong() ?: 0L,
                         filter_cat = filterCat,
@@ -57,7 +59,28 @@ class SqlDelightSearchLocalDataSource(
                     .map { it.toSearchHit() }
 
             Result.Success(hits)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("Search failed for query: $query", e)
             Result.Error(DataError.Local.UNKNOWN)
         }
+
+    private fun buildFtsQuery(raw: String): String {
+        val normalized =
+            raw
+                .replace("\u200c", "")
+                .replace("\u0640", "")
+                .filterNot { it in '\u064b'..'\u0652' || it == '\u0670' }
+                .replace('\u064a', '\u06cc')
+                .replace('\u0643', '\u06a9')
+                .replace('\u0623', '\u0627')
+                .replace('\u0625', '\u0627')
+                .replace('\u0622', '\u0627')
+                .replace('\u0629', '\u0647')
+        val tokens = normalized.split(Regex("\\s+")).filter { it.isNotBlank() }
+        if (tokens.isEmpty()) return ""
+        return tokens.mapIndexed { index, token ->
+            val escaped = token.replace("\"", "\"\"")
+            if (index == tokens.lastIndex) "\"$escaped\"*" else "\"$escaped\""
+        }.joinToString(" ")
+    }
 }

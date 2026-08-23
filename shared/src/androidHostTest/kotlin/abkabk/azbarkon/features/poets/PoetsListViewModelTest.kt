@@ -7,6 +7,7 @@ import abkabk.azbarkon.domain.model.PoetWithRootCategories
 import abkabk.azbarkon.features.poets.list.PoetsListAction
 import abkabk.azbarkon.features.poets.list.PoetsListEvent
 import abkabk.azbarkon.features.poets.list.PoetsListViewModel
+import abkabk.azbarkon.testing.FakePoetDownloadRepository
 import abkabk.azbarkon.testing.FakePoetRepository
 import app.cash.turbine.test
 import assertk.assertThat
@@ -50,7 +51,7 @@ class PoetsListViewModelTest {
                 FakePoetRepository().apply {
                     poetsWithRootCategories = samplePoetsWithRootCategories()
                 }
-            val viewModel = PoetsListViewModel(repository)
+            val viewModel = PoetsListViewModel(repository, FakePoetDownloadRepository())
 
             viewModel.onAction(PoetsListAction.OnSearchQueryChange("سعد"))
 
@@ -68,7 +69,7 @@ class PoetsListViewModelTest {
                 FakePoetRepository().apply {
                     poetsWithRootCategories = samplePoetsWithRootCategories()
                 }
-            val viewModel = PoetsListViewModel(repository)
+            val viewModel = PoetsListViewModel(repository, FakePoetDownloadRepository())
 
             viewModel.onAction(PoetsListAction.OnSearchQueryChange("غزلیات"))
 
@@ -84,7 +85,7 @@ class PoetsListViewModelTest {
                 FakePoetRepository().apply {
                     poetsWithRootCategories = samplePoetsWithRootCategories()
                 }
-            val viewModel = PoetsListViewModel(repository)
+            val viewModel = PoetsListViewModel(repository, FakePoetDownloadRepository())
 
             val state = viewModel.state.value
             assertThat(state.poets.first { it.name == "حافظ شیرازی" }.worksSummary)
@@ -119,7 +120,7 @@ class PoetsListViewModelTest {
                                     ),
                             )
                 }
-            val viewModel = PoetsListViewModel(repository)
+            val viewModel = PoetsListViewModel(repository, FakePoetDownloadRepository())
 
             val state = viewModel.state.value
             assertThat(state.poets.first { it.name == "حافظ شیرازی" }.canChat).isTrue()
@@ -134,7 +135,7 @@ class PoetsListViewModelTest {
                 FakePoetRepository().apply {
                     poetsWithRootCategories = samplePoetsWithRootCategories()
                 }
-            val viewModel = PoetsListViewModel(repository)
+            val viewModel = PoetsListViewModel(repository, FakePoetDownloadRepository())
 
             viewModel.events.test {
                 viewModel.onAction(PoetsListAction.OnPoetClick(7))
@@ -153,7 +154,7 @@ class PoetsListViewModelTest {
                     poetsWithRootCategories = poets
                 }
             val seed = randomSeedForIndex(size = poets.size, desiredIndex = 1)
-            val viewModel = PoetsListViewModel(repository, random = Random(seed))
+            val viewModel = PoetsListViewModel(repository, FakePoetDownloadRepository(), random = Random(seed))
 
             val featured = viewModel.state.value.featuredPoet
             assertThat(featured).isNotNull()
@@ -169,7 +170,7 @@ class PoetsListViewModelTest {
                     poetsWithRootCategories = poets
                 }
             val seed = randomSeedForConsecutiveIndices(size = poets.size, firstIndex = 1, secondIndex = 0)
-            val viewModel = PoetsListViewModel(repository, random = Random(seed))
+            val viewModel = PoetsListViewModel(repository, FakePoetDownloadRepository(), random = Random(seed))
             val initialFeatured = viewModel.state.value.featuredPoet
 
             viewModel.onAction(PoetsListAction.OnScreenEnter)
@@ -188,7 +189,7 @@ class PoetsListViewModelTest {
                     poetsWithRootCategories = samplePoetsWithRootCategories()
                 }
             val seed = randomSeedForIndex(size = samplePoetsWithRootCategories().size, desiredIndex = 1)
-            val viewModel = PoetsListViewModel(repository, random = Random(seed))
+            val viewModel = PoetsListViewModel(repository, FakePoetDownloadRepository(), random = Random(seed))
             val featuredBeforeSearch = viewModel.state.value.featuredPoet
             assertThat(featuredBeforeSearch).isNotNull()
 
@@ -206,7 +207,7 @@ class PoetsListViewModelTest {
                 FakePoetRepository().apply {
                     poetsWithRootCategories = emptyList()
                 }
-            val viewModel = PoetsListViewModel(repository)
+            val viewModel = PoetsListViewModel(repository, FakePoetDownloadRepository())
 
             viewModel.onAction(PoetsListAction.OnScreenEnter)
 
@@ -232,7 +233,7 @@ class PoetsListViewModelTest {
                                 rootCategories = emptyList(),
                             )
                 }
-            val viewModel = PoetsListViewModel(repository)
+            val viewModel = PoetsListViewModel(repository, FakePoetDownloadRepository())
 
             val state = viewModel.state.value
             assertThat(state.poets).hasSize(2)

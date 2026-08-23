@@ -27,7 +27,6 @@ class MyPoemsViewModel(
         when (action) {
             MyPoemsAction.OnLoad,
             MyPoemsAction.OnResume,
-            MyPoemsAction.OnRetryClick,
             -> loadMyPoems()
 
             is MyPoemsAction.OnTabSelected -> {
@@ -109,9 +108,6 @@ class MyPoemsViewModel(
             copy(
                 screenState = UiScreenState.Error(message = message),
             )
-        }
-        viewModelScope.launch {
-            sendEvent(MyPoemsEvent.ShowSnackbar(message))
         }
     }
 }

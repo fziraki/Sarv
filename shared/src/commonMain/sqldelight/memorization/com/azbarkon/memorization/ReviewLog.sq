@@ -1,3 +1,5 @@
+-- Audit log of every review action. Records the card, grade, interval change, and timestamp.
+-- Used for statistics (review history, streaks, daily review counts).
 CREATE TABLE review_log (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     card_id INTEGER NOT NULL,
@@ -7,24 +9,30 @@ CREATE TABLE review_log (
     review_time INTEGER NOT NULL
 );
 
+-- Log a new review event (normal usage).
 insertReviewLog:
 INSERT INTO review_log(card_id, grade, previous_interval, new_interval, review_time)
 VALUES (?, ?, ?, ?, ?);
 
+-- Log a review event with a specific id (used during import/restore).
 insertReviewLogWithId:
 INSERT INTO review_log(id, card_id, grade, previous_interval, new_interval, review_time)
 VALUES (?, ?, ?, ?, ?, ?);
 
+-- Fetch all review logs ordered by id (full history export).
 selectAllReviewLogs:
 SELECT id, card_id, grade, previous_interval, new_interval, review_time
 FROM review_log
 ORDER BY id;
 
+-- Wipe all review logs (used for full reset/restore).
 deleteAllReviewLogs:
 DELETE FROM review_log;
 
+-- Get all review timestamps in descending order (used to derive unique review days for streaks).
 selectReviewDayKeys:
 SELECT review_time FROM review_log ORDER BY review_time DESC;
 
+-- Total number of reviews ever performed (lifetime stat).
 countReviewedVerses:
 SELECT COUNT(*) FROM review_log;
