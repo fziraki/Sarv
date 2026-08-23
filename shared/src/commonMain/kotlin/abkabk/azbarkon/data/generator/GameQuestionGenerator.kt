@@ -41,7 +41,7 @@ internal object GameQuestionGenerator {
         val correctId = correctPoet.id ?: return null
         val distractorPoets =
             allPoets
-                .filter { it.id != null && it.id != correctId && !it.name.isNullOrBlank() }
+                .filter { it.id != null && it.id != correctId && !it.name.isNullOrBlank() && it.isDownloaded }
                 .shuffled(Random(seed))
                 .take(DISTRACTOR_COUNT)
         if (distractorPoets.size < DISTRACTOR_COUNT) return null

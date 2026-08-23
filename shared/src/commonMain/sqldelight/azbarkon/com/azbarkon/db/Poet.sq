@@ -1,3 +1,5 @@
+-- Poet master record. cat_id links to their top-level category.
+-- poet_meta provides the slug used as a fallback URL when cat.url is null.
 CREATE TABLE poet (
     id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
@@ -10,6 +12,8 @@ CREATE TABLE poet_meta (
     slug TEXT NOT NULL
 );
 
+-- Fetch a single poet with their download URL (cat.url or poet_meta.slug fallback)
+-- and whether the poet's data is locally downloaded.
 selectByIdWithCatUrl:
 SELECT
     poet.id,
@@ -23,6 +27,7 @@ LEFT JOIN cat ON cat.id = poet.cat_id
 LEFT JOIN poet_meta ON poet_meta.id = poet.id
 WHERE poet.id = ?;
 
+-- Fetch all poets with download URLs and download status (poet list screen).
 selectAllWithCatUrl:
 SELECT
     poet.id,
@@ -35,6 +40,7 @@ FROM poet
 LEFT JOIN cat ON cat.id = poet.cat_id
 LEFT JOIN poet_meta ON poet_meta.id = poet.id;
 
+-- Find a poet id by partial name match (used to resolve poet from imported data).
 selectIdByNameLike:
 SELECT id
 FROM poet

@@ -29,7 +29,7 @@ class GamePoemBundleDedupTest {
 
             assertThat(cache.poemBundles).hasSize(3)
             assertThat(cache.usedPoemIds).hasSize(3)
-            assertThat(cache.usedPoetIds).hasSize(3)
+            assertThat(cache.poetUseCount.values.sum()).isEqualTo(3)
             assertThat(cache.poemBundles.values.map { it.poemId }.toSet()).hasSize(3)
             assertThat(cache.poemBundles.values.map { it.poetId }.toSet()).hasSize(3)
         }

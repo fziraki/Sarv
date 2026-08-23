@@ -1,3 +1,5 @@
+-- Category table: hierarchical classification of poems under a poet.
+-- parent_id = 0 means top-level category; otherwise links to parent cat.
 CREATE TABLE cat (
     id INTEGER NOT NULL PRIMARY KEY,
     poet_id INTEGER NOT NULL,
@@ -6,23 +8,27 @@ CREATE TABLE cat (
     url TEXT NOT NULL
 );
 
+-- Fetch child categories of a given parent for a specific poet (category tree navigation).
 selectChildrenByParentId:
 SELECT id, poet_id, text, parent_id, url
 FROM cat
 WHERE parent_id = ? AND poet_id = ?
 ORDER BY id;
 
+-- Fetch all categories for a poet (flat list, used for poem listing and search filters).
 selectAllByPoetId:
 SELECT id, poet_id, text, parent_id, url
 FROM cat
 WHERE poet_id = ?
 ORDER BY id;
 
+-- Fetch a single category by id (used to check download status in search).
 selectById:
 SELECT id, poet_id, text, parent_id, url
 FROM cat
 WHERE id = ?;
 
+-- Find a category id by poet and category name (used during import to resolve parent/child).
 selectIdByPoetIdAndText:
 SELECT id, text
 FROM cat

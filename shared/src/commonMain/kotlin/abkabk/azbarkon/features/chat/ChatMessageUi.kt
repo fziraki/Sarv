@@ -1,6 +1,7 @@
 package abkabk.azbarkon.features.chat
 
 import abkabk.azbarkon.core.util.currentTimeMillis
+import abkabk.azbarkon.core.util.localTimezoneOffsetMillis
 import androidx.compose.runtime.Stable
 
 private const val MILLIS_PER_MINUTE = 60_000L
@@ -16,7 +17,8 @@ data class ChatMessageUi(
 )
 
 fun formatChatTimeLabel(epochMillis: Long = currentTimeMillis()): String {
-    val totalMinutes = ((epochMillis / MILLIS_PER_MINUTE) % MINUTES_PER_DAY).toInt()
+    val localMillis = epochMillis + localTimezoneOffsetMillis()
+    val totalMinutes = ((localMillis / MILLIS_PER_MINUTE) % MINUTES_PER_DAY).toInt()
     val hours = totalMinutes / MINUTES_PER_HOUR
     val minutes = totalMinutes % MINUTES_PER_HOUR
     return "${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}"

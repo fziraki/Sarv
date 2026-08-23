@@ -184,7 +184,7 @@
     <string name="profile_daily_beyt_title">بیت روزانه</string>
     <string name="profile_daily_beyt_subtitle">هر روز ساعت ۸ صبح یک بیت تصادفی</string>
     <string name="profile_memorization_reminder_title">یادآور مرور حفظ</string>
-    <string name="profile_memorization_reminder_subtitle">یادآوری برای مرور شعرهای در حال حفظ</string>
+    <string name="profile_memorization_reminder_subtitle">هر روز ساعت ۱۰ صبح یادآوری مرور شعرها</string>
     <string name="profile_settings_title">تنظیمات</string>
     <string name="profile_export_data">پشتیبان‌گیری از اطلاعات</string>
     <string name="profile_export_data_subtitle">ذخیره اطلاعات ازبرکن در فایل</string>
@@ -220,6 +220,7 @@
     <string name="daily_beyt_notification_title">بیت امروز</string>
     <string name="daily_beyt_notification_channel_name">بیت روزانه</string>
     <string name="poet_bio_read_more">بیشتر</string>
+    <string name="poet_bio_read_less">کمتر</string>
 
     <string name="poem_copy">کپی</string>
     <string name="poem_share">اشتراک</string>
