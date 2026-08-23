@@ -9,7 +9,7 @@ import abkabk.azbarkon.core.notifications.openAppNotificationSettings
 import abkabk.azbarkon.core.notifications.rememberNotificationPermissionRequester
 import abkabk.azbarkon.features.profile.util.rememberBackupImportLauncher
 import abkabk.azbarkon.features.profile.util.showToast
-import abkabk.azbarkon.core.util.Constants
+import abkabk.azbarkon.core.util.AppVersion
 import abkabk.azbarkon.ui.components.AzbarkonAlertDialog
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -175,7 +175,7 @@ fun ProfileScreen(
 
         item {
             Text(
-                text = stringResource(Res.string.profile_version, Constants.APP_VERSION),
+                text = stringResource(Res.string.profile_version, AppVersion.VERSION_NAME),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxSize().padding(top = 8.dp),

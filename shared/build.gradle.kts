@@ -131,3 +131,31 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
+val generateVersionFile by tasks.registering {
+    val versionName = libs.versions.android.versionName.get()
+    val outputDir = layout.buildDirectory.dir("generated/version/abkabk/azbarkon/core/util")
+    val file = outputDir.map { it.file("AppVersion.kt") }
+    outputDir.get().asFile.mkdirs()
+    file.get().asFile.writeText(
+        """
+        |package abkabk.azbarkon.core.util
+        |
+        |object AppVersion {
+        |    const val VERSION_NAME = "$versionName"
+        |}
+        """.trimMargin(),
+    )
+    inputs.property("versionName", versionName)
+    outputs.file(file)
+}
+
+kotlin.targets.all {
+    compilations.all {
+        compileTaskProvider.configure { dependsOn(generateVersionFile) }
+    }
+}
+
+kotlin.sourceSets.commonMain {
+    kotlin.srcDir(generateVersionFile.map { layout.buildDirectory.dir("generated/version").get() })
+}
+
