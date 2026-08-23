@@ -221,6 +221,7 @@
     <string name="daily_beyt_notification_channel_name">بیت روزانه</string>
     <string name="poet_bio_read_more">بیشتر</string>
     <string name="poet_bio_read_less">کمتر</string>
+    <string name="profile_version">نسخه %1$s</string>
 
     <string name="poem_copy">کپی</string>
     <string name="poem_share">اشتراک</string>

@@ -9,12 +9,15 @@ import abkabk.azbarkon.core.notifications.openAppNotificationSettings
 import abkabk.azbarkon.core.notifications.rememberNotificationPermissionRequester
 import abkabk.azbarkon.features.profile.util.rememberBackupImportLauncher
 import abkabk.azbarkon.features.profile.util.showToast
+import abkabk.azbarkon.core.util.Constants
 import abkabk.azbarkon.ui.components.AzbarkonAlertDialog
 import abkabk.azbarkon.ui.theme.AzbarkonTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,6 +35,7 @@ import azbarkoncmp.shared.generated.resources.clear_cancel
 import azbarkoncmp.shared.generated.resources.clear_confirm
 import azbarkoncmp.shared.generated.resources.profile_import_confirm_body
 import azbarkoncmp.shared.generated.resources.profile_import_confirm_title
+import azbarkoncmp.shared.generated.resources.profile_version
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -165,6 +170,16 @@ fun ProfileScreen(
             ProfileBadges(
                 badges = state.previewBadges,
                 onViewAllClick = { onAction(ProfileAction.OnViewAllBadgesClick) },
+            )
+        }
+
+        item {
+            Text(
+                text = stringResource(Res.string.profile_version, Constants.APP_VERSION),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxSize().padding(top = 8.dp),
+                textAlign = TextAlign.Center,
             )
         }
     }
