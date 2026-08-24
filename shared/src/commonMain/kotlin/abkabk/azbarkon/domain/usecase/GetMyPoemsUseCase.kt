@@ -1,5 +1,6 @@
 package abkabk.azbarkon.domain.usecase
 
+import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.domain.repository.PoemRepository
 import abkabk.azbarkon.domain.repository.SavedPoemRepository
@@ -15,7 +16,7 @@ class GetMyPoemsUseCase(
         val bookmarkedGroups: List<PoetGroupUi>,
     )
 
-    suspend operator fun invoke(): Result<MyPoemsResult, abkabk.azbarkon.core.domain.result.DataError> {
+    suspend operator fun invoke(): Result<MyPoemsResult, DataError> {
         val likedIds = savedPoemRepository.getLikedIds()
         val bookmarkedIds = savedPoemRepository.getBookmarkedIds()
 
@@ -23,12 +24,12 @@ class GetMyPoemsUseCase(
         val bookmarkedResult = poemRepository.getPoemsByIds(bookmarkedIds)
 
         return when {
-            likedResult is abkabk.azbarkon.core.domain.result.Result.Error -> likedResult
-            bookmarkedResult is abkabk.azbarkon.core.domain.result.Result.Error -> bookmarkedResult
+            likedResult is Result.Error -> likedResult
+            bookmarkedResult is Result.Error -> bookmarkedResult
             else -> {
-                val likedPoems = (likedResult as abkabk.azbarkon.core.domain.result.Result.Success).data
-                val bookmarkedPoems = (bookmarkedResult as abkabk.azbarkon.core.domain.result.Result.Success).data
-                abkabk.azbarkon.core.domain.result.Result.Success(
+                val likedPoems = (likedResult as Result.Success).data
+                val bookmarkedPoems = (bookmarkedResult as Result.Success).data
+                Result.Success(
                     MyPoemsResult(
                         likedGroups = likedPoems.toPoetGroups(),
                         bookmarkedGroups = bookmarkedPoems.toPoetGroups(),

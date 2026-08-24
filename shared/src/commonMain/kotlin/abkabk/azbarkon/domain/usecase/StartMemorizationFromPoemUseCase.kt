@@ -1,9 +1,8 @@
 package abkabk.azbarkon.domain.usecase
 
-import abkabk.azbarkon.core.domain.result.EmptyResult
+import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.domain.model.memorization.MemorizationError
 import abkabk.azbarkon.domain.repository.MemorizationRepository
-
 class StartMemorizationFromPoemUseCase(
     private val memorizationRepository: MemorizationRepository,
 ) {
@@ -19,8 +18,8 @@ class StartMemorizationFromPoemUseCase(
         }
 
         return when (val result = memorizationRepository.addPoem(poemId)) {
-            is abkabk.azbarkon.core.domain.result.Result.Success -> StartResult.Success
-            is abkabk.azbarkon.core.domain.result.Result.Error -> StartResult.Error(result.error)
+            is Result.Success -> StartResult.Success
+            is Result.Error -> StartResult.Error(result.error)
         }
     }
 }
