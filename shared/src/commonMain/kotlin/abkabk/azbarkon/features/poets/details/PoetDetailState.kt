@@ -12,6 +12,7 @@ data class PoetDetailState(
     val imageUrl: String? = null,
     val categories: List<PoetCategoryRowUi> = emptyList(),
     val canChat: Boolean = false,
+    val canFal: Boolean = false,
 )
 
 sealed interface PoetDetailAction {
@@ -27,6 +28,8 @@ sealed interface PoetDetailAction {
     ) : PoetDetailAction
 
     data object OnChatClick : PoetDetailAction
+
+    data object OnFalClick : PoetDetailAction
 }
 
 sealed interface PoetDetailEvent {
@@ -37,5 +40,9 @@ sealed interface PoetDetailEvent {
 
     data class NavigateToChat(
         val poetId: Int,
+    ) : PoetDetailEvent
+
+    data class NavigateToPoemDetail(
+        val poemId: Int,
     ) : PoetDetailEvent
 }

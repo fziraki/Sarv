@@ -41,6 +41,9 @@ fun NavGraphBuilder.poetsGraph(
             onNavigateToChat = {
                 navController.navigate(ChatRoute(route.poetId))
             },
+            onNavigateToPoemDetail = { poemId ->
+                navController.navigate(PoemDetailRoute(poemId = poemId))
+            },
         )
     }
 
