@@ -14,7 +14,6 @@ import abkabk.azbarkon.domain.model.profile.MemorizationProfileStats
 import abkabk.azbarkon.domain.model.profile.ProfileSheet
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
-import abkabk.azbarkon.domain.platform.ShareService
 import abkabk.azbarkon.domain.repository.MemorizationRepository
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
 import abkabk.azbarkon.domain.usecase.BuildProfileStatsUseCase
@@ -38,7 +37,6 @@ class ProfileViewModel(
     private val buildProfileStats: BuildProfileStatsUseCase,
     private val exportUserData: ExportUserDataUseCase,
     private val importUserData: ImportUserDataUseCase,
-    private val shareService: ShareService,
 ) : BaseViewModel<ProfileAction, ProfileState, ProfileEvent>(
         initialState =
             ProfileState(

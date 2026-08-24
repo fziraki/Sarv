@@ -16,7 +16,6 @@ val profilePresentationModule =
                 buildProfileStats = get(),
                 exportUserData = get(),
                 importUserData = get(),
-                shareService = get(),
             )
         }
     }
