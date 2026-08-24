@@ -336,6 +336,7 @@ private fun TrackSelector(
         DropdownMenu(
             expanded = menuExpanded,
             onDismissRequest = { menuExpanded = false },
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         ) {
             tracks.forEach { item ->
                 DropdownMenuItem(
