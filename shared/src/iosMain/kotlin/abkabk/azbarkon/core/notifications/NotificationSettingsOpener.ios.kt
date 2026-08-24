@@ -5,5 +5,6 @@ import platform.UIKit.UIApplicationOpenSettingsURLString
 import platform.Foundation.NSURL
 
 actual fun openAppNotificationSettings() {
-    UIApplication.sharedApplication.openURL(NSURL.URLWithString(UIApplicationOpenSettingsURLString))
+    val url = NSURL.URLWithString(UIApplicationOpenSettingsURLString) ?: return
+    UIApplication.sharedApplication.openURL(url)
 }

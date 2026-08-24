@@ -16,7 +16,7 @@ actual class PoetDbDriverFactory {
                 name = name,
                 version = AzbarKonDatabase.Schema.version.toInt(),
                 create = { },
-                upgrade = { _, _ -> },
+                upgrade = { _, _, _ -> },
                 extendedConfig = DatabaseConfiguration.Extended(basePath = dir),
             ),
         )

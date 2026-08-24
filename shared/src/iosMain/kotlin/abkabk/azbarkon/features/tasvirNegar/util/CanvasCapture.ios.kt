@@ -7,9 +7,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.layer.drawLayer
-import androidx.compose.ui.graphics.layer.rememberGraphicsLayer
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.unit.toIntSize
+import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.unit.IntSize
 
 @Composable
 actual fun rememberCanvasCaptureModifier(
@@ -24,16 +23,14 @@ actual fun rememberCanvasCaptureModifier(
         }
     }
 
-    return Modifier
-        .onSizeChanged { graphicsLayer.size = it }
-        .drawWithContent {
-            graphicsLayer.record(
-                density = this,
-                layoutDirection = layoutDirection,
-                size = size.toIntSize(),
-            ) {
-                this@drawWithContent.drawContent()
-            }
-            drawLayer(graphicsLayer)
+    return Modifier.drawWithContent {
+        graphicsLayer.record(
+            density = this,
+            layoutDirection = layoutDirection,
+            size = IntSize(size.width.toInt(), size.height.toInt()),
+        ) {
+            this@drawWithContent.drawContent()
         }
+        drawLayer(graphicsLayer)
+    }
 }

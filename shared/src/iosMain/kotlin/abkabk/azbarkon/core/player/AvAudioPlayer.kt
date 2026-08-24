@@ -1,8 +1,11 @@
+@file:OptIn(ExperimentalForeignApi::class)
+
 package abkabk.azbarkon.core.player
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFAudio.AVAudioSession
 import platform.AVFAudio.AVAudioSessionCategoryPlayback
+import platform.AVFAudio.setActive
 import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerItem
 import platform.AVFoundation.AVPlayerItemDidPlayToEndTimeNotification

@@ -1,8 +1,11 @@
 @file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+@file:OptIn(ExperimentalForeignApi::class)
 
 package abkabk.azbarkon.core.local
 
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.usePinned
 import platform.Foundation.NSData
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSDocumentDirectory
@@ -11,7 +14,6 @@ import platform.Foundation.NSUserDomainMask
 import platform.Foundation.create
 import platform.Foundation.writeToFile
 
-@OptIn(ExperimentalForeignApi::class)
 actual class PoetDbFileStorage {
     private val dir =
         NSSearchPathForDirectoriesInDomains(
@@ -32,6 +34,7 @@ actual class PoetDbFileStorage {
     }
 }
 
-@OptIn(ExperimentalForeignApi::class)
 private fun ByteArray.toNSData(): NSData =
-    NSData.create(bytes = this.refTo(0), length = size.toULong())
+    usePinned { pinned ->
+        NSData.create(bytes = pinned.addressOf(0), length = size.toULong())
+    }
