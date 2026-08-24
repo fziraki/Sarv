@@ -109,6 +109,7 @@
     <string name="game_quiz_progress_format">%1$d از %2$d</string>
     <string name="game_hint">راهنما</string>
     <string name="game_hint_cost">50</string>
+    <string name="game_hint_not_enough_score">امتیاز کافی ندارید</string>
     <string name="game_check_answer">بررسی پاسخ</string>
     <string name="game_confirm_answer">تأیید پاسخ</string>
     <string name="game_next">نمی دانم</string>

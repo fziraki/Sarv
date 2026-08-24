@@ -26,9 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
@@ -181,7 +179,6 @@ private fun GameCoinBadge(balance: Int) {
 
 @Composable
 fun GameSessionBottomBar(
-    canUseHint: Boolean,
     hasSelection: Boolean,
     isRevealing: Boolean,
     canPressPrimaryAction: Boolean,
@@ -205,7 +202,6 @@ fun GameSessionBottomBar(
         )
 
         GameHintButton(
-            enabled = canUseHint,
             onClick = onHintClick,
             modifier = Modifier.weight(HINT_BUTTON_WEIGHT),
         )
@@ -214,13 +210,11 @@ fun GameSessionBottomBar(
 
 @Composable
 private fun GameHintButton(
-    enabled: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     androidx.compose.material3.OutlinedButton(
         onClick = onClick,
-        enabled = enabled,
         modifier = modifier,
         shape = AzbarkonButtonDefaults.Shape,
         border =
@@ -384,7 +378,7 @@ fun gameOptionColors(state: GameOptionState): Pair<androidx.compose.ui.graphics.
             MaterialTheme.colorScheme.surfaceVariant to MaterialTheme.colorScheme.onSurface
 
         GameOptionState.Disabled ->
-            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f) to MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f) to MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
 
         GameOptionState.Selected ->
             MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) to MaterialTheme.colorScheme.onSurface
@@ -410,18 +404,7 @@ fun Modifier.gameOptionStyle(state: GameOptionState): Modifier {
                 -> Modifier.border(2.dp, primary, shape)
 
                 GameOptionState.Disabled ->
-                    Modifier.then(
-                        Modifier.drawWithCache {
-                            onDrawBehind {
-                                drawLine(
-                                    color = androidx.compose.ui.graphics.Color.Gray.copy(alpha = 0.6f),
-                                    start = androidx.compose.ui.geometry.Offset(0f, size.height / 2),
-                                    end = androidx.compose.ui.geometry.Offset(size.width, size.height / 2),
-                                    strokeWidth = 2.dp.toPx(),
-                                )
-                            }
-                        }
-                    )
+                    Modifier.border(2.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f), shape)
 
                 else -> Modifier
             },

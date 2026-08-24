@@ -16,6 +16,7 @@ import abkabk.azbarkon.domain.usecase.EvaluateGameAnswerUseCase
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.error_unknown
 import androidx.lifecycle.viewModelScope
+import azbarkoncmp.shared.generated.resources.game_hint_not_enough_score
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -327,7 +328,16 @@ class GameSessionViewModel(
     }
 
     private fun applyHint() {
-        if (!state.value.canUseHint) return
+        if (!state.value.canUseHint) {
+            viewModelScope.launch {
+                sendEvent(
+                    GameSessionEvent.ShowSnackbar(
+                        UiText.Resource(Res.string.game_hint_not_enough_score)
+                    )
+                )
+            }
+            return
+        }
         val question = state.value.currentQuestion ?: return
         
         val currentState = state.value
