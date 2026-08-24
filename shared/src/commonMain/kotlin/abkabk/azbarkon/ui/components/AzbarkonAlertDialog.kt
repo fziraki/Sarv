@@ -23,12 +23,12 @@ fun AzbarkonAlertDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        confirmButton = { TextButton(onClick = onConfirm) { Text(confirmLabel) } },
+        confirmButton = { TextButton(onClick = onConfirm) { Text(confirmLabel, style = MaterialTheme.typography.labelLarge) } },
         modifier = modifier,
-        title = title?.let { { Text(it) } },
-        text = text?.let { { Text(it) } },
+        title = title?.let { { Text(it, style = MaterialTheme.typography.titleLarge) } },
+        text = text?.let { { Text(it, style = MaterialTheme.typography.bodyMedium) } },
         dismissButton = dismissLabel?.let {
-            { TextButton(onClick = onDismissRequest) { Text(it) } }
+            { TextButton(onClick = onDismissRequest) { Text(it, style = MaterialTheme.typography.labelLarge) } }
         },
         containerColor = containerColor,
     )

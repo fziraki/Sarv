@@ -100,4 +100,6 @@ sealed interface TasvirNegarEvent {
     data object RequestGalleryPick : TasvirNegarEvent
 
     data object RequestCustomColorPicker : TasvirNegarEvent
+
+    data class RequestStoragePermission(val forShare: Boolean) : TasvirNegarEvent
 }

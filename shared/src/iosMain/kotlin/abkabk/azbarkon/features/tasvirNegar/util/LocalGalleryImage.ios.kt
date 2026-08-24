@@ -19,6 +19,8 @@ import androidx.compose.ui.layout.ContentScale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import platform.Foundation.NSData
+import platform.Foundation.NSURL
+import platform.Foundation.dataWithContentsOfURL
 
 @Composable
 actual fun LocalGalleryImage(
@@ -32,7 +34,7 @@ actual fun LocalGalleryImage(
         imageBitmap =
             withContext(Dispatchers.Default) {
                 runCatching {
-                    val data = NSData.dataWithContentsOfFile(uri) ?: return@withContext null
+                    val data = NSData.dataWithContentsOfURL(NSURL.fileURLWithPath(uri)) ?: return@withContext null
                     data.toByteArray().decodeToImageBitmap()
                 }.getOrNull()
             }

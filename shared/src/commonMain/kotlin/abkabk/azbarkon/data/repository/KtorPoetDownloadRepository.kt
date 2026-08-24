@@ -18,6 +18,7 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
 class KtorPoetDownloadRepository(
@@ -62,11 +63,13 @@ class KtorPoetDownloadRepository(
                 val path = "${storage.downloadDir()}/$fileName"
                 Napier.d(message = "opening $path", tag = "PoetDownload")
                 val source = poetDbDriverFactory.open(path)
-                source.use {
-                    logSourceInfo(it)
+                try {
+                    logSourceInfo(source)
                     Napier.d(message = "merging poet $poetId into main db", tag = "PoetDownload")
                     mergePoetDatabase(mainDatabase, mainDriver, source, poetId = poetId.toLong())
                     Napier.d(message = "merge succeeded for poet $poetId", tag = "PoetDownload")
+                } finally {
+                    source.close()
                 }
             }
             storage.delete(fileName)

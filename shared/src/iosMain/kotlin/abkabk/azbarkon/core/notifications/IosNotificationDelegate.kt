@@ -25,20 +25,20 @@ object IosNotificationDelegate : NSObject(), UNUserNotificationCenterDelegatePro
         UNUserNotificationCenter.currentNotificationCenter().delegate = this
     }
 
-    override fun userNotificationCenterWillPresentNotification(
+    override fun userNotificationCenter(
         center: UNUserNotificationCenter,
-        notification: UNNotification,
-        completionHandler: (ULong) -> Unit,
+        willPresentNotification: UNNotification,
+        withCompletionHandler: (ULong) -> Unit,
     ) {
-        completionHandler(UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge)
+        withCompletionHandler(UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge)
     }
 
-    override fun userNotificationCenterDidReceiveNotificationResponse(
+    override fun userNotificationCenter(
         center: UNUserNotificationCenter,
-        response: UNNotificationResponse,
-        completionHandler: () -> Unit,
+        didReceiveNotificationResponse: UNNotificationResponse,
+        withCompletionHandler: () -> Unit,
     ) {
-        val userInfo = response.notification.request.content.userInfo
+        val userInfo = didReceiveNotificationResponse.notification.request.content.userInfo
         userInfo[DailyBeytNotificationPayload.KEY_POEM_ID]
             ?.toString()
             ?.toIntOrNull()
@@ -46,12 +46,11 @@ object IosNotificationDelegate : NSObject(), UNUserNotificationCenterDelegatePro
 
         if (userInfo[MemorizationReviewNotificationPayload.KEY_OPEN_MEMORIZATION_PRACTICE]?.toString() == "true") {
             openMemorizationPractice.value = true
-            // ponytail: reset so a second tap of the same notification navigates again
             scope.launch {
                 delay(1_500)
                 openMemorizationPractice.value = false
             }
         }
-        completionHandler()
+        withCompletionHandler()
     }
 }

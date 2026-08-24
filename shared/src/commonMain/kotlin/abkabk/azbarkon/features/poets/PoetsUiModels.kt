@@ -7,6 +7,7 @@ import androidx.compose.runtime.Stable
 private const val FEATURED_POET_DESCRIPTION_MAX_LENGTH = 80
 
 const val GHAZAL_CATEGORY = "غزلیات"
+const val HAFEZ_POET_ID = 2
 
 @Stable
 data class PoetListItemUi(

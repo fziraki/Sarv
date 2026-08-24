@@ -44,6 +44,7 @@ import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.cd_chat
 import azbarkoncmp.shared.generated.resources.chat_bubble
 import azbarkoncmp.shared.generated.resources.chat_with_poet
+import azbarkoncmp.shared.generated.resources.fal_button
 import azbarkoncmp.shared.generated.resources.poet_bio_read_less
 import azbarkoncmp.shared.generated.resources.poet_bio_read_more
 import azbarkoncmp.shared.generated.resources.poets_works_section
@@ -59,6 +60,7 @@ fun PoetDetailRoot(
     onNavigateToPoemList: (catId: Int, title: String) -> Unit,
     onNavigateToSearch: () -> Unit,
     onNavigateToChat: () -> Unit,
+    onNavigateToPoemDetail: (poemId: Int) -> Unit,
     viewModel: PoetDetailViewModel = koinViewModel { parametersOf(poetId) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -71,6 +73,7 @@ fun PoetDetailRoot(
 
             is PoetDetailEvent.NavigateToChat -> onNavigateToChat()
 
+            is PoetDetailEvent.NavigateToPoemDetail -> onNavigateToPoemDetail(event.poemId)
         }
     }
 
@@ -212,6 +215,23 @@ private fun PoetDetailHero(
                     painter = painterResource(Res.drawable.chat_bubble),
                     contentDescription = stringResource(Res.string.cd_chat),
                     tint = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+
+        if (state.canFal) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier =
+                    Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable { onAction(PoetDetailAction.OnFalClick) }
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+            ) {
+                Text(
+                    text = stringResource(Res.string.fal_button),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
+                    color = MaterialTheme.colorScheme.tertiary,
                 )
             }
         }

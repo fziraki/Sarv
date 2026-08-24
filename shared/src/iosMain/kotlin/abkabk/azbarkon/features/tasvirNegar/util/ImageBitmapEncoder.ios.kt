@@ -3,20 +3,23 @@
 package abkabk.azbarkon.features.tasvirNegar.util
 
 import abkabk.azbarkon.core.platform.toByteArray
-import abkabk.azbarkon.core.platform.toNSData
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toPixelMap
 import kotlinx.cinterop.ExperimentalForeignApi
+import platform.CoreFoundation.CFDataCreate
+import platform.CoreFoundation.kCFAllocatorDefault
+import platform.CoreGraphics.CGColorSpaceCreateDeviceRGB
 import platform.CoreGraphics.CGDataProviderCreateWithCFData
 import platform.CoreGraphics.CGImageAlphaInfo
 import platform.CoreGraphics.CGImageCreate
-import platform.CoreGraphics.CGColorSpaceCreateDeviceRGB
+import platform.CoreGraphics.CGColorRenderingIntent
 import platform.CoreGraphics.kCGBitmapByteOrder32Big
-import platform.CoreGraphics.kCGImageAlphaLast
-import platform.CoreGraphics.kCGRenderingIntentDefault
 import platform.UIKit.UIImage
 import platform.UIKit.UIImagePNGRepresentation
-import platform.UIKit.imageWithCGImage
+import kotlinx.cinterop.UByteVarOf
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.usePinned
 
 actual fun ImageBitmap.encodeToPngBytes(): ByteArray? =
     runCatching {
@@ -36,7 +39,10 @@ actual fun ImageBitmap.encodeToPngBytes(): ByteArray? =
             rgba[offset + 3] = ((color ushr 24) and 0xFF).toByte()
         }
 
-        val provider = CGDataProviderCreateWithCFData(rgba.toNSData())
+        val provider = rgba.usePinned { pinned ->
+            val cfData = CFDataCreate(kCFAllocatorDefault, pinned.addressOf(0).reinterpret<UByteVarOf<UByte>>(), rgba.size.toLong())
+            CGDataProviderCreateWithCFData(cfData)
+        }
         val cgImage =
             CGImageCreate(
                 width = width.toULong(),
@@ -45,13 +51,13 @@ actual fun ImageBitmap.encodeToPngBytes(): ByteArray? =
                 bitsPerPixel = 32.toULong(),
                 bytesPerRow = (width * 4).toULong(),
                 space = CGColorSpaceCreateDeviceRGB(),
-                bitmapInfo = kCGImageAlphaLast or kCGBitmapByteOrder32Big,
+                bitmapInfo = CGImageAlphaInfo.kCGImageAlphaLast.value or kCGBitmapByteOrder32Big,
                 provider = provider,
                 decode = null,
                 shouldInterpolate = false,
-                intent = kCGRenderingIntentDefault,
+                intent = CGColorRenderingIntent.kCGRenderingIntentDefault,
             ) ?: return null
 
-        val pngData = UIImagePNGRepresentation(UIImage.imageWithCGImage(cgImage)) ?: return null
+        val pngData = UIImagePNGRepresentation(UIImage(cgImage)) ?: return null
         pngData.toByteArray()
     }.getOrNull()

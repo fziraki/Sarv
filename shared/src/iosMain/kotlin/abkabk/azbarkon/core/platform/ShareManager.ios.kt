@@ -13,6 +13,7 @@ import platform.Foundation.writeToFile
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
 import platform.UIKit.UIImage
+import platform.UIKit.popoverPresentationController
 
 actual class ShareManager {
     actual fun shareText(
@@ -54,9 +55,13 @@ actual class ShareManager {
         val rootViewController =
             UIApplication.sharedApplication.keyWindow?.rootViewController
         // On iPad the sheet must anchor to a popover source, otherwise it crashes.
-        controller.popoverPresentationController?.apply {
-            sourceView = rootViewController?.view
-            sourceRect = rootViewController?.view?.bounds ?: CGRectZero
+        val popover = controller.popoverPresentationController
+        if (popover != null) {
+            popover.sourceView = rootViewController?.view
+            val bounds = rootViewController?.view?.bounds
+            if (bounds != null) {
+                popover.sourceRect = bounds
+            }
         }
         rootViewController?.presentViewController(controller, animated = true, completion = null)
     }

@@ -4,17 +4,19 @@ package abkabk.azbarkon.features.tasvirNegar.util
 
 import abkabk.azbarkon.core.util.currentTimeMillis
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
+import platform.Foundation.writeToFile
 import platform.UIKit.UIImage
 import platform.UIKit.UIImagePickerController
 import platform.UIKit.UIImagePickerControllerDelegateProtocol
 import platform.UIKit.UIImagePickerControllerOriginalImage
-import platform.UIKit.UIImagePickerControllerSourceTypePhotoLibrary
+import platform.UIKit.UIImagePickerControllerSourceType
 import platform.UIKit.UIImagePNGRepresentation
 import platform.UIKit.UIApplication
 import platform.darwin.NSObject
@@ -26,7 +28,7 @@ actual fun rememberTasvirNegarGalleryLauncher(onResult: (String?) -> Unit): () -
     return remember(delegate) {
         {
             val picker = UIImagePickerController()
-            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary
+            picker.setSourceType(UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary)
             picker.mediaTypes = listOf("public.image")
             picker.delegate = delegate
             UIApplication.sharedApplication.keyWindow?.rootViewController
@@ -37,9 +39,10 @@ actual fun rememberTasvirNegarGalleryLauncher(onResult: (String?) -> Unit): () -
 
 // ponytail: UIImagePickerController is deprecated since iOS 14 (PHPicker is the
 // replacement); it still works and its Kotlin delegate mapping is far simpler.
+@Suppress("CONFLICTING_INHERITED_JVM_DECLARATIONS")
 private class GalleryPickerDelegate(
     private val onResult: (String?) -> Unit,
-) : NSObject(), UIImagePickerControllerDelegateProtocol {
+) : NSObject(), UIImagePickerControllerDelegateProtocol, platform.UIKit.UINavigationControllerDelegateProtocol {
 
     override fun imagePickerController(
         picker: UIImagePickerController,

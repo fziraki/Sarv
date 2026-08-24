@@ -336,6 +336,7 @@ private fun TrackSelector(
         DropdownMenu(
             expanded = menuExpanded,
             onDismissRequest = { menuExpanded = false },
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         ) {
             tracks.forEach { item ->
                 DropdownMenuItem(
@@ -344,6 +345,7 @@ private fun TrackSelector(
                             text = trackLabel(item.track),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     },
                     onClick = {

@@ -8,11 +8,13 @@ import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNAuthorizationStatusAuthorized
 import platform.UserNotifications.UNAuthorizationStatusProvisional
 import platform.UserNotifications.UNUserNotificationCenter
+import kotlin.concurrent.AtomicReference
+import kotlin.concurrent.Volatile
 import kotlin.coroutines.resume
 
 class IosNotificationPermissionGateway : NotificationPermissionGateway {
     @Volatile
-    private var notificationsEnabled = false
+    private var notificationsEnabled: Boolean = false
 
     init {
         refreshEnabledState()
@@ -36,7 +38,7 @@ class IosNotificationPermissionGateway : NotificationPermissionGateway {
     private fun refreshEnabledState() {
         UNUserNotificationCenter.currentNotificationCenter()
             .getNotificationSettingsWithCompletionHandler { settings ->
-                val status = settings.authorizationStatus
+                val status = settings?.authorizationStatus
                 notificationsEnabled =
                     status == UNAuthorizationStatusAuthorized ||
                         status == UNAuthorizationStatusProvisional

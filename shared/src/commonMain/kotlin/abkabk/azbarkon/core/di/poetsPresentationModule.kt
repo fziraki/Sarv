@@ -21,6 +21,7 @@ val poetsPresentationModule =
         viewModel { parameters ->
             PoetDetailViewModel(
                 poetRepository = get(),
+                verseQueries = get(),
                 poetId = parameters.get(),
             )
         }

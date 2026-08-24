@@ -88,3 +88,13 @@ JOIN cat ON cat.id = poem.cat_id
 WHERE cat.text != 'رباعیات'
 ORDER BY RANDOM()
 LIMIT 1;
+
+-- Pick a random ghazal poem id for a specific poet (fal feature).
+selectRandomGhazalPoemIdByPoet:
+SELECT poem.id
+FROM poem
+JOIN cat ON cat.id = poem.cat_id
+WHERE cat.poet_id = :poet_id
+  AND cat.text = 'غزلیات'
+ORDER BY RANDOM()
+LIMIT 1;

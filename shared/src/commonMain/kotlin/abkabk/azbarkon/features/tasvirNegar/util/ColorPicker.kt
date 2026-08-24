@@ -113,7 +113,7 @@ private fun ColorSlider(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text = label, modifier = Modifier.size(width = 80.dp, height = 24.dp))
+        Text(text = label, modifier = Modifier.size(width = 80.dp, height = 24.dp), style = MaterialTheme.typography.bodyMedium)
         AzbarkonSlider(
             value = value,
             onValueChange = onValueChange,

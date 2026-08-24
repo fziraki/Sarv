@@ -62,7 +62,10 @@ fun NotificationPermissionSheet(
                 modifier = Modifier.fillMaxWidth(),
             )
             TextButton(onClick = onDismiss) {
-                Text(text = stringResource(Res.string.notification_permission_not_now))
+                Text(
+                    text = stringResource(Res.string.notification_permission_not_now),
+                    style = MaterialTheme.typography.labelMedium,
+                )
             }
         }
     }
