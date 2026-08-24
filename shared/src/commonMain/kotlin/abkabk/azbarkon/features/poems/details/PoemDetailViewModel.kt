@@ -15,6 +15,8 @@ import abkabk.azbarkon.domain.platform.ShareService
 import abkabk.azbarkon.domain.repository.MemorizationRepository
 import abkabk.azbarkon.domain.repository.PoemRepository
 import abkabk.azbarkon.domain.repository.SavedPoemRepository
+import abkabk.azbarkon.domain.usecase.BuildShareTextUseCase
+import abkabk.azbarkon.domain.usecase.StartMemorizationFromPoemUseCase
 import androidx.lifecycle.viewModelScope
 import azbarkoncmp.shared.generated.resources.Res
 import azbarkoncmp.shared.generated.resources.memorization_max_active_error
@@ -37,6 +39,8 @@ class PoemDetailViewModel(
     private val savedPoemRepository: SavedPoemRepository,
     private val memorizationRepository: MemorizationRepository,
     private val shareService: ShareService,
+    private val buildShareText: BuildShareTextUseCase,
+    private val startMemorizationFromPoem: StartMemorizationFromPoemUseCase,
     private val poemId: Int,
     private val player: AudioPlayer,
 ) : BaseViewModel<PoemDetailAction, PoemDetailState, PoemDetailEvent>(
@@ -344,28 +348,25 @@ class PoemDetailViewModel(
 
     private fun startMemorization() {
         viewModelScope.launch {
-            if (memorizationRepository.isPoemActive(poemId)) {
-                sendEvent(PoemDetailEvent.NavigateToMemorizationPractice)
-                return@launch
-            }
-
-            memorizationRepository
-                .addPoem(poemId)
-                .onSuccess {
+            when (val result = startMemorizationFromPoem(poemId)) {
+                is StartMemorizationFromPoemUseCase.StartResult.AlreadyActive -> {
+                    sendEvent(PoemDetailEvent.NavigateToMemorizationPractice)
+                }
+                is StartMemorizationFromPoemUseCase.StartResult.Success -> {
                     setState { copy(isMemorizing = true) }
                     sendEvent(PoemDetailEvent.NavigateToMemorizationPractice)
-                }.onFailure { error ->
-                    val message =
-                        when (error) {
-                            MemorizationError.MaxActivePoemsReached ->
-                                UiText.Resource(Res.string.memorization_max_active_error)
-                            else -> error.toUiText()
-                        }
-
+                }
+                is StartMemorizationFromPoemUseCase.StartResult.Error -> {
+                    val message = when (result.error) {
+                        MemorizationError.MaxActivePoemsReached ->
+                            UiText.Resource(Res.string.memorization_max_active_error)
+                        else -> result.error.toUiText()
+                    }
                     setState {
                         copy(screenState = UiScreenState.Error(message = message))
                     }
                 }
+            }
         }
     }
 
@@ -431,7 +432,12 @@ class PoemDetailViewModel(
     }
 
     private fun sharePoem() {
-        val text = buildShareText(state.value.copiedText)
+        val text = buildShareText(
+            poetName = state.value.poetName,
+            subtitle = state.value.subtitle,
+            verseTexts = state.value.verses.map { it.text },
+            selectedText = state.value.copiedText,
+        )
         if (text.isBlank()) return
 
         shareService.shareText(
@@ -454,30 +460,6 @@ class PoemDetailViewModel(
         val initialText = state.value.copiedText
         viewModelScope.launch {
             sendEvent(PoemDetailEvent.NavigateToTasvirNegar(initialText))
-        }
-    }
-
-    private fun buildShareText(verseText: String? = null): String {
-        val currentState = state.value
-        if (currentState.verses.isEmpty() && verseText.isNullOrBlank()) return ""
-
-        val body =
-            if (verseText.isNullOrBlank()) {
-                currentState.verses.joinToString("\n") { it.text }
-            } else {
-                verseText
-            }
-
-        return buildString {
-            if (currentState.poetName.isNotBlank()) {
-                append(currentState.poetName)
-            }
-            if (currentState.subtitle.isNotBlank()) {
-                if (isNotEmpty()) append("\n")
-                append(currentState.subtitle)
-            }
-            if (isNotEmpty()) append("\n\n")
-            append(body)
         }
     }
 }

@@ -8,16 +8,16 @@ import abkabk.azbarkon.core.uidata.toUiText
 import abkabk.azbarkon.domain.model.PoetCategoryNode
 import abkabk.azbarkon.domain.model.hasCategory
 import abkabk.azbarkon.domain.repository.PoetRepository
+import abkabk.azbarkon.domain.usecase.GetRandomGhazalForPoetUseCase
 import abkabk.azbarkon.features.poets.GHAZAL_CATEGORY
 import abkabk.azbarkon.features.poets.HAFEZ_POET_ID
 import abkabk.azbarkon.features.poets.flattenPoetCategories
 import androidx.lifecycle.viewModelScope
-import com.azbarkon.db.VerseQueries
 import kotlinx.coroutines.launch
 
 class PoetDetailViewModel(
     private val poetRepository: PoetRepository,
-    private val verseQueries: VerseQueries,
+    private val getRandomGhazalForPoet: GetRandomGhazalForPoetUseCase,
     private val poetId: Int,
 ) : BaseViewModel<PoetDetailAction, PoetDetailState, PoetDetailEvent>(
         initialState = PoetDetailState(),
@@ -53,12 +53,10 @@ class PoetDetailViewModel(
             }
 
             PoetDetailAction.OnFalClick -> {
-                val poemId = verseQueries
-                    .selectRandomGhazalPoemIdByPoet(poetId.toLong())
-                    .executeAsOneOrNull()
+                val poemId = getRandomGhazalForPoet(poetId)
                 if (poemId != null) {
                     viewModelScope.launch {
-                        sendEvent(PoetDetailEvent.NavigateToPoemDetail(poemId.toInt()))
+                        sendEvent(PoetDetailEvent.NavigateToPoemDetail(poemId))
                     }
                 }
             }

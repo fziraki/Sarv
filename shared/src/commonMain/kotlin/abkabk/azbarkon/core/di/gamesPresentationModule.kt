@@ -12,6 +12,8 @@ val gamesPresentationModule =
                 gameType = parameters.get<GameType>(),
                 gamesRepository = get(),
                 userPreferencesRepository = get(),
+                evaluateGameAnswer = get(),
+                applyGameHint = get(),
             )
         }
     }

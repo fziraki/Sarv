@@ -21,7 +21,7 @@ val poetsPresentationModule =
         viewModel { parameters ->
             PoetDetailViewModel(
                 poetRepository = get(),
-                verseQueries = get(),
+                getRandomGhazalForPoet = get(),
                 poetId = parameters.get(),
             )
         }
@@ -38,14 +38,16 @@ val poetsPresentationModule =
                 savedPoemRepository = get(),
                 memorizationRepository = get(),
                 shareService = get(),
+                buildShareText = get(),
+                startMemorizationFromPoem = get(),
                 poemId = parameters.get(),
                 player = get()
             )
         }
         viewModel {
             MyPoemsViewModel(
-                poemRepository = get(),
                 savedPoemRepository = get(),
+                getMyPoems = get(),
             )
         }
     }
