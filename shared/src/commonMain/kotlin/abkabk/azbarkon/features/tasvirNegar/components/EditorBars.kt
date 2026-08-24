@@ -122,7 +122,7 @@ private fun LabeledIconButton(
         Text(
             text = label,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 10.sp,
+            style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
         )
     }
 }
@@ -227,7 +227,7 @@ private fun ToolbarIcon(
         Text(
             text = label,
             color = tint,
-            fontSize = 10.sp,
+            style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
             modifier = Modifier.padding(top = 2.dp),
         )
     }

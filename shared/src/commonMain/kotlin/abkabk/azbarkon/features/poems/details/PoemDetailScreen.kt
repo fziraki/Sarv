@@ -344,6 +344,7 @@ private fun TrackSelector(
                             text = trackLabel(item.track),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     },
                     onClick = {
