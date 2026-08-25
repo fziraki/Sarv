@@ -179,7 +179,6 @@ private fun GameCoinBadge(balance: Int) {
 
 @Composable
 fun GameSessionBottomBar(
-    canUseHint: Boolean,
     hasSelection: Boolean,
     isRevealing: Boolean,
     canPressPrimaryAction: Boolean,
@@ -203,7 +202,6 @@ fun GameSessionBottomBar(
         )
 
         GameHintButton(
-            enabled = canUseHint,
             onClick = onHintClick,
             modifier = Modifier.weight(HINT_BUTTON_WEIGHT),
         )
@@ -212,13 +210,11 @@ fun GameSessionBottomBar(
 
 @Composable
 private fun GameHintButton(
-    enabled: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     androidx.compose.material3.OutlinedButton(
         onClick = onClick,
-        enabled = enabled,
         modifier = modifier,
         shape = AzbarkonButtonDefaults.Shape,
         border =
@@ -382,7 +378,7 @@ fun gameOptionColors(state: GameOptionState): Pair<androidx.compose.ui.graphics.
             MaterialTheme.colorScheme.surfaceVariant to MaterialTheme.colorScheme.onSurface
 
         GameOptionState.Disabled ->
-            MaterialTheme.colorScheme.surfaceVariant to MaterialTheme.colorScheme.onSurfaceVariant
+            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f) to MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
 
         GameOptionState.Selected ->
             MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) to MaterialTheme.colorScheme.onSurface
@@ -406,6 +402,9 @@ fun Modifier.gameOptionStyle(state: GameOptionState): Modifier {
                 GameOptionState.Selected,
                 GameOptionState.Correct,
                 -> Modifier.border(2.dp, primary, shape)
+
+                GameOptionState.Disabled ->
+                    Modifier.border(2.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f), shape)
 
                 else -> Modifier
             },

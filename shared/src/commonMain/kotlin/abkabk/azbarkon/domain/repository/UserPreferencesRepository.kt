@@ -23,6 +23,12 @@ interface UserPreferencesRepository {
 
     fun observeThemeMode(): Flow<ThemeMode>
 
+    fun observeFontSizeScale(): Flow<Float>
+
+    fun getFontSizeScale(): Float
+
+    fun setFontSizeScale(scale: Float)
+
     suspend fun getCoinBalance(): Int
 
     fun adjustCoinBalance(delta: Int): Int

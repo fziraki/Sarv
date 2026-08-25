@@ -5,7 +5,6 @@ import abkabk.azbarkon.core.notifications.MAX_NOTIFICATION_PERMISSION_DECLINES
 import abkabk.azbarkon.core.uidata.BaseViewModel
 import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.core.uidata.UiText
-import abkabk.azbarkon.data.backup.UserBackupManager
 import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.model.ThemeMode
 import abkabk.azbarkon.domain.model.profile.BadgeCatalog
@@ -15,9 +14,11 @@ import abkabk.azbarkon.domain.model.profile.MemorizationProfileStats
 import abkabk.azbarkon.domain.model.profile.ProfileSheet
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
-import abkabk.azbarkon.domain.platform.ShareService
 import abkabk.azbarkon.domain.repository.MemorizationRepository
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
+import abkabk.azbarkon.domain.usecase.BuildProfileStatsUseCase
+import abkabk.azbarkon.domain.usecase.ExportUserDataUseCase
+import abkabk.azbarkon.domain.usecase.ImportUserDataUseCase
 import abkabk.azbarkon.features.poets.GHAZAL_CATEGORY
 import androidx.lifecycle.viewModelScope
 import azbarkoncmp.shared.generated.resources.Res
@@ -33,8 +34,9 @@ class ProfileViewModel(
     private val dailyBeytNotificationScheduler: DailyBeytNotificationScheduler,
     private val notificationPermissionGateway: NotificationPermissionGateway,
     private val memorizationReviewNotificationCoordinator: MemorizationReviewNotificationCoordinator,
-    private val userBackupManager: UserBackupManager,
-    private val shareService: ShareService,
+    private val buildProfileStats: BuildProfileStatsUseCase,
+    private val exportUserData: ExportUserDataUseCase,
+    private val importUserData: ImportUserDataUseCase,
 ) : BaseViewModel<ProfileAction, ProfileState, ProfileEvent>(
         initialState =
             ProfileState(
@@ -45,6 +47,7 @@ class ProfileViewModel(
                 isRemoteNotificationGranted =
                     notificationPermissionGateway.areNotificationsEnabled(),
                 themeMode = userPreferencesRepository.getThemeMode(),
+                fontSizeScale = userPreferencesRepository.getFontSizeScale(),
             ),
     ) {
     init {
@@ -100,6 +103,11 @@ class ProfileViewModel(
                 setState { copy(themeMode = action.mode) }
             }
 
+            is ProfileAction.OnFontSizeScaleSelected -> {
+                userPreferencesRepository.setFontSizeScale(action.scale)
+                setState { copy(fontSizeScale = action.scale) }
+            }
+
             is ProfileAction.OnNotificationPermissionResult -> {
                 handleNotificationPermissionResult(action.granted, action.target)
             }
@@ -127,46 +135,33 @@ class ProfileViewModel(
 
     private fun exportData() {
         viewModelScope.launch {
-            val json = userBackupManager.exportJson()
-            shareService.shareFile(
-                bytes = json.encodeToByteArray(),
-                fileName = "azbarkon-backup.json",
-                mimeType = "application/json",
-                title = null,
-            )
-            sendEvent(
-                ProfileEvent.ShowSnackbar(UiText.Resource(Res.string.profile_export_success)),
-            )
+            val success = exportUserData()
+            if (success) {
+                sendEvent(
+                    ProfileEvent.ShowSnackbar(UiText.Resource(Res.string.profile_export_success)),
+                )
+            }
         }
     }
 
     private fun importData(json: String) {
         viewModelScope.launch {
-            when (val result = userBackupManager.importJson(json)) {
-                is Result.Success -> {
-                    val prefs = result.data.prefs
-                    userPreferencesRepository.setThemeMode(
-                        ThemeMode.entries.getOrElse(prefs.themeMode) { ThemeMode.System },
-                    )
-                    userPreferencesRepository.adjustCoinBalance(0)
-                    memorizationReviewNotificationCoordinator.sync()
-                    if (prefs.dailyBeytNotificationsEnabled) {
-                        dailyBeytNotificationScheduler.enable(showImmediately = false)
-                    } else {
-                        dailyBeytNotificationScheduler.disable()
-                    }
+            when (importUserData(json)) {
+                is ImportUserDataUseCase.ImportResult.Success -> {
+                    val prefs = userPreferencesRepository
                     setState {
                         copy(
-                            isDailyBeytNotificationEnabled = prefs.dailyBeytNotificationsEnabled,
-                            isMemorizationReminderEnabled = prefs.memorizationReminderEnabled,
+                            isDailyBeytNotificationEnabled = prefs.isDailyBeytNotificationEnabled(),
+                            isMemorizationReminderEnabled = prefs.isMemorizationReminderEnabled(),
+                            themeMode = prefs.getThemeMode(),
+                            fontSizeScale = prefs.getFontSizeScale(),
                         )
                     }
                     sendEvent(
                         ProfileEvent.ShowSnackbar(UiText.Resource(Res.string.profile_import_success)),
                     )
                 }
-
-                is Result.Error -> {
+                is ImportUserDataUseCase.ImportResult.Error -> {
                     sendEvent(
                         ProfileEvent.ShowSnackbar(UiText.Resource(Res.string.profile_import_failed)),
                     )
@@ -196,21 +191,7 @@ class ProfileViewModel(
     }
 
     private suspend fun refreshFromSnapshot(snapshot: ProfileSnapshot) {
-        val levelProgress = GameLevelCatalog.progressFromCoinBalance(snapshot.gameStats.coinBalance)
-        val reviewedVerses = memorizationRepository.countReviewedVerses()
-        val activePoems =
-            memorizationRepository.getActivePoems().let { result ->
-                when (result) {
-                    is abkabk.azbarkon.core.domain.result.Result.Success -> result.data
-                    is abkabk.azbarkon.core.domain.result.Result.Error -> emptyList()
-                }
-            }
-        val completedPoems =
-            activePoems.filter { poem ->
-                poem.totalCards > 0 && poem.reviewedCards >= poem.totalCards
-            }
-        val completedPoemCount = completedPoems.size
-        val hasCompletedGhazal = completedPoems.any { it.categoryName == GHAZAL_CATEGORY }
+        val statsResult = buildProfileStats(snapshot.gameStats)
         setState {
             copy(
                 screenState = UiScreenState.Success,
@@ -219,49 +200,14 @@ class ProfileViewModel(
                     userPreferencesRepository.isDailyBeytNotificationEnabled(),
                 isMemorizationReminderEnabled =
                     userPreferencesRepository.isMemorizationReminderEnabled(),
-                levelProgress = levelProgress,
-                memorizationStats =
-                    MemorizationProfileStats(
-                        practiceStreak = snapshot.practiceStreak,
-                        completedPoemCount = completedPoemCount,
-                    ),
+                levelProgress = statsResult.levelProgress,
+                memorizationStats = statsResult.memorizationStats,
                 gameStats = snapshot.gameStats,
-                reviewedVersesCount = reviewedVerses,
-                hasCompletedGhazal = hasCompletedGhazal,
-            )
-        }
-        rebuildDerivedUi()
-    }
-
-    private fun rebuildDerivedUi() {
-        val current = state.value
-        val badges =
-            BadgeCatalog.badges.map { badge ->
-                BadgeCatalog.toBadgeUi(
-                    badge = badge,
-                    hasCompletedGhazal = current.hasCompletedGhazal,
-                    reviewedVersesCount = current.reviewedVersesCount,
-                    gameVisitStreak = current.gameStats.visitStreak,
-                    completedPoemCount = current.memorizationStats.completedPoemCount,
-                    perfectGameSessions = current.gameStats.perfectGameSessions,
-                )
-            }
-        val levels =
-            GameLevelCatalog.levels.map { level ->
-                LevelListItemUi(
-                    level = GameLevelCatalog.toGameLevel(level),
-                    state =
-                        GameLevelCatalog.levelRowState(
-                            levelId = level.id,
-                            currentLevelId = current.levelProgress.levelId,
-                        ),
-                )
-            }
-        setState {
-            copy(
-                previewBadges = badges,
-                allBadges = badges,
-                allLevels = levels,
+                reviewedVersesCount = statsResult.reviewedVersesCount,
+                hasCompletedGhazal = statsResult.hasCompletedGhazal,
+                previewBadges = statsResult.previewBadges,
+                allBadges = statsResult.allBadges,
+                allLevels = statsResult.allLevels,
             )
         }
     }

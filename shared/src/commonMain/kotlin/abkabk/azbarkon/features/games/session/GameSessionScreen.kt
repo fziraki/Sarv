@@ -2,9 +2,10 @@ package abkabk.azbarkon.features.games.session
 
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
-import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.uidata.UiText
+import abkabk.azbarkon.core.uidata.asString
 import abkabk.azbarkon.domain.model.games.GameQuestion
 import abkabk.azbarkon.domain.model.games.GameSessionSummary
 import abkabk.azbarkon.domain.model.games.GameType
@@ -17,14 +18,19 @@ import abkabk.azbarkon.features.games.navigation.GameTypeRoute
 import abkabk.azbarkon.features.games.navigation.toDomain
 import abkabk.azbarkon.features.games.nextverse.NextVerseContent
 import abkabk.azbarkon.features.games.organizepoem.OrganizePoemContent
+import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,12 +49,28 @@ fun GameSessionRoot(
             parametersOf(gameTypeRoute.toDomain())
         }
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val snackbarHostState = LocalSnackbarHostState.current
+    var snackbarMessage by remember { mutableStateOf<UiText?>(null) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             GameSessionEvent.NavigateBack -> onBackClick()
             is GameSessionEvent.NavigateToResult ->
                 onNavigateToResult(event.gameType, event.summary)
+            is GameSessionEvent.ShowSnackbar -> {
+                snackbarMessage = event.message
+            }
+        }
+    }
+
+    val resolvedSnackbarMessage = snackbarMessage?.asString()
+    LaunchedEffect(resolvedSnackbarMessage) {
+        if (resolvedSnackbarMessage != null) {
+            snackbarHostState.showSnackbar(
+                message = resolvedSnackbarMessage,
+                duration = SnackbarDuration.Short,
+            )
+            snackbarMessage = null
         }
     }
 
@@ -82,7 +104,6 @@ fun GameSessionScreen(
         },
         bottomBar = {
             GameSessionBottomBar(
-                canUseHint = state.canUseHint,
                 hasSelection = state.hasSelection,
                 isRevealing = state.isRevealing,
                 canPressPrimaryAction = state.canPressPrimaryAction,

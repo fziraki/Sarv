@@ -9,11 +9,14 @@ import abkabk.azbarkon.domain.model.games.GameGenerationCache
 import abkabk.azbarkon.domain.model.games.GameQuestion
 import abkabk.azbarkon.domain.model.games.GameSessionSummary
 import abkabk.azbarkon.domain.model.games.GameType
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.error_unknown
 import abkabk.azbarkon.domain.repository.GamesRepository
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
+import abkabk.azbarkon.domain.usecase.ApplyGameHintUseCase
+import abkabk.azbarkon.domain.usecase.EvaluateGameAnswerUseCase
+import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.error_unknown
 import androidx.lifecycle.viewModelScope
+import azbarkoncmp.shared.generated.resources.game_hint_not_enough_score
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -23,6 +26,8 @@ class GameSessionViewModel(
     private val gameType: GameType,
     private val gamesRepository: GamesRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
+    private val evaluateGameAnswer: EvaluateGameAnswerUseCase,
+    private val applyGameHint: ApplyGameHintUseCase,
 ) : BaseViewModel<GameSessionAction, GameSessionState, GameSessionEvent>(
         initialState = GameSessionState(gameType = gameType),
     ) {
@@ -229,23 +234,13 @@ class GameSessionViewModel(
 
     private fun evaluateAnswer(): Boolean {
         val currentState = state.value
-        return when (val question = currentState.currentQuestion) {
-            is GameQuestion.NextVerse ->
-                currentState.selectedOptionIndex == question.correctIndex
-
-            is GameQuestion.FindPoet ->
-                currentState.selectedPoetId == question.correctPoetId
-
-            is GameQuestion.CompletePoem ->
-                currentState.filledWords.size == 2 &&
-                    currentState.filledWords[0] == question.correctWords.first &&
-                    currentState.filledWords[1] == question.correctWords.second
-
-            is GameQuestion.OrganizePoem ->
-                currentState.orderedLineIds == question.correctOrder
-
-            null -> false
-        }
+        return evaluateGameAnswer(
+            question = currentState.currentQuestion,
+            selectedOptionIndex = currentState.selectedOptionIndex,
+            selectedPoetId = currentState.selectedPoetId,
+            filledWords = currentState.filledWords,
+            orderedLineIds = currentState.orderedLineIds,
+        )
     }
 
     private fun applySkipOutcome() {
@@ -333,107 +328,42 @@ class GameSessionViewModel(
     }
 
     private fun applyHint() {
-        if (!state.value.canUseHint) return
-        val question = state.value.currentQuestion ?: return
-        when (question) {
-            is GameQuestion.NextVerse -> applyNextVerseHint(question)
-            is GameQuestion.FindPoet -> applyFindPoetHint(question)
-            is GameQuestion.CompletePoem -> applyCompletePoemHint(question)
-            is GameQuestion.OrganizePoem -> applyOrganizePoemHint(question)
-        }
-    }
-
-    private fun applyNextVerseHint(question: GameQuestion.NextVerse) {
-        val currentState = state.value
-        val toDisable =
-            question.options.indices
-                .filter { it != question.correctIndex && it !in currentState.disabledOptionIndices }
-                .firstOrNull()
-                ?: return
-        val updatedBalance =
-            userPreferencesRepository.adjustCoinBalance(-GameConstants.HINT_COST)
-        val clearedSelection =
-            if (currentState.selectedOptionIndex == toDisable) null else currentState.selectedOptionIndex
-        setState {
-            copy(
-                coinBalance = updatedBalance,
-                hintUsedThisQuiz = true,
-                disabledOptionIndices = disabledOptionIndices + toDisable,
-                selectedOptionIndex = clearedSelection,
-            )
-        }
-    }
-
-    private fun applyFindPoetHint(question: GameQuestion.FindPoet) {
-        val currentState = state.value
-        val wrongPoetIds =
-            question.options
-                .map { it.id }
-                .filter { it != question.correctPoetId }
-        val toDisable =
-            question.options.indices
-                .filter { question.options[it].id in wrongPoetIds && it !in currentState.disabledOptionIndices }
-                .firstOrNull()
-                ?: return
-        val disabledPoetId = question.options[toDisable].id
-        val updatedBalance =
-            userPreferencesRepository.adjustCoinBalance(-GameConstants.HINT_COST)
-        val clearedSelection =
-            if (currentState.selectedPoetId == disabledPoetId) null else currentState.selectedPoetId
-        setState {
-            copy(
-                coinBalance = updatedBalance,
-                hintUsedThisQuiz = true,
-                disabledOptionIndices = disabledOptionIndices + toDisable,
-                selectedPoetId = clearedSelection,
-            )
-        }
-    }
-
-    private fun applyCompletePoemHint(question: GameQuestion.CompletePoem) {
-        val currentState = state.value
-        val wrongWords =
-            question.options.filter {
-                it != question.correctWords.first && it != question.correctWords.second
+        if (!state.value.canUseHint) {
+            viewModelScope.launch {
+                sendEvent(
+                    GameSessionEvent.ShowSnackbar(
+                        UiText.Resource(Res.string.game_hint_not_enough_score)
+                    )
+                )
             }
-        val toDisableIndex =
-            question.options.indices.firstOrNull { index ->
-                question.options[index] in wrongWords &&
-                    index !in currentState.disabledOptionIndices
-            } ?: return
-        val updatedBalance =
-            userPreferencesRepository.adjustCoinBalance(-GameConstants.HINT_COST)
-        setState {
-            copy(
-                coinBalance = updatedBalance,
-                hintUsedThisQuiz = true,
-                disabledOptionIndices = disabledOptionIndices + toDisableIndex,
-            )
+            return
         }
-    }
-
-    private fun applyOrganizePoemHint(question: GameQuestion.OrganizePoem) {
+        val question = state.value.currentQuestion ?: return
+        
         val currentState = state.value
-        val currentOrder = currentState.orderedLineIds
-        val wrongIndex =
-            currentOrder.indices.firstOrNull { index ->
-                currentOrder[index] != question.correctOrder[index]
-            } ?: return
-        val lineId = currentOrder[wrongIndex]
-        val targetIndex = question.correctOrder.indexOf(lineId)
-        if (targetIndex < 0) return
-        val reordered = currentOrder.toMutableList()
-        reordered.removeAt(wrongIndex)
-        reordered.add(targetIndex, lineId)
-        val updatedBalance =
-            userPreferencesRepository.adjustCoinBalance(-GameConstants.HINT_COST)
+        val hintResult = applyGameHint(
+            question = question,
+            currentState = ApplyGameHintUseCase.HintResult(
+                disabledOptionIndices = currentState.disabledOptionIndices,
+                selectedOptionIndex = currentState.selectedOptionIndex,
+                selectedPoetId = currentState.selectedPoetId,
+                orderedLineIds = currentState.orderedLineIds,
+                pinnedLineId = currentState.pinnedLineId,
+                pinnedLineIndex = currentState.pinnedLineIndex,
+                coinBalance = currentState.coinBalance,
+            )
+        ) ?: return
+
         setState {
             copy(
-                coinBalance = updatedBalance,
+                coinBalance = hintResult.coinBalance,
                 hintUsedThisQuiz = true,
-                orderedLineIds = reordered,
-                pinnedLineId = lineId,
-                pinnedLineIndex = targetIndex,
+                disabledOptionIndices = hintResult.disabledOptionIndices,
+                selectedOptionIndex = hintResult.selectedOptionIndex,
+                selectedPoetId = hintResult.selectedPoetId,
+                orderedLineIds = hintResult.orderedLineIds,
+                pinnedLineId = hintResult.pinnedLineId,
+                pinnedLineIndex = hintResult.pinnedLineIndex,
             )
         }
     }

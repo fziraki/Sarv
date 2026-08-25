@@ -64,7 +64,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -72,14 +74,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import azbarkoncmp.shared.generated.resources.Res
+import azbarkoncmp.shared.generated.resources.Shekasteh
 import azbarkoncmp.shared.generated.resources.app_name
 import azbarkoncmp.shared.generated.resources.arrow_back_right
-import azbarkoncmp.shared.generated.resources.azbarkontxt
 import azbarkoncmp.shared.generated.resources.cd_back
 import azbarkoncmp.shared.generated.resources.cd_search
 import azbarkoncmp.shared.generated.resources.cd_settings
 import azbarkoncmp.shared.generated.resources.search
 import azbarkoncmp.shared.generated.resources.settings
+import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -144,10 +147,11 @@ private fun AzbarkonTopBar(
             currentItem?.headerTitle?.let {
 
                 if (it == Res.string.app_name){
-                    Image(
-                        painter = painterResource(Res.drawable.azbarkontxt),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
+                    Text(
+                        text = stringResource(it),
+                        fontFamily = FontFamily(Font(Res.font.Shekasteh)),
+                        fontSize = 28.sp,
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 }else{
                     Text(

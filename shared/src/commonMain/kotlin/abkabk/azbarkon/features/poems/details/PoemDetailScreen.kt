@@ -289,6 +289,7 @@ private fun PoemDetailBottomBar(
 
             PoemActionBar(
                 isLiked = state.isLiked,
+                isProse = state.isProse,
                 onSearchClick = { onAction(PoemDetailAction.OnSearchClick) },
                 onShareClick = { onAction(PoemDetailAction.OnShareClick) },
                 onLikeClick = { onAction(PoemDetailAction.OnLikeClick) },

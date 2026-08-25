@@ -90,6 +90,7 @@ class SqlDelightGamesLocalDataSource(
                         gameType = gameType,
                         distichCount = extraction.distichs.size,
                         organizeCount = extraction.organizeWindows.size,
+                        totalVerseGroups = verses.groupBy { it.vorder }.size,
                     )
                 ) {
                     return@repeat

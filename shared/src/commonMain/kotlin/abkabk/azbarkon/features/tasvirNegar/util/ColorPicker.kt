@@ -74,9 +74,9 @@ internal fun HsvColorPickerContent(
                         .height(48.dp)
                         .background(selectedColor, RoundedCornerShape(8.dp)),
             )
-            ColorSlider(label = "Hue", value = hue, valueRange = 0f..360f) { hue = it }
-            ColorSlider(label = "Saturation", value = saturation) { saturation = it }
-            ColorSlider(label = "Brightness", value = value) { value = it }
+            ColorSlider(label = "رنگ", value = hue, valueRange = 0f..360f) { hue = it }
+            ColorSlider(label = "اشباع", value = saturation) { saturation = it }
+            ColorSlider(label = "روشنایی", value = value) { value = it }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),

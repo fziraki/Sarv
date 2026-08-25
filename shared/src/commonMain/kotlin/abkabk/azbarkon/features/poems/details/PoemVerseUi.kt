@@ -1,9 +1,8 @@
 package abkabk.azbarkon.features.poems.details
 
+import abkabk.azbarkon.domain.model.PARAGRAPH_POSITION
 import abkabk.azbarkon.domain.model.PoemVerse
 import androidx.compose.runtime.Stable
-
-private const val PARAGRAPH_VORDER = 3
 
 enum class PoemVersePositionType {
     Comment,
@@ -20,7 +19,7 @@ fun Int.toPoemVersePositionType(): PoemVersePositionType =
         0 -> PoemVersePositionType.Right
         1 -> PoemVersePositionType.Left
         2 -> PoemVersePositionType.Center
-        PARAGRAPH_VORDER -> PoemVersePositionType.Paragraph
+        PARAGRAPH_POSITION -> PoemVersePositionType.Paragraph
         else -> PoemVersePositionType.Single
     }
 

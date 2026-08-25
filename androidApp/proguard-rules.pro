@@ -8,3 +8,5 @@
 -keepclasseswithmembers class abkabk.azbarkon.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
+
+-keep class abkabk.azbarkon.features.games.navigation.GameTypeRoute { *; }

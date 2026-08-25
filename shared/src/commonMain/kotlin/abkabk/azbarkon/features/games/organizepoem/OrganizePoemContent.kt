@@ -88,6 +88,7 @@ fun OrganizePoemContent(
                         GameOptionState.Correct
 
                     isWrongPosition -> GameOptionState.Wrong
+                    isPinned && answerPhase == QuizAnswerPhase.Answering -> GameOptionState.Disabled
                     else -> GameOptionState.Default
                 }
             val (background, contentColor) = gameOptionColors(state)
@@ -114,10 +115,10 @@ fun OrganizePoemContent(
                             null
                         },
                     tint =
-                        if (reorderEnabled) {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        } else {
-                            MaterialTheme.colorScheme.outline
+                        when {
+                            isPinned && reorderEnabled -> MaterialTheme.colorScheme.outlineVariant
+                            reorderEnabled -> MaterialTheme.colorScheme.onSurfaceVariant
+                            else -> MaterialTheme.colorScheme.outlineVariant
                         },
                 )
                 Text(

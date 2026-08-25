@@ -56,6 +56,7 @@ class GameSessionPoolBuilderTest {
                 gameType = GameType.NEXT_VERSE,
                 distichCount = extraction.distichs.size,
                 organizeCount = extraction.organizeWindows.size,
+                totalVerseGroups = verses.groupBy { it.vorder }.size,
             ),
         ).isFalse()
     }
@@ -67,6 +68,7 @@ class GameSessionPoolBuilderTest {
                 gameType = GameType.ORGANIZE_POEM,
                 distichCount = 0,
                 organizeCount = 1,
+                totalVerseGroups = 0,
             ),
         ).isTrue()
     }

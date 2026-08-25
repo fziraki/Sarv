@@ -6,16 +6,14 @@ import abkabk.azbarkon.core.uidata.BaseViewModel
 import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.core.uidata.toUiText
-import abkabk.azbarkon.domain.repository.PoemRepository
 import abkabk.azbarkon.domain.repository.SavedPoemRepository
+import abkabk.azbarkon.domain.usecase.GetMyPoemsUseCase
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class MyPoemsViewModel(
-    private val poemRepository: PoemRepository,
     private val savedPoemRepository: SavedPoemRepository,
+    private val getMyPoems: GetMyPoemsUseCase,
 ) : BaseViewModel<MyPoemsAction, MyPoemsState, MyPoemsEvent>(
         initialState = MyPoemsState(),
     ) {
@@ -72,34 +70,18 @@ class MyPoemsViewModel(
         viewModelScope.launch {
             setState { copy(screenState = UiScreenState.Loading) }
 
-            val likedIds = savedPoemRepository.getLikedIds()
-            val bookmarkedIds = savedPoemRepository.getBookmarkedIds()
-
-            coroutineScope {
-                val likedDeferred = async { poemRepository.getPoemsByIds(likedIds) }
-                val bookmarkedDeferred = async { poemRepository.getPoemsByIds(bookmarkedIds) }
-
-                val likedResult = likedDeferred.await()
-                val bookmarkedResult = bookmarkedDeferred.await()
-
-                likedResult
-                    .onSuccess { likedPoems ->
-                        bookmarkedResult
-                            .onSuccess { bookmarkedPoems ->
-                                setState {
-                                    copy(
-                                        screenState = UiScreenState.Success,
-                                        likedGroups = likedPoems.toPoetGroups(),
-                                        bookmarkedGroups = bookmarkedPoems.toPoetGroups(),
-                                    )
-                                }
-                            }.onFailure { error ->
-                                handleError(error.toUiText())
-                            }
-                    }.onFailure { error ->
-                        handleError(error.toUiText())
+            getMyPoems()
+                .onSuccess { result ->
+                    setState {
+                        copy(
+                            screenState = UiScreenState.Success,
+                            likedGroups = result.likedGroups,
+                            bookmarkedGroups = result.bookmarkedGroups,
+                        )
                     }
-            }
+                }.onFailure { error ->
+                    handleError(error.toUiText())
+                }
         }
     }
 

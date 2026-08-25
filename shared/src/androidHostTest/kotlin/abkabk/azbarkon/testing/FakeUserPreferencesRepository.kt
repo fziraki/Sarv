@@ -12,6 +12,7 @@ class FakeUserPreferencesRepository : UserPreferencesRepository {
     private var memorizationReminderEnabled: Boolean = true
     private var notificationPermissionDeclineCount: Int = 0
     private var themeMode: ThemeMode = ThemeMode.System
+    private var fontSizeScale: Float = 1f
     private var coinBalance: Int = 700
     private var visitStreak: Int = 0
     private var totalCorrect: Int = 0
@@ -32,6 +33,7 @@ class FakeUserPreferencesRepository : UserPreferencesRepository {
             ),
         )
     private val themeModeState = MutableStateFlow(themeMode)
+    private val fontSizeScaleState = MutableStateFlow(fontSizeScale)
 
     override fun isDailyBeytNotificationEnabled(): Boolean = dailyBeytEnabled
 
@@ -59,6 +61,15 @@ class FakeUserPreferencesRepository : UserPreferencesRepository {
     }
 
     override fun observeThemeMode(): Flow<ThemeMode> = themeModeState
+
+    override fun observeFontSizeScale(): Flow<Float> = fontSizeScaleState
+
+    override fun getFontSizeScale(): Float = fontSizeScale
+
+    override fun setFontSizeScale(scale: Float) {
+        fontSizeScale = scale
+        fontSizeScaleState.value = scale
+    }
 
     override suspend fun getCoinBalance(): Int = coinBalance
 

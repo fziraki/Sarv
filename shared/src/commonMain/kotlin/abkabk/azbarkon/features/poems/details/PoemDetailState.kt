@@ -17,6 +17,7 @@ data class PoemDetailState(
     val highlightQuery: String = "",
     val scrollToVerseId: String? = null,
     val copiedText: String? = null,
+    val isProse: Boolean = false,
 )
 
 
