@@ -24,14 +24,17 @@ internal object GameSessionPoolBuilder {
         gameType: GameType,
         distichCount: Int,
         organizeCount: Int,
-    ): Boolean =
-        when (gameType) {
+        hasParagraphVerses: Boolean,
+    ): Boolean {
+        if (hasParagraphVerses) return false
+        return when (gameType) {
             GameType.ORGANIZE_POEM -> organizeCount > 0
             GameType.NEXT_VERSE,
             GameType.FIND_POET,
             GameType.COMPLETE_POEM,
             -> distichCount >= GameConstants.POOL_MIN_DISTICHS_PER_POEM
         }
+    }
 
     fun extractFromVerses(
         poemId: Long,

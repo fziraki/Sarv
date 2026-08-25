@@ -324,9 +324,7 @@ class PoemDetailViewModel(
                 is abkabk.azbarkon.core.domain.result.Result.Success -> {
                     val detail = result.data
                     val isMemorizing = memorizationRepository.isPoemActive(poemId)
-                    val isProse = detail.verses
-                        .groupBy { it.vorder }
-                        .none { (_, verses) -> verses.any { it.position == 1 } }
+                    val isProse = detail.verses.any { it.position == 3 }
                     setState {
                         copy(
                             screenState = UiScreenState.Success,

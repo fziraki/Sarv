@@ -90,6 +90,7 @@ class SqlDelightGamesLocalDataSource(
                         gameType = gameType,
                         distichCount = extraction.distichs.size,
                         organizeCount = extraction.organizeWindows.size,
+                        hasParagraphVerses = verses.any { it.position == 3L },
                     )
                 ) {
                     return@repeat

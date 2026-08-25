@@ -56,6 +56,7 @@ class GameSessionPoolBuilderTest {
                 gameType = GameType.NEXT_VERSE,
                 distichCount = extraction.distichs.size,
                 organizeCount = extraction.organizeWindows.size,
+                hasParagraphVerses = false,
             ),
         ).isFalse()
     }
@@ -67,6 +68,7 @@ class GameSessionPoolBuilderTest {
                 gameType = GameType.ORGANIZE_POEM,
                 distichCount = 0,
                 organizeCount = 1,
+                hasParagraphVerses = false,
             ),
         ).isTrue()
     }
