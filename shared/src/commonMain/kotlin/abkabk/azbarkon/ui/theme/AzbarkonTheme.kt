@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.LayoutDirection
 @Composable
 fun AzbarkonTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    fontSizeScale: Float = 1f,
     content: @Composable () -> Unit,
 ) {
     val colorScheme =
@@ -25,7 +26,7 @@ fun AzbarkonTheme(
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = azbarkonTypography(),
+            typography = azbarkonTypography(fontSizeScale = fontSizeScale),
             content = content,
         )
     }

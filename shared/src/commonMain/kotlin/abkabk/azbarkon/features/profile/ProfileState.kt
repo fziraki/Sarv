@@ -15,6 +15,7 @@ data class ProfileState(
     val screenState: UiScreenState = UiScreenState.Idle,
     val activeSheet: ProfileSheet? = null,
     val themeMode: ThemeMode = ThemeMode.System,
+    val fontSizeScale: Float = 1f,
     val isDailyBeytNotificationEnabled: Boolean = false,
     val isMemorizationReminderEnabled: Boolean = true,
     val isRemoteNotificationGranted: Boolean = false,
@@ -52,6 +53,10 @@ sealed interface ProfileAction {
 
     data class OnThemeModeSelected(
         val mode: ThemeMode,
+    ) : ProfileAction
+
+    data class OnFontSizeScaleSelected(
+        val scale: Float,
     ) : ProfileAction
 
     data class OnNotificationPermissionResult(

@@ -32,7 +32,11 @@ fun App(
             ThemeMode.Dark -> true
         }
 
-    AzbarkonTheme(darkTheme = darkTheme) {
+    val fontSizeScale by userPreferencesRepository.observeFontSizeScale().collectAsStateWithLifecycle(
+        initialValue = 1f,
+    )
+
+    AzbarkonTheme(darkTheme = darkTheme, fontSizeScale = fontSizeScale) {
         AzbarkonNavigation(
             initialPoemId = initialPoemId,
             openMemorizationPractice = openMemorizationPractice,

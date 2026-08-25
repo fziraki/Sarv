@@ -47,6 +47,7 @@ class ProfileViewModel(
                 isRemoteNotificationGranted =
                     notificationPermissionGateway.areNotificationsEnabled(),
                 themeMode = userPreferencesRepository.getThemeMode(),
+                fontSizeScale = userPreferencesRepository.getFontSizeScale(),
             ),
     ) {
     init {
@@ -100,6 +101,11 @@ class ProfileViewModel(
             is ProfileAction.OnThemeModeSelected -> {
                 userPreferencesRepository.setThemeMode(action.mode)
                 setState { copy(themeMode = action.mode) }
+            }
+
+            is ProfileAction.OnFontSizeScaleSelected -> {
+                userPreferencesRepository.setFontSizeScale(action.scale)
+                setState { copy(fontSizeScale = action.scale) }
             }
 
             is ProfileAction.OnNotificationPermissionResult -> {

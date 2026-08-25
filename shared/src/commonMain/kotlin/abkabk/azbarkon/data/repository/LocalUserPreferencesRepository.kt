@@ -18,6 +18,7 @@ class LocalUserPreferencesRepository(
 ) : UserPreferencesRepository {
     private val gameStatsRefresh = MutableSharedFlow<Unit>(replay = 1).apply { tryEmit(Unit) }
     private val themeModeRefresh = MutableSharedFlow<Unit>(replay = 1).apply { tryEmit(Unit) }
+    private val fontSizeScaleRefresh = MutableSharedFlow<Unit>(replay = 1).apply { tryEmit(Unit) }
 
     override fun isDailyBeytNotificationEnabled(): Boolean =
         keyValueStore.getBoolean(KEY_DAILY_BEYT_NOTIFICATIONS_ENABLED)
@@ -54,6 +55,19 @@ class LocalUserPreferencesRepository(
         themeModeRefresh
             .onStart { emit(Unit) }
             .map { readThemeMode() }
+
+    override fun observeFontSizeScale(): Flow<Float> =
+        fontSizeScaleRefresh
+            .onStart { emit(Unit) }
+            .map { readFontSizeScale() }
+
+    override fun getFontSizeScale(): Float = readFontSizeScale()
+
+    override fun setFontSizeScale(scale: Float) {
+        val index = FONT_SIZE_SCALES.indexOfFirst { it == scale }.coerceAtLeast(0)
+        keyValueStore.putInt(KEY_FONT_SIZE_SCALE, index)
+        fontSizeScaleRefresh.tryEmit(Unit)
+    }
 
     override suspend fun getCoinBalance(): Int =
         withContext(Dispatchers.Default) {
@@ -124,7 +138,14 @@ class LocalUserPreferencesRepository(
             ThemeMode.System
         }
 
+    private fun readFontSizeScale(): Float =
+        FONT_SIZE_SCALES.getOrElse(keyValueStore.getInt(KEY_FONT_SIZE_SCALE, default = 0)) {
+            FONT_SIZE_SCALES.first()
+        }
+
     internal companion object {
+        val FONT_SIZE_SCALES = floatArrayOf(1f, 1.05f, 1.1f)
+        const val KEY_FONT_SIZE_SCALE = "font_size_scale"
         const val KEY_DAILY_BEYT_NOTIFICATIONS_ENABLED = "daily_beyt_notifications_enabled"
         const val KEY_MEMORIZATION_REMINDER_ENABLED = "memorization_reminder_enabled"
         const val KEY_NOTIFICATION_PERMISSION_DECLINE_COUNT = "notification_permission_decline_count"

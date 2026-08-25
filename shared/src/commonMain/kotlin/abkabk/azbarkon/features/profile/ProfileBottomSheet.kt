@@ -55,6 +55,10 @@ import azbarkoncmp.shared.generated.resources.profile_daily_beyt_subtitle
 import azbarkoncmp.shared.generated.resources.profile_daily_beyt_title
 import azbarkoncmp.shared.generated.resources.profile_export_data
 import azbarkoncmp.shared.generated.resources.profile_export_data_subtitle
+import azbarkoncmp.shared.generated.resources.profile_font_size_big
+import azbarkoncmp.shared.generated.resources.profile_font_size_bigger
+import azbarkoncmp.shared.generated.resources.profile_font_size_default
+import azbarkoncmp.shared.generated.resources.profile_font_size_title
 import azbarkoncmp.shared.generated.resources.profile_import_data
 import azbarkoncmp.shared.generated.resources.profile_import_data_subtitle
 import azbarkoncmp.shared.generated.resources.profile_level_format
@@ -73,6 +77,10 @@ import azbarkoncmp.shared.generated.resources.profile_theme_title
 import azbarkoncmp.shared.generated.resources.upload
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+
+private const val FONT_SIZE_DEFAULT = 1f
+private const val FONT_SIZE_BIG = 1.05f
+private const val FONT_SIZE_BIGGER = 1.1f
 
 @Composable
 fun ProfileSheets(
@@ -100,10 +108,12 @@ fun ProfileSheets(
                     isMemorizationReminderEnabled = state.isMemorizationReminderEnabled,
                     isRemoteNotificationGranted = state.isRemoteNotificationGranted,
                     themeMode = state.themeMode,
+                    fontSizeScale = state.fontSizeScale,
                     onDailyBeytToggle = { onAction(ProfileAction.OnDailyBeytNotificationToggle(it)) },
                     onMemorizationReminderToggle = { onAction(ProfileAction.OnMemorizationReminderToggle(it)) },
                     onRemoteNotificationClick = { onAction(ProfileAction.OnRemoteNotificationClick) },
                     onThemeModeSelect = { onAction(ProfileAction.OnThemeModeSelected(it)) },
+                    onFontSizeScaleSelect = { onAction(ProfileAction.OnFontSizeScaleSelected(it)) },
                     onAddWidgetClick = onAddWidgetClick,
                     onExportData = onExportData,
                     onImportData = onImportData,
@@ -125,10 +135,12 @@ private fun ProfileSettingsSheetContent(
     isMemorizationReminderEnabled: Boolean,
     isRemoteNotificationGranted: Boolean,
     themeMode: ThemeMode,
+    fontSizeScale: Float,
     onDailyBeytToggle: (Boolean) -> Unit,
     onMemorizationReminderToggle: (Boolean) -> Unit,
     onRemoteNotificationClick: () -> Unit,
     onThemeModeSelect: (ThemeMode) -> Unit,
+    onFontSizeScaleSelect: (Float) -> Unit,
     onAddWidgetClick: (() -> Unit)?,
     onExportData: () -> Unit,
     onImportData: () -> Unit,
@@ -199,28 +211,85 @@ private fun ProfileSettingsSheetContent(
             onClick = onImportData,
         )
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.Start) {
-            Text(
-                text = stringResource(Res.string.profile_theme_title),
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Start,
-            )
-            ProfileThemeOption(
+        ProfileThemeSelector(themeMode, onThemeModeSelect)
+
+        ProfileFontSizeSelector(fontSizeScale, onFontSizeScaleSelect)
+    }
+}
+
+@Composable
+private fun ProfileThemeSelector(
+    themeMode: ThemeMode,
+    onThemeModeSelect: (ThemeMode) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.Start) {
+        Text(
+            text = stringResource(Res.string.profile_theme_title),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Start,
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            ProfileSegmentedOption(
                 label = stringResource(Res.string.profile_theme_system),
                 selected = themeMode == ThemeMode.System,
                 onClick = { onThemeModeSelect(ThemeMode.System) },
+                modifier = Modifier.weight(1f),
             )
-            ProfileThemeOption(
+            ProfileSegmentedOption(
                 label = stringResource(Res.string.profile_theme_light),
                 selected = themeMode == ThemeMode.Light,
                 onClick = { onThemeModeSelect(ThemeMode.Light) },
+                modifier = Modifier.weight(1f),
             )
-            ProfileThemeOption(
+            ProfileSegmentedOption(
                 label = stringResource(Res.string.profile_theme_dark),
                 selected = themeMode == ThemeMode.Dark,
                 onClick = { onThemeModeSelect(ThemeMode.Dark) },
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProfileFontSizeSelector(
+    fontSizeScale: Float,
+    onFontSizeScaleSelect: (Float) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.Start) {
+        Text(
+            text = stringResource(Res.string.profile_font_size_title),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Start,
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            ProfileSegmentedOption(
+                label = stringResource(Res.string.profile_font_size_default),
+                selected = fontSizeScale == FONT_SIZE_DEFAULT,
+                onClick = { onFontSizeScaleSelect(FONT_SIZE_DEFAULT) },
+                modifier = Modifier.weight(1f),
+            )
+            ProfileSegmentedOption(
+                label = stringResource(Res.string.profile_font_size_big),
+                selected = fontSizeScale == FONT_SIZE_BIG,
+                onClick = { onFontSizeScaleSelect(FONT_SIZE_BIG) },
+                modifier = Modifier.weight(1f),
+            )
+            ProfileSegmentedOption(
+                label = stringResource(Res.string.profile_font_size_bigger),
+                selected = fontSizeScale == FONT_SIZE_BIGGER,
+                onClick = { onFontSizeScaleSelect(FONT_SIZE_BIGGER) },
+                modifier = Modifier.weight(1f),
             )
         }
     }
@@ -331,16 +400,16 @@ private fun ProfileDataActionRow(
 }
 
 @Composable
-private fun ProfileThemeOption(
+private fun ProfileSegmentedOption(
     label: String,
     selected: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
+            modifier
+                .clip(RoundedCornerShape(8.dp))
                 .background(
                     if (selected) {
                         MaterialTheme.colorScheme.primary
@@ -348,13 +417,14 @@ private fun ProfileThemeOption(
                         MaterialTheme.colorScheme.surfaceVariant
                     },
                 ).clickable(onClick = onClick)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.Start,
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
             color =
                 if (selected) {
                     MaterialTheme.colorScheme.onPrimary
