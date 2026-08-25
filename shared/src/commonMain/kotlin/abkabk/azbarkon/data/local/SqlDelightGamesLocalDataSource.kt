@@ -90,7 +90,7 @@ class SqlDelightGamesLocalDataSource(
                         gameType = gameType,
                         distichCount = extraction.distichs.size,
                         organizeCount = extraction.organizeWindows.size,
-                        hasParagraphVerses = verses.any { it.position == abkabk.azbarkon.domain.model.PARAGRAPH_POSITION.toLong() },
+                        totalVerseGroups = verses.groupBy { it.vorder }.size,
                     )
                 ) {
                     return@repeat

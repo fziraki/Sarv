@@ -24,9 +24,9 @@ internal object GameSessionPoolBuilder {
         gameType: GameType,
         distichCount: Int,
         organizeCount: Int,
-        hasParagraphVerses: Boolean,
+        totalVerseGroups: Int,
     ): Boolean {
-        if (hasParagraphVerses) return false
+        if (totalVerseGroups > 0 && distichCount * 2 < totalVerseGroups) return false
         return when (gameType) {
             GameType.ORGANIZE_POEM -> organizeCount > 0
             GameType.NEXT_VERSE,
