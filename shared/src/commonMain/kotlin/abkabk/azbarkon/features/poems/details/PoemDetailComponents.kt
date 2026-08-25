@@ -260,6 +260,7 @@ private fun PoemOrnamentalDividerPreview() {
 @Composable
 fun PoemActionBar(
     isLiked: Boolean,
+    isProse: Boolean,
     onSearchClick: () -> Unit,
     onShareClick: () -> Unit,
     onLikeClick: () -> Unit,
@@ -300,14 +301,16 @@ fun PoemActionBar(
         )
 
 
-        PoemActionItem(
-            icon = Res.drawable.add_box_24px,
-            label = Res.string.poem_memorize,
-            contentDescription = Res.string.cd_add_poem,
-            onClick = onMemorizeClick,
-            tint = MaterialTheme.colorScheme.primary,
-            labelColor = MaterialTheme.colorScheme.primary,
-        )
+        if (!isProse) {
+            PoemActionItem(
+                icon = Res.drawable.add_box_24px,
+                label = Res.string.poem_memorize,
+                contentDescription = Res.string.cd_add_poem,
+                onClick = onMemorizeClick,
+                tint = MaterialTheme.colorScheme.primary,
+                labelColor = MaterialTheme.colorScheme.primary,
+            )
+        }
 
         PoemActionItem(
             icon = Res.drawable.share,

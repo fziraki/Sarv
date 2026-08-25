@@ -25,6 +25,7 @@ class ImportUserDataUseCase(
                 userPreferencesRepository.setThemeMode(
                     ThemeMode.entries.getOrElse(prefs.themeMode) { ThemeMode.System },
                 )
+                userPreferencesRepository.setFontSizeScale(prefs.fontSizeScale)
                 userPreferencesRepository.adjustCoinBalance(0)
                 memorizationReviewNotificationCoordinator.sync()
                 if (prefs.dailyBeytNotificationsEnabled) {

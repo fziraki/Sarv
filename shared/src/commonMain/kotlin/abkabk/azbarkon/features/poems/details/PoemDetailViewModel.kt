@@ -324,6 +324,9 @@ class PoemDetailViewModel(
                 is abkabk.azbarkon.core.domain.result.Result.Success -> {
                     val detail = result.data
                     val isMemorizing = memorizationRepository.isPoemActive(poemId)
+                    val isProse = detail.verses
+                        .groupBy { it.vorder }
+                        .none { (_, verses) -> verses.any { it.position == 1 } }
                     setState {
                         copy(
                             screenState = UiScreenState.Success,
@@ -333,6 +336,7 @@ class PoemDetailViewModel(
                             isLiked = savedPoemRepository.isLiked(poemId),
                             isBookmarked = savedPoemRepository.isBookmarked(poemId),
                             isMemorizing = isMemorizing,
+                            isProse = isProse,
                         )
                     }
                 }

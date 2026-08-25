@@ -153,6 +153,8 @@ class ProfileViewModel(
                         copy(
                             isDailyBeytNotificationEnabled = prefs.isDailyBeytNotificationEnabled(),
                             isMemorizationReminderEnabled = prefs.isMemorizationReminderEnabled(),
+                            themeMode = prefs.getThemeMode(),
+                            fontSizeScale = prefs.getFontSizeScale(),
                         )
                     }
                     sendEvent(

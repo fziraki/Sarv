@@ -1,18 +1,18 @@
 <resources>
 
-    <string name="app_name">ازبرکن</string>
+    <string name="app_name">سرو</string>
 
     <string name="home">آستان</string>
     <string name="notification_permission_title">اعلان‌ها را فعال کنید</string>
     <string name="notification_permission_body">برای آگاهی از بیت روزانه، یادآور مرور و اخبار جدید، اجازه دریافت اعلان را بدهید.</string>
     <string name="notification_permission_allow">فعال کردن</string>
     <string name="notification_permission_not_now">بعداً</string>
-    <string name="profile_remote_notification_title">اعلان‌های اخبار ازبرکن</string>
-    <string name="profile_remote_notification_subtitle">دریافت اعلان‌های اخبار ازبرکن</string>
+    <string name="profile_remote_notification_title">اعلان‌های اخبار سرو</string>
+    <string name="profile_remote_notification_subtitle">دریافت اعلان‌های اخبار سرو</string>
     <string name="treasure">گنجینه</string>
     <string name="games">میدان</string>
     <string name="profile">من</string>
-    <string name="profile_title">پروفایل</string>
+    <string name="profile_title">نماگر</string>
 
     <string name="games_subtitle">با بازی های ادبی شعر را بهتر یاد بگیر و لذت ببر</string>
     <string name="treasure_subtitle">در میان واژه‌ها قدم بزن</string>
@@ -27,7 +27,7 @@
     <string name="find_in_poem_hint">جستجو در متن شعر</string>
     <string name="cd_close_find_bar">بستن نوار جستجو</string>
     <string name="pic_negar">تصویر نگار</string>
-    <string name="review">مرور شعر</string>
+    <string name="review">از بر کن</string>
 
     <string name="cd_context_search">جستجو در متن شعر</string>
 
@@ -44,9 +44,6 @@
     <string name="continue_memorization_desc">%1$d شعر فعال · %2$d کارت امروز</string>
     <string name="memorization_select_title">انتخاب شعر</string>
     <string name="memorization_quick_start">شروع سریع</string>
-    <string name="memorization_quick_start_baba_taher">دوبیتی‌های بابا طاهر</string>
-    <string name="memorization_quick_start_hafez">غزل‌های حافظ</string>
-    <string name="memorization_quick_start_treasury">گنجینه</string>
     <string name="memorization_active_poems">شعرهای در حال حفظ</string>
     <string name="memorization_select_hero_title">اولین شعر خود را از بر کن</string>
     <string name="memorization_select_hero_subtitle">مسیر حفظ شما از همین‌جا آغاز می‌شود</string>
@@ -58,8 +55,6 @@
     <string name="memorization_option_search_desc">شاعر، بیت یا نام شعر را جستجو کنید</string>
     <string name="memorization_option_library_title">انتخاب از گنجینه</string>
     <string name="memorization_option_library_desc">از میان شاعران و آثار موجود انتخاب کنید</string>
-    <string name="memorization_option_today_title">پیشنهاد امروز</string>
-    <string name="memorization_option_today_desc">شعری متناسب با سلیقه و سطح شما</string>
     <string name="memorization_status_format">جعبه %1$d · سطح %2$d</string>
     <string name="memorization_active_count_format">%1$d از ۳ شعر فعال</string>
     <string name="memorization_active_add_poem">افزودن شعر جدید</string>
@@ -70,8 +65,6 @@
     <string name="memorization_practice_progress">%1$d از %2$d</string>
     <string name="memorization_practice_complete">مرور امروز تمام شد</string>
     <string name="memorization_practice_done">پایان</string>
-    <string name="memorization_reveal_hint">برای دیدن ادامه لمس کنید</string>
-    <string name="memorization_typing_mode">حالت تایپ</string>
     <string name="memorization_typing_hint">ادامه شعر را بنویسید...</string>
     <string name="memorization_submit_typing">بررسی پاسخ</string>
     <string name="memorization_next_verse">مصرع بعدی</string>
@@ -110,8 +103,6 @@
     <string name="game_hint">راهنما</string>
     <string name="game_hint_cost">50</string>
     <string name="game_hint_not_enough_score">امتیاز کافی ندارید</string>
-    <string name="game_check_answer">بررسی پاسخ</string>
-    <string name="game_confirm_answer">تأیید پاسخ</string>
     <string name="game_next">نمی دانم</string>
     <string name="game_continue">ادامه</string>
     <string name="game_review">بررسی</string>
@@ -123,7 +114,6 @@
     <string name="game_result_correct">پاسخ درست</string>
     <string name="game_result_wrong">پاسخ نادرست</string>
     <string name="game_result_no_answer">بدون پاسخ</string>
-    <string name="game_result_time">زمان کل</string>
     <string name="game_result_score">امتیاز</string>
     <string name="game_result_progress_title">پیشرفت شما</string>
     <string name="game_result_progress_questions_format">%1$d از %2$d سؤال</string>
@@ -132,7 +122,6 @@
     <string name="game_result_progress_question_count_label">تعداد سؤال‌ها</string>
     <string name="game_result_progress_total_questions_format">%1$d سؤال</string>
     <string name="game_result_progress_answered_format">%1$d از %2$d پاسخ داده شده</string>
-    <string name="game_result_time_format">%1$d ثانیه</string>
     <string name="game_replay">بازی دوباره</string>
     <string name="game_back_to_list">بازگشت به بازی‌ها</string>
     <string name="cd_game_coin">سکه</string>
@@ -145,8 +134,6 @@
     <string name="whois_poet_title">کشف شاعر</string>
     <string name="whois_poet_desc">شاعر کیست؟</string>
     <string name="whois_poet_score">20</string>
-
-    <string name="library_coming_soon">به‌زودی</string>
 
     <string name="slider_beyt_of_day_title">بیت امروز</string>
     <string name="slider_beyt_of_day_text">که عشق آسان نمود اول\nولی افتاد مشکل ها</string>
@@ -167,7 +154,6 @@
     <string name="error_disk_full">فضای ذخیره‌سازی کافی نیست</string>
     <string name="error_unknown">خطای ناشناخته</string>
     <string name="retry">تلاش مجدد</string>
-    <string name="dismiss">بستن</string>
     <string name="list_load_error">خطا در بارگذاری</string>
     <string name="cd_back">بازگشت</string>
     <string name="cd_search">رفتن به صفحه جستجو</string>
@@ -177,9 +163,7 @@
     <string name="poets_download">دانلود آثار</string>
     <string name="poets_download_success">دانلود کامل شد</string>
     <string name="poets_download_failed">دانلود ناموفق بود</string>
-    <string name="poets_all_section">همه شاعران</string>
     <string name="poets_works_section">آثار</string>
-    <string name="poets_works_summary_other">%1$s و %2$d اثر دیگر</string>
     <string name="cd_expand_category">باز کردن دسته</string>
 
     <string name="profile_daily_beyt_title">بیت روزانه</string>
@@ -188,7 +172,7 @@
     <string name="profile_memorization_reminder_subtitle">هر روز ساعت ۱۰ صبح یادآوری مرور شعرها</string>
     <string name="profile_settings_title">تنظیمات</string>
     <string name="profile_export_data">پشتیبان‌گیری از اطلاعات</string>
-    <string name="profile_export_data_subtitle">ذخیره اطلاعات ازبرکن در فایل</string>
+    <string name="profile_export_data_subtitle">ذخیره اطلاعات سرو در فایل</string>
     <string name="profile_import_data">بازیابی اطلاعات</string>
     <string name="profile_import_data_subtitle">بازیابی از فایل پشتیبان</string>
     <string name="profile_import_confirm_title">بازیابی اطلاعات</string>
@@ -198,8 +182,8 @@
     <string name="profile_export_success">فایل پشتیبان آماده شد</string>
     <string name="profile_export_failed">پشتیبان‌گیری ناموفق بود</string>
     <string name="profile_theme_title">حالت نمایش</string>
-    <string name="profile_add_widget">افزودن ویجت</string>
-    <string name="profile_add_widget_subtitle">نمایش بیت روزانه در صفحه اصلی</string>
+    <string name="profile_add_widget">افزودن ابزارک</string>
+    <string name="profile_add_widget_subtitle">نمایش بیت روزانه در صفحه اصلی گوشی</string>
     <string name="profile_theme_system">پیش‌فرض</string>
     <string name="profile_theme_light">روشن</string>
     <string name="profile_theme_dark">تاریک</string>
@@ -217,8 +201,8 @@
     <string name="profile_levels_title">سطوح</string>
     <string name="profile_level_format">سطح %1$d</string>
     <string name="profile_level_start">شروع</string>
-    <string name="profile_level_score_required">%1$d امتیاز مورد نیاز</string>
-    <string name="profile_xp_format">%1$d / %2$d XP</string>
+    <string name="profile_level_score_required">%1$d امتیاز</string>
+    <string name="profile_xp_format">%1$d / %2$d امتیاز</string>
     <string name="profile_badges_title">نشان‌ها</string>
     <string name="cd_settings">تنظیمات</string>
     <string name="cd_levels">سطوح</string>
@@ -233,7 +217,7 @@
     <string name="poem_liked">پسندیدم</string>
     <string name="poem_image_creator">تصویر نگار</string>
     <string name="poem_memorize_practice">تمرین حفظ این شعر</string>
-    <string name="poem_memorize">حفظ</string>
+    <string name="poem_memorize">ازبرکن</string>
     <string name="poem_copied">شعر کپی شد</string>
     <string name="coming_soon">به‌زودی</string>
     <string name="cd_bookmark">نشان‌گذاری</string>
@@ -269,7 +253,7 @@
     <string name="fal_button">فال حافظ</string>
     <string name="cd_fal">فال حافظ</string>
     <string name="cd_send_message">ارسال پیام</string>
-    <string name="chat_persian_only">با حروف فارسی چت کنید</string>
+    <string name="chat_persian_only">با حروف فارسی گفتگو کنید</string>
 
     <string name="tasvir_negar_save">ذخیره</string>
     <string name="tasvir_negar_saved">با موفقیت ذخیره شد</string>

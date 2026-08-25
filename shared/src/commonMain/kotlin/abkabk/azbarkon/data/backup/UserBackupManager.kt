@@ -39,6 +39,7 @@ data class UserBackupPrefs(
     val bookmarkedPoemIds: Set<Int> = emptySet(),
     val dailyBeytNotificationsEnabled: Boolean = false,
     val memorizationReminderEnabled: Boolean = false,
+    val fontSizeScale: Float = 1f,
 )
 
 @Serializable
@@ -125,6 +126,7 @@ class LocalUserBackupManager(
                 keyValueStore.getBoolean(LocalUserPreferencesRepository.KEY_DAILY_BEYT_NOTIFICATIONS_ENABLED),
             memorizationReminderEnabled =
                 keyValueStore.getBoolean(LocalUserPreferencesRepository.KEY_MEMORIZATION_REMINDER_ENABLED, default = true),
+            fontSizeScale = readFontSizeScale(),
         )
 
     private fun writePrefs(prefs: UserBackupPrefs) {
@@ -150,5 +152,20 @@ class LocalUserBackupManager(
             LocalUserPreferencesRepository.KEY_MEMORIZATION_REMINDER_ENABLED,
             prefs.memorizationReminderEnabled,
         )
+        writeFontSizeScale(prefs.fontSizeScale)
+    }
+
+    private fun readFontSizeScale(): Float =
+        FONT_SIZE_SCALES.getOrElse(keyValueStore.getInt(LocalUserPreferencesRepository.KEY_FONT_SIZE_SCALE, default = 0)) {
+            FONT_SIZE_SCALES.first()
+        }
+
+    private fun writeFontSizeScale(scale: Float) {
+        val index = FONT_SIZE_SCALES.indexOfFirst { it == scale }.coerceAtLeast(0)
+        keyValueStore.putInt(LocalUserPreferencesRepository.KEY_FONT_SIZE_SCALE, index)
+    }
+
+    companion object {
+        private val FONT_SIZE_SCALES = floatArrayOf(1f, 1.05f, 1.1f)
     }
 }
