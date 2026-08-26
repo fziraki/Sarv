@@ -2,10 +2,10 @@ package abkabk.azbarkon.features.mypoems
 
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.ui.components.AzbarkonAlertDialog
+import abkabk.azbarkon.ui.components.SarvAlertDialog
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -45,21 +45,21 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.bookmark_filled
-import azbarkoncmp.shared.generated.resources.cd_clear_bookmarked
-import azbarkoncmp.shared.generated.resources.cd_clear_liked
-import azbarkoncmp.shared.generated.resources.clear_confirm
-import azbarkoncmp.shared.generated.resources.clear_cancel
-import azbarkoncmp.shared.generated.resources.clear_dialog_bookmarked_body
-import azbarkoncmp.shared.generated.resources.clear_dialog_liked_body
-import azbarkoncmp.shared.generated.resources.clear_dialog_title
-import azbarkoncmp.shared.generated.resources.empty_bookmarked
-import azbarkoncmp.shared.generated.resources.empty_liked
-import azbarkoncmp.shared.generated.resources.tab_bookmarked
-import azbarkoncmp.shared.generated.resources.tab_liked
-import azbarkoncmp.shared.generated.resources.heart_filled
-import azbarkoncmp.shared.generated.resources.my_poems
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.bookmark_filled
+import sarv.shared.generated.resources.cd_clear_bookmarked
+import sarv.shared.generated.resources.cd_clear_liked
+import sarv.shared.generated.resources.clear_confirm
+import sarv.shared.generated.resources.clear_cancel
+import sarv.shared.generated.resources.clear_dialog_bookmarked_body
+import sarv.shared.generated.resources.clear_dialog_liked_body
+import sarv.shared.generated.resources.clear_dialog_title
+import sarv.shared.generated.resources.empty_bookmarked
+import sarv.shared.generated.resources.empty_liked
+import sarv.shared.generated.resources.tab_bookmarked
+import sarv.shared.generated.resources.tab_liked
+import sarv.shared.generated.resources.heart_filled
+import sarv.shared.generated.resources.my_poems
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -176,7 +176,7 @@ fun MyPoemsScreen(
     }
 
     if (state.showClearDialog) {
-        AzbarkonAlertDialog(
+        SarvAlertDialog(
             onDismissRequest = { onAction(MyPoemsAction.OnClearAllDismiss) },
             title = stringResource(Res.string.clear_dialog_title),
             text = clearDialogBody,
@@ -346,7 +346,7 @@ private fun MyPoemRow(
 @Preview
 @Composable
 private fun MyPoemsScreenPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         MyPoemsScreen(
             state =
                 MyPoemsState(

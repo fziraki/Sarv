@@ -12,7 +12,7 @@ fun buildPoetImageUrl(catUrl: String?): String? {
     return slug?.let { "${Constants.BASE_URL}api/ganjoor/poet/image/$it.png" }
 }
 
-fun com.azbarkon.db.SelectAllWithCatUrl.toPoet(): Poet =
+fun com.sarv.db.SelectAllWithCatUrl.toPoet(): Poet =
     Poet(
         id = id.toInt(),
         name = name,
@@ -22,7 +22,7 @@ fun com.azbarkon.db.SelectAllWithCatUrl.toPoet(): Poet =
         isDownloaded = is_downloaded,
     )
 
-fun com.azbarkon.db.SelectByIdWithCatUrl.toPoet(): Poet =
+fun com.sarv.db.SelectByIdWithCatUrl.toPoet(): Poet =
     Poet(
         id = id.toInt(),
         name = name,

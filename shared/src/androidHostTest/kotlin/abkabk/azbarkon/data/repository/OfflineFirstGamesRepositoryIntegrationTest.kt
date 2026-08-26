@@ -6,7 +6,7 @@ import abkabk.azbarkon.domain.model.games.GameType
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import assertk.assertThat
 import assertk.assertions.isGreaterThan
-import com.azbarkon.db.AzbarKonDatabase
+import com.sarv.db.SarvDatabase
 import java.io.File
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
@@ -17,7 +17,7 @@ class OfflineFirstGamesRepositoryIntegrationTest {
         runBlocking {
             val dbFile = resolveBundledDatabaseFile()
             val driver = JdbcSqliteDriver("jdbc:sqlite:${dbFile.absolutePath}")
-            val database = AzbarKonDatabase(driver)
+            val database = SarvDatabase(driver)
             val repository =
                 OfflineFirstGamesRepository(
                     localDataSource =

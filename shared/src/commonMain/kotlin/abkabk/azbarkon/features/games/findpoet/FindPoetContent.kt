@@ -31,8 +31,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.game_find_poet_instruction
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.game_find_poet_instruction
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

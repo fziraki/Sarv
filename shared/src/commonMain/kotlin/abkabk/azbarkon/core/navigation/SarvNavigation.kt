@@ -1,10 +1,10 @@
 package abkabk.azbarkon.core.navigation
 
-import abkabk.azbarkon.core.uidata.AzbarkonAppState
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.SarvAppState
+import abkabk.azbarkon.core.uidata.LocalSarvAppState
 import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
-import abkabk.azbarkon.core.uidata.rememberAzbarkonAppState
-import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
+import abkabk.azbarkon.core.uidata.rememberSarvAppState
+import abkabk.azbarkon.ui.components.SarvSnackbarHost
 import abkabk.azbarkon.features.games.navigation.GamePlayRoute
 import abkabk.azbarkon.features.games.navigation.GameTypeRoute
 import abkabk.azbarkon.features.games.navigation.GamesRoute
@@ -73,15 +73,15 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.Shekasteh
-import azbarkoncmp.shared.generated.resources.app_name
-import azbarkoncmp.shared.generated.resources.arrow_back_right
-import azbarkoncmp.shared.generated.resources.cd_back
-import azbarkoncmp.shared.generated.resources.cd_search
-import azbarkoncmp.shared.generated.resources.cd_settings
-import azbarkoncmp.shared.generated.resources.search
-import azbarkoncmp.shared.generated.resources.settings
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.Shekasteh
+import sarv.shared.generated.resources.app_name
+import sarv.shared.generated.resources.arrow_back_right
+import sarv.shared.generated.resources.cd_back
+import sarv.shared.generated.resources.cd_search
+import sarv.shared.generated.resources.cd_settings
+import sarv.shared.generated.resources.search
+import sarv.shared.generated.resources.settings
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -114,11 +114,11 @@ private fun NavDestination?.hasOwnScaffold(): Boolean =
             hasRoute<GamePlayRoute>())
 
 @Composable
-private fun AzbarkonTopBar(
+private fun SarvTopBar(
     currentItem: BottomNavItem?,
     currentDestination: NavDestination?,
     navController: NavController,
-    appState: AzbarkonAppState,
+    appState: SarvAppState,
 ) {
     Box(
         modifier =
@@ -198,7 +198,7 @@ private fun AzbarkonTopBar(
 }
 
 @Composable
-private fun AzbarkonBottomBar(
+private fun SarvBottomBar(
     currentDestination: NavDestination?,
     navController: NavController,
 ) {
@@ -273,13 +273,13 @@ private fun AzbarkonBottomBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AzbarkonNavigation(
+fun SarvNavigation(
     modifier: Modifier = Modifier,
     initialPoemId: Int? = null,
     openMemorizationPractice: Boolean = false,
 ) {
     val navController = rememberNavController()
-    val appState = rememberAzbarkonAppState()
+    val appState = rememberSarvAppState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(initialPoemId) {
@@ -311,18 +311,18 @@ fun AzbarkonNavigation(
         } ?: BottomNavItem.Home
 
     CompositionLocalProvider(
-        LocalAzbarkonAppState provides appState,
+        LocalSarvAppState provides appState,
         LocalSnackbarHostState provides snackbarHostState,
     ) {
         Scaffold(
             modifier = modifier,
             containerColor = MaterialTheme.colorScheme.background,
             snackbarHost = {
-                if (!currentDestination.hasOwnScaffold()) AzbarkonSnackbarHost(hostState = snackbarHostState)
+                if (!currentDestination.hasOwnScaffold()) SarvSnackbarHost(hostState = snackbarHostState)
             },
             topBar = {
                 if (isRootDestination) {
-                    AzbarkonTopBar(
+                    SarvTopBar(
                         currentItem = currentItem,
                         currentDestination = currentDestination,
                         navController = navController,
@@ -332,7 +332,7 @@ fun AzbarkonNavigation(
             },
             bottomBar = {
                 if (isRootDestination) {
-                    AzbarkonBottomBar(
+                    SarvBottomBar(
                         currentDestination = currentDestination,
                         navController = navController,
                     )

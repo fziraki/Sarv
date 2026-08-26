@@ -5,7 +5,7 @@ import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.domain.datasource.ChatLocalDataSource
 import abkabk.azbarkon.domain.model.ChatDistich
 import abkabk.azbarkon.domain.model.ChatDistichFallback
-import com.azbarkon.db.VerseQueries
+import com.sarv.db.VerseQueries
 
 class SqlDelightChatLocalDataSource(
     private val verseQueries: VerseQueries,

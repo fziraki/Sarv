@@ -18,7 +18,7 @@ import abkabk.azbarkon.data.platform.IosNotificationPermissionGateway
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import abkabk.azbarkon.domain.platform.MemorizationReviewNotificationScheduler
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
-import com.azbarkon.db.AzbarKonDatabase
+import com.sarv.db.SarvDatabase
 import com.azbarkon.memorization.MemorizationDatabase
 import coil3.PlatformContext
 import org.koin.dsl.module
@@ -42,7 +42,7 @@ val iosPlatformModule =
         }
 
         single {
-            AzbarKonDatabase(
+            SarvDatabase(
                 driver = get(),
             )
         }

@@ -2,7 +2,7 @@ package abkabk.azbarkon.features.games.components
 
 import abkabk.azbarkon.domain.model.games.GameType
 import abkabk.azbarkon.ui.components.ShimmerPlaceholder
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -235,7 +235,7 @@ private fun ShimmerCircle(size: Dp) {
 @Preview
 @Composable
 private fun NextVerseContentShimmerPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         GameContentShimmer(
             gameType = GameType.NEXT_VERSE,
             modifier = Modifier.padding(16.dp),
@@ -246,7 +246,7 @@ private fun NextVerseContentShimmerPreview() {
 @Preview
 @Composable
 private fun FindPoetContentShimmerPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         GameContentShimmer(
             gameType = GameType.FIND_POET,
             modifier = Modifier.padding(16.dp),
@@ -257,7 +257,7 @@ private fun FindPoetContentShimmerPreview() {
 @Preview
 @Composable
 private fun CompletePoemContentShimmerPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         GameContentShimmer(
             gameType = GameType.COMPLETE_POEM,
             modifier = Modifier.padding(16.dp),
@@ -268,7 +268,7 @@ private fun CompletePoemContentShimmerPreview() {
 @Preview
 @Composable
 private fun OrganizePoemContentShimmerPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         GameContentShimmer(
             gameType = GameType.ORGANIZE_POEM,
             modifier = Modifier.padding(16.dp),

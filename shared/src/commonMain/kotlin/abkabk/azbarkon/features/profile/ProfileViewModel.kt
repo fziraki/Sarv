@@ -21,10 +21,10 @@ import abkabk.azbarkon.domain.usecase.ExportUserDataUseCase
 import abkabk.azbarkon.domain.usecase.ImportUserDataUseCase
 import abkabk.azbarkon.features.poets.GHAZAL_CATEGORY
 import androidx.lifecycle.viewModelScope
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.profile_export_success
-import azbarkoncmp.shared.generated.resources.profile_import_failed
-import azbarkoncmp.shared.generated.resources.profile_import_success
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.profile_export_success
+import sarv.shared.generated.resources.profile_import_failed
+import sarv.shared.generated.resources.profile_import_success
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 

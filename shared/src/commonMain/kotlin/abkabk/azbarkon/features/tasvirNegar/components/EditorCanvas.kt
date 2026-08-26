@@ -66,11 +66,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.ic_align_center
-import azbarkoncmp.shared.generated.resources.ic_align_left
-import azbarkoncmp.shared.generated.resources.ic_align_right
-import azbarkoncmp.shared.generated.resources.ic_bold
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.ic_align_center
+import sarv.shared.generated.resources.ic_align_left
+import sarv.shared.generated.resources.ic_align_right
+import sarv.shared.generated.resources.ic_bold
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 

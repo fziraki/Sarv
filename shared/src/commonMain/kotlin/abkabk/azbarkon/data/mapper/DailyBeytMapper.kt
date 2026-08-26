@@ -1,7 +1,7 @@
 package abkabk.azbarkon.data.mapper
 
 import abkabk.azbarkon.domain.model.RandomDistich
-import com.azbarkon.db.SelectRandomDistichAtOffsetByPoet
+import com.sarv.db.SelectRandomDistichAtOffsetByPoet
 
 fun SelectRandomDistichAtOffsetByPoet.toRandomDistich(): RandomDistich =
     RandomDistich(

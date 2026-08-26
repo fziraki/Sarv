@@ -1,6 +1,6 @@
 package abkabk.azbarkon.domain.usecase
 
-import com.azbarkon.db.VerseQueries
+import com.sarv.db.VerseQueries
 
 class GetRandomGhazalForPoetUseCase(
     private val verseQueries: VerseQueries,

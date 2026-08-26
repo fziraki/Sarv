@@ -7,7 +7,7 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isGreaterThan
 import assertk.assertions.isSuccess
-import com.azbarkon.db.AzbarKonDatabase
+import com.sarv.db.SarvDatabase
 import java.io.File
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
@@ -18,7 +18,7 @@ class SearchFtsIntegrationTest {
         runBlocking {
             val dbFile = resolveBundledDatabaseFile()
             val driver = JdbcSqliteDriver("jdbc:sqlite:${dbFile.absolutePath}")
-            val database = AzbarKonDatabase(driver)
+            val database = SarvDatabase(driver)
             val dataSource = SqlDelightSearchLocalDataSource(database.searchQueries, database.catQueries)
 
             val result = dataSource.searchVersesPage(query = "عشق", poetId = 2, categoryIds = null, offset = 0, limit = 20)
@@ -37,7 +37,7 @@ class SearchFtsIntegrationTest {
         runBlocking {
             val dbFile = resolveBundledDatabaseFile()
             val driver = JdbcSqliteDriver("jdbc:sqlite:${dbFile.absolutePath}")
-            val database = AzbarKonDatabase(driver)
+            val database = SarvDatabase(driver)
             val dataSource = SqlDelightSearchLocalDataSource(database.searchQueries, database.catQueries)
 
             val result = dataSource.searchVersesPage(query = "عشق", poetId = null, categoryIds = null, offset = 0, limit = 20)

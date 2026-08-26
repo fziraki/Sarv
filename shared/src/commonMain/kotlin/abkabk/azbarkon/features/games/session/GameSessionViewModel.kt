@@ -13,10 +13,10 @@ import abkabk.azbarkon.domain.repository.GamesRepository
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
 import abkabk.azbarkon.domain.usecase.ApplyGameHintUseCase
 import abkabk.azbarkon.domain.usecase.EvaluateGameAnswerUseCase
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.error_unknown
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.error_unknown
 import androidx.lifecycle.viewModelScope
-import azbarkoncmp.shared.generated.resources.game_hint_not_enough_score
+import sarv.shared.generated.resources.game_hint_not_enough_score
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

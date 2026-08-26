@@ -10,8 +10,8 @@ import abkabk.azbarkon.domain.datasource.PoemLocalDataSource
 import abkabk.azbarkon.domain.model.MyPoemSummary
 import abkabk.azbarkon.domain.model.PoemDetail
 import abkabk.azbarkon.domain.model.PoemSummary
-import com.azbarkon.db.PoemQueries
-import com.azbarkon.db.VerseQueries
+import com.sarv.db.PoemQueries
+import com.sarv.db.VerseQueries
 import io.github.aakira.napier.Napier
 
 class SqlDelightPoemLocalDataSource(

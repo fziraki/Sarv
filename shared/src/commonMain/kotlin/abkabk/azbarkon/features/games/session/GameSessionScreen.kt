@@ -18,7 +18,7 @@ import abkabk.azbarkon.features.games.navigation.GameTypeRoute
 import abkabk.azbarkon.features.games.navigation.toDomain
 import abkabk.azbarkon.features.games.nextverse.NextVerseContent
 import abkabk.azbarkon.features.games.organizepoem.OrganizePoemContent
-import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
+import abkabk.azbarkon.ui.components.SarvSnackbarHost
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -112,7 +112,7 @@ fun GameSessionScreen(
             )
         },
         snackbarHost = {
-            AzbarkonSnackbarHost(hostState = LocalSnackbarHostState.current)
+            SarvSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
     ) { paddingValues ->
         Column(

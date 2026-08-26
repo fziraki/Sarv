@@ -11,8 +11,8 @@ import abkabk.azbarkon.domain.model.memorization.StoredActivePoem
 import abkabk.azbarkon.domain.model.memorization.StoredReviewLog
 import abkabk.azbarkon.core.util.consecutiveDayStreak
 import abkabk.azbarkon.core.util.dayKeyFromMillis
-import com.azbarkon.db.CatQueries
-import com.azbarkon.db.PoetQueries
+import com.sarv.db.CatQueries
+import com.sarv.db.PoetQueries
 import com.azbarkon.memorization.ActiveSrsPoemQueries
 import com.azbarkon.memorization.MemorizationDatabase
 import com.azbarkon.memorization.ReviewLogQueries

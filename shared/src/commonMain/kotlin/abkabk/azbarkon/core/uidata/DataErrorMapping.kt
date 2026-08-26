@@ -1,13 +1,13 @@
 package abkabk.azbarkon.core.uidata
 
 import abkabk.azbarkon.core.domain.result.DataError
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.error_disk_full
-import azbarkoncmp.shared.generated.resources.error_no_internet
-import azbarkoncmp.shared.generated.resources.error_not_found
-import azbarkoncmp.shared.generated.resources.error_server
-import azbarkoncmp.shared.generated.resources.error_unauthorized
-import azbarkoncmp.shared.generated.resources.error_unknown
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.error_disk_full
+import sarv.shared.generated.resources.error_no_internet
+import sarv.shared.generated.resources.error_not_found
+import sarv.shared.generated.resources.error_server
+import sarv.shared.generated.resources.error_unauthorized
+import sarv.shared.generated.resources.error_unknown
 
 fun DataError.toUiText(): UiText =
     when (this) {

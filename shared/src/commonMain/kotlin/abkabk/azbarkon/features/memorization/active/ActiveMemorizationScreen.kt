@@ -5,10 +5,10 @@ import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.features.memorization.ActivePoemCard
 import abkabk.azbarkon.features.memorization.MemorizationHeroSection
 import abkabk.azbarkon.features.memorization.MemorizationOptionRow
-import abkabk.azbarkon.ui.components.AzbarkonAlertDialog
-import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
+import abkabk.azbarkon.ui.components.SarvAlertDialog
+import abkabk.azbarkon.ui.components.SarvPrimaryButton
 import abkabk.azbarkon.ui.components.Header
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,17 +25,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.add_box_24px
-import azbarkoncmp.shared.generated.resources.clear_cancel
-import azbarkoncmp.shared.generated.resources.clear_confirm
-import azbarkoncmp.shared.generated.resources.memorization_active_add_poem
-import azbarkoncmp.shared.generated.resources.memorization_active_count_format
-import azbarkoncmp.shared.generated.resources.memorization_active_empty
-import azbarkoncmp.shared.generated.resources.memorization_active_poems
-import azbarkoncmp.shared.generated.resources.memorization_remove_confirm_body
-import azbarkoncmp.shared.generated.resources.memorization_remove_confirm_title
-import azbarkoncmp.shared.generated.resources.memorization_select_hero_subtitle
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.add_box_24px
+import sarv.shared.generated.resources.clear_cancel
+import sarv.shared.generated.resources.clear_confirm
+import sarv.shared.generated.resources.memorization_active_add_poem
+import sarv.shared.generated.resources.memorization_active_count_format
+import sarv.shared.generated.resources.memorization_active_empty
+import sarv.shared.generated.resources.memorization_active_poems
+import sarv.shared.generated.resources.memorization_remove_confirm_body
+import sarv.shared.generated.resources.memorization_remove_confirm_title
+import sarv.shared.generated.resources.memorization_select_hero_subtitle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -59,7 +59,7 @@ fun ActiveMemorizationRoot(
     }
 
     if (state.poemToDelete != null) {
-        AzbarkonAlertDialog(
+        SarvAlertDialog(
             onDismissRequest = { viewModel.onAction(ActiveMemorizationAction.OnDeleteDismiss) },
             title = stringResource(Res.string.memorization_remove_confirm_title),
             text = stringResource(Res.string.memorization_remove_confirm_body),
@@ -114,7 +114,7 @@ fun ActiveMemorizationScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                AzbarkonPrimaryButton(
+                SarvPrimaryButton(
                     text = stringResource(Res.string.memorization_active_add_poem),
                     onClick = { onAction(ActiveMemorizationAction.OnAddPoemClick) },
                     modifier = Modifier.fillMaxWidth(),
@@ -157,7 +157,7 @@ fun ActiveMemorizationScreen(
 @Preview
 @Composable
 private fun ActiveMemorizationScreenPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         ActiveMemorizationScreen(
             state =
                 ActiveMemorizationState(
@@ -182,7 +182,7 @@ private fun ActiveMemorizationScreenPreview() {
 @Preview
 @Composable
 private fun ActiveMemorizationEmptyScreenPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         ActiveMemorizationScreen(
             state = ActiveMemorizationState(),
             onAction = {},

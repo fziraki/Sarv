@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AzbarkonModalBottomSheet(
+fun SarvModalBottomSheet(
     onDismissRequest: () -> Unit,
     sheetGesturesEnabled: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,

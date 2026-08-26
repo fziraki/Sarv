@@ -1,7 +1,7 @@
 package abkabk.azbarkon.features.memorization
 
 import abkabk.azbarkon.core.designsystem.brown
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,21 +30,21 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.feather
-import azbarkoncmp.shared.generated.resources.forward
-import azbarkoncmp.shared.generated.resources.ic_delete
-import azbarkoncmp.shared.generated.resources.memorization_due_cards_format
-import azbarkoncmp.shared.generated.resources.memorization_quick_start
-import azbarkoncmp.shared.generated.resources.memorization_quick_start_desc
-import azbarkoncmp.shared.generated.resources.memorization_quick_start_ghazal
-import azbarkoncmp.shared.generated.resources.memorization_quick_start_couplet
-import azbarkoncmp.shared.generated.resources.memorization_quick_start_rubaiyat
-import azbarkoncmp.shared.generated.resources.memorization_select_hero_subtitle
-import azbarkoncmp.shared.generated.resources.memorization_select_hero_title
-import azbarkoncmp.shared.generated.resources.memorization_status_format
-import azbarkoncmp.shared.generated.resources.ornoment30
-import azbarkoncmp.shared.generated.resources.search
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.feather
+import sarv.shared.generated.resources.forward
+import sarv.shared.generated.resources.ic_delete
+import sarv.shared.generated.resources.memorization_due_cards_format
+import sarv.shared.generated.resources.memorization_quick_start
+import sarv.shared.generated.resources.memorization_quick_start_desc
+import sarv.shared.generated.resources.memorization_quick_start_ghazal
+import sarv.shared.generated.resources.memorization_quick_start_couplet
+import sarv.shared.generated.resources.memorization_quick_start_rubaiyat
+import sarv.shared.generated.resources.memorization_select_hero_subtitle
+import sarv.shared.generated.resources.memorization_select_hero_title
+import sarv.shared.generated.resources.memorization_status_format
+import sarv.shared.generated.resources.ornoment30
+import sarv.shared.generated.resources.search
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -330,7 +330,7 @@ fun ActivePoemCard(
 @Preview
 @Composable
 private fun MemorizationHeroSectionPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         MemorizationHeroSection(modifier = Modifier.padding(16.dp))
     }
 }
@@ -338,7 +338,7 @@ private fun MemorizationHeroSectionPreview() {
 @Preview
 @Composable
 private fun QuickStartCardPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         QuickStartCard(
             onCoupletClick = {},
             onGhazalClick = {},
@@ -351,7 +351,7 @@ private fun QuickStartCardPreview() {
 @Preview
 @Composable
 private fun MemorizationOptionRowPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         MemorizationOptionRow(
             title = "جستجوی شعر",
             description = "شاعر، بیت یا نام شعر را جستجو کنید",
@@ -365,7 +365,7 @@ private fun MemorizationOptionRowPreview() {
 @Preview
 @Composable
 private fun ActivePoemCardPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         ActivePoemCard(
             title = "غزل ۱",
             poetName = "حافظ",

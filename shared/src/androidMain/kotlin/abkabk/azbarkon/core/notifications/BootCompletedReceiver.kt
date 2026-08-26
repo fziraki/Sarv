@@ -1,6 +1,6 @@
 package abkabk.azbarkon.core.notifications
 
-import abkabk.azbarkon.AzbarkonApp
+import abkabk.azbarkon.SarvApp
 import abkabk.azbarkon.core.di.initKoin
 import abkabk.azbarkon.core.widget.RandomDistichWidgetRefresher
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
@@ -18,7 +18,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
         if (intent?.action != Intent.ACTION_BOOT_COMPLETED) return
 
         val application = context.applicationContext
-        if (GlobalContext.getOrNull() == null && application is AzbarkonApp) {
+        if (GlobalContext.getOrNull() == null && application is SarvApp) {
             initKoin(application)
         }
 

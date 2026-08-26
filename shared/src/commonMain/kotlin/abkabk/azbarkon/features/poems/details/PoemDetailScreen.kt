@@ -4,13 +4,13 @@ import abkabk.azbarkon.core.ui.FindTextField
 import abkabk.azbarkon.core.ui.keyboardAboveIme
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
-import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
+import abkabk.azbarkon.ui.components.SarvSnackbarHost
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.domain.model.PoemAudioTrack
-import abkabk.azbarkon.ui.components.AzbarkonSlider
+import abkabk.azbarkon.ui.components.SarvSlider
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -66,14 +66,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.arrow_drop_down
-import azbarkoncmp.shared.generated.resources.cd_close_find_bar
-import azbarkoncmp.shared.generated.resources.cd_select_track
-import azbarkoncmp.shared.generated.resources.close
-import azbarkoncmp.shared.generated.resources.find_in_poem_hint
-import azbarkoncmp.shared.generated.resources.pause
-import azbarkoncmp.shared.generated.resources.play
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.arrow_drop_down
+import sarv.shared.generated.resources.cd_close_find_bar
+import sarv.shared.generated.resources.cd_select_track
+import sarv.shared.generated.resources.close
+import sarv.shared.generated.resources.find_in_poem_hint
+import sarv.shared.generated.resources.pause
+import sarv.shared.generated.resources.play
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
@@ -179,7 +179,7 @@ fun PoemDetailScreen(
             )
         },
         snackbarHost = {
-            AzbarkonSnackbarHost(hostState = LocalSnackbarHostState.current)
+            SarvSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
     ) { paddingValues ->
 
@@ -419,7 +419,7 @@ private fun TrackPlayerCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                AzbarkonSlider(
+                SarvSlider(
                     value = displayedProgress,
                     onValueChange = {
                         dragProgress = it
@@ -508,7 +508,7 @@ private fun formatMs(ms: Long): String {
 @Preview
 @Composable
 private fun PoemDetailScreenPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         PoemDetailScreen(
             state =
                 PoemDetailState(

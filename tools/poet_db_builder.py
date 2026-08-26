@@ -25,7 +25,7 @@ OUT_DIR = os.path.join(HERE, "out")
 # Ganjoor's most-visited poets + Baba Tahir. Edit freely, then re-run.
 DEFAULT_POET_IDS = [2, 3, 4, 5, 6, 7, 8, 9, 28]  # hafez khayyam ferdowsi molana nezami saadi parvin attar babataher
 
-# ponytail: keep in sync with AzbarKonDatabase.Schema.version (2 = one empty 1.sqm migration)
+# ponytail: keep in sync with SarvDatabase.Schema.version (2 = one empty 1.sqm migration)
 DB_VERSION = 2
 
 SCHEMA = """

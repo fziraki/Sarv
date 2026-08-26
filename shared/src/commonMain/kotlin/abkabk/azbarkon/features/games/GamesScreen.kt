@@ -29,25 +29,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.complete_poem_desc
-import azbarkoncmp.shared.generated.resources.complete_poem_title
-import azbarkoncmp.shared.generated.resources.games
-import azbarkoncmp.shared.generated.resources.next_line_desc
-import azbarkoncmp.shared.generated.resources.next_line_title
-import azbarkoncmp.shared.generated.resources.poetry_arrangement_desc
-import azbarkoncmp.shared.generated.resources.poetry_arrangement_title
-import azbarkoncmp.shared.generated.resources.whois_poet_desc
-import azbarkoncmp.shared.generated.resources.whois_poet_title
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.complete_poem_desc
+import sarv.shared.generated.resources.complete_poem_title
+import sarv.shared.generated.resources.games
+import sarv.shared.generated.resources.next_line_desc
+import sarv.shared.generated.resources.next_line_title
+import sarv.shared.generated.resources.poetry_arrangement_desc
+import sarv.shared.generated.resources.poetry_arrangement_title
+import sarv.shared.generated.resources.whois_poet_desc
+import sarv.shared.generated.resources.whois_poet_title
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Surface
 import androidx.compose.ui.layout.ContentScale
-import azbarkoncmp.shared.generated.resources.guess_poet_icon
-import azbarkoncmp.shared.generated.resources.incomplete_icon
-import azbarkoncmp.shared.generated.resources.next_verse_icon
-import azbarkoncmp.shared.generated.resources.reorder_poem_icon
+import sarv.shared.generated.resources.guess_poet_icon
+import sarv.shared.generated.resources.incomplete_icon
+import sarv.shared.generated.resources.next_verse_icon
+import sarv.shared.generated.resources.reorder_poem_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
@@ -203,7 +203,7 @@ fun GameItem(
 @Preview
 @Composable
 private fun GamesScreenPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         GamesScreen(onNavigateToGame = {})
     }
 }

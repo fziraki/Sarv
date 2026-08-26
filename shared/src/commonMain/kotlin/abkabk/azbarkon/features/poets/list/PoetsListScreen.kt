@@ -4,8 +4,8 @@ import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.features.poets.FeaturedPoetUi
 import abkabk.azbarkon.features.poets.PoetListItemUi
-import abkabk.azbarkon.ui.components.AzbarkonButton
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.components.SarvButton
+import abkabk.azbarkon.ui.theme.SarvTheme
 import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,13 +39,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.cd_chat
-import azbarkoncmp.shared.generated.resources.chat_bubble
-import azbarkoncmp.shared.generated.resources.download
-import azbarkoncmp.shared.generated.resources.poets_download
-import azbarkoncmp.shared.generated.resources.poets_filter_placeholder
-import azbarkoncmp.shared.generated.resources.poets_view_works
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.cd_chat
+import sarv.shared.generated.resources.chat_bubble
+import sarv.shared.generated.resources.download
+import sarv.shared.generated.resources.poets_download
+import sarv.shared.generated.resources.poets_filter_placeholder
+import sarv.shared.generated.resources.poets_view_works
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -218,7 +218,7 @@ private fun FeaturedPoetCard(
                 )
             }
 
-            AzbarkonButton(
+            SarvButton(
                 text = stringResource(Res.string.poets_view_works),
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors(
@@ -325,7 +325,7 @@ private fun PoetListRow(
 @Preview
 @Composable
 private fun PoetsListScreenPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         PoetsListScreen(
             state =
                 PoetsListState(

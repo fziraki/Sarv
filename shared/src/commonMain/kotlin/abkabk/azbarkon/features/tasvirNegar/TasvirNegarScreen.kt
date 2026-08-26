@@ -3,7 +3,7 @@ package abkabk.azbarkon.features.tasvirNegar
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
+import abkabk.azbarkon.ui.components.SarvSnackbarHost
 import abkabk.azbarkon.features.tasvirNegar.components.EditToolbar
 import abkabk.azbarkon.features.tasvirNegar.components.EditorCallbacks
 import abkabk.azbarkon.features.tasvirNegar.components.EditorCanvas
@@ -16,7 +16,7 @@ import abkabk.azbarkon.features.tasvirNegar.model.LayerId
 import abkabk.azbarkon.features.tasvirNegar.util.TasvirCustomColorPicker
 import abkabk.azbarkon.features.tasvirNegar.util.rememberTasvirNegarGalleryLauncher
 import abkabk.azbarkon.features.tasvirNegar.util.rememberTasvirNegarStoragePermission
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -153,7 +153,7 @@ fun TasvirNegarScreen(
             }
         },
         snackbarHost = {
-            AzbarkonSnackbarHost(hostState = LocalSnackbarHostState.current)
+            SarvSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
     ) {
         Box(
@@ -208,7 +208,7 @@ private fun sizeProgressFor(document: EditorDocument): Float =
 @Preview
 @Composable
 private fun TasvirNegarScreenPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         TasvirNegarScreen(
             state = TasvirNegarState(),
             onAction = {},

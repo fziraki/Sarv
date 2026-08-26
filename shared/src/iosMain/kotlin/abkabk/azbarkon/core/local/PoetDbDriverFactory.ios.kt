@@ -5,7 +5,7 @@ package abkabk.azbarkon.core.local
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import co.touchlab.sqliter.DatabaseConfiguration
-import com.azbarkon.db.AzbarKonDatabase
+import com.sarv.db.SarvDatabase
 
 actual class PoetDbDriverFactory {
     actual fun open(path: String): SqlDriver {
@@ -14,7 +14,7 @@ actual class PoetDbDriverFactory {
         return NativeSqliteDriver(
             DatabaseConfiguration(
                 name = name,
-                version = AzbarKonDatabase.Schema.version.toInt(),
+                version = SarvDatabase.Schema.version.toInt(),
                 create = { },
                 upgrade = { _, _, _ -> },
                 extendedConfig = DatabaseConfiguration.Extended(basePath = dir),

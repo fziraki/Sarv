@@ -5,13 +5,13 @@ import abkabk.azbarkon.domain.model.PoemDetail
 import abkabk.azbarkon.domain.model.PoemSummary
 import abkabk.azbarkon.domain.model.PoemVerse
 
-fun com.azbarkon.db.SelectByCatIdPaged.toPoemSummary(): PoemSummary =
+fun com.sarv.db.SelectByCatIdPaged.toPoemSummary(): PoemSummary =
     PoemSummary(
         id = id.toInt(),
         title = title,
     )
 
-fun com.azbarkon.db.SelectByIds.toMyPoemSummary(): MyPoemSummary =
+fun com.sarv.db.SelectByIds.toMyPoemSummary(): MyPoemSummary =
     MyPoemSummary(
         id = id.toInt(),
         title = title,
@@ -19,7 +19,7 @@ fun com.azbarkon.db.SelectByIds.toMyPoemSummary(): MyPoemSummary =
         categoryName = category_name,
     )
 
-fun com.azbarkon.db.Verse.toPoemVerse(poemId: Int): PoemVerse =
+fun com.sarv.db.Verse.toPoemVerse(poemId: Int): PoemVerse =
     PoemVerse(
         poemId = poemId,
         vorder = vorder.toInt(),
@@ -27,11 +27,11 @@ fun com.azbarkon.db.Verse.toPoemVerse(poemId: Int): PoemVerse =
         text = text,
     )
 
-fun List<com.azbarkon.db.Verse>.toPoemVerses(poemId: Int): List<PoemVerse> =
+fun List<com.sarv.db.Verse>.toPoemVerses(poemId: Int): List<PoemVerse> =
     sortedWith(compareBy({ it.vorder }, { it.position }))
         .map { it.toPoemVerse(poemId) }
 
-fun com.azbarkon.db.SelectDetailById.toPoemDetail(
+fun com.sarv.db.SelectDetailById.toPoemDetail(
     poemId: Int,
     verses: List<PoemVerse>,
 ): PoemDetail =

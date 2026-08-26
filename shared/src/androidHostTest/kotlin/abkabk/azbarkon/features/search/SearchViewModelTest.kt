@@ -15,8 +15,8 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.search_empty_query
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.search_empty_query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

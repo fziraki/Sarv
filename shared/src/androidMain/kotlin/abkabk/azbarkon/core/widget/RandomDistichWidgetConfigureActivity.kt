@@ -5,7 +5,7 @@ import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.repository.PoetRepository
 import abkabk.azbarkon.shared.R
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -64,7 +64,7 @@ class RandomDistichWidgetConfigureActivity :
         }
 
         setContent {
-            AzbarkonTheme {
+            SarvTheme {
                 RandomDistichWidgetConfigureScreen(
                     loadPoets = poetRepository::getPoets,
                     onPoetSelect = ::onPoetSelected,

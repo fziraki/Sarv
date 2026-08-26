@@ -1,6 +1,6 @@
 package abkabk.azbarkon.ui.components
 
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun AzbarkonAlertDialog(
+fun SarvAlertDialog(
     onDismissRequest: () -> Unit,
     confirmLabel: String,
     onConfirm: () -> Unit,
@@ -36,9 +36,9 @@ fun AzbarkonAlertDialog(
 
 @Preview
 @Composable
-private fun AzbarkonAlertDialogPreview() {
-    AzbarkonTheme {
-        AzbarkonAlertDialog(
+private fun SarvAlertDialogPreview() {
+    SarvTheme {
+        SarvAlertDialog(
             title = "حذف همه اشعار",
             text = "همه اشعار از لیست حذف خواهند شد.",
             confirmLabel = "تأیید",

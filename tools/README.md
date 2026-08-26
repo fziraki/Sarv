@@ -1,4 +1,4 @@
-# Builds and uploads per-poet SQLDelight databases for AzbarkonCmp.
+# Builds and uploads per-poet SQLDelight databases for Sarv.
 
 ## Build (local, requires the full dump at `../shared/sqlite/ganjoor.s3db`)
 

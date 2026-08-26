@@ -4,8 +4,8 @@ import abkabk.azbarkon.core.designsystem.secondary
 import abkabk.azbarkon.core.designsystem.surfaceVariant
 import abkabk.azbarkon.core.designsystem.vazirmatnFontFamily
 import abkabk.azbarkon.features.tasvirNegar.TasvirNegarAction
-import abkabk.azbarkon.ui.components.AzbarkonSlider
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.components.SarvSlider
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,32 +33,32 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.arrow_back_right
-import azbarkoncmp.shared.generated.resources.cd_back
-import azbarkoncmp.shared.generated.resources.download
-import azbarkoncmp.shared.generated.resources.ic_color
-import azbarkoncmp.shared.generated.resources.ic_delete
-import azbarkoncmp.shared.generated.resources.ic_edit
-import azbarkoncmp.shared.generated.resources.ic_grid
-import azbarkoncmp.shared.generated.resources.ic_sticker
-import azbarkoncmp.shared.generated.resources.ic_text_format
-import azbarkoncmp.shared.generated.resources.ic_texture
-import azbarkoncmp.shared.generated.resources.ic_wallpaper
-import azbarkoncmp.shared.generated.resources.reset_image
-import azbarkoncmp.shared.generated.resources.share
-import azbarkoncmp.shared.generated.resources.tasvir_color
-import azbarkoncmp.shared.generated.resources.tasvir_edit
-import azbarkoncmp.shared.generated.resources.tasvir_eraser
-import azbarkoncmp.shared.generated.resources.tasvir_font
-import azbarkoncmp.shared.generated.resources.tasvir_gallery
-import azbarkoncmp.shared.generated.resources.tasvir_grid
-import azbarkoncmp.shared.generated.resources.tasvir_negar_save
-import azbarkoncmp.shared.generated.resources.tasvir_share
-import azbarkoncmp.shared.generated.resources.tasvir_sticker
-import azbarkoncmp.shared.generated.resources.tasvir_text
-import azbarkoncmp.shared.generated.resources.tasvir_texture
-import azbarkoncmp.shared.generated.resources.text_fields
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.arrow_back_right
+import sarv.shared.generated.resources.cd_back
+import sarv.shared.generated.resources.download
+import sarv.shared.generated.resources.ic_color
+import sarv.shared.generated.resources.ic_delete
+import sarv.shared.generated.resources.ic_edit
+import sarv.shared.generated.resources.ic_grid
+import sarv.shared.generated.resources.ic_sticker
+import sarv.shared.generated.resources.ic_text_format
+import sarv.shared.generated.resources.ic_texture
+import sarv.shared.generated.resources.ic_wallpaper
+import sarv.shared.generated.resources.reset_image
+import sarv.shared.generated.resources.share
+import sarv.shared.generated.resources.tasvir_color
+import sarv.shared.generated.resources.tasvir_edit
+import sarv.shared.generated.resources.tasvir_eraser
+import sarv.shared.generated.resources.tasvir_font
+import sarv.shared.generated.resources.tasvir_gallery
+import sarv.shared.generated.resources.tasvir_grid
+import sarv.shared.generated.resources.tasvir_negar_save
+import sarv.shared.generated.resources.tasvir_share
+import sarv.shared.generated.resources.tasvir_sticker
+import sarv.shared.generated.resources.tasvir_text
+import sarv.shared.generated.resources.tasvir_texture
+import sarv.shared.generated.resources.text_fields
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -259,7 +259,7 @@ fun VerticalSizeSlider(
                 ),
         )
 
-        AzbarkonSlider(
+        SarvSlider(
             value = sliderValue,
             onValueChange = onProgressChange,
             valueRange = valueRange,
@@ -274,7 +274,7 @@ fun VerticalSizeSlider(
 @Preview
 @Composable
 private fun VerticalSizeSliderPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         var progress by remember { mutableFloatStateOf(PREVIEW_PROGRESS) }
         VerticalSizeSlider(
             progress = progress,

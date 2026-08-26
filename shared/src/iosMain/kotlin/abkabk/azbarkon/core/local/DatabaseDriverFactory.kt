@@ -6,7 +6,7 @@ import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import app.cash.sqldelight.driver.native.wrapConnection
 import co.touchlab.sqliter.DatabaseConfiguration
-import com.azbarkon.db.AzbarKonDatabase
+import com.sarv.db.SarvDatabase
 import kotlinx.cinterop.ExperimentalForeignApi
 
 @OptIn(ExperimentalForeignApi::class)
@@ -22,12 +22,12 @@ actual class DatabaseDriverFactory {
             return NativeSqliteDriver(
                 DatabaseConfiguration(
                     name = DATABASE_NAME,
-                    version = AzbarKonDatabase.Schema.version.toInt(),
+                    version = SarvDatabase.Schema.version.toInt(),
                     create = { },
                     upgrade = { connection, oldVersion, newVersion ->
                         if (oldVersion == 0) return@DatabaseConfiguration
                         wrapConnection(connection) { driver ->
-                            AzbarKonDatabase.Schema.migrate(
+                            SarvDatabase.Schema.migrate(
                                 driver,
                                 oldVersion.toLong(),
                                 newVersion.toLong(),
@@ -43,7 +43,7 @@ actual class DatabaseDriverFactory {
         }
 
         return NativeSqliteDriver(
-            schema = AzbarKonDatabase.Schema,
+            schema = SarvDatabase.Schema,
             name = DATABASE_NAME,
         )
     }

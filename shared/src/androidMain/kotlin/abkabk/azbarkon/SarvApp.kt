@@ -10,7 +10,7 @@ import io.github.aakira.napier.Napier
 import org.koin.android.ext.android.inject
 import org.koin.androidx.workmanager.factory.KoinWorkerFactory
 
-class AzbarkonApp :
+class SarvApp :
     Application(),
     Configuration.Provider {
     private val dailyBeytNotificationScheduler: DailyBeytNotificationScheduler by inject()

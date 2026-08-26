@@ -5,7 +5,7 @@ import abkabk.azbarkon.core.domain.result.Result
 import abkabk.azbarkon.data.mapper.toRandomDistich
 import abkabk.azbarkon.domain.datasource.DailyBeytLocalDataSource
 import abkabk.azbarkon.domain.model.RandomDistich
-import com.azbarkon.db.VerseQueries
+import com.sarv.db.VerseQueries
 
 class SqlDelightDailyBeytLocalDataSource(
     private val verseQueries: VerseQueries,

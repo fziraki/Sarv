@@ -25,8 +25,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.game_complete_poem_instruction
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.game_complete_poem_instruction
 import org.jetbrains.compose.resources.stringResource
 
 private const val MIN_BLANK_PARTS = 3

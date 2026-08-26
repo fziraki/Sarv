@@ -14,9 +14,9 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.chat_persian_only
-import azbarkoncmp.shared.generated.resources.poem_copied
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.chat_persian_only
+import sarv.shared.generated.resources.poem_copied
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

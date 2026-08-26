@@ -4,16 +4,16 @@ import abkabk.azbarkon.core.designsystem.brown
 import abkabk.azbarkon.core.notifications.MAX_NOTIFICATION_PERMISSION_DECLINES
 import abkabk.azbarkon.core.notifications.NotificationPermissionSheet
 import abkabk.azbarkon.core.uidata.BaseScreen
-import abkabk.azbarkon.core.uidata.LocalAzbarkonAppState
+import abkabk.azbarkon.core.uidata.LocalSarvAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.RandomDistich
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
-import abkabk.azbarkon.ui.components.AzbarkonButton
-import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
+import abkabk.azbarkon.ui.components.SarvButton
+import abkabk.azbarkon.ui.components.SarvPrimaryButton
 import abkabk.azbarkon.ui.components.NetworkImage
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import abkabk.azbarkon.ui.theme.DarkColorScheme
 import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.animation.core.spring
@@ -63,36 +63,36 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.all
-import azbarkoncmp.shared.generated.resources.continue_memorization_desc
-import azbarkoncmp.shared.generated.resources.continue_memorization_title
-import azbarkoncmp.shared.generated.resources.herobg
-import azbarkoncmp.shared.generated.resources.image_creator_bg
-import azbarkoncmp.shared.generated.resources.memorization_button
-import azbarkoncmp.shared.generated.resources.my_poems
-import azbarkoncmp.shared.generated.resources.new_memorization_button
-import azbarkoncmp.shared.generated.resources.new_memorization_desc
-import azbarkoncmp.shared.generated.resources.new_memorization_title
-import azbarkoncmp.shared.generated.resources.newsstand
-import azbarkoncmp.shared.generated.resources.next_verse_game_bg
-import azbarkoncmp.shared.generated.resources.palette
-import azbarkoncmp.shared.generated.resources.pic_negar
-import azbarkoncmp.shared.generated.resources.poetry_memorization
-import azbarkoncmp.shared.generated.resources.popular_poets
-import azbarkoncmp.shared.generated.resources.review
-import azbarkoncmp.shared.generated.resources.search
-import azbarkoncmp.shared.generated.resources.slider_beyt_of_day_poet
-import azbarkoncmp.shared.generated.resources.slider_beyt_of_day_text
-import azbarkoncmp.shared.generated.resources.slider_beyt_of_day_title
-import azbarkoncmp.shared.generated.resources.slider_challenge_button
-import azbarkoncmp.shared.generated.resources.slider_challenge_text
-import azbarkoncmp.shared.generated.resources.slider_challenge_title
-import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_button
-import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_text
-import azbarkoncmp.shared.generated.resources.slider_tasvir_negar_title
-import azbarkoncmp.shared.generated.resources.today_distich_bg
-import azbarkoncmp.shared.generated.resources.unknown
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.all
+import sarv.shared.generated.resources.continue_memorization_desc
+import sarv.shared.generated.resources.continue_memorization_title
+import sarv.shared.generated.resources.herobg
+import sarv.shared.generated.resources.image_creator_bg
+import sarv.shared.generated.resources.memorization_button
+import sarv.shared.generated.resources.my_poems
+import sarv.shared.generated.resources.new_memorization_button
+import sarv.shared.generated.resources.new_memorization_desc
+import sarv.shared.generated.resources.new_memorization_title
+import sarv.shared.generated.resources.newsstand
+import sarv.shared.generated.resources.next_verse_game_bg
+import sarv.shared.generated.resources.palette
+import sarv.shared.generated.resources.pic_negar
+import sarv.shared.generated.resources.poetry_memorization
+import sarv.shared.generated.resources.popular_poets
+import sarv.shared.generated.resources.review
+import sarv.shared.generated.resources.search
+import sarv.shared.generated.resources.slider_beyt_of_day_poet
+import sarv.shared.generated.resources.slider_beyt_of_day_text
+import sarv.shared.generated.resources.slider_beyt_of_day_title
+import sarv.shared.generated.resources.slider_challenge_button
+import sarv.shared.generated.resources.slider_challenge_text
+import sarv.shared.generated.resources.slider_challenge_title
+import sarv.shared.generated.resources.slider_tasvir_negar_button
+import sarv.shared.generated.resources.slider_tasvir_negar_text
+import sarv.shared.generated.resources.slider_tasvir_negar_title
+import sarv.shared.generated.resources.today_distich_bg
+import sarv.shared.generated.resources.unknown
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -124,7 +124,7 @@ fun HomeRoot(
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val appState = LocalAzbarkonAppState.current
+    val appState = LocalSarvAppState.current
     val permissionGateway: NotificationPermissionGateway = koinInject()
     val userPreferencesRepository: UserPreferencesRepository = koinInject()
     var showNotificationPermissionSheet by remember { mutableStateOf(false) }
@@ -232,7 +232,7 @@ fun HomeScreen(
 @Preview
 @Composable
 private fun HomeScreenPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         HomeScreen(
             state = HomeState(),
             onAction = {},
@@ -484,7 +484,7 @@ fun HeroCard(
                     style = MaterialTheme.typography.labelSmall,
                     color = LightColorScheme.onSecondary,
                 )
-                AzbarkonButton(
+                SarvButton(
                     text = buttonText,
                     onClick = onClick,
                     colors =
@@ -636,7 +636,7 @@ fun TasvirNegarSlide(
                     textAlign = TextAlign.End,
                 )
 
-                AzbarkonButton(
+                SarvButton(
                     text = stringResource(Res.string.slider_tasvir_negar_button),
                     onClick = onClick,
                     modifier =
@@ -701,7 +701,7 @@ fun ChallengeSlide(
                     textAlign = TextAlign.End,
                 )
 
-                AzbarkonButton(
+                SarvButton(
                     text = stringResource(Res.string.slider_challenge_button),
                     onClick = onClick,
                     modifier =

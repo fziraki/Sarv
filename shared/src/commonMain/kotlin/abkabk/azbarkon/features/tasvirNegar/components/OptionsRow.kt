@@ -33,11 +33,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.add_box_24px
-import azbarkoncmp.shared.generated.resources.tasvir_font_1
-import azbarkoncmp.shared.generated.resources.tasvir_font_2
-import azbarkoncmp.shared.generated.resources.tasvir_font_3
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.add_box_24px
+import sarv.shared.generated.resources.tasvir_font_1
+import sarv.shared.generated.resources.tasvir_font_2
+import sarv.shared.generated.resources.tasvir_font_3
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 

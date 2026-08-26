@@ -1,9 +1,9 @@
 package abkabk.azbarkon.features.tasvirNegar.util
 
-import abkabk.azbarkon.ui.components.AzbarkonButton
-import abkabk.azbarkon.ui.components.AzbarkonModalBottomSheet
-import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
-import abkabk.azbarkon.ui.components.AzbarkonSlider
+import abkabk.azbarkon.ui.components.SarvButton
+import abkabk.azbarkon.ui.components.SarvModalBottomSheet
+import abkabk.azbarkon.ui.components.SarvPrimaryButton
+import abkabk.azbarkon.ui.components.SarvSlider
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,9 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.clear_cancel
-import azbarkoncmp.shared.generated.resources.tasvir_pick_color
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.clear_cancel
+import sarv.shared.generated.resources.tasvir_pick_color
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -49,7 +49,7 @@ internal fun HsvColorPickerContent(
     var value by remember { mutableFloatStateOf(1f) }
     val selectedColor = remember(hue, saturation, value) { Color.hsv(hue, saturation, value) }
 
-    AzbarkonModalBottomSheet(
+    SarvModalBottomSheet(
         onDismissRequest = {},
         sheetGesturesEnabled = false,
     ) {
@@ -81,7 +81,7 @@ internal fun HsvColorPickerContent(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                AzbarkonButton(
+                SarvButton(
                     text = stringResource(Res.string.clear_cancel),
                     onClick = onDismiss,
                     modifier = Modifier.weight(1f).height(48.dp),
@@ -91,7 +91,7 @@ internal fun HsvColorPickerContent(
                             contentColor = MaterialTheme.colorScheme.onSurface,
                         ),
                 )
-                AzbarkonPrimaryButton(
+                SarvPrimaryButton(
                     text = stringResource(Res.string.tasvir_pick_color),
                     onClick = { onColorSelect(selectedColor) },
                     modifier = Modifier.weight(1f).height(48.dp),
@@ -114,7 +114,7 @@ private fun ColorSlider(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = label, modifier = Modifier.size(width = 80.dp, height = 24.dp), style = MaterialTheme.typography.bodyMedium)
-        AzbarkonSlider(
+        SarvSlider(
             value = value,
             onValueChange = onValueChange,
             valueRange = valueRange,

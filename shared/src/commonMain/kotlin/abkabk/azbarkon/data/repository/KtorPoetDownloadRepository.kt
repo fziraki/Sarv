@@ -10,7 +10,7 @@ import abkabk.azbarkon.domain.repository.PoetDownloadError
 import abkabk.azbarkon.domain.repository.PoetDownloadRepository
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
-import com.azbarkon.db.AzbarKonDatabase
+import com.sarv.db.SarvDatabase
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -25,7 +25,7 @@ class KtorPoetDownloadRepository(
     private val httpClient: HttpClient,
     private val storage: PoetDbFileStorage,
     private val poetDbDriverFactory: PoetDbDriverFactory,
-    private val mainDatabase: AzbarKonDatabase,
+    private val mainDatabase: SarvDatabase,
     private val mainDriver: app.cash.sqldelight.db.SqlDriver,
 ) : PoetDownloadRepository {
 

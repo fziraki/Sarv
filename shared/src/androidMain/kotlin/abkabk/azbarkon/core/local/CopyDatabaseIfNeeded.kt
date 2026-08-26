@@ -2,7 +2,7 @@ package abkabk.azbarkon.core.local
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import com.azbarkon.db.AzbarKonDatabase
+import com.sarv.db.SarvDatabase
 import io.github.aakira.napier.Napier
 import java.io.File
 import java.io.IOException
@@ -18,7 +18,7 @@ fun copyDatabaseIfNeeded(context: Context) {
     val exists = dbFile.exists()
     val hasIndex = exists && hasExpectedSchema(dbFile)
     val version = if (exists) databaseVersion(dbFile) else 0
-    val copy = !exists || !hasIndex || version != AzbarKonDatabase.Schema.version.toInt()
+    val copy = !exists || !hasIndex || version != SarvDatabase.Schema.version.toInt()
 
     if (copy) {
         dbFile.delete()
@@ -76,7 +76,7 @@ private fun syncBundledDatabaseVersion(dbPath: String) {
             SQLiteDatabase.OPEN_READWRITE,
         )
     try {
-        if (db.version >= AzbarKonDatabase.Schema.version.toInt()) return
+        if (db.version >= SarvDatabase.Schema.version.toInt()) return
 
         val hasPoetTable =
             db.rawQuery(
@@ -85,7 +85,7 @@ private fun syncBundledDatabaseVersion(dbPath: String) {
             ).use { it.moveToFirst() }
 
         if (hasPoetTable) {
-            db.version = AzbarKonDatabase.Schema.version.toInt()
+            db.version = SarvDatabase.Schema.version.toInt()
         }
     } finally {
         db.close()

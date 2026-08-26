@@ -1,4 +1,4 @@
-rootProject.name = "AzbarkonCmp"
+rootProject.name = "Sarv"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
