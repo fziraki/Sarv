@@ -14,9 +14,9 @@ import abkabk.azbarkon.domain.model.games.GameGenerationCache
 import abkabk.azbarkon.domain.model.games.GamePoemBundle
 import abkabk.azbarkon.domain.model.games.GameQuestion
 import abkabk.azbarkon.domain.model.games.GameType
-import com.azbarkon.db.PoemQueries
-import com.azbarkon.db.PoetQueries
-import com.azbarkon.db.VerseQueries
+import com.sarv.db.PoemQueries
+import com.sarv.db.PoetQueries
+import com.sarv.db.VerseQueries
 import kotlin.random.Random
 
 private const val SEED_STRIDE = 9973L

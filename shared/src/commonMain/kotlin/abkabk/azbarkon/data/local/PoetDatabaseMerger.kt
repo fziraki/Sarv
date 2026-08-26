@@ -2,13 +2,13 @@ package abkabk.azbarkon.data.local
 
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
-import com.azbarkon.db.AzbarKonDatabase
+import com.sarv.db.SarvDatabase
 import io.github.aakira.napier.Napier
 
 // ponytail: raw-SQL bind counts are positional, so the repeated 4/5/2/... are intentional
 @Suppress("MagicNumber")
 fun mergePoetDatabase(
-    database: AzbarKonDatabase,
+    database: SarvDatabase,
     target: SqlDriver,
     source: SqlDriver,
     poetId: Long,

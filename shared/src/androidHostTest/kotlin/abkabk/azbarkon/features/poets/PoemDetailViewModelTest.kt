@@ -20,8 +20,8 @@ import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.search_not_found_in_poem
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.search_not_found_in_poem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

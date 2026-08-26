@@ -24,10 +24,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.filter
-import azbarkoncmp.shared.generated.resources.search
-import azbarkoncmp.shared.generated.resources.unknown
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.filter
+import sarv.shared.generated.resources.search
+import sarv.shared.generated.resources.unknown
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 

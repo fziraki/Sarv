@@ -8,12 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun AzbarkonSnackbarHost(
+fun SarvSnackbarHost(
     hostState: SnackbarHostState,
     modifier: Modifier = Modifier,
 ) {
     SnackbarHost(hostState = hostState, modifier = modifier) { data ->
-        val isSuccess = (data.visuals as? AzbarkonSnackbarVisuals)?.isSuccess == true
+        val isSuccess = (data.visuals as? SarvSnackbarVisuals)?.isSuccess == true
         val containerColor =
             if (isSuccess) {
                 MaterialTheme.colorScheme.secondary

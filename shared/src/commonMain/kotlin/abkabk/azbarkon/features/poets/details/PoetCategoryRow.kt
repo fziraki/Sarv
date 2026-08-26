@@ -1,7 +1,7 @@
 package abkabk.azbarkon.features.poets.details
 
 import abkabk.azbarkon.features.poets.PoetCategoryRowUi
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,9 +22,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.cd_expand_category
-import azbarkoncmp.shared.generated.resources.maktab
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.cd_expand_category
+import sarv.shared.generated.resources.maktab
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -109,7 +109,7 @@ fun PoetCategoryRow(
 @Preview
 @Composable
 private fun PoetCategoryRowPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),

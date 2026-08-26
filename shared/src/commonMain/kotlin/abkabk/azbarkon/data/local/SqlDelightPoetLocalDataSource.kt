@@ -10,8 +10,8 @@ import abkabk.azbarkon.domain.datasource.PoetLocalDataSource
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.PoetWithCategories
 import abkabk.azbarkon.domain.model.PoetWithRootCategories
-import com.azbarkon.db.CatQueries
-import com.azbarkon.db.PoetQueries
+import com.sarv.db.CatQueries
+import com.sarv.db.PoetQueries
 import io.github.aakira.napier.Napier
 
 class SqlDelightPoetLocalDataSource(

@@ -6,7 +6,7 @@ import abkabk.azbarkon.features.memorization.MemorizationHeroSection
 import abkabk.azbarkon.features.memorization.MemorizationOptionRow
 import abkabk.azbarkon.features.memorization.QuickStartCard
 import abkabk.azbarkon.ui.components.Header
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,18 +19,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.maktab
-import azbarkoncmp.shared.generated.resources.memorization_active_empty
-import azbarkoncmp.shared.generated.resources.memorization_active_poems
-import azbarkoncmp.shared.generated.resources.memorization_option_active_desc
-import azbarkoncmp.shared.generated.resources.memorization_option_library_desc
-import azbarkoncmp.shared.generated.resources.memorization_option_library_title
-import azbarkoncmp.shared.generated.resources.memorization_option_search_desc
-import azbarkoncmp.shared.generated.resources.memorization_option_search_title
-import azbarkoncmp.shared.generated.resources.new_memorization_title
-import azbarkoncmp.shared.generated.resources.review
-import azbarkoncmp.shared.generated.resources.search
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.maktab
+import sarv.shared.generated.resources.memorization_active_empty
+import sarv.shared.generated.resources.memorization_active_poems
+import sarv.shared.generated.resources.memorization_option_active_desc
+import sarv.shared.generated.resources.memorization_option_library_desc
+import sarv.shared.generated.resources.memorization_option_library_title
+import sarv.shared.generated.resources.memorization_option_search_desc
+import sarv.shared.generated.resources.memorization_option_search_title
+import sarv.shared.generated.resources.new_memorization_title
+import sarv.shared.generated.resources.review
+import sarv.shared.generated.resources.search
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -133,7 +133,7 @@ fun MemorizationSelectScreen(
 @Preview
 @Composable
 private fun MemorizationSelectScreenPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         MemorizationSelectScreen(
             state =
                 MemorizationSelectState(

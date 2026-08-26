@@ -3,7 +3,7 @@ package abkabk.azbarkon.ui.components
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarVisuals
 
-data class AzbarkonSnackbarVisuals(
+data class SarvSnackbarVisuals(
     override val message: String,
     override val actionLabel: String? = null,
     override val withDismissAction: Boolean = false,

@@ -1,33 +1,33 @@
 package abkabk.azbarkon.core.di
 
-import com.azbarkon.db.AzbarKonDatabase
-import com.azbarkon.db.CatQueries
-import com.azbarkon.db.PoemQueries
-import com.azbarkon.db.PoetQueries
-import com.azbarkon.db.SearchQueries
-import com.azbarkon.db.VerseQueries
+import com.sarv.db.SarvDatabase
+import com.sarv.db.CatQueries
+import com.sarv.db.PoemQueries
+import com.sarv.db.PoetQueries
+import com.sarv.db.SearchQueries
+import com.sarv.db.VerseQueries
 import org.koin.dsl.module
 
 val databaseModule =
     module {
 
         single<PoetQueries> {
-            get<AzbarKonDatabase>().poetQueries
+            get<SarvDatabase>().poetQueries
         }
 
         single<CatQueries> {
-            get<AzbarKonDatabase>().catQueries
+            get<SarvDatabase>().catQueries
         }
 
         single<PoemQueries> {
-            get<AzbarKonDatabase>().poemQueries
+            get<SarvDatabase>().poemQueries
         }
 
         single<VerseQueries> {
-            get<AzbarKonDatabase>().verseQueries
+            get<SarvDatabase>().verseQueries
         }
 
         single<SearchQueries> {
-            get<AzbarKonDatabase>().searchQueries
+            get<SarvDatabase>().searchQueries
         }
     }

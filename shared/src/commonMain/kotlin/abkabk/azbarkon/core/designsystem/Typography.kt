@@ -7,7 +7,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun azbarkonTypography(fontSizeScale: Float = 1f): Typography {
+fun sarvTypography(fontSizeScale: Float = 1f): Typography {
     val fontFamily = vazirmatnFontFamily()
 
     return Typography(

@@ -8,8 +8,8 @@ import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.domain.model.memorization.ActiveMemorizationPoem
 import abkabk.azbarkon.domain.repository.MemorizationRepository
 import androidx.lifecycle.viewModelScope
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.error_unknown
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.error_unknown
 import kotlinx.coroutines.launch
 
 class ActiveMemorizationViewModel(

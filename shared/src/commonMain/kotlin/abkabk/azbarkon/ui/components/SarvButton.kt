@@ -1,6 +1,6 @@
 package abkabk.azbarkon.ui.components
 
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -14,14 +14,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AzbarkonPrimaryButton(
+fun SarvPrimaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
-    AzbarkonButton(
+    SarvButton(
         text = text,
         onClick = onClick,
         modifier = modifier,
@@ -38,7 +38,7 @@ fun AzbarkonPrimaryButton(
 }
 
 @Composable
-fun AzbarkonButton(
+fun SarvButton(
     text: String,
     onClick: () -> Unit,
     colors: ButtonColors,
@@ -50,7 +50,7 @@ fun AzbarkonButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        shape = AzbarkonButtonDefaults.Shape,
+        shape = SarvButtonDefaults.Shape,
         colors = colors,
     ) {
         Text(
@@ -62,9 +62,9 @@ fun AzbarkonButton(
 
 @Preview
 @Composable
-private fun AzbarkonPrimaryButtonPreview() {
-    AzbarkonTheme {
-        AzbarkonPrimaryButton(
+private fun SarvPrimaryButtonPreview() {
+    SarvTheme {
+        SarvPrimaryButton(
             text = "تمرین حفظ این شعر",
             onClick = {},
             modifier = Modifier.height(52.dp),

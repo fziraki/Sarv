@@ -7,7 +7,7 @@ import abkabk.azbarkon.features.poets.list.PoetAvatar
 import abkabk.azbarkon.features.poets.list.PoetsSectionTitle
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,14 +40,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.cd_chat
-import azbarkoncmp.shared.generated.resources.chat_bubble
-import azbarkoncmp.shared.generated.resources.chat_with_poet
-import azbarkoncmp.shared.generated.resources.fal_button
-import azbarkoncmp.shared.generated.resources.poet_bio_read_less
-import azbarkoncmp.shared.generated.resources.poet_bio_read_more
-import azbarkoncmp.shared.generated.resources.poets_works_section
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.cd_chat
+import sarv.shared.generated.resources.chat_bubble
+import sarv.shared.generated.resources.chat_with_poet
+import sarv.shared.generated.resources.fal_button
+import sarv.shared.generated.resources.poet_bio_read_less
+import sarv.shared.generated.resources.poet_bio_read_more
+import sarv.shared.generated.resources.poets_works_section
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -297,7 +297,7 @@ private fun PoetBioText(
 @Preview
 @Composable
 private fun PoetDetailScreenPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         PoetDetailScreen(
             state =
                 PoetDetailState(

@@ -6,7 +6,7 @@ import android.content.Context
 import androidx.sqlite.db.SupportSQLiteDatabase
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import com.azbarkon.db.AzbarKonDatabase
+import com.sarv.db.SarvDatabase
 
 actual class DatabaseDriverFactory(
     private val context: Context,
@@ -15,7 +15,7 @@ actual class DatabaseDriverFactory(
         copyDatabaseIfNeeded(context)
 
         val callback =
-            object : AndroidSqliteDriver.Callback(AzbarKonDatabase.Schema) {
+            object : AndroidSqliteDriver.Callback(SarvDatabase.Schema) {
                 override fun onUpgrade(
                     db: SupportSQLiteDatabase,
                     oldVersion: Int,
@@ -30,7 +30,7 @@ actual class DatabaseDriverFactory(
             }
 
         return AndroidSqliteDriver(
-            schema = AzbarKonDatabase.Schema,
+            schema = SarvDatabase.Schema,
             context = context,
             name = DATABASE_NAME,
             callback = callback,

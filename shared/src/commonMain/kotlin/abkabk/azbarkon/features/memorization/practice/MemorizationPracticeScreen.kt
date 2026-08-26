@@ -5,18 +5,18 @@ import abkabk.azbarkon.core.ui.keyboardAboveIme
 import abkabk.azbarkon.core.ui.rememberKeyboardLiftPx
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
-import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
+import abkabk.azbarkon.ui.components.SarvSnackbarHost
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
 import abkabk.azbarkon.domain.srs.CardGenerator
 import abkabk.azbarkon.domain.srs.DiffTokenType
-import abkabk.azbarkon.ui.components.AzbarkonButton
-import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
+import abkabk.azbarkon.ui.components.SarvButton
+import abkabk.azbarkon.ui.components.SarvPrimaryButton
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateDpAsState
@@ -71,28 +71,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.keyboard
-import azbarkoncmp.shared.generated.resources.memorization_grade_again
-import azbarkoncmp.shared.generated.resources.memorization_grade_easy
-import azbarkoncmp.shared.generated.resources.memorization_grade_good
-import azbarkoncmp.shared.generated.resources.memorization_grade_hard
-import azbarkoncmp.shared.generated.resources.memorization_keyboard_content_description
-import azbarkoncmp.shared.generated.resources.memorization_keyboard_label
-import azbarkoncmp.shared.generated.resources.memorization_next_verse
-import azbarkoncmp.shared.generated.resources.memorization_practice_complete
-import azbarkoncmp.shared.generated.resources.memorization_practice_done
-import azbarkoncmp.shared.generated.resources.memorization_practice_progress
-import azbarkoncmp.shared.generated.resources.memorization_practice_stat_learned
-import azbarkoncmp.shared.generated.resources.memorization_practice_stat_mistakes
-import azbarkoncmp.shared.generated.resources.memorization_practice_stat_today
-import azbarkoncmp.shared.generated.resources.memorization_practice_title
-import azbarkoncmp.shared.generated.resources.memorization_reveal_content_description
-import azbarkoncmp.shared.generated.resources.memorization_reveal_label
-import azbarkoncmp.shared.generated.resources.memorization_review_notification_enabled
-import azbarkoncmp.shared.generated.resources.memorization_submit_typing
-import azbarkoncmp.shared.generated.resources.memorization_typing_hint
-import azbarkoncmp.shared.generated.resources.reveal_eye
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.keyboard
+import sarv.shared.generated.resources.memorization_grade_again
+import sarv.shared.generated.resources.memorization_grade_easy
+import sarv.shared.generated.resources.memorization_grade_good
+import sarv.shared.generated.resources.memorization_grade_hard
+import sarv.shared.generated.resources.memorization_keyboard_content_description
+import sarv.shared.generated.resources.memorization_keyboard_label
+import sarv.shared.generated.resources.memorization_next_verse
+import sarv.shared.generated.resources.memorization_practice_complete
+import sarv.shared.generated.resources.memorization_practice_done
+import sarv.shared.generated.resources.memorization_practice_progress
+import sarv.shared.generated.resources.memorization_practice_stat_learned
+import sarv.shared.generated.resources.memorization_practice_stat_mistakes
+import sarv.shared.generated.resources.memorization_practice_stat_today
+import sarv.shared.generated.resources.memorization_practice_title
+import sarv.shared.generated.resources.memorization_reveal_content_description
+import sarv.shared.generated.resources.memorization_reveal_label
+import sarv.shared.generated.resources.memorization_review_notification_enabled
+import sarv.shared.generated.resources.memorization_submit_typing
+import sarv.shared.generated.resources.memorization_typing_hint
+import sarv.shared.generated.resources.reveal_eye
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -183,7 +183,7 @@ fun MemorizationPracticeScreen(
             }
         },
         snackbarHost = {
-            AzbarkonSnackbarHost(hostState = LocalSnackbarHostState.current)
+            SarvSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
     ) { paddingValues ->
         when (state.phase) {
@@ -203,7 +203,7 @@ fun MemorizationPracticeScreen(
                         textAlign = TextAlign.Center,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    AzbarkonPrimaryButton(
+                    SarvPrimaryButton(
                         text = stringResource(Res.string.memorization_practice_done),
                         onClick = { onAction(MemorizationPracticeAction.OnBackClick) },
                         modifier = Modifier.fillMaxWidth().height(PracticePrimaryButtonHeight),
@@ -495,7 +495,7 @@ private fun PracticeActionRow(
     val primaryButtonState = primaryButtonState(state)
 
     if (!showModeIcons) {
-        AzbarkonPrimaryButton(
+        SarvPrimaryButton(
             text = stringResource(primaryButtonState.labelRes),
             onClick = { onAction(primaryButtonState.action) },
             modifier = Modifier.fillMaxWidth().height(PracticePrimaryButtonHeight),
@@ -527,7 +527,7 @@ private fun PracticeActionRow(
                         .height(PracticeModeIconSize),
                 contentAlignment = Alignment.Center,
             ) {
-                AzbarkonPrimaryButton(
+                SarvPrimaryButton(
                     text = stringResource(primaryButtonState.labelRes),
                     onClick = { onAction(primaryButtonState.action) },
                     modifier = Modifier.fillMaxWidth().height(PracticePrimaryButtonHeight),
@@ -731,7 +731,7 @@ private fun GradeButton(
             isSuggested -> MaterialTheme.colorScheme.onPrimary
             else -> MaterialTheme.colorScheme.onSurface
         }
-    AzbarkonButton(
+    SarvButton(
         text = label,
         onClick = { onAction(MemorizationPracticeAction.OnGradeClick(grade)) },
         enabled = enabled,
@@ -781,7 +781,7 @@ private fun DiffText(
 @Preview
 @Composable
 private fun MemorizationPracticeScreenPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         MemorizationPracticeScreen(
             state =
                 MemorizationPracticeState(
@@ -804,7 +804,7 @@ private fun MemorizationPracticeScreenPreview() {
 @Preview
 @Composable
 private fun MemorizationPracticeScreenRevealedPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         MemorizationPracticeScreen(
             state =
                 MemorizationPracticeState(

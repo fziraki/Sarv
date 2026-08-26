@@ -7,7 +7,7 @@ import abkabk.azbarkon.domain.model.profile.LevelListItemUi
 import abkabk.azbarkon.domain.model.profile.LevelRowState
 import abkabk.azbarkon.domain.model.profile.ProfileSheet
 import abkabk.azbarkon.features.profile.widget.rememberWidgetPickerLauncher
-import abkabk.azbarkon.ui.components.AzbarkonModalBottomSheet
+import abkabk.azbarkon.ui.components.SarvModalBottomSheet
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,40 +41,40 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.add_box_24px
-import azbarkoncmp.shared.generated.resources.check_circle
-import azbarkoncmp.shared.generated.resources.download
-import azbarkoncmp.shared.generated.resources.lock
-import azbarkoncmp.shared.generated.resources.notifications
-import azbarkoncmp.shared.generated.resources.notifications_outlined
-import azbarkoncmp.shared.generated.resources.profile_add_widget
-import azbarkoncmp.shared.generated.resources.profile_add_widget_subtitle
-import azbarkoncmp.shared.generated.resources.profile_badges_title
-import azbarkoncmp.shared.generated.resources.profile_daily_beyt_subtitle
-import azbarkoncmp.shared.generated.resources.profile_daily_beyt_title
-import azbarkoncmp.shared.generated.resources.profile_export_data
-import azbarkoncmp.shared.generated.resources.profile_export_data_subtitle
-import azbarkoncmp.shared.generated.resources.profile_font_size_big
-import azbarkoncmp.shared.generated.resources.profile_font_size_bigger
-import azbarkoncmp.shared.generated.resources.profile_font_size_default
-import azbarkoncmp.shared.generated.resources.profile_font_size_title
-import azbarkoncmp.shared.generated.resources.profile_import_data
-import azbarkoncmp.shared.generated.resources.profile_import_data_subtitle
-import azbarkoncmp.shared.generated.resources.profile_level_format
-import azbarkoncmp.shared.generated.resources.profile_level_score_required
-import azbarkoncmp.shared.generated.resources.profile_level_start
-import azbarkoncmp.shared.generated.resources.profile_levels_title
-import azbarkoncmp.shared.generated.resources.profile_memorization_reminder_subtitle
-import azbarkoncmp.shared.generated.resources.profile_memorization_reminder_title
-import azbarkoncmp.shared.generated.resources.profile_remote_notification_subtitle
-import azbarkoncmp.shared.generated.resources.profile_remote_notification_title
-import azbarkoncmp.shared.generated.resources.profile_settings_title
-import azbarkoncmp.shared.generated.resources.profile_theme_dark
-import azbarkoncmp.shared.generated.resources.profile_theme_light
-import azbarkoncmp.shared.generated.resources.profile_theme_system
-import azbarkoncmp.shared.generated.resources.profile_theme_title
-import azbarkoncmp.shared.generated.resources.upload
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.add_box_24px
+import sarv.shared.generated.resources.check_circle
+import sarv.shared.generated.resources.download
+import sarv.shared.generated.resources.lock
+import sarv.shared.generated.resources.notifications
+import sarv.shared.generated.resources.notifications_outlined
+import sarv.shared.generated.resources.profile_add_widget
+import sarv.shared.generated.resources.profile_add_widget_subtitle
+import sarv.shared.generated.resources.profile_badges_title
+import sarv.shared.generated.resources.profile_daily_beyt_subtitle
+import sarv.shared.generated.resources.profile_daily_beyt_title
+import sarv.shared.generated.resources.profile_export_data
+import sarv.shared.generated.resources.profile_export_data_subtitle
+import sarv.shared.generated.resources.profile_font_size_big
+import sarv.shared.generated.resources.profile_font_size_bigger
+import sarv.shared.generated.resources.profile_font_size_default
+import sarv.shared.generated.resources.profile_font_size_title
+import sarv.shared.generated.resources.profile_import_data
+import sarv.shared.generated.resources.profile_import_data_subtitle
+import sarv.shared.generated.resources.profile_level_format
+import sarv.shared.generated.resources.profile_level_score_required
+import sarv.shared.generated.resources.profile_level_start
+import sarv.shared.generated.resources.profile_levels_title
+import sarv.shared.generated.resources.profile_memorization_reminder_subtitle
+import sarv.shared.generated.resources.profile_memorization_reminder_title
+import sarv.shared.generated.resources.profile_remote_notification_subtitle
+import sarv.shared.generated.resources.profile_remote_notification_title
+import sarv.shared.generated.resources.profile_settings_title
+import sarv.shared.generated.resources.profile_theme_dark
+import sarv.shared.generated.resources.profile_theme_light
+import sarv.shared.generated.resources.profile_theme_system
+import sarv.shared.generated.resources.profile_theme_title
+import sarv.shared.generated.resources.upload
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -98,7 +98,7 @@ fun ProfileSheets(
         }
     }
 
-    AzbarkonModalBottomSheet(
+    SarvModalBottomSheet(
         onDismissRequest = { onAction(ProfileAction.OnDismissSheet) },
     ) {
         when (sheet) {

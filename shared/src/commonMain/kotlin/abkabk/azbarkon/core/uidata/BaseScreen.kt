@@ -1,6 +1,6 @@
 package abkabk.azbarkon.core.uidata
 
-import abkabk.azbarkon.ui.components.AzbarkonSnackbarVisuals
+import abkabk.azbarkon.ui.components.SarvSnackbarVisuals
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -12,8 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.retry
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.retry
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -48,7 +48,7 @@ fun BaseScreen(
             LaunchedEffect(screenState.key) {
                 val result =
                     snackbarHostState.showSnackbar(
-                        AzbarkonSnackbarVisuals(
+                        SarvSnackbarVisuals(
                             message = message,
                             actionLabel = actionLabel,
                             isSuccess = screenState.isSuccess,

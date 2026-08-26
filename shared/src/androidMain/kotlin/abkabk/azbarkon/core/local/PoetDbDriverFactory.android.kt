@@ -5,16 +5,16 @@ package abkabk.azbarkon.core.local
 import android.content.Context
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import com.azbarkon.db.AzbarKonDatabase
+import com.sarv.db.SarvDatabase
 
 actual class PoetDbDriverFactory(
     private val context: Context,
 ) {
     actual fun open(path: String): SqlDriver =
         AndroidSqliteDriver(
-            schema = AzbarKonDatabase.Schema,
+            schema = SarvDatabase.Schema,
             context = context,
             name = path,
-            callback = AndroidSqliteDriver.Callback(AzbarKonDatabase.Schema),
+            callback = AndroidSqliteDriver.Callback(SarvDatabase.Schema),
         )
 }

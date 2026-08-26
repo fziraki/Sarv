@@ -25,11 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.cd_drag_handle
-import azbarkoncmp.shared.generated.resources.drag_handle
-import azbarkoncmp.shared.generated.resources.game_organize_poem_instruction
-import azbarkoncmp.shared.generated.resources.keep
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.cd_drag_handle
+import sarv.shared.generated.resources.drag_handle
+import sarv.shared.generated.resources.game_organize_poem_instruction
+import sarv.shared.generated.resources.keep
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 

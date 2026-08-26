@@ -1,7 +1,7 @@
 package abkabk.azbarkon.features.poems.details
 
 import abkabk.azbarkon.core.ui.HighlightedText
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,25 +25,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.add_box_24px
-import azbarkoncmp.shared.generated.resources.cd_add_poem
-import azbarkoncmp.shared.generated.resources.cd_context_search
-import azbarkoncmp.shared.generated.resources.cd_image_creator
-import azbarkoncmp.shared.generated.resources.cd_like
-import azbarkoncmp.shared.generated.resources.cd_share
-import azbarkoncmp.shared.generated.resources.heart
-import azbarkoncmp.shared.generated.resources.heart_filled
-import azbarkoncmp.shared.generated.resources.ornoment230l
-import azbarkoncmp.shared.generated.resources.ornoment230r
-import azbarkoncmp.shared.generated.resources.ornoment30
-import azbarkoncmp.shared.generated.resources.palette
-import azbarkoncmp.shared.generated.resources.poem_image_creator
-import azbarkoncmp.shared.generated.resources.poem_liked
-import azbarkoncmp.shared.generated.resources.poem_memorize
-import azbarkoncmp.shared.generated.resources.poem_share
-import azbarkoncmp.shared.generated.resources.search
-import azbarkoncmp.shared.generated.resources.share
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.add_box_24px
+import sarv.shared.generated.resources.cd_add_poem
+import sarv.shared.generated.resources.cd_context_search
+import sarv.shared.generated.resources.cd_image_creator
+import sarv.shared.generated.resources.cd_like
+import sarv.shared.generated.resources.cd_share
+import sarv.shared.generated.resources.heart
+import sarv.shared.generated.resources.heart_filled
+import sarv.shared.generated.resources.ornoment230l
+import sarv.shared.generated.resources.ornoment230r
+import sarv.shared.generated.resources.ornoment30
+import sarv.shared.generated.resources.palette
+import sarv.shared.generated.resources.poem_image_creator
+import sarv.shared.generated.resources.poem_liked
+import sarv.shared.generated.resources.poem_memorize
+import sarv.shared.generated.resources.poem_share
+import sarv.shared.generated.resources.search
+import sarv.shared.generated.resources.share
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
@@ -252,7 +252,7 @@ fun PoemOrnamentalDivider(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun PoemOrnamentalDividerPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         PoemOrnamentalDivider()
     }
 }

@@ -1,7 +1,7 @@
 package abkabk.azbarkon.features.tasvirNegar.util
 
 import abkabk.azbarkon.features.tasvirNegar.model.TasvirNegarCatalog
-import abkabk.azbarkon.ui.components.AzbarkonButton
+import abkabk.azbarkon.ui.components.SarvButton
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,9 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.clear_cancel
-import azbarkoncmp.shared.generated.resources.tasvir_pick_color
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.clear_cancel
+import sarv.shared.generated.resources.tasvir_pick_color
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +73,7 @@ actual fun TasvirCustomColorPicker(
                         )
                     }
             }
-            AzbarkonButton(
+            SarvButton(
                 text = stringResource(Res.string.clear_cancel),
                 onClick = onDismiss,
                 modifier = Modifier.fillMaxWidth().height(48.dp),

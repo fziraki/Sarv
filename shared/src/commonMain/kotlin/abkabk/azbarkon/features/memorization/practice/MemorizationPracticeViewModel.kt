@@ -12,9 +12,9 @@ import abkabk.azbarkon.domain.repository.MemorizationRepository
 import abkabk.azbarkon.domain.srs.CardGenerator
 import abkabk.azbarkon.domain.srs.TextDiffHighlighter
 import androidx.lifecycle.viewModelScope
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.error_unknown
-import azbarkoncmp.shared.generated.resources.memorization_review_notification_enabled
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.error_unknown
+import sarv.shared.generated.resources.memorization_review_notification_enabled
 import kotlinx.coroutines.launch
 
 class MemorizationPracticeViewModel(

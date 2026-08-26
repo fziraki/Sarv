@@ -8,7 +8,7 @@ import okio.FileSystem
 
 private const val COIL_DISK_CACHE_BYTES = 50L * 1024 * 1024
 
-fun createAzbarkonImageLoader(context: PlatformContext): ImageLoader =
+fun createSarvImageLoader(context: PlatformContext): ImageLoader =
     ImageLoader.Builder(context)
         .memoryCachePolicy(CachePolicy.ENABLED)
         .diskCachePolicy(CachePolicy.ENABLED)

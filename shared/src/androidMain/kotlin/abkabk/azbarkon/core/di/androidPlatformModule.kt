@@ -26,7 +26,7 @@ import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import abkabk.azbarkon.domain.platform.MemorizationReviewNotificationScheduler
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
 import androidx.media3.exoplayer.ExoPlayer
-import com.azbarkon.db.AzbarKonDatabase
+import com.sarv.db.SarvDatabase
 import com.azbarkon.memorization.MemorizationDatabase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +58,7 @@ val androidPlatformModule =
         }
 
         single {
-            AzbarKonDatabase(
+            SarvDatabase(
                 driver = get(),
             )
         }

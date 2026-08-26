@@ -7,7 +7,7 @@ import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.components.ShimmerPlaceholder
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,8 +36,8 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.list_load_error
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.list_load_error
 import kotlinx.coroutines.flow.flowOf
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -155,7 +155,7 @@ fun PoemListScreen(
 @Preview
 @Composable
 private fun PoemListScreenPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         PoemListScreen(
             state = PoemListState(title = "غزلیات"),
             poems =

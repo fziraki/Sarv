@@ -23,7 +23,7 @@ actual class ImageExportManager(
                     put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
                     put(MediaStore.Images.Media.MIME_TYPE, "image/png")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Azbarkon")
+                        put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Sarv")
                         put(MediaStore.Images.Media.IS_PENDING, 1)
                     }
                 }

@@ -7,7 +7,7 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThan
-import com.azbarkon.db.AzbarKonDatabase
+import com.sarv.db.SarvDatabase
 import java.nio.file.Files
 import org.junit.jupiter.api.Test
 
@@ -23,7 +23,7 @@ class PoetDatabaseMergerTest {
 
         val sourceVerses = source.countLong("SELECT COUNT(*) FROM verse")
 
-        val database = AzbarKonDatabase(target)
+        val database = SarvDatabase(target)
         mergePoetDatabase(database, target, source, poetId = TEST_POET_ID)
 
         assertThat(database.poetQueries.selectByIdWithCatUrl(TEST_POET_ID).executeAsOne().is_downloaded).isEqualTo(true)
@@ -53,7 +53,7 @@ class PoetDatabaseMergerTest {
         val targetFile = createTestDatabase(poetId = TEST_POET_ID, includeCats = false, includeVerses = false)
 
         val target = JdbcSqliteDriver("jdbc:sqlite:${targetFile.absolutePath}")
-        val database = AzbarKonDatabase(target)
+        val database = SarvDatabase(target)
 
         repeat(2) {
             val source = JdbcSqliteDriver("jdbc:sqlite:${sourceFile.absolutePath}")

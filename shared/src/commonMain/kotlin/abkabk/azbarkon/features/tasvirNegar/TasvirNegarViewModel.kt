@@ -24,10 +24,10 @@ import abkabk.azbarkon.features.tasvirNegar.model.TextLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.tasvir_negar_save_failed
-import azbarkoncmp.shared.generated.resources.tasvir_negar_saved
-import azbarkoncmp.shared.generated.resources.tasvir_negar_share_failed
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.tasvir_negar_save_failed
+import sarv.shared.generated.resources.tasvir_negar_saved
+import sarv.shared.generated.resources.tasvir_negar_share_failed
 import kotlinx.coroutines.launch
 
 private const val MIN_TEXT_SIZE = 1f

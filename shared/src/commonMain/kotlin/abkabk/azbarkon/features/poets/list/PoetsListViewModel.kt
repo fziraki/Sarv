@@ -13,9 +13,9 @@ import abkabk.azbarkon.features.poets.FeaturedPoetUi
 import abkabk.azbarkon.features.poets.toFeaturedPoetUi
 import abkabk.azbarkon.features.poets.toListItemUi
 import androidx.lifecycle.viewModelScope
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.poets_download_failed
-import azbarkoncmp.shared.generated.resources.poets_download_success
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.poets_download_failed
+import sarv.shared.generated.resources.poets_download_success
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random

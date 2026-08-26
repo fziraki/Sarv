@@ -116,9 +116,9 @@ dependencies {
 
 sqldelight {
     databases {
-        create("AzbarKonDatabase") {
-            packageName.set("com.azbarkon.db")
-            srcDirs.from("src/commonMain/sqldelight/azbarkon")
+        create("SarvDatabase") {
+            packageName.set("com.sarv.db")
+            srcDirs.from("src/commonMain/sqldelight/sarv")
         }
         create("MemorizationDatabase") {
             packageName.set("com.azbarkon.memorization")

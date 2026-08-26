@@ -1,6 +1,6 @@
 package abkabk.azbarkon.data.cache
 
-import abkabk.azbarkon.core.ui.createAzbarkonImageLoader
+import abkabk.azbarkon.core.ui.createSarvImageLoader
 import abkabk.azbarkon.domain.datasource.PoetImagePrefetcher
 import coil3.PlatformContext
 import coil3.request.CachePolicy
@@ -23,7 +23,7 @@ class CoilPoetImagePrefetcher(
         if (urlsToPrefetch.isEmpty()) return
 
         prefetchScope.launch {
-            val imageLoader = createAzbarkonImageLoader(platformContext)
+            val imageLoader = createSarvImageLoader(platformContext)
             urlsToPrefetch.forEach { url ->
                 try {
                     imageLoader.enqueue(

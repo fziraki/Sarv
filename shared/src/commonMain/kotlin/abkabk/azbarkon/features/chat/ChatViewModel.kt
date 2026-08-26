@@ -11,9 +11,9 @@ import abkabk.azbarkon.domain.platform.ClipboardService
 import abkabk.azbarkon.domain.repository.ChatRepository
 import abkabk.azbarkon.domain.repository.PoetRepository
 import androidx.lifecycle.viewModelScope
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.chat_persian_only
-import azbarkoncmp.shared.generated.resources.poem_copied
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.chat_persian_only
+import sarv.shared.generated.resources.poem_copied
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random

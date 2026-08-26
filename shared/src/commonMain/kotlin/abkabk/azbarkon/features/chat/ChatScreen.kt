@@ -4,10 +4,10 @@ import abkabk.azbarkon.core.ui.keyboardAboveIme
 import abkabk.azbarkon.core.ui.rememberKeyboardLiftPx
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
-import abkabk.azbarkon.ui.components.AzbarkonSnackbarHost
+import abkabk.azbarkon.ui.components.SarvSnackbarHost
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.features.poets.list.PoetAvatar
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -49,16 +49,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.arrow_back_right
-import azbarkoncmp.shared.generated.resources.cd_back
-import azbarkoncmp.shared.generated.resources.cd_send_message
-import azbarkoncmp.shared.generated.resources.chat_input_hint
-import azbarkoncmp.shared.generated.resources.chat_poet_says
-import azbarkoncmp.shared.generated.resources.chat_poet_typing
-import azbarkoncmp.shared.generated.resources.chat_subtitle
-import azbarkoncmp.shared.generated.resources.chat_title
-import azbarkoncmp.shared.generated.resources.send
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.arrow_back_right
+import sarv.shared.generated.resources.cd_back
+import sarv.shared.generated.resources.cd_send_message
+import sarv.shared.generated.resources.chat_input_hint
+import sarv.shared.generated.resources.chat_poet_says
+import sarv.shared.generated.resources.chat_poet_typing
+import sarv.shared.generated.resources.chat_subtitle
+import sarv.shared.generated.resources.chat_title
+import sarv.shared.generated.resources.send
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -171,7 +171,7 @@ fun ChatScreen(
             )
         },
         snackbarHost = {
-            AzbarkonSnackbarHost(hostState = LocalSnackbarHostState.current)
+            SarvSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
     ) { paddingValues ->
         LazyColumn(
@@ -504,7 +504,7 @@ private val previewMessages =
 @Preview
 @Composable
 private fun ChatScreenPreview() {
-    AzbarkonTheme(darkTheme = false) {
+    SarvTheme(darkTheme = false) {
         ChatScreen(
             state =
                 ChatState(
@@ -519,7 +519,7 @@ private fun ChatScreenPreview() {
 @Preview
 @Composable
 private fun ChatScreenDarkPreview() {
-    AzbarkonTheme(darkTheme = true) {
+    SarvTheme(darkTheme = true) {
         ChatScreen(
             state =
                 ChatState(
@@ -534,7 +534,7 @@ private fun ChatScreenDarkPreview() {
 @Preview
 @Composable
 private fun ChatScreenTypingPreview() {
-    AzbarkonTheme {
+    SarvTheme {
         ChatScreen(
             state =
                 ChatState(

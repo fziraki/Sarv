@@ -1,10 +1,10 @@
 package abkabk.azbarkon
 
-import abkabk.azbarkon.core.navigation.AzbarkonNavigation
-import abkabk.azbarkon.core.ui.createAzbarkonImageLoader
+import abkabk.azbarkon.core.navigation.SarvNavigation
+import abkabk.azbarkon.core.ui.createSarvImageLoader
 import abkabk.azbarkon.domain.model.ThemeMode
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
-import abkabk.azbarkon.ui.theme.AzbarkonTheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,7 +18,7 @@ fun App(
     openMemorizationPractice: Boolean = false,
 ) {
     setSingletonImageLoaderFactory { context ->
-        createAzbarkonImageLoader(context)
+        createSarvImageLoader(context)
     }
 
     val userPreferencesRepository: UserPreferencesRepository = koinInject()
@@ -36,8 +36,8 @@ fun App(
         initialValue = 1f,
     )
 
-    AzbarkonTheme(darkTheme = darkTheme, fontSizeScale = fontSizeScale) {
-        AzbarkonNavigation(
+    SarvTheme(darkTheme = darkTheme, fontSizeScale = fontSizeScale) {
+        SarvNavigation(
             initialPoemId = initialPoemId,
             openMemorizationPractice = openMemorizationPractice,
         )

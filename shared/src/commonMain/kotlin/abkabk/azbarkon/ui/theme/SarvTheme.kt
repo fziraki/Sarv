@@ -1,6 +1,6 @@
 package abkabk.azbarkon.ui.theme
 
-import abkabk.azbarkon.core.designsystem.azbarkonTypography
+import abkabk.azbarkon.core.designsystem.sarvTypography
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 
 @Composable
-fun AzbarkonTheme(
+fun SarvTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     fontSizeScale: Float = 1f,
     content: @Composable () -> Unit,
@@ -26,7 +26,7 @@ fun AzbarkonTheme(
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = azbarkonTypography(fontSizeScale = fontSizeScale),
+            typography = sarvTypography(fontSizeScale = fontSizeScale),
             content = content,
         )
     }

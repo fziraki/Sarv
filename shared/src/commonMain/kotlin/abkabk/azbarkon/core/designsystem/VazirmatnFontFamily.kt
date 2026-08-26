@@ -3,10 +3,10 @@ package abkabk.azbarkon.core.designsystem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.vazirmatn_bold
-import azbarkoncmp.shared.generated.resources.vazirmatn_medium
-import azbarkoncmp.shared.generated.resources.vazirmatn_regular
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.vazirmatn_bold
+import sarv.shared.generated.resources.vazirmatn_medium
+import sarv.shared.generated.resources.vazirmatn_regular
 import org.jetbrains.compose.resources.Font
 
 @Composable

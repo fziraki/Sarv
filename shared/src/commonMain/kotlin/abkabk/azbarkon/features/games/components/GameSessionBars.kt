@@ -3,8 +3,8 @@ package abkabk.azbarkon.features.games.components
 import abkabk.azbarkon.domain.model.games.GameConstants
 import abkabk.azbarkon.domain.model.games.GameType
 import abkabk.azbarkon.features.games.session.QuizAnswerPhase
-import abkabk.azbarkon.ui.components.AzbarkonButtonDefaults
-import abkabk.azbarkon.ui.components.AzbarkonPrimaryButton
+import abkabk.azbarkon.ui.components.SarvButtonDefaults
+import abkabk.azbarkon.ui.components.SarvPrimaryButton
 import abkabk.azbarkon.ui.theme.LightColorScheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,20 +32,20 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.arrow_back_left
-import azbarkoncmp.shared.generated.resources.cd_back
-import azbarkoncmp.shared.generated.resources.coin
-import azbarkoncmp.shared.generated.resources.complete_poem_title
-import azbarkoncmp.shared.generated.resources.game_continue
-import azbarkoncmp.shared.generated.resources.game_hint
-import azbarkoncmp.shared.generated.resources.game_hint_cost
-import azbarkoncmp.shared.generated.resources.game_next
-import azbarkoncmp.shared.generated.resources.game_quiz_progress_format
-import azbarkoncmp.shared.generated.resources.game_review
-import azbarkoncmp.shared.generated.resources.next_line_title
-import azbarkoncmp.shared.generated.resources.poetry_arrangement_title
-import azbarkoncmp.shared.generated.resources.whois_poet_title
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.arrow_back_left
+import sarv.shared.generated.resources.cd_back
+import sarv.shared.generated.resources.coin
+import sarv.shared.generated.resources.complete_poem_title
+import sarv.shared.generated.resources.game_continue
+import sarv.shared.generated.resources.game_hint
+import sarv.shared.generated.resources.game_hint_cost
+import sarv.shared.generated.resources.game_next
+import sarv.shared.generated.resources.game_quiz_progress_format
+import sarv.shared.generated.resources.game_review
+import sarv.shared.generated.resources.next_line_title
+import sarv.shared.generated.resources.poetry_arrangement_title
+import sarv.shared.generated.resources.whois_poet_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -194,7 +194,7 @@ fun GameSessionBottomBar(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        AzbarkonPrimaryButton(
+        SarvPrimaryButton(
             text = checkAnswerLabel(hasSelection = hasSelection, isRevealing = isRevealing),
             onClick = onCheckAnswerClick,
             enabled = canPressPrimaryAction,
@@ -216,7 +216,7 @@ private fun GameHintButton(
     androidx.compose.material3.OutlinedButton(
         onClick = onClick,
         modifier = modifier,
-        shape = AzbarkonButtonDefaults.Shape,
+        shape = SarvButtonDefaults.Shape,
         border =
             androidx.compose.foundation.BorderStroke(
                 1.dp,

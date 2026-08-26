@@ -5,21 +5,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 
-class AzbarkonAppState {
+class SarvAppState {
     var onProfileSettingsClick: (() -> Unit)? = null
     var notificationPermissionSheetShownThisLaunch: Boolean = false
 }
 
 @Suppress("CompositionLocalAllowlist")
-val LocalAzbarkonAppState =
-    staticCompositionLocalOf<AzbarkonAppState> {
-        error("AzbarkonAppState not provided")
+val LocalSarvAppState =
+    staticCompositionLocalOf<SarvAppState> {
+        error("SarvAppState not provided")
     }
 
-// ponytail: plain default keeps previews alive; the app always provides the real one in AzbarkonNavigation
+// ponytail: plain default keeps previews alive; the app always provides the real one in SarvNavigation
 @Suppress("CompositionLocalAllowlist")
 val LocalSnackbarHostState =
     staticCompositionLocalOf<SnackbarHostState> { SnackbarHostState() }
 
 @Composable
-fun rememberAzbarkonAppState(): AzbarkonAppState = remember { AzbarkonAppState() }
+fun rememberSarvAppState(): SarvAppState = remember { SarvAppState() }

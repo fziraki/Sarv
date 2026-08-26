@@ -19,10 +19,10 @@ import abkabk.azbarkon.domain.repository.SavedPoemRepository
 import abkabk.azbarkon.domain.usecase.BuildShareTextUseCase
 import abkabk.azbarkon.domain.usecase.StartMemorizationFromPoemUseCase
 import androidx.lifecycle.viewModelScope
-import azbarkoncmp.shared.generated.resources.Res
-import azbarkoncmp.shared.generated.resources.memorization_max_active_error
-import azbarkoncmp.shared.generated.resources.search_empty_query
-import azbarkoncmp.shared.generated.resources.search_not_found_in_poem
+import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.memorization_max_active_error
+import sarv.shared.generated.resources.search_empty_query
+import sarv.shared.generated.resources.search_not_found_in_poem
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

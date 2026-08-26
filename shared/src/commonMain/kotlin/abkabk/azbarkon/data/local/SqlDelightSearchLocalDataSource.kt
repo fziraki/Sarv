@@ -7,8 +7,8 @@ import abkabk.azbarkon.data.mapper.toSearchHit
 import abkabk.azbarkon.domain.datasource.SearchLocalDataSource
 import abkabk.azbarkon.domain.model.CatNode
 import abkabk.azbarkon.domain.model.SearchHit
-import com.azbarkon.db.CatQueries
-import com.azbarkon.db.SearchQueries
+import com.sarv.db.CatQueries
+import com.sarv.db.SearchQueries
 import io.github.aakira.napier.Napier
 
 class SqlDelightSearchLocalDataSource(

@@ -40,7 +40,7 @@ private val SLIDER_LENGTH: Dp = 200.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AzbarkonSlider(
+fun SarvSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
