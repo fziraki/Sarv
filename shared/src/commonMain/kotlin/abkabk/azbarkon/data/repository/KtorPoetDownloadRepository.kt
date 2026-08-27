@@ -30,6 +30,7 @@ class KtorPoetDownloadRepository(
     private val mainDriver: app.cash.sqldelight.db.SqlDriver,
 ) : PoetDownloadRepository {
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun downloadPoet(poetId: Int): EmptyResult<PoetDownloadError> {
         val fileName = "poet_$poetId.s3db"
         if (isAlreadyDownloaded(poetId)) {
@@ -51,7 +52,7 @@ class KtorPoetDownloadRepository(
         val status = response.status.value
         if (!response.status.isSuccess()) {
             Napier.e(
-                message = "GET $url status=$status body=${response.bodyAsText().take(200)}",
+                message = "GET $url status=$status body=${response.bodyAsText().take(MAX_ERROR_BODY_LOG_LENGTH)}",
                 tag = "PoetDownload",
             )
             return Result.Error(PoetDownloadError.Network)
@@ -82,6 +83,10 @@ class KtorPoetDownloadRepository(
             storage.delete(fileName)
             Result.Error(PoetDownloadError.MergeFailed)
         }
+    }
+
+    companion object {
+        private const val MAX_ERROR_BODY_LOG_LENGTH = 200
     }
 
     private fun logSourceInfo(source: SqlDriver) {
