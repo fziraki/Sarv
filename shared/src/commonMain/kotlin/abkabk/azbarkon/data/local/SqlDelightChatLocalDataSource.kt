@@ -2,11 +2,11 @@ package abkabk.azbarkon.data.local
 
 import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.core.domain.result.Result
+import abkabk.azbarkon.core.domain.result.dbQuery
 import abkabk.azbarkon.domain.datasource.ChatLocalDataSource
 import abkabk.azbarkon.domain.model.ChatDistich
 import abkabk.azbarkon.domain.model.ChatDistichFallback
 import com.sarv.db.VerseQueries
-import io.github.aakira.napier.Napier
 
 class SqlDelightChatLocalDataSource(
     private val verseQueries: VerseQueries,
@@ -15,7 +15,7 @@ class SqlDelightChatLocalDataSource(
         poetId: Int,
         prefix: String,
     ): Result<ChatDistich, DataError.Local> =
-        try {
+        dbQuery {
             val firstLine =
                 verseQueries
                     .selectChatDistichByPoetAndPrefix(
@@ -24,12 +24,10 @@ class SqlDelightChatLocalDataSource(
                     ).executeAsOneOrNull()
 
             if (firstLine == null) {
-                Result.Success(
-                    ChatDistich(
-                        poemId = ChatDistichFallback.POEM_ID,
-                        rightText = ChatDistichFallback.RIGHT_TEXT,
-                        leftText = ChatDistichFallback.LEFT_TEXT,
-                    ),
+                ChatDistich(
+                    poemId = ChatDistichFallback.POEM_ID,
+                    rightText = ChatDistichFallback.RIGHT_TEXT,
+                    leftText = ChatDistichFallback.LEFT_TEXT,
                 )
             } else {
                 val secondLine =
@@ -39,21 +37,13 @@ class SqlDelightChatLocalDataSource(
                             vorder = firstLine.vorder + 1,
                             position = 1,
                         ).executeAsOneOrNull()
+                        ?: return Result.Error(DataError.Local.NOT_FOUND)
 
-                if (secondLine == null) {
-                    Result.Error(DataError.Local.NOT_FOUND)
-                } else {
-                    Result.Success(
-                        ChatDistich(
-                            poemId = firstLine.poem_id.toInt(),
-                            rightText = firstLine.right_text,
-                            leftText = secondLine,
-                        ),
-                    )
-                }
+                ChatDistich(
+                    poemId = firstLine.poem_id.toInt(),
+                    rightText = firstLine.right_text,
+                    leftText = secondLine,
+                )
             }
-        } catch (e: Exception) {
-            Napier.e("findDistichByPrefix failed", e)
-            Result.Error(DataError.Local.QUERY_FAILED)
         }
 }

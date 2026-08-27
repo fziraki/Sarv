@@ -2,6 +2,7 @@ package abkabk.azbarkon.core.local
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import com.sarv.db.SarvDatabase
 import io.github.aakira.napier.Napier
 import java.io.File
@@ -42,7 +43,7 @@ private fun hasExpectedSchema(dbFile: File): Boolean =
                 null,
             ).use { it.moveToFirst(); it.getInt(0) == 2 }
         }
-    } catch (e: Exception) {
+    } catch (e: SQLiteException) {
         Napier.e("hasExpectedSchema failed", e)
         false
     }
@@ -50,7 +51,7 @@ private fun hasExpectedSchema(dbFile: File): Boolean =
 private fun databaseVersion(dbFile: File): Int =
     try {
         SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY).use { it.version }
-    } catch (e: Exception) {
+    } catch (e: SQLiteException) {
         Napier.e("databaseVersion failed", e)
         0
     }

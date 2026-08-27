@@ -2,6 +2,7 @@ package abkabk.azbarkon.data.local
 
 import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.core.domain.result.Result
+import abkabk.azbarkon.core.domain.result.dbQuery
 import abkabk.azbarkon.core.domain.result.map
 import abkabk.azbarkon.data.mapper.buildPoetCategoryTree
 import abkabk.azbarkon.data.mapper.toCatNode
@@ -12,7 +13,6 @@ import abkabk.azbarkon.domain.model.PoetWithCategories
 import abkabk.azbarkon.domain.model.PoetWithRootCategories
 import com.sarv.db.CatQueries
 import com.sarv.db.PoetQueries
-import io.github.aakira.napier.Napier
 
 class SqlDelightPoetLocalDataSource(
     private val poetQueries: PoetQueries,
@@ -23,35 +23,26 @@ class SqlDelightPoetLocalDataSource(
             poetsWithRootCategories.map { it.poet }
         }
 
-    @Suppress("TooGenericExceptionCaught")
     override suspend fun getPoetsWithRootCategories(): Result<List<PoetWithRootCategories>, DataError.Local> =
-        try {
+        dbQuery {
             val poets =
                 poetQueries
                     .selectAllWithCatUrl()
                     .executeAsList()
                     .map { it.toPoet() }
 
-            Result.Success(
-                poets.map { poet -> buildPoetWithRootCategories(poet) },
-            )
-        } catch (e: Exception) {
-            Napier.e(message = "getPoetsWithRootCategories failed: ${e.message}", throwable = e, tag = "PoetDb")
-            Result.Error(DataError.Local.QUERY_FAILED)
+            poets.map { poet -> buildPoetWithRootCategories(poet) }
         }
 
     override suspend fun getPoetWithCategories(poetId: Int): Result<PoetWithCategories, DataError.Local> =
-        try {
+        dbQuery {
             val poetRow =
                 poetQueries
                     .selectByIdWithCatUrl(poetId.toLong())
                     .executeAsOneOrNull()
                     ?: return Result.Error(DataError.Local.NOT_FOUND)
 
-            Result.Success(buildPoetWithCategories(poetRow.toPoet()))
-        } catch (e: Exception) {
-            Napier.e("getPoetWithCategories failed for poetId=$poetId", e)
-            Result.Error(DataError.Local.QUERY_FAILED)
+            buildPoetWithCategories(poetRow.toPoet())
         }
 
     private fun buildPoetWithRootCategories(poet: Poet): PoetWithRootCategories {

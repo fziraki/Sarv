@@ -32,7 +32,7 @@ class MemorizationReviewWorker(
                 notificationPresenter.show(dueCount)
             }
             Result.success()
-        } catch (e: Exception) {
+        } catch (e: IllegalStateException) {
             Napier.e("MemorizationReviewWorker failed", e)
             showFailureNotification()
             Result.failure()

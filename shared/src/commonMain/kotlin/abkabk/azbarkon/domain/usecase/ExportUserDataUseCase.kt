@@ -18,7 +18,7 @@ class ExportUserDataUseCase(
                 title = null,
             )
             true
-        } catch (e: Exception) {
+        } catch (e: IllegalStateException) {
             Napier.e("ExportUserDataUseCase failed", e)
             false
         }

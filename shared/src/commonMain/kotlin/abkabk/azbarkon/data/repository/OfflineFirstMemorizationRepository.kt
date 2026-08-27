@@ -59,7 +59,7 @@ class OfflineFirstMemorizationRepository(
                     buildActivePoem(poemId, now)
                 }
             Result.Success(poems)
-        } catch (e: Exception) {
+        } catch (e: IllegalStateException) {
             Napier.e("getActivePoems failed", e)
             Result.Error(MemorizationError.Unknown)
         }
@@ -102,7 +102,7 @@ class OfflineFirstMemorizationRepository(
             notifySummaryChanged()
             syncReviewNotifications()
             Result.Success(Unit)
-        } catch (e: Exception) {
+        } catch (e: IllegalStateException) {
             Napier.e("removePoem failed for poemId=$poemId", e)
             Result.Error(MemorizationError.Unknown)
         }
@@ -111,7 +111,7 @@ class OfflineFirstMemorizationRepository(
         try {
             val cards = localDataSource.getDueCards(currentTimeMillis(), poemId)
             Result.Success(cards)
-        } catch (e: Exception) {
+        } catch (e: IllegalStateException) {
             Napier.e("getDueCards failed for poemId=$poemId", e)
             Result.Error(MemorizationError.Unknown)
         }
@@ -143,7 +143,7 @@ class OfflineFirstMemorizationRepository(
             notifySummaryChanged()
             syncReviewNotifications()
             Result.Success(updated)
-        } catch (e: Exception) {
+        } catch (e: IllegalStateException) {
             Napier.e("submitReview failed for cardId=$cardId", e)
             Result.Error(MemorizationError.Unknown)
         }

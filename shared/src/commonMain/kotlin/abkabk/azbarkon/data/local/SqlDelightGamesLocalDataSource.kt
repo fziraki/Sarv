@@ -2,6 +2,7 @@ package abkabk.azbarkon.data.local
 
 import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.core.domain.result.Result
+import abkabk.azbarkon.core.domain.result.dbQuery
 import abkabk.azbarkon.data.generator.GameQuestionGenerator
 import abkabk.azbarkon.data.generator.GameSessionPoolBuilder
 import abkabk.azbarkon.data.generator.VerseRow
@@ -17,7 +18,6 @@ import abkabk.azbarkon.domain.model.games.GameType
 import com.sarv.db.PoemQueries
 import com.sarv.db.PoetQueries
 import com.sarv.db.VerseQueries
-import io.github.aakira.napier.Napier
 import kotlin.random.Random
 
 private const val SEED_STRIDE = 9973L
@@ -30,16 +30,11 @@ class SqlDelightGamesLocalDataSource(
     private val poetQueries: PoetQueries,
 ) : GamesLocalDataSource {
     override suspend fun getAllPoets(): Result<List<Poet>, DataError.Local> =
-        try {
-            val poets =
-                poetQueries
-                    .selectAllWithCatUrl()
-                    .executeAsList()
-                    .map { it.toPoet() }
-            Result.Success(poets)
-        } catch (e: Exception) {
-            Napier.e("getAllPoets failed", e)
-            Result.Error(DataError.Local.QUERY_FAILED)
+        dbQuery {
+            poetQueries
+                .selectAllWithCatUrl()
+                .executeAsList()
+                .map { it.toPoet() }
         }
 
     override suspend fun buildPoemBundle(
@@ -49,7 +44,7 @@ class SqlDelightGamesLocalDataSource(
     ): Result<Unit, DataError.Local> {
         if (cache.hasBundle(quizIndex)) return Result.Success(Unit)
 
-        return try {
+        return dbQuery {
             repeat(GameConstants.MAX_POEM_FETCH_ATTEMPTS) {
                 val poemId =
                     verseQueries
@@ -112,9 +107,6 @@ class SqlDelightGamesLocalDataSource(
                 return Result.Success(Unit)
             }
             Result.Error(DataError.Local.NOT_FOUND)
-        } catch (e: Exception) {
-            Napier.e("buildPoemBundle failed", e)
-            Result.Error(DataError.Local.QUERY_FAILED)
         }
     }
 

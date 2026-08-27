@@ -71,7 +71,7 @@ internal fun decodeBackup(jsonString: String): Result<UserBackupFile, BackupErro
         } else {
             Result.Success(file)
         }
-    } catch (e: Exception) {
+    } catch (e: IllegalArgumentException) {
         Napier.e("decodeBackup failed", e)
         Result.Error(BackupError.InvalidData)
     }

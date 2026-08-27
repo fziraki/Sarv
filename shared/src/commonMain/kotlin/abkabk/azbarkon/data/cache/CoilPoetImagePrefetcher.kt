@@ -34,7 +34,7 @@ class CoilPoetImagePrefetcher(
                             .diskCachePolicy(CachePolicy.ENABLED)
                             .build(),
                     )
-                } catch (e: Exception) {
+                } catch (e: IllegalStateException) {
                     Napier.e("Image prefetch failed for $url", e)
                 }
             }

@@ -2,6 +2,7 @@ package abkabk.azbarkon.data.local
 
 import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.core.domain.result.Result
+import abkabk.azbarkon.core.domain.result.dbQuery
 import abkabk.azbarkon.data.mapper.toSrsCard
 import abkabk.azbarkon.data.mapper.toStorageValue
 import abkabk.azbarkon.domain.datasource.MemorizationLocalDataSource
@@ -17,7 +18,6 @@ import com.azbarkon.memorization.ActiveSrsPoemQueries
 import com.azbarkon.memorization.MemorizationDatabase
 import com.azbarkon.memorization.ReviewLogQueries
 import com.azbarkon.memorization.SrsPoemCardQueries
-import io.github.aakira.napier.Napier
 
 class SqlDelightMemorizationLocalDataSource(
     private val activePoemQueries: ActiveSrsPoemQueries,
@@ -242,40 +242,26 @@ class SqlDelightMemorizationLocalDataSource(
     }
 
     override suspend fun findPoetIdByName(nameFragment: String): Result<Int, DataError.Local> =
-        try {
-            val id =
-                poetQueries
-                    .selectIdByNameLike(nameFragment)
-                    .executeAsOneOrNull()
-                    ?.toInt()
-            if (id == null) {
-                Result.Error(DataError.Local.NOT_FOUND)
-            } else {
-                Result.Success(id)
-            }
-        } catch (e: Exception) {
-            Napier.e("findPoetIdByName failed for $nameFragment", e)
-            Result.Error(DataError.Local.QUERY_FAILED)
+        dbQuery {
+            poetQueries
+                .selectIdByNameLike(nameFragment)
+                .executeAsOneOrNull()
+                ?.toInt()
+                ?: return Result.Error(DataError.Local.NOT_FOUND)
         }
 
     override suspend fun findCategoryByPoetAndText(
         poetId: Int,
         textFragment: String,
     ): Result<Pair<Int, String>, DataError.Local> =
-        try {
+        dbQuery {
             val row =
                 catQueries
                     .selectIdByPoetIdAndText(
                         poet_id = poetId.toLong(),
                         textFragment,
                     ).executeAsOneOrNull()
-            if (row == null) {
-                Result.Error(DataError.Local.NOT_FOUND)
-            } else {
-                Result.Success(row.id.toInt() to row.text)
-            }
-        } catch (e: Exception) {
-            Napier.e("findCategoryByPoetAndText failed", e)
-            Result.Error(DataError.Local.QUERY_FAILED)
+                    ?: return Result.Error(DataError.Local.NOT_FOUND)
+            row.id.toInt() to row.text
         }
 }
