@@ -4,6 +4,7 @@ import abkabk.azbarkon.core.di.initKoin
 import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import abkabk.azbarkon.domain.platform.MemorizationReviewNotificationScheduler
 import android.app.Application
+import android.content.pm.ApplicationInfo
 import androidx.work.Configuration
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -20,7 +21,9 @@ class SarvApp :
         super.onCreate()
 
         initKoin(this)
-        Napier.base(DebugAntilog())
+        if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
+            Napier.base(DebugAntilog())
+        }
         dailyBeytNotificationScheduler.rescheduleIfEnabled()
         memorizationReviewNotificationScheduler.rescheduleIfActive()
     }

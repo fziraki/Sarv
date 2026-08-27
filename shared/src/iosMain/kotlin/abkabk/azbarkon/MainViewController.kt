@@ -7,8 +7,6 @@ import abkabk.azbarkon.domain.platform.DailyBeytNotificationScheduler
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.window.ComposeUIViewController
-import io.github.aakira.napier.DebugAntilog
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -23,7 +21,6 @@ private object IosAppBootstrap : KoinComponent {
 
     fun onLaunch() {
         initKoinIfNeeded()
-        Napier.base(DebugAntilog())
         IosNotificationDelegate.install()
         dailyBeytNotificationScheduler.rescheduleIfEnabled()
         scope.launch {

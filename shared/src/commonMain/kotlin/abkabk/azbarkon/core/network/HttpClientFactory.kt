@@ -43,7 +43,7 @@ object HttpClientFactory {
                             Napier.d(tag = "Ktor", message = message)
                         }
                     }
-                level = LogLevel.ALL
+                level = LogLevel.BODY
             }
 
             install(AuthPlugin) {
