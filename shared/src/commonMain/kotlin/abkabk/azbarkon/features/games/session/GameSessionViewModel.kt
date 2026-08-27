@@ -14,7 +14,7 @@ import abkabk.azbarkon.domain.repository.UserPreferencesRepository
 import abkabk.azbarkon.domain.usecase.ApplyGameHintUseCase
 import abkabk.azbarkon.domain.usecase.EvaluateGameAnswerUseCase
 import sarv.shared.generated.resources.Res
-import sarv.shared.generated.resources.error_unknown
+import sarv.shared.generated.resources.error_db_query
 import sarv.shared.generated.resources.game_prefetch_failed
 import androidx.lifecycle.viewModelScope
 import sarv.shared.generated.resources.game_hint_not_enough_score
@@ -147,7 +147,7 @@ class GameSessionViewModel(
                         copy(
                             screenState =
                                 UiScreenState.Error(
-                                    message = UiText.Resource(Res.string.error_unknown),
+                                    message = UiText.Resource(Res.string.error_db_query),
                                 ),
                         )
                     }

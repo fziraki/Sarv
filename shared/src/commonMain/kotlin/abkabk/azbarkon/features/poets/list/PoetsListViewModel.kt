@@ -7,6 +7,7 @@ import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.core.uidata.UiText
 import abkabk.azbarkon.core.uidata.toUiText
 import abkabk.azbarkon.domain.model.PoetWithRootCategories
+import abkabk.azbarkon.domain.repository.PoetDownloadError
 import abkabk.azbarkon.domain.repository.PoetDownloadRepository
 import abkabk.azbarkon.domain.repository.PoetRepository
 import abkabk.azbarkon.features.poets.FeaturedPoetUi
@@ -15,6 +16,8 @@ import abkabk.azbarkon.features.poets.toListItemUi
 import androidx.lifecycle.viewModelScope
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.poets_download_failed
+import sarv.shared.generated.resources.poets_download_merge_error
+import sarv.shared.generated.resources.poets_download_network_error
 import sarv.shared.generated.resources.poets_download_success
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -167,12 +170,16 @@ class PoetsListViewModel(
                     delay(1000.milliseconds)
                     loadPoets()
                 }
-                .onFailure {
+                .onFailure { error ->
+                    val message = when (error) {
+                        PoetDownloadError.Network -> UiText.Resource(Res.string.poets_download_network_error)
+                        PoetDownloadError.MergeFailed -> UiText.Resource(Res.string.poets_download_merge_error)
+                    }
                     setState {
                         copy(
                             downloadingPoetIds = downloadingPoetIds - poetId,
                             screenState = UiScreenState.Error(
-                                message = UiText.Resource(Res.string.poets_download_failed),
+                                message = message,
                             )
                         )
                     }

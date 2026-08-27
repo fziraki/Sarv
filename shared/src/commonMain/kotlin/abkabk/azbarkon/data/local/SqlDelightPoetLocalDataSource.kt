@@ -37,7 +37,7 @@ class SqlDelightPoetLocalDataSource(
             )
         } catch (e: Exception) {
             Napier.e(message = "getPoetsWithRootCategories failed: ${e.message}", throwable = e, tag = "PoetDb")
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.QUERY_FAILED)
         }
 
     override suspend fun getPoetWithCategories(poetId: Int): Result<PoetWithCategories, DataError.Local> =
@@ -46,12 +46,12 @@ class SqlDelightPoetLocalDataSource(
                 poetQueries
                     .selectByIdWithCatUrl(poetId.toLong())
                     .executeAsOneOrNull()
-                    ?: return Result.Error(DataError.Local.UNKNOWN)
+                    ?: return Result.Error(DataError.Local.NOT_FOUND)
 
             Result.Success(buildPoetWithCategories(poetRow.toPoet()))
         } catch (e: Exception) {
             Napier.e("getPoetWithCategories failed for poetId=$poetId", e)
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.QUERY_FAILED)
         }
 
     private fun buildPoetWithRootCategories(poet: Poet): PoetWithRootCategories {

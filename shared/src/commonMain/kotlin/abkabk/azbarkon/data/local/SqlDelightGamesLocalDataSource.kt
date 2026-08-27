@@ -39,7 +39,7 @@ class SqlDelightGamesLocalDataSource(
             Result.Success(poets)
         } catch (e: Exception) {
             Napier.e("getAllPoets failed", e)
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.QUERY_FAILED)
         }
 
     override suspend fun buildPoemBundle(
@@ -111,10 +111,10 @@ class SqlDelightGamesLocalDataSource(
                 cache.recordPoetUse(poetInfo.poet_id)
                 return Result.Success(Unit)
             }
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.NOT_FOUND)
         } catch (e: Exception) {
             Napier.e("buildPoemBundle failed", e)
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.QUERY_FAILED)
         }
     }
 
@@ -137,7 +137,7 @@ class SqlDelightGamesLocalDataSource(
                 return Result.Success(question)
             }
         }
-        return Result.Error(DataError.Local.UNKNOWN)
+        return Result.Error(DataError.Local.NOT_FOUND)
     }
 
     private fun generateNextVerse(

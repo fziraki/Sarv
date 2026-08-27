@@ -25,7 +25,7 @@ class SqlDelightSearchLocalDataSource(
             Result.Success(row.toCatNode())
         } catch (e: Exception) {
             Napier.e("getCatById failed for catId=$catId", e)
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.QUERY_FAILED)
         }
 
     @Suppress("TooGenericExceptionCaught")
@@ -62,7 +62,7 @@ class SqlDelightSearchLocalDataSource(
             Result.Success(hits)
         } catch (e: Exception) {
             Napier.e("Search failed for query: $query", e)
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.QUERY_FAILED)
         }
 
     private fun buildFtsQuery(raw: String): String {

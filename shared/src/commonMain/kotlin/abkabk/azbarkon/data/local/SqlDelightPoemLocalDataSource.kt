@@ -41,7 +41,7 @@ class SqlDelightPoemLocalDataSource(
                 .let { Result.Success(it) }
         } catch (e: Exception) {
             Napier.e(message = "getPoemsByCatIdPage failed: ${e.message}", throwable = e, tag = "PoemDebug")
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.QUERY_FAILED)
         }
 
     override suspend fun getPoemsByIds(ids: Set<Int>): Result<List<MyPoemSummary>, DataError.Local> =
@@ -57,7 +57,7 @@ class SqlDelightPoemLocalDataSource(
                 )
             } catch (e: Exception) {
                 Napier.e("getPoemsByIds failed", e)
-                Result.Error(DataError.Local.UNKNOWN)
+                Result.Error(DataError.Local.QUERY_FAILED)
             }
         }
 
@@ -78,6 +78,6 @@ class SqlDelightPoemLocalDataSource(
             Result.Success(detail.toPoemDetail(poemId = poemId, verses = verses))
         } catch (e: Exception) {
             Napier.e("getPoemDetail failed for poemId=$poemId", e)
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.QUERY_FAILED)
         }
 }

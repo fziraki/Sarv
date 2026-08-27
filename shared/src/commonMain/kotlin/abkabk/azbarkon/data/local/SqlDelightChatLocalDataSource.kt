@@ -41,7 +41,7 @@ class SqlDelightChatLocalDataSource(
                         ).executeAsOneOrNull()
 
                 if (secondLine == null) {
-                    Result.Error(DataError.Local.UNKNOWN)
+                    Result.Error(DataError.Local.NOT_FOUND)
                 } else {
                     Result.Success(
                         ChatDistich(
@@ -54,6 +54,6 @@ class SqlDelightChatLocalDataSource(
             }
         } catch (e: Exception) {
             Napier.e("findDistichByPrefix failed", e)
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.QUERY_FAILED)
         }
 }

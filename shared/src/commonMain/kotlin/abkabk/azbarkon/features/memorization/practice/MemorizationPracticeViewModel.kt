@@ -13,7 +13,10 @@ import abkabk.azbarkon.domain.srs.CardGenerator
 import abkabk.azbarkon.domain.srs.TextDiffHighlighter
 import androidx.lifecycle.viewModelScope
 import sarv.shared.generated.resources.Res
-import sarv.shared.generated.resources.error_unknown
+import sarv.shared.generated.resources.error_db_query
+import sarv.shared.generated.resources.memorization_max_active_error
+import sarv.shared.generated.resources.memorization_poem_not_error
+import sarv.shared.generated.resources.memorization_card_not_error
 import sarv.shared.generated.resources.memorization_review_notification_enabled
 import kotlinx.coroutines.launch
 
@@ -246,9 +249,12 @@ class MemorizationPracticeViewModel(
 
 private fun MemorizationError.toMemorizationUiText(): UiText =
     when (this) {
-        MemorizationError.MaxActivePoemsReached,
-        MemorizationError.PoemNotFound,
-        MemorizationError.CardNotFound,
-        MemorizationError.Unknown,
-        -> UiText.Resource(Res.string.error_unknown)
+        MemorizationError.MaxActivePoemsReached ->
+            UiText.Resource(Res.string.memorization_max_active_error)
+        MemorizationError.PoemNotFound ->
+            UiText.Resource(Res.string.memorization_poem_not_error)
+        MemorizationError.CardNotFound ->
+            UiText.Resource(Res.string.memorization_card_not_error)
+        MemorizationError.Unknown ->
+            UiText.Resource(Res.string.error_db_query)
     }

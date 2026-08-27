@@ -25,7 +25,7 @@ class SqlDelightDailyBeytLocalDataSource(
                         poet_id = poetIdParam,
                     ).executeAsOne()
             if (count == 0L) {
-                Result.Error(DataError.Local.UNKNOWN)
+                Result.Error(DataError.Local.NOT_FOUND)
             } else {
                 val offset = (seed and Long.MAX_VALUE) % count
                 val distich =
@@ -37,13 +37,13 @@ class SqlDelightDailyBeytLocalDataSource(
                         ).executeAsOneOrNull()
                         ?.toRandomDistich()
                 if (distich == null) {
-                    Result.Error(DataError.Local.UNKNOWN)
+                    Result.Error(DataError.Local.NOT_FOUND)
                 } else {
                     Result.Success(distich)
                 }
             }
         } catch (e: Exception) {
             Napier.e("getRandomDistich failed", e)
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.QUERY_FAILED)
         }
 }

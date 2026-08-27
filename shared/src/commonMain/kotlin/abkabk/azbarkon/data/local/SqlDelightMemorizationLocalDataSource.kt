@@ -255,7 +255,7 @@ class SqlDelightMemorizationLocalDataSource(
             }
         } catch (e: Exception) {
             Napier.e("findPoetIdByName failed for $nameFragment", e)
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.QUERY_FAILED)
         }
 
     override suspend fun findCategoryByPoetAndText(
@@ -276,6 +276,6 @@ class SqlDelightMemorizationLocalDataSource(
             }
         } catch (e: Exception) {
             Napier.e("findCategoryByPoetAndText failed", e)
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.QUERY_FAILED)
         }
 }

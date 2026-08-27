@@ -20,7 +20,10 @@ import abkabk.azbarkon.domain.usecase.BuildShareTextUseCase
 import abkabk.azbarkon.domain.usecase.StartMemorizationFromPoemUseCase
 import androidx.lifecycle.viewModelScope
 import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.error_db_query
 import sarv.shared.generated.resources.memorization_max_active_error
+import sarv.shared.generated.resources.memorization_poem_not_error
+import sarv.shared.generated.resources.memorization_card_not_error
 import sarv.shared.generated.resources.search_empty_query
 import sarv.shared.generated.resources.search_not_found_in_poem
 import io.github.aakira.napier.Napier
@@ -473,8 +476,10 @@ private fun MemorizationError.toUiText(): UiText =
     when (this) {
         MemorizationError.MaxActivePoemsReached ->
             UiText.Resource(Res.string.memorization_max_active_error)
-        MemorizationError.PoemNotFound,
-        MemorizationError.CardNotFound,
-        MemorizationError.Unknown,
-            -> UiText.DynamicString(toString())
+        MemorizationError.PoemNotFound ->
+            UiText.Resource(Res.string.memorization_poem_not_error)
+        MemorizationError.CardNotFound ->
+            UiText.Resource(Res.string.memorization_card_not_error)
+        MemorizationError.Unknown ->
+            UiText.Resource(Res.string.error_db_query)
     }

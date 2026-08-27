@@ -9,7 +9,7 @@ import abkabk.azbarkon.domain.model.memorization.ActiveMemorizationPoem
 import abkabk.azbarkon.domain.repository.MemorizationRepository
 import androidx.lifecycle.viewModelScope
 import sarv.shared.generated.resources.Res
-import sarv.shared.generated.resources.error_unknown
+import sarv.shared.generated.resources.error_db_query
 import kotlinx.coroutines.launch
 
 class ActiveMemorizationViewModel(
@@ -55,9 +55,9 @@ class ActiveMemorizationViewModel(
                         .onSuccess {
                             setState { copy(poemToDelete = null) }
                             loadPoems()
-                        }.onFailure {
+                        }                        .onFailure {
                             setState {
-                                copy(screenState = UiScreenState.Error(message = UiText.Resource(Res.string.error_unknown)))
+                                copy(screenState = UiScreenState.Error(message = UiText.Resource(Res.string.error_db_query)))
                             }
                         }
                 }
@@ -78,7 +78,7 @@ class ActiveMemorizationViewModel(
                         )
                     }
                 }.onFailure {
-                    setState { copy(screenState = UiScreenState.Error(UiText.Resource(Res.string.error_unknown))) }
+                    setState { copy(screenState = UiScreenState.Error(UiText.Resource(Res.string.error_db_query))) }
                 }
         }
     }
