@@ -6,6 +6,7 @@ import abkabk.azbarkon.core.util.currentTimeMillis
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import io.github.aakira.napier.Napier
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -30,7 +31,8 @@ class MemorizationReviewWorker(
                 notificationPresenter.show(dueCount)
             }
             Result.success()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("MemorizationReviewWorker failed", e)
             Result.failure()
         }
     }

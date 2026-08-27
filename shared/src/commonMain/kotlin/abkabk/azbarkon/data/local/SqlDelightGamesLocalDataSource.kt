@@ -17,6 +17,7 @@ import abkabk.azbarkon.domain.model.games.GameType
 import com.sarv.db.PoemQueries
 import com.sarv.db.PoetQueries
 import com.sarv.db.VerseQueries
+import io.github.aakira.napier.Napier
 import kotlin.random.Random
 
 private const val SEED_STRIDE = 9973L
@@ -36,7 +37,8 @@ class SqlDelightGamesLocalDataSource(
                     .executeAsList()
                     .map { it.toPoet() }
             Result.Success(poets)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("getAllPoets failed", e)
             Result.Error(DataError.Local.UNKNOWN)
         }
 
@@ -110,7 +112,8 @@ class SqlDelightGamesLocalDataSource(
                 return Result.Success(Unit)
             }
             Result.Error(DataError.Local.UNKNOWN)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("buildPoemBundle failed", e)
             Result.Error(DataError.Local.UNKNOWN)
         }
     }

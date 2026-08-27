@@ -23,7 +23,8 @@ class SqlDelightSearchLocalDataSource(
                     .executeAsOneOrNull()
                     ?: return Result.Error(DataError.Local.NOT_FOUND)
             Result.Success(row.toCatNode())
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("getCatById failed for catId=$catId", e)
             Result.Error(DataError.Local.UNKNOWN)
         }
 

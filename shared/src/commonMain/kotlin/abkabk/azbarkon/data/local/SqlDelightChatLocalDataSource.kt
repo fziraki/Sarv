@@ -6,6 +6,7 @@ import abkabk.azbarkon.domain.datasource.ChatLocalDataSource
 import abkabk.azbarkon.domain.model.ChatDistich
 import abkabk.azbarkon.domain.model.ChatDistichFallback
 import com.sarv.db.VerseQueries
+import io.github.aakira.napier.Napier
 
 class SqlDelightChatLocalDataSource(
     private val verseQueries: VerseQueries,
@@ -51,7 +52,8 @@ class SqlDelightChatLocalDataSource(
                     )
                 }
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("findDistichByPrefix failed", e)
             Result.Error(DataError.Local.UNKNOWN)
         }
 }

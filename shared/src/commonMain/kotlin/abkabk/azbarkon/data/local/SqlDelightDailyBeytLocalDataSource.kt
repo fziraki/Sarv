@@ -6,6 +6,7 @@ import abkabk.azbarkon.data.mapper.toRandomDistich
 import abkabk.azbarkon.domain.datasource.DailyBeytLocalDataSource
 import abkabk.azbarkon.domain.model.RandomDistich
 import com.sarv.db.VerseQueries
+import io.github.aakira.napier.Napier
 
 class SqlDelightDailyBeytLocalDataSource(
     private val verseQueries: VerseQueries,
@@ -41,7 +42,8 @@ class SqlDelightDailyBeytLocalDataSource(
                     Result.Success(distich)
                 }
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("getRandomDistich failed", e)
             Result.Error(DataError.Local.UNKNOWN)
         }
 }

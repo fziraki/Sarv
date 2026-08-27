@@ -55,7 +55,8 @@ class SqlDelightPoemLocalDataSource(
                         .executeAsList()
                         .map { it.toMyPoemSummary() },
                 )
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Napier.e("getPoemsByIds failed", e)
                 Result.Error(DataError.Local.UNKNOWN)
             }
         }
@@ -75,7 +76,8 @@ class SqlDelightPoemLocalDataSource(
                     .toPoemVerses(poemId)
 
             Result.Success(detail.toPoemDetail(poemId = poemId, verses = verses))
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("getPoemDetail failed for poemId=$poemId", e)
             Result.Error(DataError.Local.UNKNOWN)
         }
 }

@@ -49,7 +49,8 @@ class SqlDelightPoetLocalDataSource(
                     ?: return Result.Error(DataError.Local.UNKNOWN)
 
             Result.Success(buildPoetWithCategories(poetRow.toPoet()))
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("getPoetWithCategories failed for poetId=$poetId", e)
             Result.Error(DataError.Local.UNKNOWN)
         }
 

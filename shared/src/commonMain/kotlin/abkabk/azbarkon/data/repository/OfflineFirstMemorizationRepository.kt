@@ -19,6 +19,7 @@ import abkabk.azbarkon.domain.srs.CardGenerator
 import abkabk.azbarkon.domain.srs.SrsScheduler
 import abkabk.azbarkon.core.util.consecutiveDayStreak
 import abkabk.azbarkon.core.util.currentTimeMillis
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -58,7 +59,8 @@ class OfflineFirstMemorizationRepository(
                     buildActivePoem(poemId, now)
                 }
             Result.Success(poems)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("getActivePoems failed", e)
             Result.Error(MemorizationError.Unknown)
         }
 
@@ -100,7 +102,8 @@ class OfflineFirstMemorizationRepository(
             notifySummaryChanged()
             syncReviewNotifications()
             Result.Success(Unit)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("removePoem failed for poemId=$poemId", e)
             Result.Error(MemorizationError.Unknown)
         }
 
@@ -108,7 +111,8 @@ class OfflineFirstMemorizationRepository(
         try {
             val cards = localDataSource.getDueCards(currentTimeMillis(), poemId)
             Result.Success(cards)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("getDueCards failed for poemId=$poemId", e)
             Result.Error(MemorizationError.Unknown)
         }
 
@@ -139,7 +143,8 @@ class OfflineFirstMemorizationRepository(
             notifySummaryChanged()
             syncReviewNotifications()
             Result.Success(updated)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("submitReview failed for cardId=$cardId", e)
             Result.Error(MemorizationError.Unknown)
         }
     }

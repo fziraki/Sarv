@@ -17,6 +17,7 @@ import com.azbarkon.memorization.ActiveSrsPoemQueries
 import com.azbarkon.memorization.MemorizationDatabase
 import com.azbarkon.memorization.ReviewLogQueries
 import com.azbarkon.memorization.SrsPoemCardQueries
+import io.github.aakira.napier.Napier
 
 class SqlDelightMemorizationLocalDataSource(
     private val activePoemQueries: ActiveSrsPoemQueries,
@@ -252,7 +253,8 @@ class SqlDelightMemorizationLocalDataSource(
             } else {
                 Result.Success(id)
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("findPoetIdByName failed for $nameFragment", e)
             Result.Error(DataError.Local.UNKNOWN)
         }
 
@@ -272,7 +274,8 @@ class SqlDelightMemorizationLocalDataSource(
             } else {
                 Result.Success(row.id.toInt() to row.text)
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Napier.e("findCategoryByPoetAndText failed", e)
             Result.Error(DataError.Local.UNKNOWN)
         }
 }

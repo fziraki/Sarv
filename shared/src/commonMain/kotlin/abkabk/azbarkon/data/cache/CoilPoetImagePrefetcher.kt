@@ -5,6 +5,7 @@ import abkabk.azbarkon.domain.datasource.PoetImagePrefetcher
 import coil3.PlatformContext
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -33,7 +34,8 @@ class CoilPoetImagePrefetcher(
                             .diskCachePolicy(CachePolicy.ENABLED)
                             .build(),
                     )
-                } catch (_: Exception) {
+                } catch (e: Exception) {
+                    Napier.e("Image prefetch failed for $url", e)
                 }
             }
         }

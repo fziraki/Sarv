@@ -11,6 +11,7 @@ import abkabk.azbarkon.domain.datasource.MemorizationLocalDataSource
 import abkabk.azbarkon.domain.model.memorization.SrsCard
 import abkabk.azbarkon.domain.model.memorization.StoredActivePoem
 import abkabk.azbarkon.domain.model.memorization.StoredReviewLog
+import io.github.aakira.napier.Napier
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
@@ -70,7 +71,8 @@ internal fun decodeBackup(jsonString: String): Result<UserBackupFile, BackupErro
         } else {
             Result.Success(file)
         }
-    } catch (_: Exception) {
+    } catch (e: Exception) {
+        Napier.e("decodeBackup failed", e)
         Result.Error(BackupError.InvalidData)
     }
 

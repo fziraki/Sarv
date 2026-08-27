@@ -35,6 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -45,6 +47,7 @@ class RandomDistichWidgetConfigureActivity :
     private val poetRepository: PoetRepository by inject()
     private val preferences: RandomDistichWidgetPreferences by inject()
     private val updater: RandomDistichWidgetUpdater by inject()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
@@ -73,10 +76,15 @@ class RandomDistichWidgetConfigureActivity :
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel()
+    }
+
     private fun onPoetSelected(poetId: Int) {
         preferences.savePoetId(appWidgetId, poetId)
 
-        CoroutineScope(Dispatchers.Main).launch {
+        scope.launch {
             updater.update(
                 context = this@RandomDistichWidgetConfigureActivity,
                 appWidgetManager = AppWidgetManager.getInstance(this@RandomDistichWidgetConfigureActivity),
