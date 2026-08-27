@@ -15,6 +15,7 @@ import abkabk.azbarkon.domain.usecase.ApplyGameHintUseCase
 import abkabk.azbarkon.domain.usecase.EvaluateGameAnswerUseCase
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.error_unknown
+import sarv.shared.generated.resources.game_prefetch_failed
 import androidx.lifecycle.viewModelScope
 import sarv.shared.generated.resources.game_hint_not_enough_score
 import kotlinx.coroutines.Job
@@ -175,8 +176,24 @@ class GameSessionViewModel(
                             questions += result.data
                             setState { copy(questions = questions.toList()) }
                         }
-
-                        is Result.Error -> return@launch
+                        is Result.Error -> {
+                            cache.usedPoemIds.clear()
+                            when (
+                                val retry =
+                                    gamesRepository.generateQuestion(
+                                        gameType = gameType,
+                                        sessionSeed = sessionSeed,
+                                        quizIndex = quizIndex,
+                                        cache = cache,
+                                    )
+                            ) {
+                                is Result.Success -> {
+                                    questions += retry.data
+                                    setState { copy(questions = questions.toList()) }
+                                }
+                                is Result.Error -> return@launch
+                            }
+                        }
                     }
                 }
             }
@@ -289,7 +306,7 @@ class GameSessionViewModel(
                     copy(
                         screenState =
                             UiScreenState.Error(
-                                message = UiText.Resource(Res.string.error_unknown),
+                                message = UiText.Resource(Res.string.game_prefetch_failed),
                             ),
                     )
                 }

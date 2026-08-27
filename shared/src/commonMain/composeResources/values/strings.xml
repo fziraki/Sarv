@@ -153,6 +153,7 @@
     <string name="error_not_found">مورد یافت نشد</string>
     <string name="error_disk_full">فضای ذخیره‌سازی کافی نیست</string>
     <string name="error_unknown">خطای ناشناخته</string>
+    <string name="game_prefetch_failed">بارگذاری سؤالات ناقص ماند</string>
     <string name="retry">تلاش مجدد</string>
     <string name="list_load_error">خطا در بارگذاری</string>
     <string name="cd_back">بازگشت</string>
