@@ -18,7 +18,6 @@ class SqlDelightPoemLocalDataSource(
     private val poemQueries: PoemQueries,
     private val verseQueries: VerseQueries,
 ) : PoemLocalDataSource {
-    @Suppress("MagicNumber")
     override suspend fun getPoemsByCatIdPage(
         catId: Int,
         offset: Int,

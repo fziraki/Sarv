@@ -36,7 +36,6 @@ import org.koin.dsl.module
 
 val androidPlatformModule =
     module {
-        @Suppress("InjectDispatcher")
         single<CoroutineDispatcher> { Dispatchers.IO }
 
         single {

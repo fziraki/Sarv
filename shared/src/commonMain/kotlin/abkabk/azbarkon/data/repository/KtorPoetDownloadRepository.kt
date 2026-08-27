@@ -17,6 +17,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -29,7 +30,6 @@ class KtorPoetDownloadRepository(
     private val mainDriver: app.cash.sqldelight.db.SqlDriver,
 ) : PoetDownloadRepository {
 
-    @Suppress("TooGenericExceptionCaught", "MagicNumber")
     override suspend fun downloadPoet(poetId: Int): EmptyResult<PoetDownloadError> {
         val fileName = "poet_$poetId.s3db"
         if (isAlreadyDownloaded(poetId)) {
@@ -42,6 +42,8 @@ class KtorPoetDownloadRepository(
         val response =
             try {
                 httpClient.get(url)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Napier.e(message = "GET $url threw: ${e.message}", throwable = e, tag = "PoetDownload")
                 return Result.Error(PoetDownloadError.Network)
