@@ -57,12 +57,8 @@ private fun databaseVersion(dbFile: File): Int =
 
 private fun copyBundledDatabase(context: Context, dbFile: File) {
     dbFile.parentFile?.mkdirs()
-    try {
-        context.assets.open("$DATABASE_NAME.zip").use { input ->
-            extractFirstEntry(ZipInputStream(input), dbFile)
-        }
-    } catch (e: IOException) {
-        Napier.e("copyBundledDatabase failed", e)
+    context.assets.open("$DATABASE_NAME.zip").use { input ->
+        extractFirstEntry(ZipInputStream(input), dbFile)
     }
 }
 
