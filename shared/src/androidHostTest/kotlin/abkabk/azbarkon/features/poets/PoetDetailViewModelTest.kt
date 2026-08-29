@@ -18,7 +18,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
-import kotlinx.coroutines.test.runTest
+import abkabk.azbarkon.testing.runViewModelTest
 import org.junit.jupiter.api.Test
 
 class PoetDetailViewModelTest {
@@ -38,7 +38,7 @@ class PoetDetailViewModelTest {
 
     @Test
     fun `loads poet detail by id`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithCategories =
@@ -88,7 +88,7 @@ class PoetDetailViewModelTest {
 
     @Test
     fun `toggle expands parent category children`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithCategories =
@@ -133,7 +133,7 @@ class PoetDetailViewModelTest {
 
     @Test
     fun `chat available when ghazal category is nested under a subcategory`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithCategories =
@@ -173,7 +173,7 @@ class PoetDetailViewModelTest {
 
     @Test
     fun `chat unavailable when poet has no ghazal category`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithCategories =
@@ -205,7 +205,7 @@ class PoetDetailViewModelTest {
 
     @Test
     fun `leaf click emits navigate to poem list event`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithCategories =
@@ -246,6 +246,7 @@ class PoetDetailViewModelTest {
                         title = "قطعات",
                     ),
                 )
+                cancelAndIgnoreRemainingEvents()
             }
         }
 }
