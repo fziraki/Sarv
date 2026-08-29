@@ -99,8 +99,8 @@ kotlin {
                 implementation(libs.turbine)
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.paging.testing)
-                implementation("org.xerial:sqlite-jdbc:3.50.3.0")
-                implementation("app.cash.sqldelight:sqlite-driver:2.3.2")
+                implementation(libs.sqlite.jdbc)
+                implementation(libs.sqldelight.sqlite.driver)
             }
         }
         commonTest.dependencies {
@@ -131,41 +131,4 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
-val generateVersionFile by tasks.registering {
-    val versionName = libs.versions.android.versionName.get()
-    val outputDir = layout.buildDirectory.dir("generated/version/abkabk/azbarkon/core/util")
-    val file = outputDir.map { it.file("AppVersion.kt") }
-    outputDir.get().asFile.mkdirs()
-    file.get().asFile.writeText(
-        """
-        |package abkabk.azbarkon.core.util
-        |
-        |object AppVersion {
-        |    const val VERSION_NAME = "$versionName"
-        |}
-        """.trimMargin(),
-    )
-    inputs.property("versionName", versionName)
-    outputs.file(file)
-}
-
-kotlin.targets.all {
-    compilations.all {
-        compileTaskProvider.configure { dependsOn(generateVersionFile) }
-    }
-}
-
-kotlin.targets.all {
-    compilations.all {
-        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
-            compilerOptions {
-                freeCompilerArgs.add("-Xexpect-actual-classes")
-            }
-        }
-    }
-}
-
-kotlin.sourceSets.commonMain {
-    kotlin.srcDir(generateVersionFile.map { layout.buildDirectory.dir("generated/version").get() })
-}
 
