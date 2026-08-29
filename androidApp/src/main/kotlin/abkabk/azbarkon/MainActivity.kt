@@ -4,7 +4,6 @@ import abkabk.azbarkon.core.notifications.DailyBeytNotificationPayload
 import abkabk.azbarkon.core.notifications.MemorizationReviewNotificationPayload
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -26,16 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        // ponytail: test crash, uncomment to verify Crashlytics reports
-        // throw RuntimeException("Test crash")
-
         readNavigationIntent(intent)
-
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Log.d("FirebaseMessaging", "FCM token: ${task.result}")
-            }
-        }
 
         setContent {
             App(

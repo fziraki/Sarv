@@ -17,30 +17,11 @@ import assertk.assertions.isTrue
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.chat_persian_only
 import sarv.shared.generated.resources.poem_copied
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ChatViewModelTest {
-    private val testDispatcher = UnconfinedTestDispatcher()
-
-    @BeforeEach
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     fun `loads poet header on start`() =

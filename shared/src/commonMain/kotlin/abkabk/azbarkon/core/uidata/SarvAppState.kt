@@ -10,14 +10,12 @@ class SarvAppState {
     var notificationPermissionSheetShownThisLaunch: Boolean = false
 }
 
-@Suppress("CompositionLocalAllowlist")
 val LocalSarvAppState =
     staticCompositionLocalOf<SarvAppState> {
         error("SarvAppState not provided")
     }
 
 // ponytail: plain default keeps previews alive; the app always provides the real one in SarvNavigation
-@Suppress("CompositionLocalAllowlist")
 val LocalSnackbarHostState =
     staticCompositionLocalOf<SnackbarHostState> { SnackbarHostState() }
 

@@ -8,31 +8,11 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class MemorizationPracticeViewModelTest {
-    private val testDispatcher = UnconfinedTestDispatcher()
-    private lateinit var repository: FakeMemorizationRepository
-
-    @BeforeEach
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-        repository = FakeMemorizationRepository()
-    }
-
-    @AfterEach
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
+    private var repository = FakeMemorizationRepository()
 
     @Test
     fun `loads due cards into session`() =

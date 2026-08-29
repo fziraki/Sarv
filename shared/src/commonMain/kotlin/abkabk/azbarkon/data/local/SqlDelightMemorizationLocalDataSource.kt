@@ -2,6 +2,7 @@ package abkabk.azbarkon.data.local
 
 import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.core.domain.result.Result
+import abkabk.azbarkon.core.domain.result.dbQuery
 import abkabk.azbarkon.data.mapper.toSrsCard
 import abkabk.azbarkon.data.mapper.toStorageValue
 import abkabk.azbarkon.domain.datasource.MemorizationLocalDataSource
@@ -241,38 +242,26 @@ class SqlDelightMemorizationLocalDataSource(
     }
 
     override suspend fun findPoetIdByName(nameFragment: String): Result<Int, DataError.Local> =
-        try {
-            val id =
-                poetQueries
-                    .selectIdByNameLike(nameFragment)
-                    .executeAsOneOrNull()
-                    ?.toInt()
-            if (id == null) {
-                Result.Error(DataError.Local.NOT_FOUND)
-            } else {
-                Result.Success(id)
-            }
-        } catch (_: Exception) {
-            Result.Error(DataError.Local.UNKNOWN)
+        dbQuery {
+            poetQueries
+                .selectIdByNameLike(nameFragment)
+                .executeAsOneOrNull()
+                ?.toInt()
+                ?: return Result.Error(DataError.Local.NOT_FOUND)
         }
 
     override suspend fun findCategoryByPoetAndText(
         poetId: Int,
         textFragment: String,
     ): Result<Pair<Int, String>, DataError.Local> =
-        try {
+        dbQuery {
             val row =
                 catQueries
                     .selectIdByPoetIdAndText(
                         poet_id = poetId.toLong(),
                         textFragment,
                     ).executeAsOneOrNull()
-            if (row == null) {
-                Result.Error(DataError.Local.NOT_FOUND)
-            } else {
-                Result.Success(row.id.toInt() to row.text)
-            }
-        } catch (_: Exception) {
-            Result.Error(DataError.Local.UNKNOWN)
+                    ?: return Result.Error(DataError.Local.NOT_FOUND)
+            row.id.toInt() to row.text
         }
 }

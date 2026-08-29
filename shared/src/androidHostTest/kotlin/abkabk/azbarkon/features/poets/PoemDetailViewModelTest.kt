@@ -8,6 +8,8 @@ import abkabk.azbarkon.features.poems.details.PoemDetailAction
 import abkabk.azbarkon.features.poems.details.PoemDetailEvent
 import abkabk.azbarkon.features.poems.details.PoemDetailViewModel
 import abkabk.azbarkon.features.poems.details.PoemVersePositionType
+import abkabk.azbarkon.domain.usecase.BuildShareTextUseCase
+import abkabk.azbarkon.domain.usecase.StartMemorizationFromPoemUseCase
 import abkabk.azbarkon.testing.FakeAudioPlayer
 import abkabk.azbarkon.testing.FakeMemorizationRepository
 import abkabk.azbarkon.testing.FakeSavedPoemRepository
@@ -22,29 +24,10 @@ import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.search_not_found_in_poem
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class PoemDetailViewModelTest {
-    private val testDispatcher = UnconfinedTestDispatcher()
-
-    @BeforeEach
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     fun `loads poem detail by id with verse position types`() =
@@ -62,6 +45,8 @@ class PoemDetailViewModelTest {
                     savedPoemRepository = FakeSavedPoemRepository(),
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
+                    buildShareText = BuildShareTextUseCase(),
+                    startMemorizationFromPoem = StartMemorizationFromPoemUseCase(FakeMemorizationRepository()),
                     poemId = 77,
                     player = FakeAudioPlayer(),
                 )
@@ -90,6 +75,8 @@ class PoemDetailViewModelTest {
                     savedPoemRepository = FakeSavedPoemRepository(),
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
+                    buildShareText = BuildShareTextUseCase(),
+                    startMemorizationFromPoem = StartMemorizationFromPoemUseCase(FakeMemorizationRepository()),
                     poemId = 77,
                     player = FakeAudioPlayer(),
                 )
@@ -112,6 +99,8 @@ class PoemDetailViewModelTest {
                     savedPoemRepository = FakeSavedPoemRepository(),
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
+                    buildShareText = BuildShareTextUseCase(),
+                    startMemorizationFromPoem = StartMemorizationFromPoemUseCase(FakeMemorizationRepository()),
                     poemId = 77,
                     player = FakeAudioPlayer(),
                 )
@@ -134,6 +123,8 @@ class PoemDetailViewModelTest {
                     savedPoemRepository = FakeSavedPoemRepository(),
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
+                    buildShareText = BuildShareTextUseCase(),
+                    startMemorizationFromPoem = StartMemorizationFromPoemUseCase(FakeMemorizationRepository()),
                     poemId = 77,
                     player = FakeAudioPlayer(),
                 )
@@ -159,6 +150,8 @@ class PoemDetailViewModelTest {
                     savedPoemRepository = FakeSavedPoemRepository(),
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
+                    buildShareText = BuildShareTextUseCase(),
+                    startMemorizationFromPoem = StartMemorizationFromPoemUseCase(FakeMemorizationRepository()),
                     poemId = 77,
                     player = FakeAudioPlayer(),
                 )
@@ -186,6 +179,8 @@ class PoemDetailViewModelTest {
                     savedPoemRepository = FakeSavedPoemRepository(),
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
+                    buildShareText = BuildShareTextUseCase(),
+                    startMemorizationFromPoem = StartMemorizationFromPoemUseCase(FakeMemorizationRepository()),
                     poemId = 77,
                     player = FakeAudioPlayer(),
                 )
@@ -210,6 +205,8 @@ class PoemDetailViewModelTest {
                     savedPoemRepository = FakeSavedPoemRepository(),
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
+                    buildShareText = BuildShareTextUseCase(),
+                    startMemorizationFromPoem = StartMemorizationFromPoemUseCase(FakeMemorizationRepository()),
                     poemId = 77,
                     player = FakeAudioPlayer(),
                 )
@@ -242,6 +239,8 @@ class PoemDetailViewModelTest {
                     savedPoemRepository = FakeSavedPoemRepository(),
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = shareService,
+                    buildShareText = BuildShareTextUseCase(),
+                    startMemorizationFromPoem = StartMemorizationFromPoemUseCase(FakeMemorizationRepository()),
                     poemId = 77,
                     player = FakeAudioPlayer(),
                 )
@@ -266,6 +265,8 @@ class PoemDetailViewModelTest {
                     savedPoemRepository = FakeSavedPoemRepository(),
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = shareService,
+                    buildShareText = BuildShareTextUseCase(),
+                    startMemorizationFromPoem = StartMemorizationFromPoemUseCase(FakeMemorizationRepository()),
                     poemId = 77,
                     player = FakeAudioPlayer(),
                 )
@@ -291,6 +292,8 @@ class PoemDetailViewModelTest {
                     savedPoemRepository = FakeSavedPoemRepository(),
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
+                    buildShareText = BuildShareTextUseCase(),
+                    startMemorizationFromPoem = StartMemorizationFromPoemUseCase(FakeMemorizationRepository()),
                     poemId = 77,
                     player = FakeAudioPlayer(),
                 )
@@ -320,6 +323,8 @@ class PoemDetailViewModelTest {
                     savedPoemRepository = FakeSavedPoemRepository(),
                     memorizationRepository = FakeMemorizationRepository(),
                     shareService = FakeShareService(),
+                    buildShareText = BuildShareTextUseCase(),
+                    startMemorizationFromPoem = StartMemorizationFromPoemUseCase(FakeMemorizationRepository()),
                     poemId = 77,
                     player = FakeAudioPlayer(),
                 )

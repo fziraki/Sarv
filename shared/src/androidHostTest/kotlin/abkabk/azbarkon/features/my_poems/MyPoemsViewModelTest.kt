@@ -2,6 +2,7 @@ package abkabk.azbarkon.features.mypoems
 
 import abkabk.azbarkon.core.uidata.UiScreenState
 import abkabk.azbarkon.domain.model.MyPoemSummary
+import abkabk.azbarkon.domain.usecase.GetMyPoemsUseCase
 import abkabk.azbarkon.testing.FakePoemRepository
 import abkabk.azbarkon.testing.FakeSavedPoemRepository
 import app.cash.turbine.test
@@ -11,29 +12,10 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class MyPoemsViewModelTest {
-    private val testDispatcher = UnconfinedTestDispatcher()
-
-    @BeforeEach
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     fun `loads liked and bookmarked poems grouped by poet and category`() =
@@ -75,8 +57,8 @@ class MyPoemsViewModelTest {
 
             val viewModel =
                 MyPoemsViewModel(
-                    poemRepository = poemRepository,
                     savedPoemRepository = savedPoemRepository,
+                    getMyPoems = GetMyPoemsUseCase(poemRepository, savedPoemRepository),
                 )
 
             val state = viewModel.state.value
@@ -156,8 +138,8 @@ class MyPoemsViewModelTest {
 
             val viewModel =
                 MyPoemsViewModel(
-                    poemRepository = poemRepository,
                     savedPoemRepository = savedPoemRepository,
+                    getMyPoems = GetMyPoemsUseCase(poemRepository, savedPoemRepository),
                 )
 
             viewModel.onAction(MyPoemsAction.OnTabSelected(MyPoemsTab.Bookmarked))
@@ -198,8 +180,8 @@ class MyPoemsViewModelTest {
 
             val viewModel =
                 MyPoemsViewModel(
-                    poemRepository = poemRepository,
                     savedPoemRepository = savedPoemRepository,
+                    getMyPoems = GetMyPoemsUseCase(poemRepository, savedPoemRepository),
                 )
 
             viewModel.onAction(MyPoemsAction.OnRemovePoem(poemId = 1))
@@ -241,8 +223,8 @@ class MyPoemsViewModelTest {
 
             val viewModel =
                 MyPoemsViewModel(
-                    poemRepository = poemRepository,
                     savedPoemRepository = savedPoemRepository,
+                    getMyPoems = GetMyPoemsUseCase(poemRepository, savedPoemRepository),
                 )
 
             viewModel.onAction(MyPoemsAction.OnClearAllConfirm)
@@ -255,10 +237,12 @@ class MyPoemsViewModelTest {
     @Test
     fun `poem click emits navigation event`() =
         runTest {
+            val fakePoemRepo = FakePoemRepository()
+            val fakeSavedRepo = FakeSavedPoemRepository()
             val viewModel =
                 MyPoemsViewModel(
-                    poemRepository = FakePoemRepository(),
-                    savedPoemRepository = FakeSavedPoemRepository(),
+                    savedPoemRepository = fakeSavedRepo,
+                    getMyPoems = GetMyPoemsUseCase(fakePoemRepo, fakeSavedRepo),
                 )
 
             viewModel.events.test {
@@ -274,10 +258,12 @@ class MyPoemsViewModelTest {
     @Test
     fun `clear all click shows dialog only when active tab has items`() =
         runTest {
+            val fakePoemRepo = FakePoemRepository()
+            val fakeSavedRepo = FakeSavedPoemRepository()
             val viewModel =
                 MyPoemsViewModel(
-                    poemRepository = FakePoemRepository(),
-                    savedPoemRepository = FakeSavedPoemRepository(),
+                    savedPoemRepository = fakeSavedRepo,
+                    getMyPoems = GetMyPoemsUseCase(fakePoemRepo, fakeSavedRepo),
                 )
 
             viewModel.onAction(MyPoemsAction.OnClearAllClick)
@@ -308,8 +294,8 @@ class MyPoemsViewModelTest {
 
             val viewModel =
                 MyPoemsViewModel(
-                    poemRepository = poemRepository,
                     savedPoemRepository = savedPoemRepository,
+                    getMyPoems = GetMyPoemsUseCase(poemRepository, savedPoemRepository),
                 )
 
             viewModel.onAction(MyPoemsAction.OnClearAllClick)

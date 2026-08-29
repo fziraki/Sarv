@@ -2,6 +2,7 @@ package abkabk.azbarkon.domain.usecase
 
 import abkabk.azbarkon.data.backup.UserBackupManager
 import abkabk.azbarkon.domain.platform.ShareService
+import io.github.aakira.napier.Napier
 
 class ExportUserDataUseCase(
     private val userBackupManager: UserBackupManager,
@@ -17,7 +18,8 @@ class ExportUserDataUseCase(
                 title = null,
             )
             true
-        } catch (_: Exception) {
+        } catch (e: IllegalStateException) {
+            Napier.e("ExportUserDataUseCase failed", e)
             false
         }
     }

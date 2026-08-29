@@ -7,6 +7,8 @@ import abkabk.azbarkon.domain.model.games.GameQuestion
 import abkabk.azbarkon.domain.model.games.GameType
 import abkabk.azbarkon.domain.model.games.OrganizeLine
 import abkabk.azbarkon.domain.repository.GamesRepository
+import abkabk.azbarkon.domain.usecase.ApplyGameHintUseCase
+import abkabk.azbarkon.domain.usecase.EvaluateGameAnswerUseCase
 import abkabk.azbarkon.testing.FakeUserPreferencesRepository
 import app.cash.turbine.test
 import assertk.assertThat
@@ -15,30 +17,11 @@ import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
 import assertk.assertions.isTrue
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class GameSessionViewModelTest {
-    private val testDispatcher = UnconfinedTestDispatcher()
-
-    @BeforeEach
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     fun `hint is blocked when coin balance is below cost`() =
@@ -50,6 +33,8 @@ class GameSessionViewModelTest {
                     gameType = GameType.NEXT_VERSE,
                     gamesRepository = FakeGamesRepository(),
                     userPreferencesRepository = preferences,
+                    evaluateGameAnswer = EvaluateGameAnswerUseCase(),
+                    applyGameHint = ApplyGameHintUseCase(preferences),
                 )
 
             assertThat(viewModel.state.value.canUseHint).isFalse()
@@ -64,6 +49,8 @@ class GameSessionViewModelTest {
                     gameType = GameType.NEXT_VERSE,
                     gamesRepository = FakeGamesRepository(),
                     userPreferencesRepository = preferences,
+                    evaluateGameAnswer = EvaluateGameAnswerUseCase(),
+                    applyGameHint = ApplyGameHintUseCase(preferences),
                 )
 
             val balanceBefore = preferences.getCoinBalance()
@@ -83,6 +70,8 @@ class GameSessionViewModelTest {
                     gameType = GameType.NEXT_VERSE,
                     gamesRepository = FakeGamesRepository(),
                     userPreferencesRepository = preferences,
+                    evaluateGameAnswer = EvaluateGameAnswerUseCase(),
+                    applyGameHint = ApplyGameHintUseCase(preferences),
                 )
 
             val balanceBefore = preferences.getCoinBalance()
@@ -120,11 +109,14 @@ class GameSessionViewModelTest {
     @Test
     fun `hasSelection becomes true after option is selected`() =
         runTest {
+            val preferences = FakeUserPreferencesRepository()
             val viewModel =
                 GameSessionViewModel(
                     gameType = GameType.NEXT_VERSE,
                     gamesRepository = FakeGamesRepository(),
-                    userPreferencesRepository = FakeUserPreferencesRepository(),
+                    userPreferencesRepository = preferences,
+                    evaluateGameAnswer = EvaluateGameAnswerUseCase(),
+                    applyGameHint = ApplyGameHintUseCase(preferences),
                 )
 
             assertThat(viewModel.state.value.hasSelection).isFalse()
@@ -135,11 +127,14 @@ class GameSessionViewModelTest {
     @Test
     fun `wrong answer increments wrong count immediately`() =
         runTest {
+            val preferences = FakeUserPreferencesRepository()
             val viewModel =
                 GameSessionViewModel(
                     gameType = GameType.NEXT_VERSE,
                     gamesRepository = FakeGamesRepository(),
-                    userPreferencesRepository = FakeUserPreferencesRepository(),
+                    userPreferencesRepository = preferences,
+                    evaluateGameAnswer = EvaluateGameAnswerUseCase(),
+                    applyGameHint = ApplyGameHintUseCase(preferences),
                 )
 
             viewModel.onAction(GameSessionAction.OnOptionSelected(1))
@@ -159,6 +154,8 @@ class GameSessionViewModelTest {
                     gameType = GameType.NEXT_VERSE,
                     gamesRepository = FakeGamesRepository(),
                     userPreferencesRepository = preferences,
+                    evaluateGameAnswer = EvaluateGameAnswerUseCase(),
+                    applyGameHint = ApplyGameHintUseCase(preferences),
                 )
 
             val balanceBefore = preferences.getCoinBalance()
@@ -212,6 +209,8 @@ class GameSessionViewModelTest {
                                 )
                         },
                     userPreferencesRepository = preferences,
+                    evaluateGameAnswer = EvaluateGameAnswerUseCase(),
+                    applyGameHint = ApplyGameHintUseCase(preferences),
                 )
 
             viewModel.events.test {
@@ -236,6 +235,8 @@ class GameSessionViewModelTest {
                     gameType = GameType.NEXT_VERSE,
                     gamesRepository = FakeGamesRepository(),
                     userPreferencesRepository = preferences,
+                    evaluateGameAnswer = EvaluateGameAnswerUseCase(),
+                    applyGameHint = ApplyGameHintUseCase(preferences),
                 )
 
             viewModel.events.test {
@@ -297,6 +298,8 @@ class GameSessionViewModelTest {
                                 )
                         },
                     userPreferencesRepository = FakeUserPreferencesRepository(),
+                    evaluateGameAnswer = EvaluateGameAnswerUseCase(),
+                    applyGameHint = ApplyGameHintUseCase(FakeUserPreferencesRepository()),
                 )
 
             viewModel.events.test {
@@ -435,11 +438,14 @@ class GameSessionViewModelTest {
     @Test
     fun `reorder swap to row above pinned third row keeps pin fixed`() =
         runTest {
+            val preferences = FakeUserPreferencesRepository()
             val viewModel =
                 GameSessionViewModel(
                     gameType = GameType.ORGANIZE_POEM,
                     gamesRepository = OrganizePoemPinAtThirdRowGamesRepository(),
-                    userPreferencesRepository = FakeUserPreferencesRepository(),
+                    userPreferencesRepository = preferences,
+                    evaluateGameAnswer = EvaluateGameAnswerUseCase(),
+                    applyGameHint = ApplyGameHintUseCase(preferences),
                 )
             viewModel.onAction(GameSessionAction.OnHintClick)
 
@@ -581,6 +587,8 @@ class GameSessionViewModelTest {
             gameType = GameType.COMPLETE_POEM,
             gamesRepository = CompletePoemGamesRepository(),
             userPreferencesRepository = userPreferencesRepository,
+            evaluateGameAnswer = EvaluateGameAnswerUseCase(),
+            applyGameHint = ApplyGameHintUseCase(userPreferencesRepository),
         )
 
     private class CompletePoemGamesRepository : GamesRepository {
@@ -618,6 +626,8 @@ class GameSessionViewModelTest {
             gameType = GameType.ORGANIZE_POEM,
             gamesRepository = OrganizePoemGamesRepository(),
             userPreferencesRepository = userPreferencesRepository,
+            evaluateGameAnswer = EvaluateGameAnswerUseCase(),
+            applyGameHint = ApplyGameHintUseCase(userPreferencesRepository),
         )
 
     private class OrganizePoemGamesRepository : GamesRepository {

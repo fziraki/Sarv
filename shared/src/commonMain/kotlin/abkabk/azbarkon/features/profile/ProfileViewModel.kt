@@ -22,6 +22,7 @@ import abkabk.azbarkon.domain.usecase.ImportUserDataUseCase
 import abkabk.azbarkon.features.poets.GHAZAL_CATEGORY
 import androidx.lifecycle.viewModelScope
 import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.profile_export_failed
 import sarv.shared.generated.resources.profile_export_success
 import sarv.shared.generated.resources.profile_import_failed
 import sarv.shared.generated.resources.profile_import_success
@@ -136,11 +137,14 @@ class ProfileViewModel(
     private fun exportData() {
         viewModelScope.launch {
             val success = exportUserData()
-            if (success) {
-                sendEvent(
-                    ProfileEvent.ShowSnackbar(UiText.Resource(Res.string.profile_export_success)),
-                )
-            }
+            sendEvent(
+                ProfileEvent.ShowSnackbar(
+                    UiText.Resource(
+                        if (success) Res.string.profile_export_success
+                        else Res.string.profile_export_failed,
+                    ),
+                ),
+            )
         }
     }
 

@@ -155,6 +155,16 @@ kotlin.targets.all {
     }
 }
 
+kotlin.targets.all {
+    compilations.all {
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
+            compilerOptions {
+                freeCompilerArgs.add("-Xexpect-actual-classes")
+            }
+        }
+    }
+}
+
 kotlin.sourceSets.commonMain {
     kotlin.srcDir(generateVersionFile.map { layout.buildDirectory.dir("generated/version").get() })
 }

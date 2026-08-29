@@ -2,6 +2,7 @@ package abkabk.azbarkon.data.local
 
 import abkabk.azbarkon.core.domain.result.DataError
 import abkabk.azbarkon.core.domain.result.Result
+import abkabk.azbarkon.core.domain.result.dbQuery
 import abkabk.azbarkon.data.generator.GameQuestionGenerator
 import abkabk.azbarkon.data.generator.GameSessionPoolBuilder
 import abkabk.azbarkon.data.generator.VerseRow
@@ -29,15 +30,11 @@ class SqlDelightGamesLocalDataSource(
     private val poetQueries: PoetQueries,
 ) : GamesLocalDataSource {
     override suspend fun getAllPoets(): Result<List<Poet>, DataError.Local> =
-        try {
-            val poets =
-                poetQueries
-                    .selectAllWithCatUrl()
-                    .executeAsList()
-                    .map { it.toPoet() }
-            Result.Success(poets)
-        } catch (_: Exception) {
-            Result.Error(DataError.Local.UNKNOWN)
+        dbQuery {
+            poetQueries
+                .selectAllWithCatUrl()
+                .executeAsList()
+                .map { it.toPoet() }
         }
 
     override suspend fun buildPoemBundle(
@@ -47,7 +44,7 @@ class SqlDelightGamesLocalDataSource(
     ): Result<Unit, DataError.Local> {
         if (cache.hasBundle(quizIndex)) return Result.Success(Unit)
 
-        return try {
+        return dbQuery {
             repeat(GameConstants.MAX_POEM_FETCH_ATTEMPTS) {
                 val poemId =
                     verseQueries
@@ -109,9 +106,7 @@ class SqlDelightGamesLocalDataSource(
                 cache.recordPoetUse(poetInfo.poet_id)
                 return Result.Success(Unit)
             }
-            Result.Error(DataError.Local.UNKNOWN)
-        } catch (_: Exception) {
-            Result.Error(DataError.Local.UNKNOWN)
+            Result.Error(DataError.Local.NOT_FOUND)
         }
     }
 
@@ -134,7 +129,7 @@ class SqlDelightGamesLocalDataSource(
                 return Result.Success(question)
             }
         }
-        return Result.Error(DataError.Local.UNKNOWN)
+        return Result.Error(DataError.Local.NOT_FOUND)
     }
 
     private fun generateNextVerse(

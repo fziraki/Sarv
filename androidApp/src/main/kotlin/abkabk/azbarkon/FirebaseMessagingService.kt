@@ -4,7 +4,6 @@ import abkabk.azbarkon.core.notifications.canPostNotifications
 import abkabk.azbarkon.core.notifications.ensureNotificationChannel
 import abkabk.azbarkon.core.notifications.launchAppPendingIntent
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -20,7 +19,6 @@ class FirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         // ponytail: token upload skipped until a server endpoint exists
-        Log.d(TAG, "New FCM token: $token")
     }
 
     @SuppressLint("MissingPermission") // guarded by canPostNotifications()
@@ -50,6 +48,5 @@ class FirebaseMessagingService : FirebaseMessagingService() {
         const val NOTIFICATION_ID = 2001
         const val TITLE_KEY = "title"
         const val BODY_KEY = "body"
-        const val TAG = "FirebaseMessaging"
     }
 }

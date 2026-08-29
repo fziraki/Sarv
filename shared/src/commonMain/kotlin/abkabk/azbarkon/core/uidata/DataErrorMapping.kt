@@ -2,6 +2,7 @@ package abkabk.azbarkon.core.uidata
 
 import abkabk.azbarkon.core.domain.result.DataError
 import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.error_db_query
 import sarv.shared.generated.resources.error_disk_full
 import sarv.shared.generated.resources.error_no_internet
 import sarv.shared.generated.resources.error_not_found
@@ -19,5 +20,6 @@ fun DataError.toUiText(): UiText =
         -> UiText.Resource(Res.string.error_server)
         DataError.Local.DISK_FULL -> UiText.Resource(Res.string.error_disk_full)
         DataError.Local.NOT_FOUND -> UiText.Resource(Res.string.error_not_found)
+        DataError.Local.QUERY_FAILED -> UiText.Resource(Res.string.error_db_query)
         else -> UiText.Resource(Res.string.error_unknown)
     }

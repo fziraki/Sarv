@@ -18,35 +18,19 @@ import abkabk.azbarkon.testing.FakeNotificationPermissionGateway
 import abkabk.azbarkon.testing.FakeShareService
 import abkabk.azbarkon.testing.FakeUserBackupManager
 import abkabk.azbarkon.testing.FakeUserPreferencesRepository
+import abkabk.azbarkon.domain.usecase.BuildProfileStatsUseCase
+import abkabk.azbarkon.domain.usecase.ExportUserDataUseCase
+import abkabk.azbarkon.domain.usecase.ImportUserDataUseCase
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ProfileViewModelTest {
-    private val testDispatcher = UnconfinedTestDispatcher()
-
-    @BeforeEach
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     fun `enabling daily beyt schedules notification when permission granted`() =
@@ -253,8 +237,9 @@ class ProfileViewModelTest {
             dailyBeytNotificationScheduler = dailyBeytScheduler,
             notificationPermissionGateway = permissionGateway,
             memorizationReviewNotificationCoordinator = coordinator,
-            userBackupManager = backupManager,
-            shareService = shareService,
+            buildProfileStats = BuildProfileStatsUseCase(memorizationRepository),
+            exportUserData = ExportUserDataUseCase(backupManager, shareService),
+            importUserData = ImportUserDataUseCase(backupManager, preferences, dailyBeytScheduler, coordinator),
         )
     }
 
