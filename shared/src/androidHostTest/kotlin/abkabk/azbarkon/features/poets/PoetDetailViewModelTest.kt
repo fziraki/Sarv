@@ -7,7 +7,10 @@ import abkabk.azbarkon.domain.model.PoetWithCategories
 import abkabk.azbarkon.features.poets.details.PoetDetailAction
 import abkabk.azbarkon.features.poets.details.PoetDetailEvent
 import abkabk.azbarkon.features.poets.details.PoetDetailViewModel
+import abkabk.azbarkon.domain.usecase.GetRandomGhazalForPoetUseCase
 import abkabk.azbarkon.testing.FakePoetRepository
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import com.sarv.db.SarvDatabase
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
@@ -15,28 +18,22 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class PoetDetailViewModelTest {
-    private val testDispatcher = UnconfinedTestDispatcher()
 
-    @BeforeEach
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        Dispatchers.resetMain()
+    private val getRandomGhazalForPoet: GetRandomGhazalForPoetUseCase by lazy {
+        val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+        listOf(
+            "CREATE TABLE poet (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL, cat_id INTEGER NOT NULL, description TEXT NOT NULL)",
+            "CREATE TABLE cat (id INTEGER NOT NULL PRIMARY KEY, poet_id INTEGER NOT NULL, text TEXT NOT NULL, parent_id INTEGER NOT NULL, url TEXT NOT NULL)",
+            "CREATE TABLE poem (id INTEGER PRIMARY KEY, cat_id INTEGER, title NVARCHAR(255), url NVARCHAR(255))",
+            "CREATE TABLE verse (poem_id INTEGER, vorder INTEGER, position INTEGER, text TEXT)",
+            "CREATE TABLE poet_meta (id INTEGER NOT NULL PRIMARY KEY, slug TEXT NOT NULL)",
+            "CREATE VIRTUAL TABLE verse_fts4 USING fts4(text, content='verse')",
+        ).forEach { driver.execute(null, it, 0) }
+        GetRandomGhazalForPoetUseCase(SarvDatabase(driver).verseQueries)
     }
 
     @Test
@@ -79,7 +76,7 @@ class PoetDetailViewModelTest {
                             ),
                         )
                 }
-            val viewModel = PoetDetailViewModel(repository, poetId = 2)
+            val viewModel = PoetDetailViewModel(repository, getRandomGhazalForPoet, poetId = 2)
 
             val state = viewModel.state.value
             assertThat(state.screenState).isInstanceOf(UiScreenState.Success::class)
@@ -124,7 +121,7 @@ class PoetDetailViewModelTest {
                             ),
                         )
                 }
-            val viewModel = PoetDetailViewModel(repository, poetId = 2)
+            val viewModel = PoetDetailViewModel(repository, getRandomGhazalForPoet, poetId = 2)
 
             viewModel.onAction(PoetDetailAction.OnCategoryToggle(categoryId = 24))
 
@@ -169,7 +166,7 @@ class PoetDetailViewModelTest {
                             ),
                         )
                 }
-            val viewModel = PoetDetailViewModel(repository, poetId = 7)
+            val viewModel = PoetDetailViewModel(repository, getRandomGhazalForPoet, poetId = 7)
 
             assertThat(viewModel.state.value.canChat).isTrue()
         }
@@ -201,7 +198,7 @@ class PoetDetailViewModelTest {
                             ),
                         )
                 }
-            val viewModel = PoetDetailViewModel(repository, poetId = 7)
+            val viewModel = PoetDetailViewModel(repository, getRandomGhazalForPoet, poetId = 7)
 
             assertThat(viewModel.state.value.canChat).isFalse()
         }
@@ -233,7 +230,7 @@ class PoetDetailViewModelTest {
                             ),
                         )
                 }
-            val viewModel = PoetDetailViewModel(repository, poetId = 2)
+            val viewModel = PoetDetailViewModel(repository, getRandomGhazalForPoet, poetId = 2)
 
             viewModel.events.test {
                 viewModel.onAction(
