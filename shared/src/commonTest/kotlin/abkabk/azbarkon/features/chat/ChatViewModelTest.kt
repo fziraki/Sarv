@@ -17,15 +17,16 @@ import assertk.assertions.isTrue
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.chat_persian_only
 import sarv.shared.generated.resources.poem_copied
+
+import abkabk.azbarkon.testing.runViewModelTest
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class ChatViewModelTest {
 
     @Test
     fun `loads poet header on start`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createViewModel()
 
             val state = viewModel.state.value
@@ -35,7 +36,7 @@ class ChatViewModelTest {
 
     @Test
     fun `ignores empty send`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createViewModel()
 
             viewModel.onAction(ChatAction.OnSendClick)
@@ -46,7 +47,7 @@ class ChatViewModelTest {
 
     @Test
     fun `send adds user message typing flag and poet reply`() =
-        runTest {
+        runViewModelTest {
             val chatRepository = FakeChatRepository()
             val viewModel =
                 createViewModel(
@@ -71,7 +72,7 @@ class ChatViewModelTest {
 
     @Test
     fun `non persian input shows snackbar and does not send`() =
-        runTest {
+        runViewModelTest {
             val viewModel =
                 createViewModel(
                     replyDelayMillis = 0L,
@@ -91,7 +92,7 @@ class ChatViewModelTest {
 
     @Test
     fun `long press copies poet message and shows snackbar`() =
-        runTest {
+        runViewModelTest {
             val clipboardService = FakeClipboardService()
             val viewModel =
                 createViewModel(

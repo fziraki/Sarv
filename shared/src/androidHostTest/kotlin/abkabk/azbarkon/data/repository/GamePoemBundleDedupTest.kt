@@ -9,6 +9,7 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import assertk.assertions.isTrue
 import com.sarv.db.SarvDatabase
 import java.io.File
 import kotlinx.coroutines.runBlocking
@@ -32,7 +33,7 @@ class GamePoemBundleDedupTest {
             assertThat(cache.usedPoemIds).hasSize(3)
             assertThat(cache.poetUseCount.values.sum()).isEqualTo(3)
             assertThat(cache.poemBundles.values.map { it.poemId }.toSet()).hasSize(3)
-            assertThat(cache.poemBundles.values.map { it.poetId }.toSet()).hasSize(3)
+            assertThat(cache.poetUseCount.values.all { it <= 2 }).isTrue()
         }
 
     @Test

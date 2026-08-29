@@ -2,7 +2,7 @@ package abkabk.azbarkon.domain.model.profile
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class GameLevelCatalogTest {
     @Test

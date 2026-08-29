@@ -8,15 +8,15 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
+import abkabk.azbarkon.testing.runViewModelTest
+import kotlin.test.Test
 
 class MemorizationPracticeViewModelTest {
     private var repository = FakeMemorizationRepository()
 
     @Test
     fun `loads due cards into session`() =
-        runTest {
+        runViewModelTest {
             repository.dueCards =
                 abkabk.azbarkon.core.domain.result.Result.Success(
                     listOf(
@@ -35,7 +35,7 @@ class MemorizationPracticeViewModelTest {
 
     @Test
     fun `reveal grade selection submits on next card`() =
-        runTest {
+        runViewModelTest {
             val card = sampleCard(id = 5)
             repository.dueCards = abkabk.azbarkon.core.domain.result.Result.Success(listOf(card))
             repository.reviewResult =
@@ -63,7 +63,7 @@ class MemorizationPracticeViewModelTest {
 
     @Test
     fun `again grade increments session mistakes`() =
-        runTest {
+        runViewModelTest {
             val card = sampleCard(id = 11)
             repository.dueCards = abkabk.azbarkon.core.domain.result.Result.Success(listOf(card))
             repository.reviewResult =
@@ -83,7 +83,7 @@ class MemorizationPracticeViewModelTest {
 
     @Test
     fun `typing check locks grade and submits on next card`() =
-        runTest {
+        runViewModelTest {
             val card =
                 sampleCard(
                     id = 7,
@@ -116,7 +116,7 @@ class MemorizationPracticeViewModelTest {
 
     @Test
     fun `typing evaluation uses continuation only`() =
-        runTest {
+        runViewModelTest {
             val card =
                 sampleCard(
                     id = 8,
@@ -135,7 +135,7 @@ class MemorizationPracticeViewModelTest {
 
     @Test
     fun `eye from typing reveals immediately`() =
-        runTest {
+        runViewModelTest {
             val card = sampleCard(id = 9)
             repository.dueCards = abkabk.azbarkon.core.domain.result.Result.Success(listOf(card))
 
@@ -151,7 +151,7 @@ class MemorizationPracticeViewModelTest {
 
     @Test
     fun `char based grading ignores extra words when letters match continuation`() =
-        runTest {
+        runViewModelTest {
             val card =
                 sampleCard(
                     id = 10,
@@ -170,7 +170,7 @@ class MemorizationPracticeViewModelTest {
 
     @Test
     fun `empty due queue completes session`() =
-        runTest {
+        runViewModelTest {
             repository.dueCards = abkabk.azbarkon.core.domain.result.Result.Success(emptyList())
 
             val viewModel = MemorizationPracticeViewModel(repository, poemId = null)

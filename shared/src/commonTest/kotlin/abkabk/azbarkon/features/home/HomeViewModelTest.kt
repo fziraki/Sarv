@@ -12,14 +12,14 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
+import abkabk.azbarkon.testing.runViewModelTest
+import kotlin.test.Test
 
 class HomeViewModelTest {
 
     @Test
     fun `loading poets updates success state`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithRootCategories =
@@ -56,7 +56,7 @@ class HomeViewModelTest {
 
     @Test
     fun `poet with no root categories is excluded from home list`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithRootCategories =
@@ -103,7 +103,7 @@ class HomeViewModelTest {
 
     @Test
     fun `load failure sets error state`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     shouldFail = true
@@ -115,7 +115,7 @@ class HomeViewModelTest {
 
     @Test
     fun `beyt of day click emits poem detail navigation with today distich poem id`() =
-        runTest {
+        runViewModelTest {
             val dailyBeytRepository =
                 FakeDailyBeytRepository().apply {
                     todayDistich = todayDistich.copy(poemId = 42)
@@ -127,6 +127,7 @@ class HomeViewModelTest {
             viewModel.events.test {
                 val event = awaitItem()
                 assertThat(event).isEqualTo(HomeEvent.NavigateToPoemDetail(poemId = 42))
+                cancelAndIgnoreRemainingEvents()
             }
         }
 }

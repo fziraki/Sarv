@@ -5,7 +5,7 @@ import abkabk.azbarkon.domain.model.memorization.StoredActivePoem
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class UserBackupManagerTest {
 

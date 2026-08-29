@@ -20,14 +20,14 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import kotlin.random.Random
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
+import abkabk.azbarkon.testing.runViewModelTest
+import kotlin.test.Test
 
 class PoetsListViewModelTest {
 
     @Test
     fun `search by poet name filters list`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithRootCategories = samplePoetsWithRootCategories()
@@ -45,7 +45,7 @@ class PoetsListViewModelTest {
 
     @Test
     fun `search by category name filters list`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithRootCategories = samplePoetsWithRootCategories()
@@ -61,7 +61,7 @@ class PoetsListViewModelTest {
 
     @Test
     fun `maps root categories to summary text`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithRootCategories = samplePoetsWithRootCategories()
@@ -77,7 +77,7 @@ class PoetsListViewModelTest {
 
     @Test
     fun `chat is available for poets with ghazal category at any depth`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithRootCategories =
@@ -111,7 +111,7 @@ class PoetsListViewModelTest {
 
     @Test
     fun `poet click emits navigation event`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithRootCategories = samplePoetsWithRootCategories()
@@ -123,12 +123,13 @@ class PoetsListViewModelTest {
                 val event = awaitItem()
                 assertThat(event).isInstanceOf(PoetsListEvent.NavigateToPoetDetail::class)
                 assertThat((event as PoetsListEvent.NavigateToPoetDetail).poetId).isEqualTo(7)
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
     @Test
     fun `initial load picks featured poet from list using random`() =
-        runTest {
+        runViewModelTest {
             val poets = samplePoetsWithRootCategories()
             val repository =
                 FakePoetRepository().apply {
@@ -144,7 +145,7 @@ class PoetsListViewModelTest {
 
     @Test
     fun `on screen enter re-picks featured poet from loaded list`() =
-        runTest {
+        runViewModelTest {
             val poets = samplePoetsWithRootCategories()
             val repository =
                 FakePoetRepository().apply {
@@ -164,7 +165,7 @@ class PoetsListViewModelTest {
 
     @Test
     fun `clearing search restores featured poet without re-randomizing`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithRootCategories = samplePoetsWithRootCategories()
@@ -183,7 +184,7 @@ class PoetsListViewModelTest {
 
     @Test
     fun `on screen enter with empty list leaves featured poet null`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithRootCategories = emptyList()
@@ -197,7 +198,7 @@ class PoetsListViewModelTest {
 
     @Test
     fun `poet with no root categories is excluded from list`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoetRepository().apply {
                     poetsWithRootCategories =

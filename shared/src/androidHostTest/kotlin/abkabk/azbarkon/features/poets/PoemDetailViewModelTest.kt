@@ -24,14 +24,15 @@ import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.search_not_found_in_poem
-import kotlinx.coroutines.test.runTest
+import abkabk.azbarkon.testing.cancelScope
+import abkabk.azbarkon.testing.runViewModelTest
 import org.junit.jupiter.api.Test
 
 class PoemDetailViewModelTest {
 
     @Test
     fun `loads poem detail by id with verse position types`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoemRepository().apply {
                     poemDetails =
@@ -60,11 +61,12 @@ class PoemDetailViewModelTest {
             assertThat(state.verses[1].positionType).isEqualTo(PoemVersePositionType.Left)
             assertThat(state.verses[2].positionType).isEqualTo(PoemVersePositionType.Comment)
             assertThat(state.highlightQuery).isEqualTo("")
+            viewModel.cancelScope()
         }
 
     @Test
     fun `toggle like updates state`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoemRepository().apply {
                     poemDetails = mapOf(77 to samplePoemDetail(singleVerse = true))
@@ -84,11 +86,12 @@ class PoemDetailViewModelTest {
             viewModel.onAction(PoemDetailAction.OnLikeClick)
 
             assertThat(viewModel.state.value.isLiked).isTrue()
+            viewModel.cancelScope()
         }
 
     @Test
     fun `toggle bookmark updates state`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoemRepository().apply {
                     poemDetails = mapOf(77 to samplePoemDetail(singleVerse = true))
@@ -108,11 +111,12 @@ class PoemDetailViewModelTest {
             viewModel.onAction(PoemDetailAction.OnBookmarkClick)
 
             assertThat(viewModel.state.value.isBookmarked).isTrue()
+            viewModel.cancelScope()
         }
 
     @Test
     fun `find submit highlights and scrolls to first matching verse`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoemRepository().apply {
                     poemDetails = mapOf(77 to samplePoemDetail())
@@ -135,11 +139,12 @@ class PoemDetailViewModelTest {
             val state = viewModel.state.value
             assertThat(state.highlightQuery).isEqualTo("الا")
             assertThat(state.scrollToVerseId).isEqualTo("1-0")
+            viewModel.cancelScope()
         }
 
     @Test
     fun `find submit with no match shows snackbar`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoemRepository().apply {
                     poemDetails = mapOf(77 to samplePoemDetail(singleVerse = true))
@@ -164,11 +169,12 @@ class PoemDetailViewModelTest {
 
             assertThat(viewModel.state.value.highlightQuery).isEqualTo("")
             assertThat(viewModel.state.value.scrollToVerseId).isNull()
+            viewModel.cancelScope()
         }
 
     @Test
     fun `search click toggles find bar`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoemRepository().apply {
                     poemDetails = mapOf(77 to samplePoemDetail(singleVerse = true))
@@ -190,11 +196,12 @@ class PoemDetailViewModelTest {
 
             viewModel.onAction(PoemDetailAction.OnSearchClick)
             assertThat(viewModel.state.value.isFindBarVisible).isFalse()
+            viewModel.cancelScope()
         }
 
     @Test
     fun `find bar close hides bar and clears highlight`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoemRepository().apply {
                     poemDetails = mapOf(77 to samplePoemDetail(singleVerse = true))
@@ -223,11 +230,12 @@ class PoemDetailViewModelTest {
             assertThat(state.highlightQuery).isEqualTo("")
             assertThat(state.findInput).isEqualTo("")
             assertThat(state.scrollToVerseId).isNull()
+            viewModel.cancelScope()
         }
 
     @Test
     fun `share copies poem text to share service`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoemRepository().apply {
                     poemDetails = mapOf(77 to samplePoemDetail(singleVerse = true))
@@ -249,11 +257,12 @@ class PoemDetailViewModelTest {
 
             assertThat(shareService.lastSharedText).isEqualTo("حافظ\nغزل شماره ۷\n\nبیت اول")
             assertThat(shareService.lastSharedTitle).isEqualTo("غزل شماره ۷")
+            viewModel.cancelScope()
         }
 
     @Test
     fun `share uses copied text when text was copied`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoemRepository().apply {
                     poemDetails = mapOf(77 to samplePoemDetail())
@@ -277,11 +286,12 @@ class PoemDetailViewModelTest {
             assertThat(shareService.lastSharedText).isEqualTo(
                 "حافظ\nغزل شماره ۷\n\nمتن انتخابی از شعر",
             )
+            viewModel.cancelScope()
         }
 
     @Test
     fun `tasvirnegar with copied text emits event carrying it`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoemRepository().apply {
                     poemDetails = mapOf(77 to samplePoemDetail())
@@ -307,12 +317,14 @@ class PoemDetailViewModelTest {
                         initialText = "متن انتخابی از شعر",
                     ),
                 )
+                cancelAndIgnoreRemainingEvents()
             }
+            viewModel.cancelScope()
         }
 
     @Test
     fun `tasvirnegar without copied text emits event with null initial text`() =
-        runTest {
+        runViewModelTest {
             val repository =
                 FakePoemRepository().apply {
                     poemDetails = mapOf(77 to samplePoemDetail(singleVerse = true))
@@ -335,7 +347,9 @@ class PoemDetailViewModelTest {
                 assertThat(awaitItem()).isEqualTo(
                     PoemDetailEvent.NavigateToTasvirNegar(initialText = null),
                 )
+                cancelAndIgnoreRemainingEvents()
             }
+            viewModel.cancelScope()
         }
 
     private fun samplePoemDetail(singleVerse: Boolean = false): PoemDetail =

@@ -5,7 +5,7 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class CardGeneratorTest {
     @Test

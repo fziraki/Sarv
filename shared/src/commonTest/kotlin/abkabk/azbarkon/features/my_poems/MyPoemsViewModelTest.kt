@@ -12,14 +12,14 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
+import abkabk.azbarkon.testing.runViewModelTest
+import kotlin.test.Test
 
 class MyPoemsViewModelTest {
 
     @Test
     fun `loads liked and bookmarked poems grouped by poet and category`() =
-        runTest {
+        runViewModelTest {
             val savedPoemRepository =
                 FakeSavedPoemRepository().apply {
                     toggleLike(1)
@@ -109,7 +109,7 @@ class MyPoemsViewModelTest {
 
     @Test
     fun `tab switch updates active groups`() =
-        runTest {
+        runViewModelTest {
             val savedPoemRepository =
                 FakeSavedPoemRepository().apply {
                     toggleLike(1)
@@ -151,7 +151,7 @@ class MyPoemsViewModelTest {
 
     @Test
     fun `remove poem updates active tab list`() =
-        runTest {
+        runViewModelTest {
             val savedPoemRepository =
                 FakeSavedPoemRepository().apply {
                     toggleLike(1)
@@ -194,7 +194,7 @@ class MyPoemsViewModelTest {
 
     @Test
     fun `clear all empties only active tab`() =
-        runTest {
+        runViewModelTest {
             val savedPoemRepository =
                 FakeSavedPoemRepository().apply {
                     toggleLike(1)
@@ -236,7 +236,7 @@ class MyPoemsViewModelTest {
 
     @Test
     fun `poem click emits navigation event`() =
-        runTest {
+        runViewModelTest {
             val fakePoemRepo = FakePoemRepository()
             val fakeSavedRepo = FakeSavedPoemRepository()
             val viewModel =
@@ -257,7 +257,7 @@ class MyPoemsViewModelTest {
 
     @Test
     fun `clear all click shows dialog only when active tab has items`() =
-        runTest {
+        runViewModelTest {
             val fakePoemRepo = FakePoemRepository()
             val fakeSavedRepo = FakeSavedPoemRepository()
             val viewModel =
@@ -273,7 +273,7 @@ class MyPoemsViewModelTest {
 
     @Test
     fun `clear all click opens dialog when active tab has items`() =
-        runTest {
+        runViewModelTest {
             val savedPoemRepository =
                 FakeSavedPoemRepository().apply {
                     toggleLike(1)

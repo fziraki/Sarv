@@ -2,7 +2,7 @@ package abkabk.azbarkon.features.poems.details
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class PoemVerseUiTest {
     @Test

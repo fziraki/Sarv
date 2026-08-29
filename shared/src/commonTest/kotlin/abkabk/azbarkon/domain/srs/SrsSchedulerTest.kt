@@ -4,7 +4,7 @@ import abkabk.azbarkon.domain.model.memorization.SrsCard
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class SrsSchedulerTest {
     private val baseCard =

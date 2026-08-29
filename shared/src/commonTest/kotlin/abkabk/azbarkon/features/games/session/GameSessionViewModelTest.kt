@@ -18,14 +18,14 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
 import assertk.assertions.isTrue
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
+import abkabk.azbarkon.testing.runViewModelTest
+import kotlin.test.Test
 
 class GameSessionViewModelTest {
 
     @Test
     fun `hint is blocked when coin balance is below cost`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             preferences.adjustCoinBalance(-700)
             val viewModel =
@@ -42,7 +42,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `hint deducts coins and disables one wrong option`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val viewModel =
                 GameSessionViewModel(
@@ -63,7 +63,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `skip without selection counts as no answer without deducting coins`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val viewModel =
                 GameSessionViewModel(
@@ -92,7 +92,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `quiz advances only after continue during reveal`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createOrganizePoemViewModel()
 
             viewModel.onAction(GameSessionAction.OnCheckAnswerClick)
@@ -108,7 +108,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `hasSelection becomes true after option is selected`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val viewModel =
                 GameSessionViewModel(
@@ -126,7 +126,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `wrong answer increments wrong count immediately`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val viewModel =
                 GameSessionViewModel(
@@ -147,7 +147,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `second hint on same quiz does not deduct additional coins`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val viewModel =
                 GameSessionViewModel(
@@ -168,7 +168,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `perfect session increments perfectGameSessions`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val viewModel =
                 GameSessionViewModel(
@@ -228,7 +228,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `session with wrong answer does not increment perfectGameSessions`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val viewModel =
                 GameSessionViewModel(
@@ -258,7 +258,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `correct answer on last quiz navigates to result summary`() =
-        runTest {
+        runViewModelTest {
             val viewModel =
                 GameSessionViewModel(
                     gameType = GameType.NEXT_VERSE,
@@ -313,12 +313,13 @@ class GameSessionViewModelTest {
                 assertThat(event).isInstanceOf(GameSessionEvent.NavigateToResult::class)
                 assertThat((event as GameSessionEvent.NavigateToResult).summary.correctCount)
                     .isEqualTo(GameConstants.QUIZ_COUNT)
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
     @Test
     fun `complete poem word selection adds word to filledWords`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createCompletePoemViewModel()
 
             viewModel.onAction(GameSessionAction.OnWordSelected("word1"))
@@ -328,7 +329,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `complete poem word selection toggles off when same word tapped again`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createCompletePoemViewModel()
 
             viewModel.onAction(GameSessionAction.OnWordSelected("word1"))
@@ -339,7 +340,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `complete poem ignores third word until one selection is cleared`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createCompletePoemViewModel()
 
             viewModel.onAction(GameSessionAction.OnWordSelected("word1"))
@@ -356,7 +357,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `reorder lines updates orderedLineIds`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createOrganizePoemViewModel()
 
             assertThat(viewModel.state.value.orderedLineIds)
@@ -370,7 +371,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `reorder lines supports jumping from last index to first`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createOrganizePoemViewModel()
 
             assertThat(viewModel.state.value.orderedLineIds)
@@ -384,7 +385,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `reorder ignores moves involving pinned line`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createOrganizePoemViewModel()
             viewModel.onAction(GameSessionAction.OnHintClick)
 
@@ -401,7 +402,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `reorder can move up past pinned line`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createOrganizePoemViewModel()
             viewModel.onAction(GameSessionAction.OnHintClick)
 
@@ -419,7 +420,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `reorder can move down past pinned line`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createOrganizePoemViewModel()
             viewModel.onAction(GameSessionAction.OnHintClick)
 
@@ -437,7 +438,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `reorder swap to row above pinned third row keeps pin fixed`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val viewModel =
                 GameSessionViewModel(
@@ -463,7 +464,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `organize poem hint deducts coins and pins first wrong line`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val viewModel = createOrganizePoemViewModel(preferences)
 
@@ -480,7 +481,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `wrong arrangement increments wrong count immediately`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createOrganizePoemViewModel()
 
             viewModel.onAction(GameSessionAction.OnReorderLines(fromIndex = 0, toIndex = 2))
@@ -493,7 +494,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `skip without reorder counts as no answer for organize poem`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val viewModel = createOrganizePoemViewModel(preferences)
 
@@ -518,7 +519,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `hasSelection becomes true after reorder for organize poem`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createOrganizePoemViewModel()
 
             assertThat(viewModel.state.value.hasSelection).isFalse()
@@ -528,7 +529,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `hasSelection becomes true after hint for organize poem`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createOrganizePoemViewModel()
 
             assertThat(viewModel.state.value.hasSelection).isFalse()
@@ -538,7 +539,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `correct arrangement adds score`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createOrganizePoemViewModel()
 
             reorderOrganizePoemToCorrect(viewModel)
@@ -550,7 +551,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `organize poem primary action is always enabled while answering`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createOrganizePoemViewModel()
 
             assertThat(viewModel.state.value.hasSelection).isFalse()
@@ -559,7 +560,7 @@ class GameSessionViewModelTest {
 
     @Test
     fun `correct organize poem answer on last quiz navigates to result summary`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createOrganizePoemViewModel()
 
             viewModel.events.test {
@@ -573,6 +574,7 @@ class GameSessionViewModelTest {
                 assertThat(event).isInstanceOf(GameSessionEvent.NavigateToResult::class)
                 assertThat((event as GameSessionEvent.NavigateToResult).summary.correctCount)
                     .isEqualTo(GameConstants.QUIZ_COUNT)
+                cancelAndIgnoreRemainingEvents()
             }
         }
 

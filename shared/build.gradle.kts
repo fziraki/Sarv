@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.sqldelight)
+    jacoco
 }
 
 kotlin {
@@ -133,6 +134,32 @@ sqldelight {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+    forkEvery = 1
+    extensions.configure(JacocoTaskExtension::class) {
+        isEnabled = true
+    }
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testAndroidHostTest")
+
+    sourceDirectories.setFrom(
+        "src/commonMain/kotlin",
+        "src/androidMain/kotlin",
+    )
+    classDirectories.setFrom(
+        fileTree("build/tmp/kotlin-classes/androidHostTest") { include("**/*.class") }
+    )
+    executionData.setFrom(
+        fileTree("build") {
+            include("**/*.exec")
+            include("**/*.ec")
+        }
+    )
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
 }
 
 

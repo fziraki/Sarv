@@ -27,14 +27,14 @@ import assertk.assertions.isFalse
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
+import abkabk.azbarkon.testing.runViewModelTest
+import kotlin.test.Test
 
 class ProfileViewModelTest {
 
     @Test
     fun `enabling daily beyt schedules notification when permission granted`() =
-        runTest {
+        runViewModelTest {
             val scheduler = FakeDailyBeytNotificationScheduler()
             val preferences = FakeUserPreferencesRepository()
             val permissionGateway = FakeNotificationPermissionGateway(granted = true)
@@ -51,7 +51,7 @@ class ProfileViewModelTest {
 
     @Test
     fun `disabling daily beyt cancels notification`() =
-        runTest {
+        runViewModelTest {
             val scheduler = FakeDailyBeytNotificationScheduler()
             val preferences = FakeUserPreferencesRepository()
             val viewModel =
@@ -71,7 +71,7 @@ class ProfileViewModelTest {
 
     @Test
     fun `permission denial reverts daily beyt toggle`() =
-        runTest {
+        runViewModelTest {
             val scheduler = FakeDailyBeytNotificationScheduler()
             val preferences = FakeUserPreferencesRepository()
             val viewModel =
@@ -96,7 +96,7 @@ class ProfileViewModelTest {
 
     @Test
     fun `settings click opens settings sheet`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createViewModel()
 
             viewModel.onAction(ProfileAction.OnSettingsClick)
@@ -106,7 +106,7 @@ class ProfileViewModelTest {
 
     @Test
     fun `dismiss sheet clears active sheet`() =
-        runTest {
+        runViewModelTest {
             val viewModel = createViewModel()
             viewModel.onAction(ProfileAction.OnSettingsClick)
 
@@ -117,7 +117,7 @@ class ProfileViewModelTest {
 
     @Test
     fun `theme mode selection persists preference`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val viewModel = createViewModel(preferences)
 
@@ -129,7 +129,7 @@ class ProfileViewModelTest {
 
     @Test
     fun `disabling memorization reminder updates preference`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val viewModel = createViewModel(preferences)
 
@@ -141,7 +141,7 @@ class ProfileViewModelTest {
 
     @Test
     fun `export data shares backup json`() =
-        runTest {
+        runViewModelTest {
             val backupManager = FakeUserBackupManager()
             val shareService = FakeShareService()
             val viewModel = createViewModel(backupManager = backupManager, shareService = shareService)
@@ -155,7 +155,7 @@ class ProfileViewModelTest {
 
     @Test
     fun `import selection asks for confirmation then imports`() =
-        runTest {
+        runViewModelTest {
             val backupManager = FakeUserBackupManager()
             val preferences = FakeUserPreferencesRepository()
             val viewModel = createViewModel(backupManager = backupManager, preferences = preferences)
@@ -173,7 +173,7 @@ class ProfileViewModelTest {
 
     @Test
     fun `import cancel clears pending json without importing`() =
-        runTest {
+        runViewModelTest {
             val backupManager = FakeUserBackupManager()
             val viewModel = createViewModel(backupManager = backupManager)
 
@@ -186,7 +186,7 @@ class ProfileViewModelTest {
 
     @Test
     fun `successful import applies imported prefs and shows success snackbar`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val backupManager =
                 FakeUserBackupManager(preferences = preferences)
@@ -202,7 +202,7 @@ class ProfileViewModelTest {
 
     @Test
     fun `failed import shows error snackbar and keeps prefs`() =
-        runTest {
+        runViewModelTest {
             val preferences = FakeUserPreferencesRepository()
             val backupManager = FakeUserBackupManager(failImport = true)
             val viewModel = createViewModel(backupManager = backupManager, preferences = preferences)

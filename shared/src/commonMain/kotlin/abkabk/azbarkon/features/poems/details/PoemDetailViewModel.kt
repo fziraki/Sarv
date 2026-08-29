@@ -29,6 +29,7 @@ import sarv.shared.generated.resources.search_not_found_in_poem
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -119,7 +120,7 @@ class PoemDetailViewModel(
 
     private fun startProgressTicker() {
         viewModelScope.launch {
-            while (true) {
+            while (isActive) {
                 val audio = _audioState.value
                 val activeUrl = audio.activeTrackUrl
                 if (activeUrl != null && player.isPlaying && player.duration > 0) {

@@ -17,14 +17,14 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.search_empty_query
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
+import abkabk.azbarkon.testing.runViewModelTest
+import kotlin.test.Test
 
 class SearchViewModelTest {
 
     @Test
     fun `preselects poet and category from cat id`() =
-        runTest {
+        runViewModelTest {
             val poetRepository =
                 FakePoetRepository().apply {
                     poets = listOf(samplePoet(id = 2))
@@ -67,7 +67,7 @@ class SearchViewModelTest {
 
     @Test
     fun `changing poet resets category selection`() =
-        runTest {
+        runViewModelTest {
             val poetRepository =
                 FakePoetRepository().apply {
                     poets = listOf(samplePoet(id = 2), samplePoet(id = 3, name = "سعدی"))
@@ -100,7 +100,7 @@ class SearchViewModelTest {
 
     @Test
     fun `empty query shows snackbar`() =
-        runTest {
+        runViewModelTest {
             val viewModel =
                 SearchViewModel(
                     searchRepository = FakeSearchRepository(),
@@ -117,7 +117,7 @@ class SearchViewModelTest {
 
     @Test
     fun `successful search populates results`() =
-        runTest {
+        runViewModelTest {
             val searchRepository =
                 FakeSearchRepository().apply {
                     searchPages =
@@ -150,7 +150,7 @@ class SearchViewModelTest {
 
     @Test
     fun `result click navigates to poem detail`() =
-        runTest {
+        runViewModelTest {
             val viewModel =
                 SearchViewModel(
                     searchRepository = FakeSearchRepository(),
@@ -165,12 +165,13 @@ class SearchViewModelTest {
                 assertThat(awaitItem()).isEqualTo(
                     SearchEvent.NavigateToPoemDetail(poemId = 42),
                 )
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
     @Test
     fun `pagination loads all pages`() =
-        runTest {
+        runViewModelTest {
             val searchRepository =
                 FakeSearchRepository().apply {
                     searchPages =

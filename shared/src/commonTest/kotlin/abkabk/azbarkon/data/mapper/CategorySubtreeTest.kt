@@ -5,7 +5,7 @@ import abkabk.azbarkon.domain.model.PoetCategoryNode
 import assertk.assertThat
 import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEqualTo
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class CategorySubtreeTest {
     @Test

@@ -4,7 +4,7 @@ import abkabk.azbarkon.domain.model.CatNode
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class PoetCategoryTreeBuilderTest {
     @Test

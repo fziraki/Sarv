@@ -7,7 +7,7 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class GameSessionPoolBuilderTest {
     @Test

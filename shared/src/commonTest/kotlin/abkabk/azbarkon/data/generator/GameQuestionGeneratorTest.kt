@@ -7,7 +7,7 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNotEqualTo
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class GameQuestionGeneratorTest {
     @Test
