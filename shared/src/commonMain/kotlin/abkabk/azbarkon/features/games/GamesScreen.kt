@@ -3,6 +3,8 @@ package abkabk.azbarkon.features.games
 import abkabk.azbarkon.domain.model.games.GameType
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.UiScreenState
+import abkabk.azbarkon.core.ui.LocalWindowSizeClass
+import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import abkabk.azbarkon.features.games.navigation.toRoute
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,7 +20,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,7 +45,6 @@ import sarv.shared.generated.resources.whois_poet_desc
 import sarv.shared.generated.resources.whois_poet_title
 import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Surface
 import androidx.compose.ui.layout.ContentScale
 import sarv.shared.generated.resources.guess_poet_icon
@@ -57,6 +60,12 @@ import abkabk.azbarkon.core.designsystem.SarvDimensions
 private const val GAME_CARD_IMAGE_WEIGHT = 0.3f
 private const val GAME_CARD_CONTENT_WEIGHT = 0.7f
 
+private class GameItemData(
+    val title: StringResource,
+    val desc: StringResource,
+    val icon: DrawableResource,
+)
+
 @Composable
 fun GamesRoot(
     onNavigateToGame: (GameType) -> Unit,
@@ -71,52 +80,56 @@ fun GamesScreen(
     onNavigateToGame: (GameType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn(
+    val columns =
+        when (LocalWindowSizeClass.current.widthSizeClass) {
+            WindowWidthSizeClass.Expanded -> GridCells.Fixed(2)
+            WindowWidthSizeClass.Medium -> GridCells.Fixed(1)
+            else -> GridCells.Fixed(1)
+        }
+
+    val gameItems =
+        listOf(
+            GameType.NEXT_VERSE to GameItemData(
+                Res.string.next_line_title,
+                Res.string.next_line_desc,
+                Res.drawable.next_verse_icon,
+            ),
+            GameType.COMPLETE_POEM to GameItemData(
+                Res.string.complete_poem_title,
+                Res.string.complete_poem_desc,
+                Res.drawable.incomplete_icon,
+            ),
+            GameType.FIND_POET to GameItemData(
+                Res.string.whois_poet_title,
+                Res.string.whois_poet_desc,
+                Res.drawable.guess_poet_icon,
+            ),
+            GameType.ORGANIZE_POEM to GameItemData(
+                Res.string.poetry_arrangement_title,
+                Res.string.poetry_arrangement_desc,
+                Res.drawable.reorder_poem_icon,
+            ),
+        )
+
+    LazyVerticalGrid(
+        columns = columns,
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
         contentPadding = PaddingValues(vertical = SarvDimensions.dimen24, horizontal = SarvDimensions.dimen16),
     ) {
-        item {
+        items(
+            items = gameItems,
+            key = { (gameType, _) -> gameType.name },
+        ) { (gameType, data) ->
             GameItem(
-                gameType = GameType.NEXT_VERSE,
-                title = Res.string.next_line_title,
-                desc = Res.string.next_line_desc,
-                icon = Res.drawable.next_verse_icon,
-                onClick = { onNavigateToGame(GameType.NEXT_VERSE) },
+                gameType = gameType,
+                title = data.title,
+                desc = data.desc,
+                icon = data.icon,
+                onClick = { onNavigateToGame(gameType) },
             )
         }
-
-        item {
-            GameItem(
-                gameType = GameType.COMPLETE_POEM,
-                title = Res.string.complete_poem_title,
-                desc = Res.string.complete_poem_desc,
-                icon = Res.drawable.incomplete_icon,
-                onClick = { onNavigateToGame(GameType.COMPLETE_POEM) },
-            )
-        }
-
-
-        item {
-            GameItem(
-                gameType = GameType.FIND_POET,
-                title = Res.string.whois_poet_title,
-                desc = Res.string.whois_poet_desc,
-                icon = Res.drawable.guess_poet_icon,
-                onClick = { onNavigateToGame(GameType.FIND_POET) },
-            )
-        }
-
-        item {
-            GameItem(
-                gameType = GameType.ORGANIZE_POEM,
-                title = Res.string.poetry_arrangement_title,
-                desc = Res.string.poetry_arrangement_desc,
-                icon = Res.drawable.reorder_poem_icon,
-                onClick = { onNavigateToGame(GameType.ORGANIZE_POEM) },
-            )
-        }
-
     }
 }
 

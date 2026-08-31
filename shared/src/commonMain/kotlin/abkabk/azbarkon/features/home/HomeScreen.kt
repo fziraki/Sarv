@@ -7,6 +7,8 @@ import abkabk.azbarkon.core.notifications.NotificationPermissionSheet
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalSarvAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.core.ui.LocalWindowSizeClass
+import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.RandomDistich
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
@@ -29,15 +31,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -102,6 +105,10 @@ import sarv.shared.generated.resources.unknown
 private const val SLIDER_TOP_WEIGHT = 0.4f
 private const val SLIDER_CONTENT_WEIGHT = 0.6f
 private const val SLIDER_BUTTON_WIDTH_FRACTION = 0.6f
+private const val TOP_SLIDER_HEIGHT_FRACTION = 0.25f
+private const val HERO_CARD_WEIGHT_EXPANDED = 1.5f
+private const val HERO_CARD_SPACER_WEIGHT_EXPANDED = 0.75f
+private const val BEYT_SLIDE_SPACER_WEIGHT_EXPANDED = 0.2f
 
 data class HomeCallbacks(
     val onNavigateToPoetsList: () -> Unit,
@@ -184,38 +191,87 @@ fun HomeScreen(
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = SarvDimensions.dimen12),
-        verticalArrangement = Arrangement.SpaceBetween,
-    ) {
-        item {
-    TopSlider(
-        items =
-            listOf(
-                SliderPage.BeytOfDay,
-                SliderPage.Challenge,
-                SliderPage.TasvirNegar,
+    val isExpandedScreen =
+        LocalWindowSizeClass.current.widthSizeClass == WindowWidthSizeClass.Expanded
+
+    val verticalArrangement =
+        when (LocalWindowSizeClass.current.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> Arrangement.SpaceBetween
+            else -> Arrangement.spacedBy(SarvDimensions.dimen12)
+        }
+
+
+
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+        val topSliderHeight = maxHeight * TOP_SLIDER_HEIGHT_FRACTION
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(vertical = if (!isExpandedScreen) {
+                    SarvDimensions.dimen12
+                } else {
+                    SarvDimensions.dimen1
+                }
             ),
-        todayDistich = state.todayDistich,
-        onTasvirNegarClick = { onAction(HomeAction.OnTasvirNegarClick) },
-        onChallengeClick = { onAction(HomeAction.OnChallengeClick) },
-        onBeytOfDayClick = { onAction(HomeAction.OnBeytOfDayClick) },
-    )
-        }
-        item {
-            HeroCard(
-                hero = state.memorizationHero,
-                onClick = { onAction(HomeAction.OnMemorizationClick) },
+            verticalArrangement = verticalArrangement,
+        ) {
+            item {
+                TopSlider(
+                    items =
+                        listOf(
+                            SliderPage.BeytOfDay,
+                            SliderPage.Challenge,
+                            SliderPage.TasvirNegar,
+                        ),
+                    modifier = Modifier.height(topSliderHeight),
+                    todayDistich = state.todayDistich,
+                    isExpandedScreen = isExpandedScreen,
+                    onTasvirNegarClick = { onAction(HomeAction.OnTasvirNegarClick) },
+                    onChallengeClick = { onAction(HomeAction.OnChallengeClick) },
+                onBeytOfDayClick = { onAction(HomeAction.OnBeytOfDayClick) },
             )
         }
         item {
-            QuickAccessMenu(
-                onMyPoemsClick = { onAction(HomeAction.OnMyPoemsClick) },
-                onSearchClick = { onAction(HomeAction.OnSearchClick) },
-                onTasvirNegarClick = { onAction(HomeAction.OnTasvirNegarClick) },
-                onReviewClick = { onAction(HomeAction.OnReviewClick) },
-            )
+            if (isExpandedScreen) {
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = SarvDimensions.dimen16),
+                ) {
+
+                    QuickAccessMenu(
+                        onMyPoemsClick = { onAction(HomeAction.OnMyPoemsClick) },
+                        onSearchClick = { onAction(HomeAction.OnSearchClick) },
+                        onTasvirNegarClick = { onAction(HomeAction.OnTasvirNegarClick) },
+                        onReviewClick = { onAction(HomeAction.OnReviewClick) },
+                        isExpanded = true,
+                        modifier = Modifier.weight(1f),
+                    )
+                    HeroCard(
+                        hero = state.memorizationHero,
+                        onClick = { onAction(HomeAction.OnMemorizationClick) },
+                        modifier = Modifier.weight(HERO_CARD_WEIGHT_EXPANDED),
+                        isExpandedScreen = isExpandedScreen
+                    )
+                }
+            } else {
+                HeroCard(
+                    hero = state.memorizationHero,
+                    onClick = { onAction(HomeAction.OnMemorizationClick) },
+                    isExpandedScreen = isExpandedScreen
+                )
+            }
+        }
+        if (!isExpandedScreen) {
+            item {
+                QuickAccessMenu(
+                    onMyPoemsClick = { onAction(HomeAction.OnMyPoemsClick) },
+                    onSearchClick = { onAction(HomeAction.OnSearchClick) },
+                    onTasvirNegarClick = { onAction(HomeAction.OnTasvirNegarClick) },
+                    onReviewClick = { onAction(HomeAction.OnReviewClick) },
+                )
+            }
         }
         item {
             Poets(
@@ -223,6 +279,7 @@ fun HomeScreen(
                 onSeeAllClick = { onAction(HomeAction.OnSeeAllPoetsClick) },
                 onPoetClick = { poetId -> onAction(HomeAction.OnPoetClick(poetId)) },
             )
+        }
         }
     }
 }
@@ -340,39 +397,81 @@ fun QuickAccessMenu(
     onTasvirNegarClick: () -> Unit,
     onReviewClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isExpanded: Boolean = false
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth().padding(horizontal = SarvDimensions.dimen16),
-        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        QuickAccessItem(
-            modifier = Modifier.weight(1f),
-            icon = Res.drawable.newsstand,
-            title = Res.string.my_poems,
-            onItemClick = onMyPoemsClick,
-        )
+    val spacedBy = Arrangement.spacedBy(SarvDimensions.dimen12)
 
-        QuickAccessItem(
-            modifier = Modifier.weight(1f),
-            icon = Res.drawable.search,
-            title = Res.string.search,
-            onItemClick = onSearchClick,
-        )
-
-        QuickAccessItem(
-            modifier = Modifier.weight(1f),
-            icon = Res.drawable.palette,
-            title = Res.string.pic_negar,
-            onItemClick = onTasvirNegarClick,
-        )
-
-        QuickAccessItem(
-            modifier = Modifier.weight(1f),
-            icon = Res.drawable.review,
-            title = Res.string.review,
-            onItemClick = onReviewClick,
-        )
+    if (isExpanded) {
+        Column(
+            modifier = modifier.fillMaxWidth().fillMaxHeight().padding(horizontal = SarvDimensions.dimen16),
+            verticalArrangement = spacedBy,
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = spacedBy,
+            ) {
+                QuickAccessItem(
+                    modifier = Modifier.weight(1f),
+                    icon = Res.drawable.newsstand,
+                    title = Res.string.my_poems,
+                    onItemClick = onMyPoemsClick,
+                )
+                QuickAccessItem(
+                    modifier = Modifier.weight(1f),
+                    icon = Res.drawable.search,
+                    title = Res.string.search,
+                    onItemClick = onSearchClick,
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = spacedBy,
+            ) {
+                QuickAccessItem(
+                    modifier = Modifier.weight(1f),
+                    icon = Res.drawable.palette,
+                    title = Res.string.pic_negar,
+                    onItemClick = onTasvirNegarClick,
+                )
+                QuickAccessItem(
+                    modifier = Modifier.weight(1f),
+                    icon = Res.drawable.review,
+                    title = Res.string.review,
+                    onItemClick = onReviewClick,
+                )
+            }
+        }
+    } else {
+        Row(
+            modifier = modifier.fillMaxWidth().padding(horizontal = SarvDimensions.dimen16),
+            horizontalArrangement = spacedBy,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            QuickAccessItem(
+                modifier = Modifier.weight(1f),
+                icon = Res.drawable.newsstand,
+                title = Res.string.my_poems,
+                onItemClick = onMyPoemsClick,
+            )
+            QuickAccessItem(
+                modifier = Modifier.weight(1f),
+                icon = Res.drawable.search,
+                title = Res.string.search,
+                onItemClick = onSearchClick,
+            )
+            QuickAccessItem(
+                modifier = Modifier.weight(1f),
+                icon = Res.drawable.palette,
+                title = Res.string.pic_negar,
+                onItemClick = onTasvirNegarClick,
+            )
+            QuickAccessItem(
+                modifier = Modifier.weight(1f),
+                icon = Res.drawable.review,
+                title = Res.string.review,
+                onItemClick = onReviewClick,
+            )
+        }
     }
 }
 
@@ -416,7 +515,8 @@ fun QuickAccessItem(
 fun HeroCard(
     hero: MemorizationHeroUi,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    isExpandedScreen: Boolean,
+    modifier: Modifier = Modifier
 ) {
     val titleText =
         if (hero.hasActivePoems) {
@@ -461,7 +561,11 @@ fun HeroCard(
                     .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.weight(1f))
+            if (isExpandedScreen){
+                Spacer(modifier = Modifier.weight(HERO_CARD_SPACER_WEIGHT_EXPANDED))
+            }else{
+                Spacer(modifier = Modifier.weight(1f))
+            }
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
@@ -503,12 +607,13 @@ fun HeroCard(
 @Composable
 fun TopSlider(
     items: List<SliderPage>,
+    isExpandedScreen: Boolean,
     modifier: Modifier = Modifier,
     autoPlayDuration: Long = 4000L,
     todayDistich: RandomDistich? = null,
     onTasvirNegarClick: () -> Unit = {},
     onChallengeClick: () -> Unit = {},
-    onBeytOfDayClick: () -> Unit = {},
+    onBeytOfDayClick: () -> Unit = {}
 ) {
     if (items.isEmpty()) return
 
@@ -544,18 +649,21 @@ fun TopSlider(
             beyondViewportPageCount = 1,
             modifier =
                 Modifier
-                    .fillMaxWidth()
-                    .height(SarvDimensions.dimen180),
+                    .fillMaxWidth(),
         ) { page ->
 
             val item = getItem(page)
 
             when (item) {
-                is SliderPage.BeytOfDay -> BeytOfDaySlide(distich = todayDistich, onClick = onBeytOfDayClick)
+                is SliderPage.BeytOfDay -> BeytOfDaySlide(
+                    distich = todayDistich,
+                    isExpandedScreen = isExpandedScreen,
+                    onClick = onBeytOfDayClick,
+                )
 
-                is SliderPage.Challenge -> ChallengeSlide(onClick = onChallengeClick)
+                is SliderPage.Challenge -> ChallengeSlide(isExpandedScreen = isExpandedScreen, onClick = onChallengeClick)
 
-                is SliderPage.TasvirNegar -> TasvirNegarSlide(onClick = onTasvirNegarClick)
+                is SliderPage.TasvirNegar -> TasvirNegarSlide(isExpandedScreen = isExpandedScreen, onClick = onTasvirNegarClick)
             }
         }
 
@@ -590,8 +698,9 @@ fun TopSlider(
 
 @Composable
 fun TasvirNegarSlide(
+    isExpandedScreen: Boolean,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -607,7 +716,14 @@ fun TasvirNegarSlide(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(SarvDimensions.dimen16),
+                    .then(if (isExpandedScreen){
+                        Modifier.padding(
+                            vertical = SarvDimensions.dimen8,
+                            horizontal = SarvDimensions.dimen16
+                        )
+                    }else{
+                        Modifier.padding(SarvDimensions.dimen16)
+                    }),
         ) {
 
             Spacer(modifier = Modifier.weight(SLIDER_TOP_WEIGHT))
@@ -615,7 +731,11 @@ fun TasvirNegarSlide(
 
             Column(
                 modifier = Modifier.weight(SLIDER_CONTENT_WEIGHT).fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = if (isExpandedScreen){
+                    Arrangement.spacedBy(SarvDimensions.dimen2)
+                }else {
+                    Arrangement.SpaceBetween
+                },
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(
@@ -628,7 +748,11 @@ fun TasvirNegarSlide(
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(Res.string.slider_tasvir_negar_text),
+                    text = if (isExpandedScreen){
+                        stringResource(Res.string.slider_tasvir_negar_text).replace("\n"," ")
+                    }else{
+                        stringResource(Res.string.slider_tasvir_negar_text)
+                    },
                     color = LightColorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.End,
@@ -640,7 +764,7 @@ fun TasvirNegarSlide(
                     modifier =
                         Modifier
                             .fillMaxWidth(SLIDER_BUTTON_WIDTH_FRACTION)
-                            .height(SarvDimensions.dimen36),
+                            .wrapContentHeight(),
                     textStyle = MaterialTheme.typography.labelSmall,
                     colors =
                         ButtonColors(
@@ -658,8 +782,9 @@ fun TasvirNegarSlide(
 
 @Composable
 fun ChallengeSlide(
+    isExpandedScreen: Boolean,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -673,14 +798,26 @@ fun ChallengeSlide(
         Row(
             modifier =
                 Modifier
-                    .fillMaxSize().padding(SarvDimensions.dimen16),
+                    .fillMaxSize()
+                    .then(if (isExpandedScreen){
+                        Modifier.padding(
+                            vertical = SarvDimensions.dimen8,
+                            horizontal = SarvDimensions.dimen16
+                        )
+                    }else{
+                        Modifier.padding(SarvDimensions.dimen16)
+                    }),
         ) {
 
             Spacer(modifier = Modifier.weight(SLIDER_TOP_WEIGHT))
 
             Column(
                 modifier = Modifier.weight(SLIDER_CONTENT_WEIGHT).fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = if (isExpandedScreen){
+                    Arrangement.spacedBy(SarvDimensions.dimen2)
+                }else {
+                    Arrangement.SpaceBetween
+                },
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(
@@ -693,7 +830,9 @@ fun ChallengeSlide(
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(Res.string.slider_challenge_text),
+                    text = if (isExpandedScreen){
+                        stringResource(Res.string.slider_challenge_text).replace("\n"," ")
+                    }else{stringResource(Res.string.slider_challenge_text)},
                     color = LightColorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.End,
@@ -705,7 +844,7 @@ fun ChallengeSlide(
                     modifier =
                         Modifier
                             .fillMaxWidth(SLIDER_BUTTON_WIDTH_FRACTION)
-                            .height(SarvDimensions.dimen36),
+                            .wrapContentHeight(),
                     textStyle = MaterialTheme.typography.labelSmall,
                     colors =
                         ButtonColors(
@@ -723,9 +862,10 @@ fun ChallengeSlide(
 
 @Composable
 fun BeytOfDaySlide(
+    isExpandedScreen: Boolean,
     modifier: Modifier = Modifier,
     distich: RandomDistich? = null,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     val beytText = buildString {
         distich?.rightText?.let { append(it) }
@@ -760,7 +900,7 @@ fun BeytOfDaySlide(
                     .padding(SarvDimensions.dimen16),
         ) {
             Column(
-                modifier = Modifier.weight(SLIDER_CONTENT_WEIGHT).fillMaxHeight(),
+                modifier = Modifier.weight(1f).fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
@@ -771,24 +911,52 @@ fun BeytOfDaySlide(
                     textAlign = TextAlign.Start,
                 )
 
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = beytText,
-                    color = LightColorScheme.onSurface,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                )
+                if (isExpandedScreen){
 
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = poetText,
-                    color = LightColorScheme.primary,
-                    style = MaterialTheme.typography.labelMedium,
-                    textAlign = TextAlign.End,
-                )
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.Bottom) {
+                        Text(
+                            modifier = Modifier.weight(1f),
+                            text = beytText.replace("\n","      "),
+                            color = LightColorScheme.onSurface,
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Start,
+                        )
+
+                        Text(
+                            modifier = Modifier,
+                            text = poetText,
+                            color = LightColorScheme.primary,
+                            style = MaterialTheme.typography.labelMedium,
+                            textAlign = TextAlign.End,
+                        )
+                    }
+
+                }else{
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = beytText,
+                        color = LightColorScheme.onSurface,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                    )
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = poetText,
+                        color = LightColorScheme.primary,
+                        style = MaterialTheme.typography.labelMedium,
+                        textAlign = TextAlign.End,
+                    )
+                }
+
             }
 
-            Spacer(modifier = Modifier.weight(SLIDER_TOP_WEIGHT))
+            if (isExpandedScreen) {
+                Spacer(modifier = Modifier.weight(BEYT_SLIDE_SPACER_WEIGHT_EXPANDED))
+            }else{
+                Spacer(modifier = Modifier.weight(SLIDER_TOP_WEIGHT))
+            }
 
         }
     }

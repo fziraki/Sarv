@@ -125,13 +125,14 @@ private fun SarvTopBar(
     currentDestination: NavDestination?,
     navController: NavController,
     appState: SarvAppState,
+    isExpandedScreen: Boolean,
 ) {
     Box(
         modifier =
             Modifier
                 .windowInsetsPadding(WindowInsets.statusBars)
                 .fillMaxWidth()
-                .heightIn(min = SarvDimensions.dimen56),
+                .heightIn(min = if (isExpandedScreen) SarvDimensions.dimen40 else SarvDimensions.dimen56),
     ) {
         if (navController.previousBackStackEntry != null) {
             IconButton(
@@ -448,6 +449,7 @@ fun SarvNavigation(
                             currentDestination = currentDestination,
                             navController = navController,
                             appState = appState,
+                            isExpandedScreen = isExpandedScreen,
                         )
                     }
                 },

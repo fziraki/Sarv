@@ -7,6 +7,8 @@ import abkabk.azbarkon.features.poets.PoetListItemUi
 import abkabk.azbarkon.ui.components.SarvButton
 import abkabk.azbarkon.ui.theme.SarvTheme
 import abkabk.azbarkon.ui.theme.LightColorScheme
+import abkabk.azbarkon.core.ui.LocalWindowSizeClass
+import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,8 +19,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
@@ -87,6 +91,13 @@ fun PoetsListScreen(
     onAction: (PoetsListAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val columns =
+        when (LocalWindowSizeClass.current.widthSizeClass) {
+            WindowWidthSizeClass.Expanded -> GridCells.Fixed(2)
+            WindowWidthSizeClass.Medium -> GridCells.Fixed(1)
+            else -> GridCells.Fixed(1)
+        }
+
     Column(
         modifier =
             modifier
@@ -101,18 +112,19 @@ fun PoetsListScreen(
             modifier = Modifier.padding(horizontal = SarvDimensions.dimen16),
         )
 
-        LazyColumn(
+        LazyVerticalGrid(
+            columns = columns,
             modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(vertical = SarvDimensions.dimen24),
+            contentPadding = PaddingValues(vertical = SarvDimensions.dimen24, horizontal = SarvDimensions.dimen16),
             verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
         ) {
             state.featuredPoet?.let { featured ->
-                item {
+                item(span = { GridItemSpan(maxLineSpan) }) {
                     FeaturedPoetCard(
                         poet = featured,
                         onClick = { onAction(PoetsListAction.OnFeaturedPoetClick) },
                         onChatClick = { onAction(PoetsListAction.OnChatClick(featured.id)) },
-                        modifier = Modifier.padding(horizontal = SarvDimensions.dimen16),
                     )
                 }
             }
@@ -133,7 +145,6 @@ fun PoetsListScreen(
                     },
                     onDownloadClick = { onAction(PoetsListAction.OnDownloadPoet(poet.id)) },
                     onChatClick = { onAction(PoetsListAction.OnChatClick(poet.id)) },
-                    modifier = Modifier.padding(horizontal = SarvDimensions.dimen16),
                 )
             }
         }
