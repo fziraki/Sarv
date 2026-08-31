@@ -60,11 +60,15 @@ fun UpdateSarvDimensions() {
     SideEffect { SarvDimensions.scale = scale }
 }
 
+private const val EXPANDED_SCALE = 1.25f
+private const val MEDIUM_SCALE = 1.125f
+private const val COMPACT_SCALE = 1.0f
+
 @Composable
 private fun deviceScale(): Float {
     return when (LocalWindowSizeClass.current.widthSizeClass) {
-        WindowWidthSizeClass.Expanded -> 1.25f
-        WindowWidthSizeClass.Medium -> 1.125f
-        else -> 1.0f
+        WindowWidthSizeClass.Expanded -> EXPANDED_SCALE
+        WindowWidthSizeClass.Medium -> MEDIUM_SCALE
+        else -> COMPACT_SCALE
     }
 }

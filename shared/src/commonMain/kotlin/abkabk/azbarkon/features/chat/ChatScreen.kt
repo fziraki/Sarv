@@ -450,7 +450,12 @@ private fun ChatInputBar(
                 modifier =
                     Modifier
                         .weight(1f)
-                        .padding(start = SarvDimensions.dimen16, end = SarvDimensions.dimen4, top = SarvDimensions.dimen12, bottom = SarvDimensions.dimen12),
+                        .padding(
+                            start = SarvDimensions.dimen16,
+                            end = SarvDimensions.dimen4,
+                            top = SarvDimensions.dimen12,
+                            bottom = SarvDimensions.dimen12,
+                        ),
                 textStyle =
                     MaterialTheme.typography.bodyMedium.copy(
                         color = colors.inputText,

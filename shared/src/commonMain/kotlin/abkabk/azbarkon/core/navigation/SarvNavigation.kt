@@ -344,6 +344,44 @@ private fun SarvNavigationRail(
     }
 }
 
+private fun homeCallbacks(navController: NavController): HomeCallbacks =
+    HomeCallbacks(
+        onNavigateToPoetsList = {
+            navController.navigate(PoetsListRoute) {
+                popUpTo(HomeRoute) { saveState = true }
+                launchSingleTop = true
+                restoreState = true
+            }
+        },
+        onNavigateToPoetDetail = { poetId ->
+            navController.navigate(PoetDetailRoute(poetId))
+        },
+        onNavigateToPoemDetail = { poemId ->
+            navController.navigate(PoemDetailRoute(poemId = poemId))
+        },
+        onNavigateToMyPoems = {
+            navController.navigate(MyPoemsRoute)
+        },
+        onNavigateToSearch = {
+            navController.navigateToSearch()
+        },
+        onNavigateToTasvirNegar = {
+            navController.navigate(TasvirNegarRoute(poemId = null))
+        },
+        onNavigateToMemorizationSelect = {
+            navController.navigateToMemorizationSelect()
+        },
+        onNavigateToMemorizationPractice = {
+            navController.navigateToMemorizationPractice()
+        },
+        onNavigateToActiveMemorization = {
+            navController.navigateToActiveMemorization()
+        },
+        onNavigateToGame = {
+            navController.navigateToGame(GameTypeRoute.NEXT_VERSE)
+        },
+    )
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SarvNavigation(
@@ -432,43 +470,7 @@ fun SarvNavigation(
                     popExitTransition = { ExitTransition.None },
                 ) {
                     homeGraph(
-                        callbacks =
-                            HomeCallbacks(
-                                onNavigateToPoetsList = {
-                                    navController.navigate(PoetsListRoute) {
-                                        popUpTo(HomeRoute) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                },
-                                onNavigateToPoetDetail = { poetId ->
-                                    navController.navigate(PoetDetailRoute(poetId))
-                                },
-                                onNavigateToPoemDetail = { poemId ->
-                                    navController.navigate(PoemDetailRoute(poemId = poemId))
-                                },
-                                onNavigateToMyPoems = {
-                                    navController.navigate(MyPoemsRoute)
-                                },
-                                onNavigateToSearch = {
-                                    navController.navigateToSearch()
-                                },
-                                onNavigateToTasvirNegar = {
-                                    navController.navigate(TasvirNegarRoute(poemId = null))
-                                },
-                                onNavigateToMemorizationSelect = {
-                                    navController.navigateToMemorizationSelect()
-                                },
-                                onNavigateToMemorizationPractice = {
-                                    navController.navigateToMemorizationPractice()
-                                },
-                                onNavigateToActiveMemorization = {
-                                    navController.navigateToActiveMemorization()
-                                },
-                                onNavigateToGame = {
-                                    navController.navigateToGame(GameTypeRoute.NEXT_VERSE)
-                                },
-                            ),
+                        callbacks = homeCallbacks(navController),
                         onBackFromMyPoems = navController::navigateUp,
                         onNavigateToPoemDetailFromMyPoems = { poemId ->
                             navController.navigate(PoemDetailRoute(poemId = poemId))

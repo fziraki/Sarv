@@ -293,7 +293,12 @@ private fun MyPoemRow(
                     shape = RoundedCornerShape(SarvDimensions.dimen16),
                 )
                 .clickable(onClick = onPoemClick)
-                .padding(start = SarvDimensions.dimen14, top = SarvDimensions.dimen14, bottom = SarvDimensions.dimen14, end = SarvDimensions.dimen8),
+                .padding(
+                    start = SarvDimensions.dimen14,
+                    top = SarvDimensions.dimen14,
+                    bottom = SarvDimensions.dimen14,
+                    end = SarvDimensions.dimen8,
+                ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
     ) {

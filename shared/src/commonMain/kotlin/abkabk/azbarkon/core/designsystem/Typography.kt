@@ -71,12 +71,14 @@ fun sarvTypography(
     )
 }
 
+private const val MEDIUM_FONT_SCALE = 1.75f
+
 @Composable
 private fun deviceFontScale(): Float {
     val windowSizeClass = LocalWindowSizeClass.current
     return when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Expanded -> 2.0f
-        WindowWidthSizeClass.Medium -> 1.75f
+        WindowWidthSizeClass.Medium -> MEDIUM_FONT_SCALE
         else -> 1.0f
     }
 }

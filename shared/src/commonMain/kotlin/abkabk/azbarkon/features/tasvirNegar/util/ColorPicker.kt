@@ -114,7 +114,14 @@ private fun ColorSlider(
         horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text = label, modifier = Modifier.size(width = SarvDimensions.dimen80, height = SarvDimensions.dimen24), style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = label,
+            modifier = Modifier.size(
+                width = SarvDimensions.dimen80,
+                height = SarvDimensions.dimen24,
+            ),
+            style = MaterialTheme.typography.bodyMedium,
+        )
         SarvSlider(
             value = value,
             onValueChange = onValueChange,
