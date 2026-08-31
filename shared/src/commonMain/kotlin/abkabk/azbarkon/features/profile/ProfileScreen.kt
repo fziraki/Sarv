@@ -38,6 +38,7 @@ import sarv.shared.generated.resources.profile_import_confirm_title
 import sarv.shared.generated.resources.profile_version
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun ProfileRoot(
@@ -148,8 +149,8 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier.fillMaxSize().padding(SarvDimensions.dimen16),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
     ) {
         item {
             ProfileHeader(
@@ -178,7 +179,7 @@ fun ProfileScreen(
                 text = stringResource(Res.string.profile_version, versionName()),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.fillMaxSize().padding(top = 8.dp),
+                modifier = Modifier.fillMaxSize().padding(top = SarvDimensions.dimen8),
                 textAlign = TextAlign.Center,
             )
         }

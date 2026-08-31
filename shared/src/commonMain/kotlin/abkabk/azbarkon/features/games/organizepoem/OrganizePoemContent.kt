@@ -32,6 +32,7 @@ import sarv.shared.generated.resources.game_organize_poem_instruction
 import sarv.shared.generated.resources.keep
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 private const val POEM_LINE_COUNT = 4
 
@@ -51,7 +52,7 @@ fun OrganizePoemContent(
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
     ) {
         GamePoemCard(poetName = question.poetName) {
             OrganizePoemCardContent(
@@ -97,10 +98,10 @@ fun OrganizePoemContent(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
+                        .clip(RoundedCornerShape(SarvDimensions.dimen12))
                         .background(background)
-                        .padding(12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        .padding(SarvDimensions.dimen12),
+                horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
@@ -140,7 +141,7 @@ private fun OrganizePoemCardContent(
     initialOrderedLineIds: List<String>,
     answerPhase: QuizAnswerPhase,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8)) {
         if (answerPhase == QuizAnswerPhase.Answering) {
             if (orderedLineIds == initialOrderedLineIds) {
                 repeat(POEM_LINE_COUNT) {

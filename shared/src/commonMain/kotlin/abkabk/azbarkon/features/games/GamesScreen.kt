@@ -52,6 +52,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 private const val GAME_CARD_IMAGE_WEIGHT = 0.3f
 private const val GAME_CARD_CONTENT_WEIGHT = 0.7f
@@ -72,8 +73,8 @@ fun GamesScreen(
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+        contentPadding = PaddingValues(vertical = SarvDimensions.dimen24, horizontal = SarvDimensions.dimen16),
     ) {
         item {
             GameItem(
@@ -132,9 +133,9 @@ fun GameItem(
         modifier = modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min).clickable { onClick() },
-        shape = RoundedCornerShape(12.dp),
-        tonalElevation = 1.dp,
-        shadowElevation = 1.dp,
+        shape = RoundedCornerShape(SarvDimensions.dimen12),
+        tonalElevation = SarvDimensions.dimen1,
+        shadowElevation = SarvDimensions.dimen1,
         color = MaterialTheme.colorScheme.surfaceVariant
     ) {
         Row {
@@ -147,8 +148,8 @@ fun GameItem(
                             color = MaterialTheme.colorScheme.secondary,
                         )
                         .clip(RoundedCornerShape(
-                            topStart = 12.dp, bottomStart = 12.dp,
-                            topEnd = 0.dp, bottomEnd = 0.dp
+                            topStart = SarvDimensions.dimen12, bottomStart = SarvDimensions.dimen12,
+                            topEnd = SarvDimensions.dimen0, bottomEnd = SarvDimensions.dimen0
                         )),
                 painter = painterResource(icon),
                 contentDescription = null,
@@ -161,8 +162,8 @@ fun GameItem(
                         .weight(GAME_CARD_CONTENT_WEIGHT)
                         .background(
                             color = MaterialTheme.colorScheme.surfaceVariant,
-                        ).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                        ).padding(SarvDimensions.dimen16),
+                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(
@@ -185,10 +186,10 @@ fun GameItem(
                     modifier =
                         Modifier
                             .border(
-                                width = 1.dp,
+                                width = SarvDimensions.dimen1,
                                 color = MaterialTheme.colorScheme.tertiary,
-                                shape = RoundedCornerShape(8.dp),
-                            ).padding(horizontal = 8.dp, vertical = 4.dp),
+                                shape = RoundedCornerShape(SarvDimensions.dimen8),
+                            ).padding(horizontal = SarvDimensions.dimen8, vertical = SarvDimensions.dimen4),
                     text = "${gameType.baseScore} امتیاز ",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

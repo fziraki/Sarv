@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.game_next_verse_instruction
 import org.jetbrains.compose.resources.stringResource
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun NextVerseContent(
@@ -37,7 +38,7 @@ fun NextVerseContent(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
     ) {
 
         GamePoemCard(poetName = question.poetName) {
@@ -97,7 +98,7 @@ fun NextVerseContent(
                         .fillMaxWidth()
                         .gameOptionStyle(state)
                         .clickable(enabled = clickable) { onOptionSelect(index) }
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                        .padding(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen14),
                 text = option,
                 style = MaterialTheme.typography.bodyMedium,
                 color = contentColor,

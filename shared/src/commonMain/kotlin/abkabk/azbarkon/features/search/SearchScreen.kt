@@ -64,6 +64,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 private const val SHIMMER_ROW_COUNT = 7
 @Composable
@@ -162,8 +163,8 @@ fun SearchScreen(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+                    .padding(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen12),
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
         ) {
             SearchQueryField(
                 value = state.query,
@@ -176,7 +177,7 @@ fun SearchScreen(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
             ) {
                 SearchPickerField(
                     label = stringResource(Res.string.search_choose_poet),
@@ -245,8 +246,8 @@ private fun SearchResultsList(
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen8),
+                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
             ) {
                 items(
                     count = searchResults.itemCount,
@@ -267,8 +268,8 @@ private fun SearchResultsList(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .height(64.dp)
-                                    .clip(RoundedCornerShape(14.dp)),
+                                    .height(SarvDimensions.dimen64)
+                                    .clip(RoundedCornerShape(SarvDimensions.dimen14)),
                         )
                     }
                 }
@@ -283,14 +284,14 @@ private fun SearchResultsShimmer() {
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+                .padding(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen8),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
     ) {
         repeat(SHIMMER_ROW_COUNT) {
             ShimmerPlaceholder(
                 modifier =
-                    Modifier.fillMaxWidth().height(64.dp)
-                        .clip(RoundedCornerShape(14.dp)),
+                    Modifier.fillMaxWidth().height(SarvDimensions.dimen64)
+                        .clip(RoundedCornerShape(SarvDimensions.dimen14)),
             )
         }
     }
@@ -357,15 +358,15 @@ private fun SearchQueryField(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(SarvDimensions.dimen14))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
-                    width = 1.dp,
+                    width = SarvDimensions.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(14.dp),
-                ).padding(horizontal = 14.dp, vertical = 12.dp),
+                    shape = RoundedCornerShape(SarvDimensions.dimen14),
+                ).padding(horizontal = SarvDimensions.dimen14, vertical = SarvDimensions.dimen12),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
     ) {
         Icon(
             painter = painterResource(Res.drawable.search),
@@ -413,7 +414,7 @@ private fun SearchPickerField(
     Column(
         modifier =
             modifier
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(SarvDimensions.dimen14))
                 .background(
                     if (enabled) {
                         MaterialTheme.colorScheme.surfaceVariant
@@ -421,12 +422,12 @@ private fun SearchPickerField(
                         MaterialTheme.colorScheme.surfaceVariant
                     },
                 ).border(
-                    width = 1.dp,
+                    width = SarvDimensions.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(SarvDimensions.dimen14),
                 ).clickable(enabled = enabled, onClick = onClick)
-                .padding(horizontal = 12.dp, vertical = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+                .padding(horizontal = SarvDimensions.dimen12, vertical = SarvDimensions.dimen10),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4),
     ) {
         Text(
             text = label,
@@ -459,15 +460,15 @@ private fun SearchResultRow(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(SarvDimensions.dimen14))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
-                    width = 1.dp,
+                    width = SarvDimensions.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(SarvDimensions.dimen14),
                 ).clickable(onClick = onClick)
-                .padding(14.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
+                .padding(SarvDimensions.dimen14),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen6),
     ) {
         Text(
             text = "${result.poetName} · ${result.categoryName}",
@@ -502,14 +503,14 @@ private fun SearchOptionSheet(
                 Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+                    .padding(horizontal = SarvDimensions.dimen16)
+                    .padding(bottom = SarvDimensions.dimen24),
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4),
         ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp),
+                modifier = Modifier.padding(bottom = SarvDimensions.dimen8),
             )
             content()
         }
@@ -536,13 +537,13 @@ private fun SearchOptionRow(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(SarvDimensions.dimen8))
                 .clickable(onClick = onClick)
                 .padding(
                     start = (12 + depth * 16).dp,
-                    top = 10.dp,
-                    bottom = 10.dp,
-                    end = 12.dp,
+                    top = SarvDimensions.dimen10,
+                    bottom = SarvDimensions.dimen10,
+                    end = SarvDimensions.dimen12,
                 ),
     )
 }

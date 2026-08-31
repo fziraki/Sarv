@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun SarvPrimaryButton(
@@ -67,7 +68,7 @@ private fun SarvPrimaryButtonPreview() {
         SarvPrimaryButton(
             text = "تمرین حفظ این شعر",
             onClick = {},
-            modifier = Modifier.height(52.dp),
+            modifier = Modifier.height(SarvDimensions.dimen52),
         )
     }
 }

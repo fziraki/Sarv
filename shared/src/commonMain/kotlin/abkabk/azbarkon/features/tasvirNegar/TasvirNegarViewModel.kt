@@ -29,6 +29,7 @@ import sarv.shared.generated.resources.tasvir_negar_save_failed
 import sarv.shared.generated.resources.tasvir_negar_saved
 import sarv.shared.generated.resources.tasvir_negar_share_failed
 import kotlinx.coroutines.launch
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 private const val MIN_TEXT_SIZE = 1f
 private const val MAX_TEXT_SIZE = 32f
@@ -229,7 +230,7 @@ class TasvirNegarViewModel(
                     ),
                 poetName =
                     poetName.copy(
-                        offset = LayerOffset(y = 120.dp),
+                        offset = LayerOffset(y = SarvDimensions.dimen120),
                         color = Color.White,
                         sizeProgress = 1f,
                         visible = poetName.text.isNotBlank(),

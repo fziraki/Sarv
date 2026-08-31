@@ -73,6 +73,7 @@ import sarv.shared.generated.resources.ic_align_right
 import sarv.shared.generated.resources.ic_bold
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 private const val MIN_LAYER_WIDTH_FRACTION = 0.2f
 private const val MAX_LAYER_WIDTH_FRACTION = 0.95f
@@ -118,8 +119,8 @@ private fun selectionPalette(
 }
 
 private fun selectionBorderModifier(palette: SelectionPalette): Modifier =
-    (palette.halo?.let { Modifier.border(2.dp, it) } ?: Modifier)
-        .border(1.5.dp, palette.main)
+    (palette.halo?.let { Modifier.border(SarvDimensions.dimen2, it) } ?: Modifier)
+        .border(SarvDimensions.dimen5, palette.main)
 
 data class DraggableLayerCallbacks(
     val onSelect: () -> Unit,
@@ -489,9 +490,9 @@ private fun DraggableLayer(
                     Modifier
                         .widthIn(min = minWidth)
                         .wrapContentWidth()
-                        .padding(4.dp)
+                        .padding(SarvDimensions.dimen4)
                         .then(if (displaySelected) selectionBorderModifier(selectionPalette) else Modifier)
-                        .padding(8.dp)
+                        .padding(SarvDimensions.dimen8)
                         .then(
                             if (showLayerControls) {
                                 Modifier
@@ -552,8 +553,8 @@ private fun TextFormattingBar(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.padding(top = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
+        modifier = modifier.padding(top = SarvDimensions.dimen4),
+        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen2, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         FormattingIcon(
@@ -573,12 +574,12 @@ private fun FormattingIcon(
     tint: Color = Color.White,
     onClick: () -> Unit,
 ) {
-    IconButton(onClick = onClick, modifier = Modifier.size(28.dp)) {
+    IconButton(onClick = onClick, modifier = Modifier.size(SarvDimensions.dimen28)) {
         Icon(
             painter = painterResource(drawable),
             contentDescription = null,
             tint = tint,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(SarvDimensions.dimen20),
         )
     }
 }

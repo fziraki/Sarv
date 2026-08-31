@@ -1,5 +1,6 @@
 package abkabk.azbarkon.features.home
 
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 import abkabk.azbarkon.core.designsystem.brown
 import abkabk.azbarkon.core.notifications.MAX_NOTIFICATION_PERMISSION_DECLINES
 import abkabk.azbarkon.core.notifications.NotificationPermissionSheet
@@ -10,12 +11,10 @@ import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.RandomDistich
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
-import abkabk.azbarkon.ui.components.SarvButton
-import abkabk.azbarkon.ui.components.SarvPrimaryButton
 import abkabk.azbarkon.ui.components.NetworkImage
-import abkabk.azbarkon.ui.theme.SarvTheme
-import abkabk.azbarkon.ui.theme.DarkColorScheme
+import abkabk.azbarkon.ui.components.SarvButton
 import abkabk.azbarkon.ui.theme.LightColorScheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -27,7 +26,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +37,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -61,8 +60,14 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.all
 import sarv.shared.generated.resources.continue_memorization_desc
@@ -93,13 +98,6 @@ import sarv.shared.generated.resources.slider_tasvir_negar_text
 import sarv.shared.generated.resources.slider_tasvir_negar_title
 import sarv.shared.generated.resources.today_distich_bg
 import sarv.shared.generated.resources.unknown
-import kotlinx.coroutines.delay
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 
 private const val SLIDER_TOP_WEIGHT = 0.4f
 private const val SLIDER_CONTENT_WEIGHT = 0.6f
@@ -188,7 +186,7 @@ fun HomeScreen(
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 12.dp),
+        contentPadding = PaddingValues(vertical = SarvDimensions.dimen12),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         item {
@@ -251,11 +249,11 @@ fun Poets(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(horizontal = SarvDimensions.dimen16),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = SarvDimensions.dimen8),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
@@ -273,7 +271,7 @@ fun Poets(
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
         ) {
             items(
                 items = poets,
@@ -299,16 +297,16 @@ fun PoetItem(
     Column(
         modifier =
             modifier
-                .width(80.dp)
+                .width(SarvDimensions.dimen80)
                 .clickable(onClick = onClick),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if (item.imageUrl != null) {
             NetworkImage(
                 modifier =
                     Modifier
-                        .size(80.dp)
+                        .size(SarvDimensions.dimen80)
                         .clip(CircleShape),
                 imageUrl = item.imageUrl,
             )
@@ -316,7 +314,7 @@ fun PoetItem(
             Image(
                 modifier =
                     Modifier
-                        .size(80.dp)
+                        .size(SarvDimensions.dimen80)
                         .clip(CircleShape)
                         .background(color = MaterialTheme.colorScheme.primary),
                 painter = painterResource(Res.drawable.unknown),
@@ -344,8 +342,8 @@ fun QuickAccessMenu(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = SarvDimensions.dimen16),
+        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         QuickAccessItem(
@@ -388,15 +386,15 @@ fun QuickAccessItem(
 
     Surface(
         modifier = modifier.clickable { onItemClick() },
-        shape = RoundedCornerShape(24.dp),
-        tonalElevation = 1.dp,
-        shadowElevation = 1.dp,
+        shape = RoundedCornerShape(SarvDimensions.dimen24),
+        tonalElevation = SarvDimensions.dimen1,
+        shadowElevation = SarvDimensions.dimen1,
         color = MaterialTheme.colorScheme.surfaceVariant
     ) {
 
         Column(
-            modifier = Modifier.padding(vertical = 20.dp, horizontal = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(vertical = SarvDimensions.dimen20, horizontal = SarvDimensions.dimen4),
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
@@ -447,26 +445,26 @@ fun HeroCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = SarvDimensions.dimen16),
     ) {
         Image(
             painter = painterResource(Res.drawable.herobg),
             contentDescription = null,
             modifier = Modifier.matchParentSize()
-                .clip(RoundedCornerShape(16.dp)),
+                .clip(RoundedCornerShape(SarvDimensions.dimen16)),
             contentScale = ContentScale.Crop
         )
         Row(
             modifier =
                 Modifier
-                    .padding(16.dp)
+                    .padding(SarvDimensions.dimen16)
                     .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Spacer(modifier = Modifier.weight(1f))
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(
@@ -541,13 +539,13 @@ fun TopSlider(
     Column(modifier = modifier) {
         HorizontalPager(
             state = pagerState,
-            pageSpacing = 16.dp,
-            contentPadding = PaddingValues(horizontal = 32.dp),
+            pageSpacing = SarvDimensions.dimen16,
+            contentPadding = PaddingValues(horizontal = SarvDimensions.dimen32),
             beyondViewportPageCount = 1,
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(180.dp),
+                    .height(SarvDimensions.dimen180),
         ) { page ->
 
             val item = getItem(page)
@@ -561,7 +559,7 @@ fun TopSlider(
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(SarvDimensions.dimen10))
 
         // 🎯 Indicators
         Row(
@@ -574,8 +572,8 @@ fun TopSlider(
                 Box(
                     modifier =
                         Modifier
-                            .padding(horizontal = 4.dp)
-                            .size(6.dp)
+                            .padding(horizontal = SarvDimensions.dimen4)
+                            .size(SarvDimensions.dimen6)
                             .clip(CircleShape)
                             .background(
                                 if (currentIndex == index) {
@@ -602,14 +600,14 @@ fun TasvirNegarSlide(
             painter = painterResource(Res.drawable.image_creator_bg),
             contentDescription = null,
             modifier = Modifier.matchParentSize()
-                .clip(RoundedCornerShape(16.dp)),
+                .clip(RoundedCornerShape(SarvDimensions.dimen16)),
             contentScale = ContentScale.Crop
         )
         Row(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(SarvDimensions.dimen16),
         ) {
 
             Spacer(modifier = Modifier.weight(SLIDER_TOP_WEIGHT))
@@ -642,7 +640,7 @@ fun TasvirNegarSlide(
                     modifier =
                         Modifier
                             .fillMaxWidth(SLIDER_BUTTON_WIDTH_FRACTION)
-                            .height(36.dp),
+                            .height(SarvDimensions.dimen36),
                     textStyle = MaterialTheme.typography.labelSmall,
                     colors =
                         ButtonColors(
@@ -669,13 +667,13 @@ fun ChallengeSlide(
             painter = painterResource(Res.drawable.next_verse_game_bg),
             contentDescription = null,
             modifier = Modifier.matchParentSize()
-                .clip(RoundedCornerShape(16.dp)),
+                .clip(RoundedCornerShape(SarvDimensions.dimen16)),
             contentScale = ContentScale.Crop
         )
         Row(
             modifier =
                 Modifier
-                    .fillMaxSize().padding(16.dp),
+                    .fillMaxSize().padding(SarvDimensions.dimen16),
         ) {
 
             Spacer(modifier = Modifier.weight(SLIDER_TOP_WEIGHT))
@@ -707,7 +705,7 @@ fun ChallengeSlide(
                     modifier =
                         Modifier
                             .fillMaxWidth(SLIDER_BUTTON_WIDTH_FRACTION)
-                            .height(36.dp),
+                            .height(SarvDimensions.dimen36),
                     textStyle = MaterialTheme.typography.labelSmall,
                     colors =
                         ButtonColors(
@@ -738,8 +736,8 @@ fun BeytOfDaySlide(
 
     Box(modifier = modifier
         .shadow(
-            shape = RoundedCornerShape(16.dp),
-            elevation = 1.dp,
+            shape = RoundedCornerShape(SarvDimensions.dimen16),
+            elevation = SarvDimensions.dimen1,
             spotColor = MaterialTheme.colorScheme.tertiary,
             ambientColor = MaterialTheme.colorScheme.tertiary
         )
@@ -751,7 +749,7 @@ fun BeytOfDaySlide(
             painter = painterResource(Res.drawable.today_distich_bg),
             contentDescription = null,
             modifier = Modifier.matchParentSize()
-                .clip(RoundedCornerShape(16.dp)),
+                .clip(RoundedCornerShape(SarvDimensions.dimen16)),
             contentScale = ContentScale.Crop
         )
 
@@ -759,7 +757,7 @@ fun BeytOfDaySlide(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(SarvDimensions.dimen16),
         ) {
             Column(
                 modifier = Modifier.weight(SLIDER_CONTENT_WEIGHT).fillMaxHeight(),

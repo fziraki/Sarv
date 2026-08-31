@@ -49,6 +49,7 @@ import sarv.shared.generated.resources.poets_view_works
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun PoetsListRoot(
@@ -89,7 +90,7 @@ fun PoetsListScreen(
     Column(
         modifier =
             modifier
-                .fillMaxSize().padding(top = 16.dp)
+                .fillMaxSize().padding(top = SarvDimensions.dimen16)
                 .background(MaterialTheme.colorScheme.background),
     ) {
 
@@ -97,13 +98,13 @@ fun PoetsListScreen(
             value = state.searchQuery,
             placeholder = stringResource(Res.string.poets_filter_placeholder),
             onValueChange = { onAction(PoetsListAction.OnSearchQueryChange(it)) },
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(horizontal = SarvDimensions.dimen16),
         )
 
         LazyColumn(
             modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(vertical = SarvDimensions.dimen24),
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
         ) {
             state.featuredPoet?.let { featured ->
                 item {
@@ -111,7 +112,7 @@ fun PoetsListScreen(
                         poet = featured,
                         onClick = { onAction(PoetsListAction.OnFeaturedPoetClick) },
                         onChatClick = { onAction(PoetsListAction.OnChatClick(featured.id)) },
-                        modifier = Modifier.padding(horizontal = 16.dp),
+                        modifier = Modifier.padding(horizontal = SarvDimensions.dimen16),
                     )
                 }
             }
@@ -132,7 +133,7 @@ fun PoetsListScreen(
                     },
                     onDownloadClick = { onAction(PoetsListAction.OnDownloadPoet(poet.id)) },
                     onChatClick = { onAction(PoetsListAction.OnChatClick(poet.id)) },
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(horizontal = SarvDimensions.dimen16),
                 )
             }
         }
@@ -150,29 +151,29 @@ private fun FeaturedPoetCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
+                .clip(RoundedCornerShape(SarvDimensions.dimen20))
                 .background(LightColorScheme.primary)
-                .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+                .padding(SarvDimensions.dimen20),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen14),
     ) {
 
         Row(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(SarvDimensions.dimen12))
                     .clickable(onClick = onClick),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             PoetAvatar(
                 imageUrl = poet.imageUrl,
-                modifier = Modifier.size(72.dp),
+                modifier = Modifier.size(SarvDimensions.dimen72),
             )
 
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen6),
             ) {
                 Text(
                     text = poet.name,
@@ -201,7 +202,7 @@ private fun FeaturedPoetCard(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
@@ -214,7 +215,7 @@ private fun FeaturedPoetCard(
                         Modifier
                             .clip(CircleShape)
                             .clickable(onClick = onChatClick)
-                            .padding(4.dp),
+                            .padding(SarvDimensions.dimen4),
                 )
             }
 
@@ -245,26 +246,26 @@ private fun PoetListRow(
 ) {
     Card(
         modifier = modifier.fillMaxWidth().clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(SarvDimensions.dimen16),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
-        elevation =  CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation =  CardDefaults.cardElevation(defaultElevation = SarvDimensions.dimen1)
     ){
         Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            modifier = Modifier.padding(horizontal = SarvDimensions.dimen14, vertical = SarvDimensions.dimen12),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen20),
         ) {
 
             PoetAvatar(
                 imageUrl = poet.imageUrl,
-                modifier = Modifier.size(52.dp),
+                modifier = Modifier.size(SarvDimensions.dimen52),
             )
 
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4),
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(
@@ -290,8 +291,8 @@ private fun PoetListRow(
             if (!poet.isDownloaded) {
                 if (isDownloading) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(SarvDimensions.dimen24),
+                        strokeWidth = SarvDimensions.dimen2,
                     )
                 } else {
                     Icon(
@@ -302,7 +303,7 @@ private fun PoetListRow(
                             Modifier
                                 .clip(CircleShape)
                                 .clickable(onClick = onDownloadClick)
-                                .padding(4.dp),
+                                .padding(SarvDimensions.dimen4),
                     )
                 }
             } else if (poet.canChat) {
@@ -314,7 +315,7 @@ private fun PoetListRow(
                         Modifier
                             .clip(CircleShape)
                             .clickable(onClick = onChatClick)
-                            .padding(4.dp),
+                            .padding(SarvDimensions.dimen4),
                 )
             }
         }

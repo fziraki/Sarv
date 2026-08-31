@@ -1,12 +1,16 @@
 package abkabk.azbarkon
 
+import abkabk.azbarkon.core.designsystem.UpdateSarvDimensions
 import abkabk.azbarkon.core.navigation.SarvNavigation
+import abkabk.azbarkon.core.ui.LocalWindowSizeClass
+import abkabk.azbarkon.core.ui.calculateWindowSizeClass
 import abkabk.azbarkon.core.ui.createSarvImageLoader
 import abkabk.azbarkon.domain.model.ThemeMode
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
 import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.setSingletonImageLoaderFactory
@@ -36,10 +40,18 @@ fun App(
         initialValue = 1f,
     )
 
-    SarvTheme(darkTheme = darkTheme, fontSizeScale = fontSizeScale) {
-        SarvNavigation(
-            initialPoemId = initialPoemId,
-            openMemorizationPractice = openMemorizationPractice,
-        )
+    val windowSizeClass = calculateWindowSizeClass()
+    println("SarvDebug: WindowSizeClass = ${windowSizeClass.widthSizeClass}")
+
+    CompositionLocalProvider(
+        LocalWindowSizeClass provides windowSizeClass,
+    ) {
+        UpdateSarvDimensions()
+        SarvTheme(darkTheme = darkTheme, fontSizeScale = fontSizeScale) {
+            SarvNavigation(
+                initialPoemId = initialPoemId,
+                openMemorizationPractice = openMemorizationPractice,
+            )
+        }
     }
 }

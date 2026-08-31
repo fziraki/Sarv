@@ -79,6 +79,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 private const val RING_SPIN_DURATION_MS = 3000
 private const val MILLIS_PER_SECOND = 1000L
@@ -206,7 +207,7 @@ fun PoemDetailScreen(
                             top = paddingValues.calculateTopPadding(),
                             bottom = paddingValues.calculateBottomPadding()
                         ),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(SarvDimensions.dimen16),
                 ) {
                     items(
                         items = state.verses,
@@ -220,7 +221,7 @@ fun PoemDetailScreen(
 
                     item {
                         PoemOrnamentalDivider(
-                            modifier = Modifier.padding(top = 24.dp),
+                            modifier = Modifier.padding(top = SarvDimensions.dimen24),
                         )
                     }
                 }
@@ -243,14 +244,14 @@ private fun PoemDetailBottomBar(
             Modifier
                 .keyboardAboveIme()
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+                .padding(horizontal = SarvDimensions.dimen16)
+                .padding(bottom = SarvDimensions.dimen24),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
     ) {
         if (state.isFindBarVisible) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
 
@@ -316,7 +317,7 @@ private fun TrackSelector(
                     .fillMaxWidth()
                     .clickable { menuExpanded = true },
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
         ) {
             Text(
                 text = trackLabel(selected.track),
@@ -324,13 +325,13 @@ private fun TrackSelector(
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f).padding(start = 8.dp),
+                modifier = Modifier.weight(1f).padding(start = SarvDimensions.dimen8),
             )
             Icon(
                 painter = painterResource(Res.drawable.arrow_drop_down),
                 contentDescription = stringResource(Res.string.cd_select_track),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(22.dp),
+                modifier = Modifier.size(SarvDimensions.dimen22),
             )
         }
 
@@ -388,15 +389,15 @@ private fun TrackPlayerCard(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(SarvDimensions.dimen16))
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .border(
-                width = 1.dp,
+                width = SarvDimensions.dimen1,
                 color = MaterialTheme.colorScheme.outlineVariant,
-                shape = RoundedCornerShape(16.dp),
-            ).padding(8.dp),
+                shape = RoundedCornerShape(SarvDimensions.dimen16),
+            ).padding(SarvDimensions.dimen8),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
+        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen2)
     ) {
         PlayPauseButton(
             isPlaying = activeTrack.isPlaying,
@@ -405,7 +406,7 @@ private fun TrackPlayerCard(
         )
 
 
-        Column(modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Column(modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4)) {
 
             TrackSelector(
                 tracks = tracks,
@@ -416,7 +417,7 @@ private fun TrackPlayerCard(
             Row(
                 modifier = modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8)
             ) {
 
                 SarvSlider(
@@ -430,11 +431,11 @@ private fun TrackPlayerCard(
                         onSeekFinish(activeTrack.track, finalValue)
                         dragProgress = null
                     },
-                    modifier = Modifier.weight(1f).height(16.dp),
+                    modifier = Modifier.weight(1f).height(SarvDimensions.dimen16),
                 )
 
                 Text(
-                    modifier = modifier.padding(end = 6.dp),
+                    modifier = modifier.padding(end = SarvDimensions.dimen6),
                     text = "${formatMs(activeTrack.positionMs)} / ${formatMs(activeTrack.durationMs)}",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -459,14 +460,14 @@ private fun PlayPauseButton(
 
     Box(
         modifier = Modifier
-            .size(48.dp)
+            .size(SarvDimensions.dimen48)
             .clip(CircleShape)
             .clickable(enabled = !isLoading, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Box(
             modifier = Modifier
-                .size(40.dp)
+                .size(SarvDimensions.dimen40)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surface),
             contentAlignment = Alignment.Center,
@@ -475,7 +476,7 @@ private fun PlayPauseButton(
                 painter = painterResource(if (isPlaying) Res.drawable.pause else Res.drawable.play),
                 contentDescription = if (isPlaying) "توقف" else "پخش",
                 tint = iconTint,
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(SarvDimensions.dimen20),
             )
         }
 
@@ -489,8 +490,8 @@ private fun PlayPauseButton(
             }
             CircularProgressIndicator(
                 progress = { ringProgress.value },
-                modifier = Modifier.size(48.dp),
-                strokeWidth = 3.dp,
+                modifier = Modifier.size(SarvDimensions.dimen48),
+                strokeWidth = SarvDimensions.dimen3,
                 color = iconTint,
                 trackColor = MaterialTheme.colorScheme.primary,
             )

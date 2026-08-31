@@ -40,6 +40,7 @@ import sarv.shared.generated.resources.tasvir_font_2
 import sarv.shared.generated.resources.tasvir_font_3
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun OptionsRow(
@@ -71,8 +72,8 @@ private fun ColorOptionsRow(
     onColorClick: (Int) -> Unit,
 ) {
     LazyRow(
-        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(horizontal = SarvDimensions.dimen8, vertical = SarvDimensions.dimen8),
+        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
     ) {
         itemsIndexed(TasvirNegarCatalog.colorOptions) { index, option ->
             ColorOptionItem(option = option, onClick = { onColorClick(index) })
@@ -88,9 +89,9 @@ private fun ColorOptionItem(
     Box(
         modifier =
             Modifier
-                .size(40.dp)
+                .size(SarvDimensions.dimen40)
                 .clip(CircleShape)
-                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
+                .border(SarvDimensions.dimen1, MaterialTheme.colorScheme.outlineVariant, CircleShape)
                 .then(
                     if (option.color != null) {
                         Modifier.background(option.color)
@@ -105,7 +106,7 @@ private fun ColorOptionItem(
     ) {
         if (option.isCustomPicker) {
             Icon(
-                modifier = Modifier.size(36.dp),
+                modifier = Modifier.size(SarvDimensions.dimen36),
                 painter = painterResource(Res.drawable.add_box_24px),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -118,8 +119,8 @@ private fun ShapeOptionsRow(
     onShapeClick: (Int) -> Unit,
 ) {
     LazyRow(
-        modifier = Modifier.padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(vertical = SarvDimensions.dimen8),
+        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
     ) {
         itemsIndexed(TasvirNegarCatalog.shapeOptions) { index, item ->
             ShapeOptionItem(item = item, onClick = { onShapeClick(index) })
@@ -135,18 +136,18 @@ private fun ShapeOptionItem(
     Box(
         modifier =
             Modifier
-                .size(56.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .size(SarvDimensions.dimen56)
+                .clip(RoundedCornerShape(SarvDimensions.dimen8))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp))
+                .border(SarvDimensions.dimen1, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(SarvDimensions.dimen8))
                 .clickable(onClick = onClick)
-                .padding(8.dp),
+                .padding(SarvDimensions.dimen8),
         contentAlignment = Alignment.Center,
     ) {
         Image(
             painter = tasvirNegarPainter(item.id),
             contentDescription = null,
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier.size(SarvDimensions.dimen40),
             contentScale = ContentScale.Fit,
         )
     }
@@ -166,19 +167,19 @@ private fun FontOptionsRow(
         modifier =
             Modifier
                 .horizontalScroll(rememberScrollState())
-                .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(vertical = SarvDimensions.dimen8),
+        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
     ) {
         labels.forEachIndexed { index, (label, preset) ->
             Box(
                 modifier =
                     Modifier
-                        .size(56.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .size(SarvDimensions.dimen56)
+                        .clip(RoundedCornerShape(SarvDimensions.dimen8))
                         .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp))
+                        .border(SarvDimensions.dimen1, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(SarvDimensions.dimen8))
                         .clickable { onFontClick(index) }
-                        .padding(8.dp),
+                        .padding(SarvDimensions.dimen8),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(

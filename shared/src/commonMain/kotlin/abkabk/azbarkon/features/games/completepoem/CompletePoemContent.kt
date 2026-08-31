@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.game_complete_poem_instruction
 import org.jetbrains.compose.resources.stringResource
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 private const val MIN_BLANK_PARTS = 3
 
@@ -46,11 +47,11 @@ fun CompletePoemContent(
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
     ) {
 
         GamePoemCard(poetName = question.poetName) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8)) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = question.line1,
@@ -71,7 +72,7 @@ fun CompletePoemContent(
         question.options.chunked(2).forEach { rowWords ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
             ) {
                 rowWords.forEach { word ->
                     val index = question.options.indexOf(word)
@@ -123,7 +124,7 @@ fun CompletePoemContent(
                                 .weight(1f)
                                 .gameOptionStyle(state)
                                 .clickable(enabled = clickable) { onWordSelect(word) }
-                                .padding(horizontal = 12.dp, vertical = 14.dp),
+                                .padding(horizontal = SarvDimensions.dimen12, vertical = SarvDimensions.dimen14),
                         text =
                             completePoemOptionLabel(
                                 word = word,

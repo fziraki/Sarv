@@ -30,13 +30,14 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 private const val TRACK_MIN_DIVISOR = 0.001f
 private const val VERTICAL_ROTATION_DEGREES = 270f
-private val THUMB_SIZE: Dp = 16.dp
-private val TRACK_HEIGHT: Dp = 4.dp
-private val TOUCH_WIDTH: Dp = 32.dp
-private val SLIDER_LENGTH: Dp = 200.dp
+private val THUMB_SIZE: Dp = SarvDimensions.dimen16
+private val TRACK_HEIGHT: Dp = SarvDimensions.dimen4
+private val TOUCH_WIDTH: Dp = SarvDimensions.dimen32
+private val SLIDER_LENGTH: Dp = SarvDimensions.dimen200
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

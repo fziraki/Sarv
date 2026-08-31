@@ -24,11 +24,12 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 private const val DRAG_SHADOW_ELEVATION = 8f
 
-private val RowSpacing = 8.dp
-private val DragReorderThreshold = 48.dp
+private val RowSpacing = SarvDimensions.dimen8
+private val DragReorderThreshold = SarvDimensions.dimen48
 
 private val dragScaleSpring =
     spring<Float>(

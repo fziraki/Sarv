@@ -32,6 +32,7 @@ import sarv.shared.generated.resources.notifications
 import sarv.shared.generated.resources.search
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun Header(
@@ -46,14 +47,14 @@ fun Header(
             modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 8.dp, vertical = 12.dp),
+                .padding(horizontal = SarvDimensions.dimen8, vertical = SarvDimensions.dimen12),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (onBackClick != null) {
             Box(
                 modifier =
                     Modifier
-                        .size(40.dp)
+                        .size(SarvDimensions.dimen40)
                         .clip(CircleShape)
                         .clickable(onClick = onBackClick),
                 contentAlignment = Alignment.Center,
@@ -65,13 +66,13 @@ fun Header(
                 )
             }
         } else {
-            Box(modifier = Modifier.size(40.dp))
+            Box(modifier = Modifier.size(SarvDimensions.dimen40))
         }
 
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(2.dp),
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen2),
         ) {
             Text(
                 text = title,
@@ -90,7 +91,7 @@ fun Header(
         if (action != null) {
             HeaderActionButton(action)
         } else {
-            Box(modifier = Modifier.size(40.dp))
+            Box(modifier = Modifier.size(SarvDimensions.dimen40))
         }
     }
 }
@@ -104,9 +105,9 @@ private fun HeaderActionButton(action: HeaderAction) {
             color = MaterialTheme.colorScheme.primary,
             modifier =
                 Modifier
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(SarvDimensions.dimen8))
                     .clickable(onClick = action.onClick)
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                    .padding(horizontal = SarvDimensions.dimen8, vertical = SarvDimensions.dimen8),
         )
         return
     }
@@ -114,7 +115,7 @@ private fun HeaderActionButton(action: HeaderAction) {
     Box(
         modifier =
             Modifier
-                .size(40.dp)
+                .size(SarvDimensions.dimen40)
                 .clip(CircleShape)
                 .clickable(onClick = action.onClick),
         contentAlignment = Alignment.Center,

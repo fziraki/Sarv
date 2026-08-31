@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.game_find_poet_instruction
 import org.jetbrains.compose.resources.stringResource
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun FindPoetContent(
@@ -64,11 +65,11 @@ fun FindPoetContent(
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
     ) {
 
         GamePoemCard(poetName = poetName, poetNameColor = poetNameColor) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8)) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = question.line1,
@@ -86,11 +87,11 @@ fun FindPoetContent(
 
         GameInstructionText(text = stringResource(Res.string.game_find_poet_instruction))
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8)) {
             question.options.chunked(2).forEach { rowOptions ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
                 ) {
                     rowOptions.forEach { poetOption ->
                         val index = question.options.indexOf(poetOption)
@@ -115,8 +116,8 @@ fun FindPoetContent(
                                     .gameOptionStyle(state)
                                     .clickable(enabled = clickable) {
                                         onPoetSelect(poetOption.id)
-                                    }.padding(12.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    }.padding(SarvDimensions.dimen12),
+                            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             FindPoetOptionAvatar(imageUrl = poetOption.imageUrl)
@@ -141,7 +142,7 @@ private fun FindPoetOptionAvatar(
     imageUrl: String?,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier.size(36.dp).clip(CircleShape)) {
+    Box(modifier = modifier.size(SarvDimensions.dimen36).clip(CircleShape)) {
         if (imageUrl.isNullOrBlank()) {
             ShimmerPlaceholder(modifier = Modifier.fillMaxSize())
         } else {

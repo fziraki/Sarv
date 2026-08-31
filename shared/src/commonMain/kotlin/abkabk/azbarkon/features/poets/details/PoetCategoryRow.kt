@@ -27,6 +27,7 @@ import sarv.shared.generated.resources.cd_expand_category
 import sarv.shared.generated.resources.maktab
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun PoetCategoryRow(
@@ -60,12 +61,12 @@ fun PoetCategoryRow(
                         Modifier
                     },
                 )
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(SarvDimensions.dimen16))
                 .background(backgroundColor)
                 .border(
-                    width = 1.dp,
+                    width = SarvDimensions.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(SarvDimensions.dimen16),
                 ).clickable(
                     onClick = {
                         if (category.isParent) {
@@ -74,13 +75,13 @@ fun PoetCategoryRow(
                             onLeafClick()
                         }
                     },
-                ).padding(14.dp),
+                ).padding(SarvDimensions.dimen14),
     ) {
         Box(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 2.dp),
+                    .padding(vertical = SarvDimensions.dimen2),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -99,7 +100,7 @@ fun PoetCategoryRow(
                     modifier =
                         Modifier
                             .align(Alignment.CenterStart)
-                            .size(24.dp),
+                            .size(SarvDimensions.dimen24),
                 )
             }
         }
@@ -111,8 +112,8 @@ fun PoetCategoryRow(
 private fun PoetCategoryRowPreview() {
     SarvTheme {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(SarvDimensions.dimen16),
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
         ) {
             PoetCategoryRow(
                 category =

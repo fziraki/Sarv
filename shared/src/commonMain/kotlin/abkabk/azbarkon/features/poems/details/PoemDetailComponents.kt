@@ -48,6 +48,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun PoemVerseItem(
@@ -118,10 +119,10 @@ private fun CommentVerseItem(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .padding(vertical = SarvDimensions.dimen8)
+                .clip(RoundedCornerShape(SarvDimensions.dimen8))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(horizontal = 12.dp, vertical = 10.dp),
+                .padding(horizontal = SarvDimensions.dimen12, vertical = SarvDimensions.dimen10),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
@@ -140,7 +141,7 @@ private fun RightVerseItem(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = SarvDimensions.dimen16),
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.Start,
@@ -159,7 +160,7 @@ private fun LeftVerseItem(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(bottom = 12.dp),
+                .padding(bottom = SarvDimensions.dimen12),
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.End,
@@ -178,7 +179,7 @@ private fun CenterVerseItem(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(top = 12.dp),
+                .padding(top = SarvDimensions.dimen12),
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.Center,
@@ -197,7 +198,7 @@ private fun ParagraphVerseItem(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
+                .padding(bottom = SarvDimensions.dimen8),
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.Center,
@@ -216,7 +217,7 @@ private fun SingleVerseItem(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp),
+                .padding(vertical = SarvDimensions.dimen16),
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.Center,
@@ -229,20 +230,20 @@ fun PoemOrnamentalDivider(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(
-            4.dp, Alignment.CenterHorizontally),
+            SarvDimensions.dimen4, Alignment.CenterHorizontally),
     ) {
         Image(
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier.size(SarvDimensions.dimen32),
             painter = painterResource(Res.drawable.ornoment230r),
             contentDescription = null,
         )
         Image(
-            modifier = Modifier.size(48.dp),
+            modifier = Modifier.size(SarvDimensions.dimen48),
             painter = painterResource(Res.drawable.ornoment30),
             contentDescription = null,
         )
         Image(
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier.size(SarvDimensions.dimen32),
             painter = painterResource(Res.drawable.ornoment230l),
             contentDescription = null,
         )
@@ -272,13 +273,13 @@ fun PoemActionBar(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(SarvDimensions.dimen16))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
-                    width = 1.dp,
+                    width = SarvDimensions.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(16.dp),
-                ).padding(vertical = 8.dp, horizontal = 6.dp),
+                    shape = RoundedCornerShape(SarvDimensions.dimen16),
+                ).padding(vertical = SarvDimensions.dimen8, horizontal = SarvDimensions.dimen6),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -341,18 +342,18 @@ private fun PoemActionItem(
     Column(
         modifier =
             modifier
-                .width(64.dp)
-                .clip(RoundedCornerShape(12.dp))
+                .width(SarvDimensions.dimen64)
+                .clip(RoundedCornerShape(SarvDimensions.dimen12))
                 .clickable(onClick = onClick)
-                .padding(vertical = 4.dp),
+                .padding(vertical = SarvDimensions.dimen4),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen6),
     ) {
         Icon(
             painter = painterResource(icon),
             contentDescription = stringResource(contentDescription),
             tint = tint,
-            modifier = Modifier.size(22.dp),
+            modifier = Modifier.size(SarvDimensions.dimen22),
         )
         Text(
             text = stringResource(label),

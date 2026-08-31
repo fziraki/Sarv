@@ -1,5 +1,6 @@
 package abkabk.azbarkon.core.ui
 
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -39,15 +40,15 @@ fun FindTextField(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(SarvDimensions.dimen14))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
-                    width = 1.dp,
+                    width = SarvDimensions.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(14.dp),
-                ).padding(horizontal = 14.dp, vertical = 12.dp),
+                    shape = RoundedCornerShape(SarvDimensions.dimen14),
+                ).padding(horizontal = SarvDimensions.dimen14, vertical = SarvDimensions.dimen12),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
     ) {
         Icon(
             painter = painterResource(Res.drawable.search),

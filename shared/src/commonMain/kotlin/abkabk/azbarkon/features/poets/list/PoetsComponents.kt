@@ -30,6 +30,7 @@ import sarv.shared.generated.resources.search
 import sarv.shared.generated.resources.unknown
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 
 @Composable
@@ -43,21 +44,21 @@ fun FilterField(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(SarvDimensions.dimen14))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
-                    width = 1.dp,
+                    width = SarvDimensions.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(14.dp),
-                ).padding(horizontal = 14.dp, vertical = 12.dp),
+                    shape = RoundedCornerShape(SarvDimensions.dimen14),
+                ).padding(horizontal = SarvDimensions.dimen14, vertical = SarvDimensions.dimen12),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
     ) {
         Icon(
             painter = painterResource(Res.drawable.filter),
             contentDescription = stringResource(Res.string.search),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(SarvDimensions.dimen20),
         )
 
         BasicTextField(
@@ -102,7 +103,7 @@ fun PoetAvatar(
             modifier =
                 modifier.clip(CircleShape)
                     .background(color = MaterialTheme.colorScheme.primary)
-                    .padding(8.dp),
+                    .padding(SarvDimensions.dimen8),
             painter = painterResource(Res.drawable.unknown),
             contentDescription = null,
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.surface)

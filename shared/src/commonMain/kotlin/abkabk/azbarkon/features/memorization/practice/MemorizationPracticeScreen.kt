@@ -99,14 +99,15 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 private const val PROGRESS_FLIP_ROTATION_DEGREES = 180f
 private val CORRECT_DIFF_COLOR = Color(0xFF2E7D32)
 private val MISSING_DIFF_COLOR = Color(0xFFF9A825)
 private val WRONG_DIFF_COLOR = Color(0xFFC62828)
 
-private val PracticePrimaryButtonHeight = 52.dp
-private val PracticeModeIconSize = 48.dp
+private val PracticePrimaryButtonHeight = SarvDimensions.dimen52
+private val PracticeModeIconSize = SarvDimensions.dimen48
 
 @Composable
 fun MemorizationPracticeRoot(
@@ -177,7 +178,7 @@ fun MemorizationPracticeScreen(
                     onAction = onAction,
                     modifier =
                         Modifier
-                            .padding(horizontal = 20.dp, vertical = 12.dp)
+                            .padding(horizontal = SarvDimensions.dimen20, vertical = SarvDimensions.dimen12)
                             .keyboardAboveIme(),
                 )
             }
@@ -193,7 +194,7 @@ fun MemorizationPracticeScreen(
                         Modifier
                             .fillMaxSize()
                             .padding(paddingValues)
-                            .padding(24.dp),
+                            .padding(SarvDimensions.dimen24),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
@@ -202,7 +203,7 @@ fun MemorizationPracticeScreen(
                         style = MaterialTheme.typography.headlineMedium,
                         textAlign = TextAlign.Center,
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(SarvDimensions.dimen16))
                     SarvPrimaryButton(
                         text = stringResource(Res.string.memorization_practice_done),
                         onClick = { onAction(MemorizationPracticeAction.OnBackClick) },
@@ -227,13 +228,13 @@ fun MemorizationPracticeScreen(
                         modifier =
                             Modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 20.dp),
+                                .padding(horizontal = SarvDimensions.dimen20),
                     ) {
                         if (state.totalCards > 0) {
                             PracticeProgressSection(
                                 cardIndex = state.cardIndex,
                                 totalCards = state.totalCards,
-                                modifier = Modifier.padding(top = 16.dp, bottom = 12.dp),
+                                modifier = Modifier.padding(top = SarvDimensions.dimen16, bottom = SarvDimensions.dimen12),
                             )
                         }
 
@@ -280,7 +281,7 @@ private fun PracticeProgressSection(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -309,9 +310,9 @@ private fun PracticeCardContent(
     card: PracticeCardUi,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = SarvDimensions.dimen16),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
     ) {
         when (state.phase) {
             PracticePhase.SHOW_FRONT -> {
@@ -341,7 +342,7 @@ private fun PracticeCardContent(
                 DiffText(
                     tokens = state.diffTokens,
                     fallback = state.typedAnswer,
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top = SarvDimensions.dimen8),
                 )
             }
 
@@ -359,7 +360,7 @@ private fun TypingInputField(
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.padding(12.dp),
+        modifier = modifier.padding(SarvDimensions.dimen12),
         textStyle =
             MaterialTheme.typography.bodyLarge.copy(
                 textAlign = TextAlign.Center,
@@ -388,7 +389,7 @@ private fun PracticeBottomPanel(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8, alignment = Alignment.CenterVertically),
     ) {
         if (state.phase == PracticePhase.SHOW_FRONT && state.isTypingMode) {
             TypingInputField(
@@ -456,20 +457,20 @@ private fun PracticeModeIconButton(
     Column(
         modifier = modifier.clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4),
     ) {
         Box(
             modifier =
                 Modifier
                     .size(PracticeModeIconSize)
-                    .clip(RoundedCornerShape(48.dp))
+                    .clip(RoundedCornerShape(SarvDimensions.dimen48))
                     .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 painter = icon,
                 contentDescription = contentDescription,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(SarvDimensions.dimen24),
                 tint =
                     if (selected) {
                         MaterialTheme.colorScheme.primary
@@ -509,7 +510,7 @@ private fun PracticeActionRow(
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
     ) {
         PracticeModeIconButton(
             icon = painterResource(Res.drawable.reveal_eye),
@@ -554,9 +555,9 @@ private fun PracticeSessionStatsBar(state: MemorizationPracticeState) {
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(SarvDimensions.dimen16))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(vertical = 16.dp),
+                .padding(vertical = SarvDimensions.dimen16),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         PracticeStatItem(
@@ -565,7 +566,7 @@ private fun PracticeSessionStatsBar(state: MemorizationPracticeState) {
             modifier = Modifier.weight(1f),
         )
         VerticalDivider(
-            modifier = Modifier.height(40.dp),
+            modifier = Modifier.height(SarvDimensions.dimen40),
             color = MaterialTheme.colorScheme.outlineVariant,
         )
         PracticeStatItem(
@@ -574,7 +575,7 @@ private fun PracticeSessionStatsBar(state: MemorizationPracticeState) {
             modifier = Modifier.weight(1f),
         )
         VerticalDivider(
-            modifier = Modifier.height(40.dp),
+            modifier = Modifier.height(SarvDimensions.dimen40),
             color = MaterialTheme.colorScheme.outlineVariant,
         )
         PracticeStatItem(
@@ -594,7 +595,7 @@ private fun PracticeStatItem(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4),
     ) {
         Text(
             text = value.toString(),
@@ -672,8 +673,8 @@ private fun GradeButtons(
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8, Alignment.CenterHorizontally),
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
     ) {
         GradeButton(
             label = stringResource(Res.string.memorization_grade_again),

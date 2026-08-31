@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun GameSessionRoot(
@@ -120,12 +121,12 @@ fun GameSessionScreen(
                 Modifier
                     .fillMaxSize()
                     .padding(
-                        top = paddingValues.calculateTopPadding() + 16.dp,
+                        top = paddingValues.calculateTopPadding() + SarvDimensions.dimen16,
                         bottom = paddingValues.calculateBottomPadding(),
-                        start = 16.dp,
-                        end = 16.dp
+                        start = SarvDimensions.dimen16,
+                        end = SarvDimensions.dimen16
                         ),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
         ) {
             when (val question = state.currentQuestion) {
                 is GameQuestion.NextVerse ->

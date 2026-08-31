@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun TasvirNegarRoot(
@@ -157,7 +158,7 @@ fun TasvirNegarScreen(
         },
     ) {
         Box(
-            modifier = Modifier.fillMaxSize().padding(vertical = 128.dp),
+            modifier = Modifier.fillMaxSize().padding(vertical = SarvDimensions.dimen128),
             contentAlignment = Alignment.Center,
         ) {
             EditorCanvas(
@@ -188,7 +189,7 @@ fun TasvirNegarScreen(
                     modifier =
                         Modifier
                             .align(Alignment.CenterEnd)
-                            .padding(end = 4.dp),
+                            .padding(end = SarvDimensions.dimen4),
                 )
             }
         }

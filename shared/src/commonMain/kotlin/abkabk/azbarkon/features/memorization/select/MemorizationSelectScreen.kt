@@ -33,6 +33,7 @@ import sarv.shared.generated.resources.review
 import sarv.shared.generated.resources.search
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun MemorizationSelectRoot(
@@ -86,8 +87,8 @@ fun MemorizationSelectScreen(
                 Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(SarvDimensions.dimen16),
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
         ) {
             MemorizationHeroSection()
 

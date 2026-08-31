@@ -41,6 +41,7 @@ import sarv.shared.generated.resources.list_load_error
 import kotlinx.coroutines.flow.flowOf
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 @Composable
 fun PoemListRoot(
@@ -109,8 +110,8 @@ fun PoemListScreen(
 
         LazyColumn(
             modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen24),
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
         ) {
             items(
                 count = poems.itemCount,
@@ -121,14 +122,14 @@ fun PoemListScreen(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(16.dp))
+                                .clip(RoundedCornerShape(SarvDimensions.dimen16))
                                 .background(MaterialTheme.colorScheme.surfaceVariant)
                                 .border(
-                                    width = 1.dp,
+                                    width = SarvDimensions.dimen1,
                                     color = MaterialTheme.colorScheme.outlineVariant,
-                                    shape = RoundedCornerShape(16.dp),
+                                    shape = RoundedCornerShape(SarvDimensions.dimen16),
                                 ).clickable { onPoemClick(poem.id) }
-                                .padding(14.dp),
+                                .padding(SarvDimensions.dimen14),
                         text = poem.title,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -143,8 +144,8 @@ fun PoemListScreen(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .height(56.dp)
-                                .clip(RoundedCornerShape(16.dp)),
+                                .height(SarvDimensions.dimen56)
+                                .clip(RoundedCornerShape(SarvDimensions.dimen16)),
                     )
                 }
             }

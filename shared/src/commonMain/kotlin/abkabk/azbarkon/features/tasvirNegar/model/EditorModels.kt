@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import abkabk.azbarkon.core.designsystem.SarvDimensions
 
 enum class LayerId {
     PoemText,
@@ -34,8 +35,8 @@ enum class OptionPanelMode {
 
 @Immutable
 data class LayerOffset(
-    val x: Dp = 0.dp,
-    val y: Dp = 0.dp,
+    val x: Dp = SarvDimensions.dimen0,
+    val y: Dp = SarvDimensions.dimen0,
 )
 
 @Immutable
@@ -53,7 +54,7 @@ data class TextLayer(
 @Immutable
 data class PoetNameLayer(
     val text: String = "",
-    val offset: LayerOffset = LayerOffset(y = 120.dp),
+    val offset: LayerOffset = LayerOffset(y = SarvDimensions.dimen120),
     val baseFontSizeSp: Float = 14f,
     val sizeProgress: Float = 1f,
     val color: Color = Color.White,
@@ -65,7 +66,7 @@ data class StickerLayer(
     val assetId: String? = null,
     val galleryUri: String? = null,
     val offset: LayerOffset = LayerOffset(),
-    val baseSizeDp: Dp = 48.dp,
+    val baseSizeDp: Dp = SarvDimensions.dimen48,
     val sizeProgress: Float = 1f,
     val colorFilter: Color? = null,
     val visible: Boolean = false,
@@ -75,7 +76,7 @@ data class StickerLayer(
 data class DividerLayer(
     val assetId: String? = null,
     val offset: LayerOffset = LayerOffset(),
-    val baseWidthDp: Dp = 120.dp,
+    val baseWidthDp: Dp = SarvDimensions.dimen120,
     val sizeProgress: Float = 1f,
     val colorFilter: Color? = null,
     val visible: Boolean = false,
