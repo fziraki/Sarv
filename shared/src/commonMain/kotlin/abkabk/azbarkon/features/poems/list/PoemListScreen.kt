@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -42,6 +41,10 @@ import kotlinx.coroutines.flow.flowOf
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.ui.LocalWindowSizeClass
+import abkabk.azbarkon.core.ui.WindowWidthSizeClass
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 
 @Composable
 fun PoemListRoot(
@@ -108,10 +111,18 @@ fun PoemListScreen(
             action = HeaderAction.Search(onSearchClick),
         )
 
-        LazyColumn(
+        val columns =
+            when (LocalWindowSizeClass.current.widthSizeClass) {
+                WindowWidthSizeClass.Expanded -> GridCells.Fixed(2)
+                else -> GridCells.Fixed(1)
+            }
+
+        LazyVerticalGrid(
+            columns = columns,
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen24),
             verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
         ) {
             items(
                 count = poems.itemCount,

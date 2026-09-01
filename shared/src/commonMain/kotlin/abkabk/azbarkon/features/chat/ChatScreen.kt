@@ -14,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -276,14 +277,14 @@ private fun UserMessageBubble(
     colors: ChatColors,
     modifier: Modifier = Modifier,
 ) {
-    Box(
+    BoxWithConstraints(
         modifier = modifier.fillMaxWidth(),
     ) {
         Column(
             modifier =
                 Modifier
                     .align(Alignment.CenterStart)
-                    .widthIn(max = SarvDimensions.dimen280),
+                    .widthIn(max = maxWidth * 0.75f),
             horizontalAlignment = Alignment.Start,
         ) {
             Box(
@@ -344,14 +345,14 @@ private fun PoetMessageBubble(
             bottomEnd = SarvDimensions.dimen4,
         )
 
-    Box(
+    BoxWithConstraints(
         modifier = modifier.fillMaxWidth(),
     ) {
         Column(
             modifier =
                 Modifier
                     .align(Alignment.CenterEnd)
-                    .widthIn(max = SarvDimensions.dimen300),
+                    .widthIn(max = maxWidth * 0.75f),
             horizontalAlignment = Alignment.End,
         ) {
             Box(
@@ -381,7 +382,6 @@ private fun PoetMessageBubble(
                         style = MaterialTheme.typography.bodyMedium,
                         color = colors.poetBubbleText,
                         textAlign = TextAlign.End,
-                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }
@@ -392,7 +392,6 @@ private fun PoetMessageBubble(
                 color = colors.timestamp,
                 modifier =
                     Modifier
-                        .fillMaxWidth()
                         .padding(top = SarvDimensions.dimen4, end = SarvDimensions.dimen4),
                 textAlign = TextAlign.End,
             )

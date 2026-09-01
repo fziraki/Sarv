@@ -66,6 +66,7 @@ fun GameSessionTopBar(
         modifier =
             modifier
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen12),
         verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
     ) {
@@ -191,6 +192,7 @@ fun GameSessionBottomBar(
         modifier =
             modifier
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(SarvDimensions.dimen16),
         horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
         verticalAlignment = Alignment.CenterVertically,

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -62,6 +63,7 @@ import sarv.shared.generated.resources.text_fields
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import abkabk.azbarkon.core.designsystem.SarvDimensions
+import androidx.compose.foundation.layout.fillMaxHeight
 
 private const val MIN_TEXT_SIZE = 1f
 private const val MAX_TEXT_SIZE = 32f
@@ -172,37 +174,72 @@ fun EditorFooter(
 fun EditToolbar(
     onAction: (TasvirNegarAction) -> Unit,
     modifier: Modifier = Modifier,
+    isExpanded: Boolean = false,
 ) {
     val tint = MaterialTheme.colorScheme.onSurfaceVariant
-    Row(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .height(SarvDimensions.dimen68)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly,
-    ) {
-        ToolbarIcon(Res.drawable.ic_text_format, tint, stringResource(Res.string.tasvir_font)) {
-            onAction(TasvirNegarAction.OnShowFontOptions)
+    if (isExpanded) {
+        Column(
+            modifier =
+                modifier
+                    .fillMaxHeight()
+                    .width(SarvDimensions.dimen68)
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            ToolbarIcon(Res.drawable.ic_text_format, tint, stringResource(Res.string.tasvir_font)) {
+                onAction(TasvirNegarAction.OnShowFontOptions)
+            }
+            ToolbarIcon(Res.drawable.text_fields, tint, stringResource(Res.string.tasvir_text)) {
+                onAction(TasvirNegarAction.OnEnterText)
+            }
+            ToolbarIcon(Res.drawable.ic_sticker, tint, stringResource(Res.string.tasvir_sticker)) {
+                onAction(TasvirNegarAction.OnShowShapeOptions)
+            }
+            ToolbarIcon(Res.drawable.ic_color, tint, stringResource(Res.string.tasvir_color)) {
+                onAction(TasvirNegarAction.OnShowColorOptions)
+            }
+            ToolbarIcon(Res.drawable.ic_texture, tint, stringResource(Res.string.tasvir_texture)) {
+                onAction(TasvirNegarAction.OnLayerSelect(null))
+            }
+            ToolbarIcon(Res.drawable.ic_grid, tint, stringResource(Res.string.tasvir_grid)) {
+                onAction(TasvirNegarAction.OnToggleGrid)
+            }
+            ToolbarIcon(Res.drawable.ic_wallpaper, tint, stringResource(Res.string.tasvir_gallery)) {
+                onAction(TasvirNegarAction.OnGalleryClick)
+            }
         }
-        ToolbarIcon(Res.drawable.text_fields, tint, stringResource(Res.string.tasvir_text)) {
-            onAction(TasvirNegarAction.OnEnterText)
-        }
-        ToolbarIcon(Res.drawable.ic_sticker, tint, stringResource(Res.string.tasvir_sticker)) {
-            onAction(TasvirNegarAction.OnShowShapeOptions)
-        }
-        ToolbarIcon(Res.drawable.ic_color, tint, stringResource(Res.string.tasvir_color)) {
-            onAction(TasvirNegarAction.OnShowColorOptions)
-        }
-        ToolbarIcon(Res.drawable.ic_texture, tint, stringResource(Res.string.tasvir_texture)) {
-            onAction(TasvirNegarAction.OnLayerSelect(null))
-        }
-        ToolbarIcon(Res.drawable.ic_grid, tint, stringResource(Res.string.tasvir_grid)) {
-            onAction(TasvirNegarAction.OnToggleGrid)
-        }
-        ToolbarIcon(Res.drawable.ic_wallpaper, tint, stringResource(Res.string.tasvir_gallery)) {
-            onAction(TasvirNegarAction.OnGalleryClick)
+    } else {
+        Row(
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .height(SarvDimensions.dimen68)
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            ToolbarIcon(Res.drawable.ic_text_format, tint, stringResource(Res.string.tasvir_font)) {
+                onAction(TasvirNegarAction.OnShowFontOptions)
+            }
+            ToolbarIcon(Res.drawable.text_fields, tint, stringResource(Res.string.tasvir_text)) {
+                onAction(TasvirNegarAction.OnEnterText)
+            }
+            ToolbarIcon(Res.drawable.ic_sticker, tint, stringResource(Res.string.tasvir_sticker)) {
+                onAction(TasvirNegarAction.OnShowShapeOptions)
+            }
+            ToolbarIcon(Res.drawable.ic_color, tint, stringResource(Res.string.tasvir_color)) {
+                onAction(TasvirNegarAction.OnShowColorOptions)
+            }
+            ToolbarIcon(Res.drawable.ic_texture, tint, stringResource(Res.string.tasvir_texture)) {
+                onAction(TasvirNegarAction.OnLayerSelect(null))
+            }
+            ToolbarIcon(Res.drawable.ic_grid, tint, stringResource(Res.string.tasvir_grid)) {
+                onAction(TasvirNegarAction.OnToggleGrid)
+            }
+            ToolbarIcon(Res.drawable.ic_wallpaper, tint, stringResource(Res.string.tasvir_gallery)) {
+                onAction(TasvirNegarAction.OnGalleryClick)
+            }
         }
     }
 }

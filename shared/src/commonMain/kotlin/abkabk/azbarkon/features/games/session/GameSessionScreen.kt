@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.runtime.Composable
@@ -116,10 +118,12 @@ fun GameSessionScreen(
             SarvSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
     ) { paddingValues ->
+        val needsScroll = state.gameType != GameType.ORGANIZE_POEM
         Column(
             modifier =
                 Modifier
                     .fillMaxSize()
+                    .then(if (needsScroll) Modifier.verticalScroll(rememberScrollState()) else Modifier)
                     .padding(
                         top = paddingValues.calculateTopPadding() + SarvDimensions.dimen16,
                         bottom = paddingValues.calculateBottomPadding(),

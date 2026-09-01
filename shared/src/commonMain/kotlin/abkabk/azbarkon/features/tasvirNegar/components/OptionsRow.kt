@@ -18,11 +18,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,6 +43,7 @@ import sarv.shared.generated.resources.tasvir_font_3
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import abkabk.azbarkon.core.designsystem.SarvDimensions
+import androidx.compose.foundation.layout.fillMaxHeight
 
 @Composable
 fun OptionsRow(
@@ -49,19 +52,20 @@ fun OptionsRow(
     onShapeClick: (Int) -> Unit,
     onFontClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    isExpanded: Boolean = false,
 ) {
     if (mode == OptionPanelMode.None) return
 
     Box(
         modifier =
             modifier
-                .fillMaxWidth()
+                .then(if (isExpanded) Modifier.fillMaxHeight() else Modifier.fillMaxWidth())
                 .background(MaterialTheme.colorScheme.surfaceVariant),
     ) {
         when (mode) {
-            OptionPanelMode.Color -> ColorOptionsRow(onColorClick = onColorClick)
-            OptionPanelMode.Shape -> ShapeOptionsRow(onShapeClick = onShapeClick)
-            OptionPanelMode.Font -> FontOptionsRow(onFontClick = onFontClick)
+            OptionPanelMode.Color -> ColorOptionsRow(onColorClick = onColorClick, isExpanded = isExpanded)
+            OptionPanelMode.Shape -> ShapeOptionsRow(onShapeClick = onShapeClick, isExpanded = isExpanded)
+            OptionPanelMode.Font -> FontOptionsRow(onFontClick = onFontClick, isExpanded = isExpanded)
             OptionPanelMode.None -> Unit
         }
     }
@@ -70,13 +74,25 @@ fun OptionsRow(
 @Composable
 private fun ColorOptionsRow(
     onColorClick: (Int) -> Unit,
+    isExpanded: Boolean = false,
 ) {
-    LazyRow(
-        modifier = Modifier.padding(horizontal = SarvDimensions.dimen8, vertical = SarvDimensions.dimen8),
-        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
-    ) {
-        itemsIndexed(TasvirNegarCatalog.colorOptions) { index, option ->
-            ColorOptionItem(option = option, onClick = { onColorClick(index) })
+    if (isExpanded) {
+        LazyColumn(
+            modifier = Modifier.fillMaxHeight().padding(horizontal = SarvDimensions.dimen8, vertical = SarvDimensions.dimen8),
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+        ) {
+            itemsIndexed(TasvirNegarCatalog.colorOptions) { index, option ->
+                ColorOptionItem(option = option, onClick = { onColorClick(index) })
+            }
+        }
+    } else {
+        LazyRow(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = SarvDimensions.dimen8, vertical = SarvDimensions.dimen8),
+            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+        ) {
+            itemsIndexed(TasvirNegarCatalog.colorOptions) { index, option ->
+                ColorOptionItem(option = option, onClick = { onColorClick(index) })
+            }
         }
     }
 }
@@ -117,13 +133,25 @@ private fun ColorOptionItem(
 @Composable
 private fun ShapeOptionsRow(
     onShapeClick: (Int) -> Unit,
+    isExpanded: Boolean = false,
 ) {
-    LazyRow(
-        modifier = Modifier.padding(vertical = SarvDimensions.dimen8),
-        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
-    ) {
-        itemsIndexed(TasvirNegarCatalog.shapeOptions) { index, item ->
-            ShapeOptionItem(item = item, onClick = { onShapeClick(index) })
+    if (isExpanded) {
+        LazyColumn(
+            modifier = Modifier.fillMaxHeight().padding(vertical = SarvDimensions.dimen8),
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+        ) {
+            itemsIndexed(TasvirNegarCatalog.shapeOptions) { index, item ->
+                ShapeOptionItem(item = item, onClick = { onShapeClick(index) })
+            }
+        }
+    } else {
+        LazyRow(
+            modifier = Modifier.fillMaxWidth().padding(vertical = SarvDimensions.dimen8),
+            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+        ) {
+            itemsIndexed(TasvirNegarCatalog.shapeOptions) { index, item ->
+                ShapeOptionItem(item = item, onClick = { onShapeClick(index) })
+            }
         }
     }
 }
@@ -156,6 +184,7 @@ private fun ShapeOptionItem(
 @Composable
 private fun FontOptionsRow(
     onFontClick: (Int) -> Unit,
+    isExpanded: Boolean = false,
 ) {
     val labels =
         listOf(
@@ -163,30 +192,67 @@ private fun FontOptionsRow(
             stringResource(Res.string.tasvir_font_2) to EditorFontPreset.Yekan,
             stringResource(Res.string.tasvir_font_3) to EditorFontPreset.Tanha,
         )
-    Row(
-        modifier =
-            Modifier
-                .horizontalScroll(rememberScrollState())
+    if (isExpanded) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
                 .padding(vertical = SarvDimensions.dimen8),
-        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
-    ) {
-        labels.forEachIndexed { index, (label, preset) ->
-            Box(
-                modifier =
-                    Modifier
-                        .size(SarvDimensions.dimen56)
-                        .clip(RoundedCornerShape(SarvDimensions.dimen8))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .border(SarvDimensions.dimen1, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(SarvDimensions.dimen8))
-                        .clickable { onFontClick(index) }
-                        .padding(SarvDimensions.dimen8),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.titleMedium.copy(fontFamily = editorFontFamily(preset)),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+        ) {
+            labels.forEachIndexed { index, (label, preset) ->
+                Box(
+                    modifier =
+                        Modifier
+                            .size(SarvDimensions.dimen56)
+                            .clip(RoundedCornerShape(SarvDimensions.dimen8))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .border(
+                                SarvDimensions.dimen1,
+                                MaterialTheme.colorScheme.outlineVariant,
+                                RoundedCornerShape(SarvDimensions.dimen8),
+                            )
+                            .clickable { onFontClick(index) }
+                            .padding(SarvDimensions.dimen8),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.titleMedium.copy(fontFamily = editorFontFamily(preset)),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+    } else {
+        Row(
+            modifier =
+                Modifier
+                    .horizontalScroll(rememberScrollState())
+                    .padding(vertical = SarvDimensions.dimen8),
+            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+        ) {
+            labels.forEachIndexed { index, (label, preset) ->
+                Box(
+                    modifier =
+                        Modifier
+                            .size(SarvDimensions.dimen56)
+                            .clip(RoundedCornerShape(SarvDimensions.dimen8))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .border(
+                                SarvDimensions.dimen1,
+                                MaterialTheme.colorScheme.outlineVariant,
+                                RoundedCornerShape(SarvDimensions.dimen8),
+                            )
+                            .clickable { onFontClick(index) }
+                            .padding(SarvDimensions.dimen8),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.titleMedium.copy(fontFamily = editorFontFamily(preset)),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }

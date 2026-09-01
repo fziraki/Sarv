@@ -12,8 +12,13 @@ import abkabk.azbarkon.features.profile.util.showToast
 import abkabk.azbarkon.features.profile.util.versionName
 import abkabk.azbarkon.ui.components.SarvAlertDialog
 import abkabk.azbarkon.ui.theme.SarvTheme
+import abkabk.azbarkon.core.ui.LocalWindowSizeClass
+import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -148,40 +153,91 @@ fun ProfileScreen(
     onAction: (ProfileAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize().padding(SarvDimensions.dimen16),
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
-    ) {
-        item {
-            ProfileHeader(
-                levelProgress = state.levelProgress,
-                onLevelsClick = { onAction(ProfileAction.OnLevelsIconClick) },
-            )
-        }
+    val isExpanded = LocalWindowSizeClass.current.widthSizeClass == WindowWidthSizeClass.Expanded
 
-        item {
-            GameStatusCard(stats = state.gameStats)
-        }
+    if (isExpanded) {
+        Row(
+            modifier = modifier.fillMaxSize().padding(SarvDimensions.dimen16),
+            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+        ) {
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            ) {
+                item {
+                    ProfileHeader(
+                        levelProgress = state.levelProgress,
+                        onLevelsClick = { onAction(ProfileAction.OnLevelsIconClick) },
+                    )
+                }
 
-        item {
-            MemorizationStatusCard(stats = state.memorizationStats)
-        }
+                item {
+                    ProfileBadges(
+                        badges = state.previewBadges,
+                        onViewAllClick = { onAction(ProfileAction.OnViewAllBadgesClick) },
+                    )
+                }
 
-        item {
-            ProfileBadges(
-                badges = state.previewBadges,
-                onViewAllClick = { onAction(ProfileAction.OnViewAllBadgesClick) },
-            )
-        }
+                item {
+                    Text(
+                        text = stringResource(Res.string.profile_version, versionName()),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.fillMaxWidth().padding(top = SarvDimensions.dimen8),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
 
-        item {
-            Text(
-                text = stringResource(Res.string.profile_version, versionName()),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.fillMaxSize().padding(top = SarvDimensions.dimen8),
-                textAlign = TextAlign.Center,
-            )
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            ) {
+                item {
+                    GameStatusCard(stats = state.gameStats)
+                }
+
+                item {
+                    MemorizationStatusCard(stats = state.memorizationStats)
+                }
+            }
+        }
+    } else {
+        LazyColumn(
+            modifier = modifier.fillMaxSize().padding(SarvDimensions.dimen16),
+            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+        ) {
+            item {
+                ProfileHeader(
+                    levelProgress = state.levelProgress,
+                    onLevelsClick = { onAction(ProfileAction.OnLevelsIconClick) },
+                )
+            }
+
+            item {
+                GameStatusCard(stats = state.gameStats)
+            }
+
+            item {
+                MemorizationStatusCard(stats = state.memorizationStats)
+            }
+
+            item {
+                ProfileBadges(
+                    badges = state.previewBadges,
+                    onViewAllClick = { onAction(ProfileAction.OnViewAllBadgesClick) },
+                )
+            }
+
+            item {
+                Text(
+                    text = stringResource(Res.string.profile_version, versionName()),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.fillMaxSize().padding(top = SarvDimensions.dimen8),
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }

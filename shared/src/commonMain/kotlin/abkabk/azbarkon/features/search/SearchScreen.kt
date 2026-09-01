@@ -21,9 +21,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -65,6 +66,8 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.ui.LocalWindowSizeClass
+import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 
 private const val SHIMMER_ROW_COUNT = 7
 @Composable
@@ -126,7 +129,6 @@ fun SearchScreen(
     isSearching: Boolean = false
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val listState = rememberLazyListState()
     var showPoetPicker by remember { mutableStateOf(false) }
     var showCategoryPicker by remember { mutableStateOf(false) }
     val allLabel = stringResource(Res.string.all)
@@ -201,7 +203,6 @@ fun SearchScreen(
             isSearching = isSearching,
             showNoResults = showNoResults,
             onResultClick = { poemId -> onAction(SearchAction.OnResultClick(poemId)) },
-            listState = listState,
         )
     }
 
@@ -224,8 +225,10 @@ private fun SearchResultsList(
     isSearching: Boolean,
     showNoResults: Boolean,
     onResultClick: (Int) -> Unit,
-    listState: LazyListState,
 ) {
+    val isExpanded = LocalWindowSizeClass.current.widthSizeClass == WindowWidthSizeClass.Expanded
+    val columns = if (isExpanded) GridCells.Fixed(2) else GridCells.Fixed(1)
+
     when {
         isSearching -> SearchResultsShimmer()
 
@@ -243,11 +246,13 @@ private fun SearchResultsList(
         }
 
         else -> {
-            LazyColumn(
-                state = listState,
+            LazyVerticalGrid(
+                columns = columns,
+                state = rememberLazyGridState(),
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen8),
                 verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
+                horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
             ) {
                 items(
                     count = searchResults.itemCount,

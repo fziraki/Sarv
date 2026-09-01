@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -53,6 +54,8 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.ui.LocalWindowSizeClass
+import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 
 @Composable
 fun PoetDetailRoot(
@@ -98,6 +101,8 @@ fun PoetDetailScreen(
     onSearchClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val isExpanded = LocalWindowSizeClass.current.widthSizeClass == WindowWidthSizeClass.Expanded
+
     Column(
         modifier =
             modifier
@@ -110,59 +115,86 @@ fun PoetDetailScreen(
             action = HeaderAction.Search(onSearchClick),
         )
 
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(bottom = SarvDimensions.dimen24),
-        ) {
-            item {
-                PoetDetailHero(
-                    state = state,
-                    onAction = onAction,
-                    modifier =
-                        Modifier
-                            .padding(horizontal = SarvDimensions.dimen16)
-                            .padding(bottom = SarvDimensions.dimen16),
-                )
-            }
-
-            item {
-                PoetsSectionTitle(
-                    title = stringResource(Res.string.poets_works_section),
-                    modifier =
-                        Modifier
-                            .padding(horizontal = SarvDimensions.dimen16)
-                            .padding(bottom = SarvDimensions.dimen16),
-                )
-            }
-
-            itemsIndexed(
-                items = state.categories,
-                key = { _, category -> "${category.id}-${category.depth}" },
-            ) { index, category ->
-                PoetCategoryRow(
-                    category = category,
-                    onToggleClick = { onAction(PoetDetailAction.OnCategoryToggle(category.id)) },
-                    onLeafClick = {
-                        onAction(
-                            PoetDetailAction.OnCategoryClick(
-                                categoryId = category.id,
-                                title = category.title,
-                            ),
+        if (isExpanded) {
+            Row(modifier = Modifier.weight(1f)) {
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(bottom = SarvDimensions.dimen24),
+                ) {
+                    item {
+                        PoetDetailHero(
+                            state = state,
+                            onAction = onAction,
+                            modifier = Modifier
+                                .padding(horizontal = SarvDimensions.dimen16)
+                                .padding(bottom = SarvDimensions.dimen16),
                         )
-                    },
-                    modifier =
-                        Modifier
+                    }
+                }
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(bottom = SarvDimensions.dimen24),
+                ) {
+                    poetCategoryItems(state.categories, onAction)
+                }
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(bottom = SarvDimensions.dimen24),
+            ) {
+                item {
+                    PoetDetailHero(
+                        state = state,
+                        onAction = onAction,
+                        modifier = Modifier
                             .padding(horizontal = SarvDimensions.dimen16)
-                            .then(
-                                if (index > 0) {
-                                    Modifier.padding(top = SarvDimensions.dimen6)
-                                } else {
-                                    Modifier
-                                },
-                            ),
-                )
+                            .padding(bottom = SarvDimensions.dimen16),
+                    )
+                }
+                item {
+                    PoetsSectionTitle(
+                        title = stringResource(Res.string.poets_works_section),
+                        modifier = Modifier
+                            .padding(horizontal = SarvDimensions.dimen16)
+                            .padding(bottom = SarvDimensions.dimen16),
+                    )
+                }
+                poetCategoryItems(state.categories, onAction)
             }
         }
+    }
+}
+
+private fun LazyListScope.poetCategoryItems(
+    categories: List<PoetCategoryRowUi>,
+    onAction: (PoetDetailAction) -> Unit,
+) {
+    itemsIndexed(
+        items = categories,
+        key = { _, category -> "${category.id}-${category.depth}" },
+    ) { index, category ->
+        PoetCategoryRow(
+            category = category,
+            onToggleClick = { onAction(PoetDetailAction.OnCategoryToggle(category.id)) },
+            onLeafClick = {
+                onAction(
+                    PoetDetailAction.OnCategoryClick(
+                        categoryId = category.id,
+                        title = category.title,
+                    ),
+                )
+            },
+            modifier = Modifier
+                .padding(horizontal = SarvDimensions.dimen16)
+                .then(
+                    if (index > 0) {
+                        Modifier.padding(top = SarvDimensions.dimen6)
+                    } else {
+                        Modifier
+                    },
+                ),
+        )
     }
 }
 
@@ -183,6 +215,30 @@ private fun PoetDetailHero(
                     color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(SarvDimensions.dimen20),
                 ).padding(SarvDimensions.dimen20),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen14),
+    ) {
+        PoetHeroInfo(
+            state = state,
+            onAction = onAction,
+        )
+        if (state.bio.isNotBlank()) {
+            PoetBioText(
+                bio = state.bio,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+    }
+}
+
+@Composable
+private fun PoetHeroInfo(
+    state: PoetDetailState,
+    onAction: (PoetDetailAction) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen14),
     ) {
@@ -209,10 +265,11 @@ private fun PoetDetailHero(
             ) {
                 Text(
                     text = stringResource(Res.string.chat_with_poet),
-                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Icon(
+                    modifier = Modifier.size(SarvDimensions.dimen24),
                     painter = painterResource(Res.drawable.chat_bubble),
                     contentDescription = stringResource(Res.string.cd_chat),
                     tint = MaterialTheme.colorScheme.primary,
@@ -231,17 +288,10 @@ private fun PoetDetailHero(
             ) {
                 Text(
                     text = stringResource(Res.string.fal_button),
-                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.tertiary,
                 )
             }
-        }
-
-        if (state.bio.isNotBlank()) {
-            PoetBioText(
-                bio = state.bio,
-                modifier = Modifier.fillMaxWidth(),
-            )
         }
     }
 }

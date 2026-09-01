@@ -17,9 +17,13 @@ import abkabk.azbarkon.features.tasvirNegar.util.TasvirCustomColorPicker
 import abkabk.azbarkon.features.tasvirNegar.util.rememberTasvirNegarGalleryLauncher
 import abkabk.azbarkon.features.tasvirNegar.util.rememberTasvirNegarStoragePermission
 import abkabk.azbarkon.ui.theme.SarvTheme
+import abkabk.azbarkon.core.ui.LocalWindowSizeClass
+import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -118,53 +122,142 @@ fun TasvirNegarScreen(
     onCaptureReady: (suspend () -> ByteArray?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-        topBar = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                EditorHeader(
-                    onResetClick = { onAction(TasvirNegarAction.OnResetCanvas) },
-                    onBackClick = onBackClick,
+    val isExpanded = LocalWindowSizeClass.current.widthSizeClass == WindowWidthSizeClass.Expanded
+
+    if (isExpanded) {
+        TasvirNegarExpandedLayout(state, onAction, onBackClick, onCaptureReady, modifier)
+    } else {
+        Scaffold(
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+            topBar = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    EditorHeader(
+                        onResetClick = { onAction(TasvirNegarAction.OnResetCanvas) },
+                        onBackClick = onBackClick,
+                    )
+                    if (!state.isExporting) {
+                        OptionsRow(
+                            mode = state.document.activeOptionPanel,
+                            onColorClick = { onAction(TasvirNegarAction.OnColorOptionClick(it)) },
+                            onShapeClick = { onAction(TasvirNegarAction.OnShapeOptionClick(it)) },
+                            onFontClick = { onAction(TasvirNegarAction.OnFontOptionClick(it)) },
+                        )
+                    }
+                }
+            },
+            bottomBar = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    if (!state.isExporting && state.document.isEditPanelExpanded) {
+                        EditToolbar(onAction = onAction)
+                    }
+
+                    EditorFooter(
+                        onEraserClick = { onAction(TasvirNegarAction.OnEraserClick) },
+                        onDownloadClick = { onAction(TasvirNegarAction.OnSaveClick) },
+                        onEditClick = { onAction(TasvirNegarAction.OnToggleEditPanel) },
+                        onShareClick = { onAction(TasvirNegarAction.OnShareClick) },
+                    )
+                }
+            },
+            snackbarHost = {
+                SarvSnackbarHost(hostState = LocalSnackbarHostState.current)
+            },
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(vertical = SarvDimensions.dimen128),
+                contentAlignment = Alignment.Center,
+            ) {
+                EditorCanvas(
+                    document = state.document,
+                    callbacks =
+                        EditorCallbacks(
+                            onLayerSelect = { onAction(TasvirNegarAction.OnLayerSelect(it)) },
+                            onLayerDrag = { layerId, offset ->
+                                onAction(TasvirNegarAction.OnLayerDrag(layerId, offset))
+                            },
+                            onPoemTextChange = { onAction(TasvirNegarAction.OnPoemTextChange(it)) },
+                            onPoetNameChange = { onAction(TasvirNegarAction.OnPoetNameChange(it)) },
+                            onTextGravityChange = { onAction(TasvirNegarAction.OnTextGravityChange(it)) },
+                            onToggleTextBold = { onAction(TasvirNegarAction.OnToggleTextBold) },
+                            onCaptureReady = onCaptureReady,
+                        ),
+                    showEditOverlays = !state.isExporting,
+                    modifier = Modifier.fillMaxSize(),
                 )
-                if (!state.isExporting) {
-                    OptionsRow(
-                        mode = state.document.activeOptionPanel,
-                        onColorClick = { onAction(TasvirNegarAction.OnColorOptionClick(it)) },
-                        onShapeClick = { onAction(TasvirNegarAction.OnShapeOptionClick(it)) },
-                        onFontClick = { onAction(TasvirNegarAction.OnFontOptionClick(it)) },
+
+                if (!state.isExporting &&
+                    state.document.isEditPanelExpanded &&
+                    state.document.selectedLayer != null
+                ) {
+                    VerticalSizeSlider(
+                        progress = sizeProgressFor(state.document),
+                        onProgressChange = { onAction(TasvirNegarAction.OnSizeProgressChange(it)) },
+                        modifier =
+                            Modifier
+                                .align(Alignment.CenterEnd)
+                                .padding(end = SarvDimensions.dimen4),
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun TasvirNegarExpandedLayout(
+    state: TasvirNegarState,
+    onAction: (TasvirNegarAction) -> Unit,
+    onBackClick: () -> Unit,
+    onCaptureReady: (suspend () -> ByteArray?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        topBar = {
+            EditorHeader(
+                onResetClick = { onAction(TasvirNegarAction.OnResetCanvas) },
+                onBackClick = onBackClick,
+            )
         },
         bottomBar = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                if (!state.isExporting && state.document.isEditPanelExpanded) {
-                    EditToolbar(onAction = onAction)
-                }
-
-                EditorFooter(
-                    onEraserClick = { onAction(TasvirNegarAction.OnEraserClick) },
-                    onDownloadClick = { onAction(TasvirNegarAction.OnSaveClick) },
-                    onEditClick = { onAction(TasvirNegarAction.OnToggleEditPanel) },
-                    onShareClick = { onAction(TasvirNegarAction.OnShareClick) },
-                )
-            }
+            EditorFooter(
+                onEraserClick = { onAction(TasvirNegarAction.OnEraserClick) },
+                onDownloadClick = { onAction(TasvirNegarAction.OnSaveClick) },
+                onEditClick = { onAction(TasvirNegarAction.OnToggleEditPanel) },
+                onShareClick = { onAction(TasvirNegarAction.OnShareClick) },
+            )
         },
         snackbarHost = {
             SarvSnackbarHost(hostState = LocalSnackbarHostState.current)
         },
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize().padding(vertical = SarvDimensions.dimen128),
-            contentAlignment = Alignment.Center,
+    ) { paddingValues ->
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
         ) {
-            EditorCanvas(
-                document = state.document,
-                callbacks =
-                    EditorCallbacks(
+            if (!state.isExporting) {
+                OptionsRow(
+                    mode = state.document.activeOptionPanel,
+                    onColorClick = { onAction(TasvirNegarAction.OnColorOptionClick(it)) },
+                    onShapeClick = { onAction(TasvirNegarAction.OnShapeOptionClick(it)) },
+                    onFontClick = { onAction(TasvirNegarAction.OnFontOptionClick(it)) },
+                    modifier = Modifier.padding(start = SarvDimensions.dimen8),
+                    isExpanded = true,
+                )
+            }
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center,
+            ) {
+                EditorCanvas(
+                    document = state.document,
+                    callbacks = EditorCallbacks(
                         onLayerSelect = { onAction(TasvirNegarAction.OnLayerSelect(it)) },
                         onLayerDrag = { layerId, offset ->
                             onAction(TasvirNegarAction.OnLayerDrag(layerId, offset))
@@ -175,21 +268,27 @@ fun TasvirNegarScreen(
                         onToggleTextBold = { onAction(TasvirNegarAction.OnToggleTextBold) },
                         onCaptureReady = onCaptureReady,
                     ),
-                showEditOverlays = !state.isExporting,
-                modifier = Modifier.fillMaxSize(),
-            )
-
-            if (!state.isExporting &&
-                state.document.isEditPanelExpanded &&
-                state.document.selectedLayer != null
-            ) {
-                VerticalSizeSlider(
-                    progress = sizeProgressFor(state.document),
-                    onProgressChange = { onAction(TasvirNegarAction.OnSizeProgressChange(it)) },
-                    modifier =
-                        Modifier
+                    showEditOverlays = !state.isExporting,
+                    modifier = Modifier.fillMaxSize(),
+                )
+                if (!state.isExporting &&
+                    state.document.isEditPanelExpanded &&
+                    state.document.selectedLayer != null
+                ) {
+                    VerticalSizeSlider(
+                        progress = sizeProgressFor(state.document),
+                        onProgressChange = { onAction(TasvirNegarAction.OnSizeProgressChange(it)) },
+                        modifier = Modifier
                             .align(Alignment.CenterEnd)
                             .padding(end = SarvDimensions.dimen4),
+                    )
+                }
+            }
+            if (!state.isExporting && state.document.isEditPanelExpanded) {
+                EditToolbar(
+                    onAction = onAction,
+                    modifier = Modifier.padding(end = SarvDimensions.dimen8),
+                    isExpanded = true,
                 )
             }
         }

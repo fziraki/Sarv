@@ -11,8 +11,7 @@
     <string name="profile_remote_notification_subtitle">دریافت اعلان‌های اخبار سرو</string>
     <string name="treasure">گنجینه</string>
     <string name="games">میدان</string>
-    <string name="profile">من</string>
-    <string name="profile_title">نماگر</string>
+    <string name="profile">نماگر</string>
 
     <string name="games_subtitle">با بازی های ادبی شعر را بهتر یاد بگیر و لذت ببر</string>
     <string name="treasure_subtitle">در میان واژه‌ها قدم بزن</string>

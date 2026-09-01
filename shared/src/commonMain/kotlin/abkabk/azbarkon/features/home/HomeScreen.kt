@@ -497,6 +497,7 @@ fun QuickAccessItem(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
+                modifier = Modifier.size(SarvDimensions.dimen24),
                 painter = painterResource(icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.secondary,

@@ -268,64 +268,122 @@ fun PoemActionBar(
     onImageCreatorClick: () -> Unit,
     onMemorizeClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isExpanded: Boolean = false,
 ) {
-    Row(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(SarvDimensions.dimen16))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .border(
-                    width = SarvDimensions.dimen1,
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(SarvDimensions.dimen16),
-                ).padding(vertical = SarvDimensions.dimen8, horizontal = SarvDimensions.dimen6),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-
-        PoemActionItem(
-            icon = if (isLiked) Res.drawable.heart_filled else Res.drawable.heart,
-            label = Res.string.poem_liked,
-            contentDescription = Res.string.cd_like,
-            tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
-            labelColor = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
-            onClick = onLikeClick,
-        )
-
-
-        PoemActionItem(
-            icon = Res.drawable.palette,
-            label = Res.string.poem_image_creator,
-            contentDescription = Res.string.cd_image_creator,
-            onClick = onImageCreatorClick,
-        )
-
-
-        if (!isProse) {
+    if (isExpanded) {
+        Column(
+            modifier =
+                modifier
+                    .clip(RoundedCornerShape(SarvDimensions.dimen16))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .border(
+                        width = SarvDimensions.dimen1,
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        shape = RoundedCornerShape(SarvDimensions.dimen16),
+                    ).padding(vertical = SarvDimensions.dimen8, horizontal = SarvDimensions.dimen6),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             PoemActionItem(
-                icon = Res.drawable.add_box_24px,
-                label = Res.string.poem_memorize,
-                contentDescription = Res.string.cd_add_poem,
-                onClick = onMemorizeClick,
-                tint = MaterialTheme.colorScheme.primary,
-                labelColor = MaterialTheme.colorScheme.primary,
+                icon = if (isLiked) Res.drawable.heart_filled else Res.drawable.heart,
+                label = Res.string.poem_liked,
+                contentDescription = Res.string.cd_like,
+                tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                labelColor = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                onClick = onLikeClick,
+            )
+
+            PoemActionItem(
+                icon = Res.drawable.palette,
+                label = Res.string.poem_image_creator,
+                contentDescription = Res.string.cd_image_creator,
+                onClick = onImageCreatorClick,
+            )
+
+            if (!isProse) {
+                PoemActionItem(
+                    icon = Res.drawable.add_box_24px,
+                    label = Res.string.poem_memorize,
+                    contentDescription = Res.string.cd_add_poem,
+                    onClick = onMemorizeClick,
+                    tint = MaterialTheme.colorScheme.primary,
+                    labelColor = MaterialTheme.colorScheme.primary,
+                )
+            }
+
+            PoemActionItem(
+                icon = Res.drawable.share,
+                label = Res.string.poem_share,
+                contentDescription = Res.string.cd_share,
+                onClick = onShareClick,
+            )
+
+            PoemActionItem(
+                icon = Res.drawable.search,
+                label = Res.string.search,
+                contentDescription = Res.string.cd_context_search,
+                onClick = onSearchClick,
             )
         }
+    } else {
+        Row(
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(SarvDimensions.dimen16))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .border(
+                        width = SarvDimensions.dimen1,
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        shape = RoundedCornerShape(SarvDimensions.dimen16),
+                    ).padding(vertical = SarvDimensions.dimen8, horizontal = SarvDimensions.dimen6),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
 
-        PoemActionItem(
-            icon = Res.drawable.share,
-            label = Res.string.poem_share,
-            contentDescription = Res.string.cd_share,
-            onClick = onShareClick,
-        )
+            PoemActionItem(
+                icon = if (isLiked) Res.drawable.heart_filled else Res.drawable.heart,
+                label = Res.string.poem_liked,
+                contentDescription = Res.string.cd_like,
+                tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                labelColor = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                onClick = onLikeClick,
+            )
 
-        PoemActionItem(
-            icon = Res.drawable.search,
-            label = Res.string.search,
-            contentDescription = Res.string.cd_context_search,
-            onClick = onSearchClick,
-        )
+
+            PoemActionItem(
+                icon = Res.drawable.palette,
+                label = Res.string.poem_image_creator,
+                contentDescription = Res.string.cd_image_creator,
+                onClick = onImageCreatorClick,
+            )
+
+
+            if (!isProse) {
+                PoemActionItem(
+                    icon = Res.drawable.add_box_24px,
+                    label = Res.string.poem_memorize,
+                    contentDescription = Res.string.cd_add_poem,
+                    onClick = onMemorizeClick,
+                    tint = MaterialTheme.colorScheme.primary,
+                    labelColor = MaterialTheme.colorScheme.primary,
+                )
+            }
+
+            PoemActionItem(
+                icon = Res.drawable.share,
+                label = Res.string.poem_share,
+                contentDescription = Res.string.cd_share,
+                onClick = onShareClick,
+            )
+
+            PoemActionItem(
+                icon = Res.drawable.search,
+                label = Res.string.search,
+                contentDescription = Res.string.cd_context_search,
+                onClick = onSearchClick,
+            )
+        }
     }
 }
 
