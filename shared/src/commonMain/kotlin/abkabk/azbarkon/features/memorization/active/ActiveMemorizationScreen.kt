@@ -38,7 +38,7 @@ import sarv.shared.generated.resources.memorization_remove_confirm_title
 import sarv.shared.generated.resources.memorization_select_hero_subtitle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 private const val MAX_ACTIVE_POEMS = 3
 
@@ -105,9 +105,9 @@ fun ActiveMemorizationScreen(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(SarvDimensions.dimen24),
+                        .padding(LocalSarvDimensions.current.dimen24),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen24, Alignment.CenterVertically),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen24, Alignment.CenterVertically),
             ) {
                 MemorizationHeroSection()
                 Text(
@@ -124,8 +124,8 @@ fun ActiveMemorizationScreen(
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(SarvDimensions.dimen16),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(LocalSarvDimensions.current.dimen16),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             ) {
                 items(state.poems, key = { it.poemId }) { poem ->
                     ActivePoemCard(

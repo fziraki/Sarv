@@ -62,7 +62,7 @@ import sarv.shared.generated.resources.tasvir_texture
 import sarv.shared.generated.resources.text_fields
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import androidx.compose.foundation.layout.fillMaxHeight
 
 private const val MIN_TEXT_SIZE = 1f
@@ -79,7 +79,7 @@ fun EditorHeader(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(SarvDimensions.dimen54)
+                .height(LocalSarvDimensions.current.dimen54)
                 .background(MaterialTheme.colorScheme.surface),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -98,7 +98,7 @@ fun EditorHeader(
                 painter = painterResource(Res.drawable.reset_image),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(SarvDimensions.dimen24),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
             )
         }
     }
@@ -112,7 +112,7 @@ private fun LabeledIconButton(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4)
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen4)
     ) {
         Icon(
             modifier = Modifier.clickable{
@@ -142,7 +142,7 @@ fun EditorFooter(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(SarvDimensions.dimen72)
+                .height(LocalSarvDimensions.current.dimen72)
                 .background(MaterialTheme.colorScheme.surface),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -182,7 +182,7 @@ fun EditToolbar(
             modifier =
                 modifier
                     .fillMaxHeight()
-                    .width(SarvDimensions.dimen68)
+                    .width(LocalSarvDimensions.current.dimen68)
                     .background(MaterialTheme.colorScheme.surfaceVariant),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -214,7 +214,7 @@ fun EditToolbar(
             modifier =
                 modifier
                     .fillMaxWidth()
-                    .height(SarvDimensions.dimen68)
+                    .height(LocalSarvDimensions.current.dimen68)
                     .background(MaterialTheme.colorScheme.surfaceVariant),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -266,7 +266,7 @@ private fun ToolbarIcon(
             text = label,
             color = tint,
             style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
-            modifier = Modifier.padding(top = SarvDimensions.dimen2),
+            modifier = Modifier.padding(top = LocalSarvDimensions.current.dimen2),
         )
     }
 }

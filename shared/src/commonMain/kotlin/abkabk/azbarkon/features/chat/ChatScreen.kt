@@ -66,7 +66,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.milliseconds
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 private val KEYBOARD_SCROLL_RETRY_DELAY_MILLIS = 100.milliseconds
 private const val SEND_ICON_ROTATION_DEGREES = 180f
@@ -181,12 +181,12 @@ fun ChatScreen(
             state = listState,
             contentPadding =
                 PaddingValues(
-                    top = paddingValues.calculateTopPadding() + SarvDimensions.dimen16,
-                    bottom = paddingValues.calculateBottomPadding() + SarvDimensions.dimen16,
-                    start = SarvDimensions.dimen16,
-                    end = SarvDimensions.dimen16,
+                    top = paddingValues.calculateTopPadding() + LocalSarvDimensions.current.dimen16,
+                    bottom = paddingValues.calculateBottomPadding() + LocalSarvDimensions.current.dimen16,
+                    start = LocalSarvDimensions.current.dimen16,
+                    end = LocalSarvDimensions.current.dimen16,
                 ),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         ) {
             items(
                 items = state.messages,
@@ -222,9 +222,9 @@ private fun ChatTopBar(
             Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen12),
+                .padding(horizontal = LocalSarvDimensions.current.dimen16, vertical = LocalSarvDimensions.current.dimen12),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12)
+        horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12)
     ) {
 
         Icon(
@@ -265,8 +265,8 @@ private fun ChatTopBar(
             imageUrl = poetImageUrl,
             modifier =
                 Modifier
-                    .size(SarvDimensions.dimen48)
-                    .border(SarvDimensions.dimen2, colors.accent.copy(alpha = 0.25f), CircleShape),
+                    .size(LocalSarvDimensions.current.dimen48)
+                    .border(LocalSarvDimensions.current.dimen2, colors.accent.copy(alpha = 0.25f), CircleShape),
         )
     }
 }
@@ -292,13 +292,13 @@ private fun UserMessageBubble(
                     Modifier
                         .clip(
                             RoundedCornerShape(
-                                topStart = SarvDimensions.dimen18,
-                                topEnd = SarvDimensions.dimen18,
-                                bottomStart = SarvDimensions.dimen4,
-                                bottomEnd = SarvDimensions.dimen18,
+                                topStart = LocalSarvDimensions.current.dimen18,
+                                topEnd = LocalSarvDimensions.current.dimen18,
+                                bottomStart = LocalSarvDimensions.current.dimen4,
+                                bottomEnd = LocalSarvDimensions.current.dimen18,
                             ),
                         ).background(colors.userBubble)
-                        .padding(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen12),
+                        .padding(horizontal = LocalSarvDimensions.current.dimen16, vertical = LocalSarvDimensions.current.dimen12),
             ) {
                 Text(
                     text = message.text,
@@ -309,9 +309,9 @@ private fun UserMessageBubble(
             }
 
             Row(
-                modifier = Modifier.padding(top = SarvDimensions.dimen4, start = SarvDimensions.dimen4),
+                modifier = Modifier.padding(top = LocalSarvDimensions.current.dimen4, start = LocalSarvDimensions.current.dimen4),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4),
+                horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen4),
             ) {
                 Text(
                     text = message.timeLabel,
@@ -339,10 +339,10 @@ private fun PoetMessageBubble(
 ) {
     val bubbleShape =
         RoundedCornerShape(
-            topStart = SarvDimensions.dimen18,
-            topEnd = SarvDimensions.dimen18,
-            bottomStart = SarvDimensions.dimen18,
-            bottomEnd = SarvDimensions.dimen4,
+            topStart = LocalSarvDimensions.current.dimen18,
+            topEnd = LocalSarvDimensions.current.dimen18,
+            bottomStart = LocalSarvDimensions.current.dimen18,
+            bottomEnd = LocalSarvDimensions.current.dimen4,
         )
 
     BoxWithConstraints(
@@ -360,15 +360,15 @@ private fun PoetMessageBubble(
                     Modifier
                         .clip(bubbleShape)
                         .background(colors.poetBubble)
-                        .border(SarvDimensions.dimen1, colors.poetBubbleBorder, bubbleShape)
+                        .border(LocalSarvDimensions.current.dimen1, colors.poetBubbleBorder, bubbleShape)
                         .combinedClickable(
                             onClick = {},
                             onLongClick = onLongPress,
                         )
-                        .padding(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen12),
+                        .padding(horizontal = LocalSarvDimensions.current.dimen16, vertical = LocalSarvDimensions.current.dimen12),
             ) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+                    verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
                     horizontalAlignment = Alignment.End
                 ) {
                     Text(
@@ -392,7 +392,7 @@ private fun PoetMessageBubble(
                 color = colors.timestamp,
                 modifier =
                     Modifier
-                        .padding(top = SarvDimensions.dimen4, end = SarvDimensions.dimen4),
+                        .padding(top = LocalSarvDimensions.current.dimen4, end = LocalSarvDimensions.current.dimen4),
                 textAlign = TextAlign.End,
             )
         }
@@ -406,7 +406,7 @@ private fun ChatInputBar(
     onValueChange: (String) -> Unit,
     onSendClick: () -> Unit,
 ) {
-    val pillShape = RoundedCornerShape(SarvDimensions.dimen28)
+    val pillShape = RoundedCornerShape(LocalSarvDimensions.current.dimen28)
 
     Box(
         modifier =
@@ -414,7 +414,7 @@ private fun ChatInputBar(
                 .fillMaxWidth()
                 .keyboardAboveIme()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(SarvDimensions.dimen16),
+                .padding(LocalSarvDimensions.current.dimen16),
     ) {
         Row(
             modifier =
@@ -422,8 +422,8 @@ private fun ChatInputBar(
                     .fillMaxWidth()
                     .clip(pillShape)
                     .background(colors.inputBackground)
-                    .border(SarvDimensions.dimen1, colors.inputBorder, pillShape)
-                    .padding(SarvDimensions.dimen4),
+                    .border(LocalSarvDimensions.current.dimen1, colors.inputBorder, pillShape)
+                    .padding(LocalSarvDimensions.current.dimen4),
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
@@ -431,8 +431,8 @@ private fun ChatInputBar(
                 onClick = onSendClick,
                 modifier =
                     Modifier
-                        .padding(start = SarvDimensions.dimen4)
-                        .size(SarvDimensions.dimen40)
+                        .padding(start = LocalSarvDimensions.current.dimen4)
+                        .size(LocalSarvDimensions.current.dimen40)
                         .clip(CircleShape)
                         .background(colors.accent),
             ) {
@@ -440,7 +440,7 @@ private fun ChatInputBar(
                     painter = painterResource(Res.drawable.send),
                     contentDescription = stringResource(Res.string.cd_send_message),
                     tint = colors.onAccent,
-                    modifier = Modifier.size(SarvDimensions.dimen20).rotate(SEND_ICON_ROTATION_DEGREES),
+                    modifier = Modifier.size(LocalSarvDimensions.current.dimen20).rotate(SEND_ICON_ROTATION_DEGREES),
                 )
             }
             BasicTextField(
@@ -450,10 +450,10 @@ private fun ChatInputBar(
                     Modifier
                         .weight(1f)
                         .padding(
-                            start = SarvDimensions.dimen16,
-                            end = SarvDimensions.dimen4,
-                            top = SarvDimensions.dimen12,
-                            bottom = SarvDimensions.dimen12,
+                            start = LocalSarvDimensions.current.dimen16,
+                            end = LocalSarvDimensions.current.dimen4,
+                            top = LocalSarvDimensions.current.dimen12,
+                            bottom = LocalSarvDimensions.current.dimen12,
                         ),
                 textStyle =
                     MaterialTheme.typography.bodyMedium.copy(

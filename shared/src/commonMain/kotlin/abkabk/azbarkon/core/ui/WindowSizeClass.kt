@@ -8,10 +8,13 @@ import androidx.compose.runtime.staticCompositionLocalOf
 enum class WindowWidthSizeClass { Compact, Medium, Expanded }
 
 @Immutable
-class WindowSizeClass(val widthSizeClass: WindowWidthSizeClass)
+class WindowSizeClass(
+    val widthSizeClass: WindowWidthSizeClass,
+    val widthDp: Int,
+)
 
 val LocalWindowSizeClass = staticCompositionLocalOf {
-    WindowSizeClass(WindowWidthSizeClass.Compact)
+    WindowSizeClass(WindowWidthSizeClass.Compact, 0)
 }
 
 private const val MEDIUM_MIN_DP = 600
@@ -23,7 +26,7 @@ fun calculateWindowSizeClass(widthDp: Int): WindowSizeClass {
         widthDp >= MEDIUM_MIN_DP -> WindowWidthSizeClass.Medium
         else -> WindowWidthSizeClass.Compact
     }
-    return WindowSizeClass(widthClass)
+    return WindowSizeClass(widthClass, widthDp)
 }
 
 @Composable

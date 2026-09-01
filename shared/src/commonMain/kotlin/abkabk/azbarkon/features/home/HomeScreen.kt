@@ -1,6 +1,6 @@
 package abkabk.azbarkon.features.home
 
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import abkabk.azbarkon.core.designsystem.brown
 import abkabk.azbarkon.core.notifications.MAX_NOTIFICATION_PERMISSION_DECLINES
 import abkabk.azbarkon.core.notifications.NotificationPermissionSheet
@@ -197,7 +197,7 @@ fun HomeScreen(
     val verticalArrangement =
         when (LocalWindowSizeClass.current.widthSizeClass) {
             WindowWidthSizeClass.Compact -> Arrangement.SpaceBetween
-            else -> Arrangement.spacedBy(SarvDimensions.dimen12)
+            else -> Arrangement.spacedBy(LocalSarvDimensions.current.dimen12)
         }
 
 
@@ -208,9 +208,9 @@ fun HomeScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(vertical = if (!isExpandedScreen) {
-                    SarvDimensions.dimen12
+                    LocalSarvDimensions.current.dimen12
                 } else {
-                    SarvDimensions.dimen1
+                    LocalSarvDimensions.current.dimen1
                 }
             ),
             verticalArrangement = verticalArrangement,
@@ -237,7 +237,7 @@ fun HomeScreen(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = SarvDimensions.dimen16),
+                            .padding(horizontal = LocalSarvDimensions.current.dimen16),
                 ) {
 
                     QuickAccessMenu(
@@ -306,11 +306,11 @@ fun Poets(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = SarvDimensions.dimen16),
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+                .padding(horizontal = LocalSarvDimensions.current.dimen16),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = SarvDimensions.dimen8),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = LocalSarvDimensions.current.dimen8),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
@@ -328,7 +328,7 @@ fun Poets(
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         ) {
             items(
                 items = poets,
@@ -354,16 +354,16 @@ fun PoetItem(
     Column(
         modifier =
             modifier
-                .width(SarvDimensions.dimen80)
+                .width(LocalSarvDimensions.current.dimen80)
                 .clickable(onClick = onClick),
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if (item.imageUrl != null) {
             NetworkImage(
                 modifier =
                     Modifier
-                        .size(SarvDimensions.dimen80)
+                        .size(LocalSarvDimensions.current.dimen80)
                         .clip(CircleShape),
                 imageUrl = item.imageUrl,
             )
@@ -371,7 +371,7 @@ fun PoetItem(
             Image(
                 modifier =
                     Modifier
-                        .size(SarvDimensions.dimen80)
+                        .size(LocalSarvDimensions.current.dimen80)
                         .clip(CircleShape)
                         .background(color = MaterialTheme.colorScheme.primary),
                 painter = painterResource(Res.drawable.unknown),
@@ -399,11 +399,11 @@ fun QuickAccessMenu(
     modifier: Modifier = Modifier,
     isExpanded: Boolean = false
 ) {
-    val spacedBy = Arrangement.spacedBy(SarvDimensions.dimen12)
+    val spacedBy = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12)
 
     if (isExpanded) {
         Column(
-            modifier = modifier.fillMaxWidth().fillMaxHeight().padding(horizontal = SarvDimensions.dimen16),
+            modifier = modifier.fillMaxWidth().fillMaxHeight().padding(horizontal = LocalSarvDimensions.current.dimen16),
             verticalArrangement = spacedBy,
         ) {
             Row(
@@ -443,7 +443,7 @@ fun QuickAccessMenu(
         }
     } else {
         Row(
-            modifier = modifier.fillMaxWidth().padding(horizontal = SarvDimensions.dimen16),
+            modifier = modifier.fillMaxWidth().padding(horizontal = LocalSarvDimensions.current.dimen16),
             horizontalArrangement = spacedBy,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -485,19 +485,19 @@ fun QuickAccessItem(
 
     Surface(
         modifier = modifier.clickable { onItemClick() },
-        shape = RoundedCornerShape(SarvDimensions.dimen24),
-        tonalElevation = SarvDimensions.dimen1,
-        shadowElevation = SarvDimensions.dimen1,
+        shape = RoundedCornerShape(LocalSarvDimensions.current.dimen24),
+        tonalElevation = LocalSarvDimensions.current.dimen1,
+        shadowElevation = LocalSarvDimensions.current.dimen1,
         color = MaterialTheme.colorScheme.surfaceVariant
     ) {
 
         Column(
-            modifier = Modifier.padding(vertical = SarvDimensions.dimen20, horizontal = SarvDimensions.dimen4),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            modifier = Modifier.padding(vertical = LocalSarvDimensions.current.dimen20, horizontal = LocalSarvDimensions.current.dimen4),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                modifier = Modifier.size(SarvDimensions.dimen24),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                 painter = painterResource(icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.secondary,
@@ -546,19 +546,19 @@ fun HeroCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = SarvDimensions.dimen16),
+                .padding(horizontal = LocalSarvDimensions.current.dimen16),
     ) {
         Image(
             painter = painterResource(Res.drawable.herobg),
             contentDescription = null,
             modifier = Modifier.matchParentSize()
-                .clip(RoundedCornerShape(SarvDimensions.dimen16)),
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16)),
             contentScale = ContentScale.Crop
         )
         Row(
             modifier =
                 Modifier
-                    .padding(SarvDimensions.dimen16)
+                    .padding(LocalSarvDimensions.current.dimen16)
                     .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -569,7 +569,7 @@ fun HeroCard(
             }
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(
@@ -645,8 +645,8 @@ fun TopSlider(
     Column(modifier = modifier) {
         HorizontalPager(
             state = pagerState,
-            pageSpacing = SarvDimensions.dimen16,
-            contentPadding = PaddingValues(horizontal = SarvDimensions.dimen32),
+            pageSpacing = LocalSarvDimensions.current.dimen16,
+            contentPadding = PaddingValues(horizontal = LocalSarvDimensions.current.dimen32),
             beyondViewportPageCount = 1,
             modifier =
                 Modifier
@@ -668,7 +668,7 @@ fun TopSlider(
             }
         }
 
-        Spacer(modifier = Modifier.height(SarvDimensions.dimen10))
+        Spacer(modifier = Modifier.height(LocalSarvDimensions.current.dimen10))
 
         // 🎯 Indicators
         Row(
@@ -681,8 +681,8 @@ fun TopSlider(
                 Box(
                     modifier =
                         Modifier
-                            .padding(horizontal = SarvDimensions.dimen4)
-                            .size(SarvDimensions.dimen6)
+                            .padding(horizontal = LocalSarvDimensions.current.dimen4)
+                            .size(LocalSarvDimensions.current.dimen6)
                             .clip(CircleShape)
                             .background(
                                 if (currentIndex == index) {
@@ -710,7 +710,7 @@ fun TasvirNegarSlide(
             painter = painterResource(Res.drawable.image_creator_bg),
             contentDescription = null,
             modifier = Modifier.matchParentSize()
-                .clip(RoundedCornerShape(SarvDimensions.dimen16)),
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16)),
             contentScale = ContentScale.Crop
         )
         Row(
@@ -719,11 +719,11 @@ fun TasvirNegarSlide(
                     .fillMaxSize()
                     .then(if (isExpandedScreen){
                         Modifier.padding(
-                            vertical = SarvDimensions.dimen8,
-                            horizontal = SarvDimensions.dimen16
+                            vertical = LocalSarvDimensions.current.dimen8,
+                            horizontal = LocalSarvDimensions.current.dimen16
                         )
                     }else{
-                        Modifier.padding(SarvDimensions.dimen16)
+                        Modifier.padding(LocalSarvDimensions.current.dimen16)
                     }),
         ) {
 
@@ -732,11 +732,7 @@ fun TasvirNegarSlide(
 
             Column(
                 modifier = Modifier.weight(SLIDER_CONTENT_WEIGHT).fillMaxHeight(),
-                verticalArrangement = if (isExpandedScreen){
-                    Arrangement.spacedBy(SarvDimensions.dimen2)
-                }else {
-                    Arrangement.SpaceBetween
-                },
+                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(
@@ -793,7 +789,7 @@ fun ChallengeSlide(
             painter = painterResource(Res.drawable.next_verse_game_bg),
             contentDescription = null,
             modifier = Modifier.matchParentSize()
-                .clip(RoundedCornerShape(SarvDimensions.dimen16)),
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16)),
             contentScale = ContentScale.Crop
         )
         Row(
@@ -802,11 +798,11 @@ fun ChallengeSlide(
                     .fillMaxSize()
                     .then(if (isExpandedScreen){
                         Modifier.padding(
-                            vertical = SarvDimensions.dimen8,
-                            horizontal = SarvDimensions.dimen16
+                            vertical = LocalSarvDimensions.current.dimen8,
+                            horizontal = LocalSarvDimensions.current.dimen16
                         )
                     }else{
-                        Modifier.padding(SarvDimensions.dimen16)
+                        Modifier.padding(LocalSarvDimensions.current.dimen16)
                     }),
         ) {
 
@@ -814,11 +810,7 @@ fun ChallengeSlide(
 
             Column(
                 modifier = Modifier.weight(SLIDER_CONTENT_WEIGHT).fillMaxHeight(),
-                verticalArrangement = if (isExpandedScreen){
-                    Arrangement.spacedBy(SarvDimensions.dimen2)
-                }else {
-                    Arrangement.SpaceBetween
-                },
+                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(
@@ -877,8 +869,8 @@ fun BeytOfDaySlide(
 
     Box(modifier = modifier
         .shadow(
-            shape = RoundedCornerShape(SarvDimensions.dimen16),
-            elevation = SarvDimensions.dimen1,
+            shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
+            elevation = LocalSarvDimensions.current.dimen1,
             spotColor = MaterialTheme.colorScheme.tertiary,
             ambientColor = MaterialTheme.colorScheme.tertiary
         )
@@ -890,7 +882,7 @@ fun BeytOfDaySlide(
             painter = painterResource(Res.drawable.today_distich_bg),
             contentDescription = null,
             modifier = Modifier.matchParentSize()
-                .clip(RoundedCornerShape(SarvDimensions.dimen16)),
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16)),
             contentScale = ContentScale.Crop
         )
 
@@ -898,7 +890,7 @@ fun BeytOfDaySlide(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(SarvDimensions.dimen16),
+                    .padding(LocalSarvDimensions.current.dimen16),
         ) {
             Column(
                 modifier = Modifier.weight(1f).fillMaxHeight(),

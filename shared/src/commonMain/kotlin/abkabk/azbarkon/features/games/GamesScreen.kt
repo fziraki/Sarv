@@ -55,7 +55,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 private const val GAME_CARD_IMAGE_WEIGHT = 0.3f
 private const val GAME_CARD_CONTENT_WEIGHT = 0.7f
@@ -114,9 +114,9 @@ fun GamesScreen(
     LazyVerticalGrid(
         columns = columns,
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
-        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
-        contentPadding = PaddingValues(vertical = SarvDimensions.dimen24, horizontal = SarvDimensions.dimen16),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
+        horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
+        contentPadding = PaddingValues(vertical = LocalSarvDimensions.current.dimen24, horizontal = LocalSarvDimensions.current.dimen16),
     ) {
         items(
             items = gameItems,
@@ -146,9 +146,9 @@ fun GameItem(
         modifier = modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min).clickable { onClick() },
-        shape = RoundedCornerShape(SarvDimensions.dimen12),
-        tonalElevation = SarvDimensions.dimen1,
-        shadowElevation = SarvDimensions.dimen1,
+        shape = RoundedCornerShape(LocalSarvDimensions.current.dimen12),
+        tonalElevation = LocalSarvDimensions.current.dimen1,
+        shadowElevation = LocalSarvDimensions.current.dimen1,
         color = MaterialTheme.colorScheme.surfaceVariant
     ) {
         Row {
@@ -161,8 +161,8 @@ fun GameItem(
                             color = MaterialTheme.colorScheme.secondary,
                         )
                         .clip(RoundedCornerShape(
-                            topStart = SarvDimensions.dimen12, bottomStart = SarvDimensions.dimen12,
-                            topEnd = SarvDimensions.dimen0, bottomEnd = SarvDimensions.dimen0
+                            topStart = LocalSarvDimensions.current.dimen12, bottomStart = LocalSarvDimensions.current.dimen12,
+                            topEnd = LocalSarvDimensions.current.dimen0, bottomEnd = LocalSarvDimensions.current.dimen0
                         )),
                 painter = painterResource(icon),
                 contentDescription = null,
@@ -175,8 +175,8 @@ fun GameItem(
                         .weight(GAME_CARD_CONTENT_WEIGHT)
                         .background(
                             color = MaterialTheme.colorScheme.surfaceVariant,
-                        ).padding(SarvDimensions.dimen16),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
+                        ).padding(LocalSarvDimensions.current.dimen16),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen10),
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(
@@ -199,10 +199,10 @@ fun GameItem(
                     modifier =
                         Modifier
                             .border(
-                                width = SarvDimensions.dimen1,
+                                width = LocalSarvDimensions.current.dimen1,
                                 color = MaterialTheme.colorScheme.tertiary,
-                                shape = RoundedCornerShape(SarvDimensions.dimen8),
-                            ).padding(horizontal = SarvDimensions.dimen8, vertical = SarvDimensions.dimen4),
+                                shape = RoundedCornerShape(LocalSarvDimensions.current.dimen8),
+                            ).padding(horizontal = LocalSarvDimensions.current.dimen8, vertical = LocalSarvDimensions.current.dimen4),
                     text = "${gameType.baseScore} امتیاز ",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

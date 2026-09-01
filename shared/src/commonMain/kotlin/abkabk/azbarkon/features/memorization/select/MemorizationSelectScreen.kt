@@ -1,6 +1,6 @@
 package abkabk.azbarkon.features.memorization.select
 
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import abkabk.azbarkon.core.ui.LocalWindowSizeClass
 import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import abkabk.azbarkon.core.uidata.BaseScreen
@@ -90,14 +90,14 @@ fun MemorizationSelectScreen(
 
         if (isExpanded) {
             Column(
-                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(SarvDimensions.dimen16),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(LocalSarvDimensions.current.dimen16),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
             ) {
                 MemorizationHeroSection()
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+                    horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
                 ) {
                     QuickStartCard(
                         onCoupletClick = { onAction(MemorizationSelectAction.OnBabaTaherCoupletsClick) },
@@ -108,7 +108,7 @@ fun MemorizationSelectScreen(
 
                     Column(
                         modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+                        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
                     ) {
                         MemorizationOptionRow(
                             title = stringResource(Res.string.memorization_option_search_title),
@@ -148,8 +148,8 @@ fun MemorizationSelectScreen(
                     Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
-                        .padding(SarvDimensions.dimen16),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+                        .padding(LocalSarvDimensions.current.dimen16),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
             ) {
                 MemorizationHeroSection()
 

@@ -80,7 +80,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import abkabk.azbarkon.core.ui.LocalWindowSizeClass
 import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -189,13 +189,13 @@ fun PoemDetailScreen(
                 Column(
                     modifier = Modifier
                         .keyboardAboveIme()
-                        .padding(end = SarvDimensions.dimen96, start = SarvDimensions.dimen16)
-                        .padding(bottom = SarvDimensions.dimen24),
+                        .padding(end = LocalSarvDimensions.current.dimen96, start = LocalSarvDimensions.current.dimen16)
+                        .padding(bottom = LocalSarvDimensions.current.dimen24),
                 ) {
                     if (state.isFindBarVisible) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+                            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             FindTextField(
@@ -274,15 +274,15 @@ private fun PoemDetailExpandedLayout(
             .padding(
                 top = paddingValues.calculateTopPadding(),
                 bottom = paddingValues.calculateBottomPadding(),
-                end = SarvDimensions.dimen16,
+                end = LocalSarvDimensions.current.dimen16,
             ),
     ) {
         LazyColumn(
             state = listState,
             modifier = Modifier.weight(1f)
                 .fillMaxHeight()
-                .padding(horizontal = SarvDimensions.dimen16),
-            contentPadding = PaddingValues(vertical = SarvDimensions.dimen16),
+                .padding(horizontal = LocalSarvDimensions.current.dimen16),
+            contentPadding = PaddingValues(vertical = LocalSarvDimensions.current.dimen16),
         ) {
             items(
                 items = state.verses,
@@ -295,7 +295,7 @@ private fun PoemDetailExpandedLayout(
             }
             item {
                 PoemOrnamentalDivider(
-                    modifier = Modifier.padding(top = SarvDimensions.dimen24),
+                    modifier = Modifier.padding(top = LocalSarvDimensions.current.dimen24),
                 )
             }
         }
@@ -309,8 +309,8 @@ private fun PoemDetailExpandedLayout(
             onMemorizeClick = { onAction(PoemDetailAction.OnMemorizeClick) },
             isExpanded = true,
             modifier = Modifier.padding(
-                start = SarvDimensions.dimen16,
-                top = SarvDimensions.dimen16,
+                start = LocalSarvDimensions.current.dimen16,
+                top = LocalSarvDimensions.current.dimen16,
             ),
         )
     }
@@ -329,7 +329,7 @@ private fun PoemDetailCompactLayout(
                 top = paddingValues.calculateTopPadding(),
                 bottom = paddingValues.calculateBottomPadding(),
             ),
-        contentPadding = PaddingValues(SarvDimensions.dimen16),
+        contentPadding = PaddingValues(LocalSarvDimensions.current.dimen16),
     ) {
         items(
             items = state.verses,
@@ -342,7 +342,7 @@ private fun PoemDetailCompactLayout(
         }
         item {
             PoemOrnamentalDivider(
-                modifier = Modifier.padding(top = SarvDimensions.dimen24),
+                modifier = Modifier.padding(top = LocalSarvDimensions.current.dimen24),
             )
         }
     }
@@ -362,14 +362,14 @@ private fun PoemDetailBottomBar(
             Modifier
                 .keyboardAboveIme()
                 .fillMaxWidth()
-                .padding(horizontal = SarvDimensions.dimen16)
-                .padding(bottom = SarvDimensions.dimen24),
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
+                .padding(horizontal = LocalSarvDimensions.current.dimen16)
+                .padding(bottom = LocalSarvDimensions.current.dimen24),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen10),
     ) {
         if (state.isFindBarVisible) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+                horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 FindTextField(
@@ -432,7 +432,7 @@ private fun TrackSelector(
                     .fillMaxWidth()
                     .clickable { menuExpanded = true },
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
         ) {
             Text(
                 text = trackLabel(selected.track),
@@ -440,13 +440,13 @@ private fun TrackSelector(
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f).padding(start = SarvDimensions.dimen8),
+                modifier = Modifier.weight(1f).padding(start = LocalSarvDimensions.current.dimen8),
             )
             Icon(
                 painter = painterResource(Res.drawable.arrow_drop_down),
                 contentDescription = stringResource(Res.string.cd_select_track),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(SarvDimensions.dimen22),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen22),
             )
         }
 
@@ -504,15 +504,15 @@ private fun TrackPlayerCard(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(SarvDimensions.dimen16))
+            .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16))
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .border(
-                width = SarvDimensions.dimen1,
+                width = LocalSarvDimensions.current.dimen1,
                 color = MaterialTheme.colorScheme.outlineVariant,
-                shape = RoundedCornerShape(SarvDimensions.dimen16),
-            ).padding(SarvDimensions.dimen8),
+                shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
+            ).padding(LocalSarvDimensions.current.dimen8),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen2)
+        horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen2)
     ) {
         PlayPauseButton(
             isPlaying = activeTrack.isPlaying,
@@ -521,7 +521,7 @@ private fun TrackPlayerCard(
         )
 
 
-        Column(modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4)) {
+        Column(modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen4)) {
 
             TrackSelector(
                 tracks = tracks,
@@ -532,7 +532,7 @@ private fun TrackPlayerCard(
             Row(
                 modifier = modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8)
+                horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8)
             ) {
 
                 SarvSlider(
@@ -546,11 +546,11 @@ private fun TrackPlayerCard(
                         onSeekFinish(activeTrack.track, finalValue)
                         dragProgress = null
                     },
-                    modifier = Modifier.weight(1f).height(SarvDimensions.dimen16),
+                    modifier = Modifier.weight(1f).height(LocalSarvDimensions.current.dimen16),
                 )
 
                 Text(
-                    modifier = modifier.padding(end = SarvDimensions.dimen6),
+                    modifier = modifier.padding(end = LocalSarvDimensions.current.dimen6),
                     text = "${formatMs(activeTrack.positionMs)} / ${formatMs(activeTrack.durationMs)}",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -575,14 +575,14 @@ private fun PlayPauseButton(
 
     Box(
         modifier = Modifier
-            .size(SarvDimensions.dimen48)
+            .size(LocalSarvDimensions.current.dimen48)
             .clip(CircleShape)
             .clickable(enabled = !isLoading, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Box(
             modifier = Modifier
-                .size(SarvDimensions.dimen40)
+                .size(LocalSarvDimensions.current.dimen40)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surface),
             contentAlignment = Alignment.Center,
@@ -591,7 +591,7 @@ private fun PlayPauseButton(
                 painter = painterResource(if (isPlaying) Res.drawable.pause else Res.drawable.play),
                 contentDescription = if (isPlaying) "توقف" else "پخش",
                 tint = iconTint,
-                modifier = Modifier.size(SarvDimensions.dimen20),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen20),
             )
         }
 
@@ -605,8 +605,8 @@ private fun PlayPauseButton(
             }
             CircularProgressIndicator(
                 progress = { ringProgress.value },
-                modifier = Modifier.size(SarvDimensions.dimen48),
-                strokeWidth = SarvDimensions.dimen3,
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen48),
+                strokeWidth = LocalSarvDimensions.current.dimen3,
                 color = iconTint,
                 trackColor = MaterialTheme.colorScheme.primary,
             )

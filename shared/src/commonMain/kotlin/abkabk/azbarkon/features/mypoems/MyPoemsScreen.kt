@@ -63,7 +63,7 @@ import sarv.shared.generated.resources.my_poems
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 @Composable
 fun MyPoemsRoot(
@@ -135,7 +135,7 @@ fun MyPoemsScreen(
                     Modifier
                         .weight(1f)
                         .fillMaxWidth()
-                        .padding(SarvDimensions.dimen24),
+                        .padding(LocalSarvDimensions.current.dimen24),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -152,8 +152,8 @@ fun MyPoemsScreen(
         } else {
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen24),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+                contentPadding = PaddingValues(horizontal = LocalSarvDimensions.current.dimen16, vertical = LocalSarvDimensions.current.dimen24),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             ) {
                 state.activeGroups.forEach { poetGroup ->
                     poetGroup.categories.forEach { categoryGroup ->
@@ -202,7 +202,7 @@ private fun MyPoemsTabRow(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(SarvDimensions.dimen48),
+                    .height(LocalSarvDimensions.current.dimen48),
         ) {
             Box(
                 modifier =
@@ -249,13 +249,13 @@ private fun MyPoemsTabRow(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(SarvDimensions.dimen3)
+                    .height(LocalSarvDimensions.current.dimen3)
                     .background(MaterialTheme.colorScheme.surfaceVariant),
         ) {
             BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                 val tabWidth = maxWidth / 2
                 val indicatorOffset by animateDpAsState(
-                    targetValue = if (selectedTab == MyPoemsTab.Liked) SarvDimensions.dimen0 else tabWidth,
+                    targetValue = if (selectedTab == MyPoemsTab.Liked) LocalSarvDimensions.current.dimen0 else tabWidth,
                     animationSpec = tween(durationMillis = 200),
                 )
 
@@ -285,26 +285,26 @@ private fun MyPoemRow(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(SarvDimensions.dimen16))
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
-                    width = SarvDimensions.dimen1,
+                    width = LocalSarvDimensions.current.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(SarvDimensions.dimen16),
+                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
                 )
                 .clickable(onClick = onPoemClick)
                 .padding(
-                    start = SarvDimensions.dimen14,
-                    top = SarvDimensions.dimen14,
-                    bottom = SarvDimensions.dimen14,
-                    end = SarvDimensions.dimen8,
+                    start = LocalSarvDimensions.current.dimen14,
+                    top = LocalSarvDimensions.current.dimen14,
+                    bottom = LocalSarvDimensions.current.dimen14,
+                    end = LocalSarvDimensions.current.dimen8,
                 ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+        horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
     ) {
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen4),
         ) {
             Text(
                 text = poemTitle,
@@ -323,8 +323,8 @@ private fun MyPoemRow(
         Box(
             modifier =
                 Modifier
-                    .size(SarvDimensions.dimen40)
-                    .clip(RoundedCornerShape(SarvDimensions.dimen12))
+                    .size(LocalSarvDimensions.current.dimen40)
+                    .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen12))
                     .clickable(onClick = onRemoveClick),
             contentAlignment = Alignment.Center,
         ) {
@@ -343,7 +343,7 @@ private fun MyPoemRow(
                         }
                     ),
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(SarvDimensions.dimen22),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen22),
             )
         }
     }

@@ -53,7 +53,7 @@ import sarv.shared.generated.resources.poets_view_works
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 @Composable
 fun PoetsListRoot(
@@ -101,7 +101,7 @@ fun PoetsListScreen(
     Column(
         modifier =
             modifier
-                .fillMaxSize().padding(top = SarvDimensions.dimen16)
+                .fillMaxSize().padding(top = LocalSarvDimensions.current.dimen16)
                 .background(MaterialTheme.colorScheme.background),
     ) {
 
@@ -109,15 +109,15 @@ fun PoetsListScreen(
             value = state.searchQuery,
             placeholder = stringResource(Res.string.poets_filter_placeholder),
             onValueChange = { onAction(PoetsListAction.OnSearchQueryChange(it)) },
-            modifier = Modifier.padding(horizontal = SarvDimensions.dimen16),
+            modifier = Modifier.padding(horizontal = LocalSarvDimensions.current.dimen16),
         )
 
         LazyVerticalGrid(
             columns = columns,
             modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(vertical = SarvDimensions.dimen24, horizontal = SarvDimensions.dimen16),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            contentPadding = PaddingValues(vertical = LocalSarvDimensions.current.dimen24, horizontal = LocalSarvDimensions.current.dimen16),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         ) {
             state.featuredPoet?.let { featured ->
                 item(span = { GridItemSpan(maxLineSpan) }) {
@@ -162,29 +162,29 @@ private fun FeaturedPoetCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(SarvDimensions.dimen20))
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen20))
                 .background(LightColorScheme.primary)
-                .padding(SarvDimensions.dimen20),
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen14),
+                .padding(LocalSarvDimensions.current.dimen20),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen14),
     ) {
 
         Row(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(SarvDimensions.dimen12))
+                    .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen12))
                     .clickable(onClick = onClick),
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             PoetAvatar(
                 imageUrl = poet.imageUrl,
-                modifier = Modifier.size(SarvDimensions.dimen72),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen72),
             )
 
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen6),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen6),
             ) {
                 Text(
                     text = poet.name,
@@ -213,7 +213,7 @@ private fun FeaturedPoetCard(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
@@ -226,7 +226,7 @@ private fun FeaturedPoetCard(
                         Modifier
                             .clip(CircleShape)
                             .clickable(onClick = onChatClick)
-                            .padding(SarvDimensions.dimen4),
+                            .padding(LocalSarvDimensions.current.dimen4),
                 )
             }
 
@@ -257,26 +257,26 @@ private fun PoetListRow(
 ) {
     Card(
         modifier = modifier.fillMaxWidth().clickable(onClick = onClick),
-        shape = RoundedCornerShape(SarvDimensions.dimen16),
+        shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
-        elevation =  CardDefaults.cardElevation(defaultElevation = SarvDimensions.dimen1)
+        elevation =  CardDefaults.cardElevation(defaultElevation = LocalSarvDimensions.current.dimen1)
     ){
         Row(
-            modifier = Modifier.padding(horizontal = SarvDimensions.dimen14, vertical = SarvDimensions.dimen12),
+            modifier = Modifier.padding(horizontal = LocalSarvDimensions.current.dimen14, vertical = LocalSarvDimensions.current.dimen12),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen20),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen20),
         ) {
 
             PoetAvatar(
                 imageUrl = poet.imageUrl,
-                modifier = Modifier.size(SarvDimensions.dimen52),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen52),
             )
 
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen4),
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(
@@ -302,8 +302,8 @@ private fun PoetListRow(
             if (!poet.isDownloaded) {
                 if (isDownloading) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(SarvDimensions.dimen24),
-                        strokeWidth = SarvDimensions.dimen2,
+                        modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
+                        strokeWidth = LocalSarvDimensions.current.dimen2,
                     )
                 } else {
                     Icon(
@@ -314,7 +314,7 @@ private fun PoetListRow(
                             Modifier
                                 .clip(CircleShape)
                                 .clickable(onClick = onDownloadClick)
-                                .padding(SarvDimensions.dimen4),
+                                .padding(LocalSarvDimensions.current.dimen4),
                     )
                 }
             } else if (poet.canChat) {
@@ -326,7 +326,7 @@ private fun PoetListRow(
                         Modifier
                             .clip(CircleShape)
                             .clickable(onClick = onChatClick)
-                            .padding(SarvDimensions.dimen4),
+                            .padding(LocalSarvDimensions.current.dimen4),
                 )
             }
         }

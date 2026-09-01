@@ -36,7 +36,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.game_find_poet_instruction
 import org.jetbrains.compose.resources.stringResource
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 @Composable
 fun FindPoetContent(
@@ -67,17 +67,17 @@ fun FindPoetContent(
     if (isExpanded) {
         Row(
             modifier = modifier,
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         ) {
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             ) {
                 FindPoetPoemCard(question, poetName, poetNameColor)
             }
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             ) {
                 FindPoetOptionGrid(
                     question, correctIndex, selectedIndex,
@@ -88,7 +88,7 @@ fun FindPoetContent(
     } else {
         Column(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
         ) {
             FindPoetPoemCard(question, poetName, poetNameColor)
             FindPoetOptionGrid(
@@ -106,7 +106,7 @@ private fun FindPoetPoemCard(
     poetNameColor: Color?,
 ) {
     GamePoemCard(poetName = poetName, poetNameColor = poetNameColor) {
-        Column(verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8)) {
+        Column(verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8)) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = question.line1,
@@ -134,11 +134,11 @@ private fun FindPoetOptionGrid(
     enabled: Boolean,
     onPoetSelect: (Int) -> Unit,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8)) {
+    Column(verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8)) {
         question.options.chunked(2).forEach { rowOptions ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+                horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
             ) {
                 rowOptions.forEach { poetOption ->
                     val index = question.options.indexOf(poetOption)
@@ -160,8 +160,8 @@ private fun FindPoetOptionGrid(
                             .gameOptionStyle(state)
                             .clickable(enabled = clickable) {
                                 onPoetSelect(poetOption.id)
-                            }.padding(SarvDimensions.dimen12),
-                        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+                            }.padding(LocalSarvDimensions.current.dimen12),
+                        horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         FindPoetOptionAvatar(imageUrl = poetOption.imageUrl)
@@ -185,7 +185,7 @@ private fun FindPoetOptionAvatar(
     imageUrl: String?,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier.size(SarvDimensions.dimen36).clip(CircleShape)) {
+    Box(modifier = modifier.size(LocalSarvDimensions.current.dimen36).clip(CircleShape)) {
         if (imageUrl.isNullOrBlank()) {
             ShimmerPlaceholder(modifier = Modifier.fillMaxSize())
         } else {

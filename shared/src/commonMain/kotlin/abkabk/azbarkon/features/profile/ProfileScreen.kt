@@ -43,7 +43,7 @@ import sarv.shared.generated.resources.profile_import_confirm_title
 import sarv.shared.generated.resources.profile_version
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 @Composable
 fun ProfileRoot(
@@ -157,12 +157,12 @@ fun ProfileScreen(
 
     if (isExpanded) {
         Row(
-            modifier = modifier.fillMaxSize().padding(SarvDimensions.dimen16),
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            modifier = modifier.fillMaxSize().padding(LocalSarvDimensions.current.dimen16),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         ) {
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
             ) {
                 item {
                     ProfileHeader(
@@ -183,7 +183,7 @@ fun ProfileScreen(
                         text = stringResource(Res.string.profile_version, versionName()),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.fillMaxWidth().padding(top = SarvDimensions.dimen8),
+                        modifier = Modifier.fillMaxWidth().padding(top = LocalSarvDimensions.current.dimen8),
                         textAlign = TextAlign.Center,
                     )
                 }
@@ -191,7 +191,7 @@ fun ProfileScreen(
 
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
             ) {
                 item {
                     GameStatusCard(stats = state.gameStats)
@@ -204,8 +204,8 @@ fun ProfileScreen(
         }
     } else {
         LazyColumn(
-            modifier = modifier.fillMaxSize().padding(SarvDimensions.dimen16),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            modifier = modifier.fillMaxSize().padding(LocalSarvDimensions.current.dimen16),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         ) {
             item {
                 ProfileHeader(
@@ -234,7 +234,7 @@ fun ProfileScreen(
                     text = stringResource(Res.string.profile_version, versionName()),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.fillMaxSize().padding(top = SarvDimensions.dimen8),
+                    modifier = Modifier.fillMaxSize().padding(top = LocalSarvDimensions.current.dimen8),
                     textAlign = TextAlign.Center,
                 )
             }

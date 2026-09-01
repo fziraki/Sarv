@@ -32,7 +32,7 @@ import sarv.shared.generated.resources.notifications
 import sarv.shared.generated.resources.search
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 @Composable
 fun Header(
@@ -47,14 +47,14 @@ fun Header(
             modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = SarvDimensions.dimen8, vertical = SarvDimensions.dimen12),
+                .padding(horizontal = LocalSarvDimensions.current.dimen8, vertical = LocalSarvDimensions.current.dimen12),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (onBackClick != null) {
             Box(
                 modifier =
                     Modifier
-                        .size(SarvDimensions.dimen40)
+                        .size(LocalSarvDimensions.current.dimen40)
                         .clip(CircleShape)
                         .clickable(onClick = onBackClick),
                 contentAlignment = Alignment.Center,
@@ -66,13 +66,13 @@ fun Header(
                 )
             }
         } else {
-            Box(modifier = Modifier.size(SarvDimensions.dimen40))
+            Box(modifier = Modifier.size(LocalSarvDimensions.current.dimen40))
         }
 
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen2),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen2),
         ) {
             Text(
                 text = title,
@@ -91,7 +91,7 @@ fun Header(
         if (action != null) {
             HeaderActionButton(action)
         } else {
-            Box(modifier = Modifier.size(SarvDimensions.dimen40))
+            Box(modifier = Modifier.size(LocalSarvDimensions.current.dimen40))
         }
     }
 }
@@ -105,9 +105,9 @@ private fun HeaderActionButton(action: HeaderAction) {
             color = MaterialTheme.colorScheme.primary,
             modifier =
                 Modifier
-                    .clip(RoundedCornerShape(SarvDimensions.dimen8))
+                    .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen8))
                     .clickable(onClick = action.onClick)
-                    .padding(horizontal = SarvDimensions.dimen8, vertical = SarvDimensions.dimen8),
+                    .padding(horizontal = LocalSarvDimensions.current.dimen8, vertical = LocalSarvDimensions.current.dimen8),
         )
         return
     }
@@ -115,7 +115,7 @@ private fun HeaderActionButton(action: HeaderAction) {
     Box(
         modifier =
             Modifier
-                .size(SarvDimensions.dimen40)
+                .size(LocalSarvDimensions.current.dimen40)
                 .clip(CircleShape)
                 .clickable(onClick = action.onClick),
         contentAlignment = Alignment.Center,

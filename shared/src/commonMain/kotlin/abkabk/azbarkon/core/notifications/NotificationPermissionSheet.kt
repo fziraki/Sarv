@@ -1,6 +1,6 @@
 package abkabk.azbarkon.core.notifications
 
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import abkabk.azbarkon.domain.repository.UserPreferencesRepository
 import abkabk.azbarkon.ui.components.SarvModalBottomSheet
 import abkabk.azbarkon.ui.components.SarvPrimaryButton
@@ -43,8 +43,8 @@ fun NotificationPermissionSheet(
         onDismissRequest = onDismiss,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(SarvDimensions.dimen24),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            modifier = Modifier.fillMaxWidth().padding(LocalSarvDimensions.current.dimen24),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(

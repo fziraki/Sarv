@@ -1,7 +1,10 @@
 package abkabk.azbarkon
 
-import abkabk.azbarkon.core.designsystem.UpdateSarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
+import abkabk.azbarkon.core.designsystem.sarvDimensions
 import abkabk.azbarkon.core.navigation.SarvNavigation
+import abkabk.azbarkon.core.ui.DeviceScaleInfo
+import abkabk.azbarkon.core.ui.LocalDeviceScaleInfo
 import abkabk.azbarkon.core.ui.LocalWindowSizeClass
 import abkabk.azbarkon.core.ui.calculateWindowSizeClass
 import abkabk.azbarkon.core.ui.createSarvImageLoader
@@ -43,10 +46,18 @@ fun App(
     val windowSizeClass = calculateWindowSizeClass()
     println("SarvDebug: WindowSizeClass = ${windowSizeClass.widthSizeClass}")
 
+    val deviceScaleInfo = DeviceScaleInfo(
+        widthSizeClass = windowSizeClass.widthSizeClass,
+        widthDp = windowSizeClass.widthDp,
+    )
+
+    val sarvDimensions = sarvDimensions()
+
     CompositionLocalProvider(
         LocalWindowSizeClass provides windowSizeClass,
+        LocalDeviceScaleInfo provides deviceScaleInfo,
+        LocalSarvDimensions provides sarvDimensions,
     ) {
-        UpdateSarvDimensions()
         SarvTheme(darkTheme = darkTheme, fontSizeScale = fontSizeScale) {
             SarvNavigation(
                 initialPoemId = initialPoemId,

@@ -53,7 +53,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import abkabk.azbarkon.core.ui.LocalWindowSizeClass
 import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 
@@ -119,21 +119,21 @@ fun PoetDetailScreen(
             Row(modifier = Modifier.weight(1f)) {
                 LazyColumn(
                     modifier = Modifier.weight(1f),
-                    contentPadding = PaddingValues(bottom = SarvDimensions.dimen24),
+                    contentPadding = PaddingValues(bottom = LocalSarvDimensions.current.dimen24),
                 ) {
                     item {
                         PoetDetailHero(
                             state = state,
                             onAction = onAction,
                             modifier = Modifier
-                                .padding(horizontal = SarvDimensions.dimen16)
-                                .padding(bottom = SarvDimensions.dimen16),
+                                .padding(horizontal = LocalSarvDimensions.current.dimen16)
+                                .padding(bottom = LocalSarvDimensions.current.dimen16),
                         )
                     }
                 }
                 LazyColumn(
                     modifier = Modifier.weight(1f),
-                    contentPadding = PaddingValues(bottom = SarvDimensions.dimen24),
+                    contentPadding = PaddingValues(bottom = LocalSarvDimensions.current.dimen24),
                 ) {
                     poetCategoryItems(state.categories, onAction)
                 }
@@ -141,23 +141,23 @@ fun PoetDetailScreen(
         } else {
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(bottom = SarvDimensions.dimen24),
+                contentPadding = PaddingValues(bottom = LocalSarvDimensions.current.dimen24),
             ) {
                 item {
                     PoetDetailHero(
                         state = state,
                         onAction = onAction,
                         modifier = Modifier
-                            .padding(horizontal = SarvDimensions.dimen16)
-                            .padding(bottom = SarvDimensions.dimen16),
+                            .padding(horizontal = LocalSarvDimensions.current.dimen16)
+                            .padding(bottom = LocalSarvDimensions.current.dimen16),
                     )
                 }
                 item {
                     PoetsSectionTitle(
                         title = stringResource(Res.string.poets_works_section),
                         modifier = Modifier
-                            .padding(horizontal = SarvDimensions.dimen16)
-                            .padding(bottom = SarvDimensions.dimen16),
+                            .padding(horizontal = LocalSarvDimensions.current.dimen16)
+                            .padding(bottom = LocalSarvDimensions.current.dimen16),
                     )
                 }
                 poetCategoryItems(state.categories, onAction)
@@ -186,10 +186,10 @@ private fun LazyListScope.poetCategoryItems(
                 )
             },
             modifier = Modifier
-                .padding(horizontal = SarvDimensions.dimen16)
+                .padding(horizontal = LocalSarvDimensions.current.dimen16)
                 .then(
                     if (index > 0) {
-                        Modifier.padding(top = SarvDimensions.dimen6)
+                        Modifier.padding(top = LocalSarvDimensions.current.dimen6)
                     } else {
                         Modifier
                     },
@@ -208,15 +208,15 @@ private fun PoetDetailHero(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(SarvDimensions.dimen20))
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen20))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
-                    width = SarvDimensions.dimen1,
+                    width = LocalSarvDimensions.current.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(SarvDimensions.dimen20),
-                ).padding(SarvDimensions.dimen20),
+                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen20),
+                ).padding(LocalSarvDimensions.current.dimen20),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen14),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen14),
     ) {
         PoetHeroInfo(
             state = state,
@@ -240,11 +240,11 @@ private fun PoetHeroInfo(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen14),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen14),
     ) {
         PoetAvatar(
             imageUrl = state.imageUrl,
-            modifier = Modifier.size(SarvDimensions.dimen96),
+            modifier = Modifier.size(LocalSarvDimensions.current.dimen96),
         )
 
         Text(
@@ -256,12 +256,12 @@ private fun PoetHeroInfo(
 
         if (state.canChat) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+                horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
                 modifier =
                     Modifier
-                        .clip(RoundedCornerShape(SarvDimensions.dimen12))
+                        .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen12))
                         .clickable { onAction(PoetDetailAction.OnChatClick) }
-                        .padding(horizontal = SarvDimensions.dimen8, vertical = SarvDimensions.dimen4),
+                        .padding(horizontal = LocalSarvDimensions.current.dimen8, vertical = LocalSarvDimensions.current.dimen4),
             ) {
                 Text(
                     text = stringResource(Res.string.chat_with_poet),
@@ -269,7 +269,7 @@ private fun PoetHeroInfo(
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Icon(
-                    modifier = Modifier.size(SarvDimensions.dimen24),
+                    modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                     painter = painterResource(Res.drawable.chat_bubble),
                     contentDescription = stringResource(Res.string.cd_chat),
                     tint = MaterialTheme.colorScheme.primary,
@@ -279,12 +279,12 @@ private fun PoetHeroInfo(
 
         if (state.canFal) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+                horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
                 modifier =
                     Modifier
-                        .clip(RoundedCornerShape(SarvDimensions.dimen12))
+                        .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen12))
                         .clickable { onAction(PoetDetailAction.OnFalClick) }
-                        .padding(horizontal = SarvDimensions.dimen8, vertical = SarvDimensions.dimen4),
+                        .padding(horizontal = LocalSarvDimensions.current.dimen8, vertical = LocalSarvDimensions.current.dimen4),
             ) {
                 Text(
                     text = stringResource(Res.string.fal_button),

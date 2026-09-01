@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 @Composable
 fun TasvirNegarRoot(
@@ -167,7 +167,7 @@ fun TasvirNegarScreen(
             },
         ) {
             Box(
-                modifier = Modifier.fillMaxSize().padding(vertical = SarvDimensions.dimen128),
+                modifier = Modifier.fillMaxSize().padding(vertical = LocalSarvDimensions.current.dimen128),
                 contentAlignment = Alignment.Center,
             ) {
                 EditorCanvas(
@@ -198,7 +198,7 @@ fun TasvirNegarScreen(
                         modifier =
                             Modifier
                                 .align(Alignment.CenterEnd)
-                                .padding(end = SarvDimensions.dimen4),
+                                .padding(end = LocalSarvDimensions.current.dimen4),
                     )
                 }
             }
@@ -247,7 +247,7 @@ private fun TasvirNegarExpandedLayout(
                     onColorClick = { onAction(TasvirNegarAction.OnColorOptionClick(it)) },
                     onShapeClick = { onAction(TasvirNegarAction.OnShapeOptionClick(it)) },
                     onFontClick = { onAction(TasvirNegarAction.OnFontOptionClick(it)) },
-                    modifier = Modifier.padding(start = SarvDimensions.dimen8),
+                    modifier = Modifier.padding(start = LocalSarvDimensions.current.dimen8),
                     isExpanded = true,
                 )
             }
@@ -280,14 +280,14 @@ private fun TasvirNegarExpandedLayout(
                         onProgressChange = { onAction(TasvirNegarAction.OnSizeProgressChange(it)) },
                         modifier = Modifier
                             .align(Alignment.CenterEnd)
-                            .padding(end = SarvDimensions.dimen4),
+                            .padding(end = LocalSarvDimensions.current.dimen4),
                     )
                 }
             }
             if (!state.isExporting && state.document.isEditPanelExpanded) {
                 EditToolbar(
                     onAction = onAction,
-                    modifier = Modifier.padding(end = SarvDimensions.dimen8),
+                    modifier = Modifier.padding(end = LocalSarvDimensions.current.dimen8),
                     isExpanded = true,
                 )
             }

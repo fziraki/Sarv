@@ -48,7 +48,7 @@ import sarv.shared.generated.resources.search
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 private const val LABEL_WIDTH_FRACTION = 0.9f
 
@@ -59,13 +59,13 @@ fun MemorizationHeroSection(
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen10),
     ) {
 
         Box(contentAlignment = Alignment.Center){
 
             Box(
-                modifier = Modifier.size(SarvDimensions.dimen92)
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen92)
                     .background(
                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                         shape = CircleShape
@@ -105,10 +105,10 @@ fun QuickStartCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(SarvDimensions.dimen20))
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen20))
                 .background(LightColorScheme.primary)
-                .padding(SarvDimensions.dimen20),
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen10),
+                .padding(LocalSarvDimensions.current.dimen20),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen10),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -155,16 +155,16 @@ fun QuickStartCategoryTile(
     Column(
         modifier =
             modifier
-                .clip(RoundedCornerShape(SarvDimensions.dimen12))
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen12))
                 .clickable(onClick = onClick)
-                .padding(SarvDimensions.dimen8),
+                .padding(LocalSarvDimensions.current.dimen8),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
     ) {
         Box(
             modifier =
                 Modifier
-                    .size(SarvDimensions.dimen56)
+                    .size(LocalSarvDimensions.current.dimen56)
                     .clip(CircleShape)
                     .background(LightColorScheme.surface.copy(alpha = 0.2f)),
             contentAlignment = Alignment.Center,
@@ -173,7 +173,7 @@ fun QuickStartCategoryTile(
                 painter = painterResource(Res.drawable.ornoment30),
                 contentDescription = null,
                 tint = LightColorScheme.onPrimary,
-                modifier = Modifier.size(SarvDimensions.dimen42),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen42),
             )
         }
 
@@ -199,23 +199,23 @@ fun MemorizationOptionRow(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(SarvDimensions.dimen16))
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
-                    width = SarvDimensions.dimen1,
+                    width = LocalSarvDimensions.current.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(SarvDimensions.dimen16),
+                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
                 ).clickable(onClick = onClick)
-                .padding(horizontal = SarvDimensions.dimen14, vertical = SarvDimensions.dimen14),
+                .padding(horizontal = LocalSarvDimensions.current.dimen14, vertical = LocalSarvDimensions.current.dimen14),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+        horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
     ) {
 
 
         Box(
             modifier =
                 Modifier
-                    .size(SarvDimensions.dimen44)
+                    .size(LocalSarvDimensions.current.dimen44)
                     .clip(CircleShape)
                     .background(LightColorScheme.secondary),
             contentAlignment = Alignment.Center,
@@ -224,13 +224,13 @@ fun MemorizationOptionRow(
                 painter = painterResource(icon),
                 contentDescription = null,
                 tint = LightColorScheme.onSecondary,
-                modifier = Modifier.size(SarvDimensions.dimen24),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
             )
         }
 
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen4),
         ) {
             Text(
                 text = title,
@@ -248,7 +248,7 @@ fun MemorizationOptionRow(
             painter = painterResource(Res.drawable.forward),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.scale(scaleX = -1f, scaleY = 1f).size(SarvDimensions.dimen20),
+            modifier = Modifier.scale(scaleX = -1f, scaleY = 1f).size(LocalSarvDimensions.current.dimen20),
         )
 
     }
@@ -270,19 +270,19 @@ fun ActivePoemCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(SarvDimensions.dimen16))
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
-                    width = SarvDimensions.dimen1,
+                    width = LocalSarvDimensions.current.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(SarvDimensions.dimen16),
+                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
                 ).clickable(onClick = onClick)
-                .padding(horizontal = SarvDimensions.dimen14, vertical = SarvDimensions.dimen14),
+                .padding(horizontal = LocalSarvDimensions.current.dimen14, vertical = LocalSarvDimensions.current.dimen14),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen6),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen6),
         ) {
             Text(
                 text = title,
@@ -332,7 +332,7 @@ fun ActivePoemCard(
 @Composable
 private fun MemorizationHeroSectionPreview() {
     SarvTheme {
-        MemorizationHeroSection(modifier = Modifier.padding(SarvDimensions.dimen16))
+        MemorizationHeroSection(modifier = Modifier.padding(LocalSarvDimensions.current.dimen16))
     }
 }
 
@@ -344,7 +344,7 @@ private fun QuickStartCardPreview() {
             onCoupletClick = {},
             onGhazalClick = {},
             onRubaiyatClick = {},
-            modifier = Modifier.padding(SarvDimensions.dimen16),
+            modifier = Modifier.padding(LocalSarvDimensions.current.dimen16),
         )
     }
 }
@@ -358,7 +358,7 @@ private fun MemorizationOptionRowPreview() {
             description = "شاعر، بیت یا نام شعر را جستجو کنید",
             icon = Res.drawable.search,
             onClick = {},
-            modifier = Modifier.padding(SarvDimensions.dimen16),
+            modifier = Modifier.padding(LocalSarvDimensions.current.dimen16),
         )
     }
 }
@@ -376,7 +376,7 @@ private fun ActivePoemCardPreview() {
             dueCards = 3,
             onClick = {},
             onDeleteClick = {},
-            modifier = Modifier.padding(SarvDimensions.dimen16),
+            modifier = Modifier.padding(LocalSarvDimensions.current.dimen16),
         )
     }
 }

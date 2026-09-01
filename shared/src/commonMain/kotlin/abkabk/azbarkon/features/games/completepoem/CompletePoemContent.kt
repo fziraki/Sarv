@@ -29,7 +29,7 @@ import androidx.compose.ui.text.withStyle
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.game_complete_poem_instruction
 import org.jetbrains.compose.resources.stringResource
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 private const val MIN_BLANK_PARTS = 3
 
@@ -48,17 +48,17 @@ fun CompletePoemContent(
     if (isExpanded) {
         Row(
             modifier = modifier,
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         ) {
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             ) {
                 CompletePoemPoemCard(question, filledWords, answerPhase)
             }
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             ) {
                 CompletePoemOptionGrid(
                     question, filledWords, disabledOptionIndices,
@@ -69,7 +69,7 @@ fun CompletePoemContent(
     } else {
         Column(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
         ) {
             CompletePoemPoemCard(question, filledWords, answerPhase)
             CompletePoemOptionGrid(
@@ -87,7 +87,7 @@ private fun CompletePoemPoemCard(
     answerPhase: QuizAnswerPhase,
 ) {
     GamePoemCard(poetName = question.poetName) {
-        Column(verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8)) {
+        Column(verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8)) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = question.line1,
@@ -120,7 +120,7 @@ private fun CompletePoemOptionGrid(
     question.options.chunked(2).forEach { rowWords ->
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
         ) {
             rowWords.forEach { word ->
                 val index = question.options.indexOf(word)
@@ -161,8 +161,8 @@ private fun CompletePoemOptionGrid(
                         .gameOptionStyle(state)
                         .clickable(enabled = clickable) { onWordSelect(word) }
                         .padding(
-                            horizontal = SarvDimensions.dimen12,
-                            vertical = SarvDimensions.dimen14,
+                            horizontal = LocalSarvDimensions.current.dimen12,
+                            vertical = LocalSarvDimensions.current.dimen14,
                         ),
                     text = completePoemOptionLabel(
                         word = word,

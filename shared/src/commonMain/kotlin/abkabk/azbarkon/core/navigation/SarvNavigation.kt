@@ -1,6 +1,6 @@
 package abkabk.azbarkon.core.navigation
 
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import abkabk.azbarkon.core.uidata.SarvAppState
 import abkabk.azbarkon.core.uidata.LocalSarvAppState
 import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
@@ -132,7 +132,7 @@ private fun SarvTopBar(
             Modifier
                 .windowInsetsPadding(WindowInsets.statusBars)
                 .fillMaxWidth()
-                .heightIn(min = if (isExpandedScreen) SarvDimensions.dimen40 else SarvDimensions.dimen56),
+                .heightIn(min = if (isExpandedScreen) LocalSarvDimensions.current.dimen40 else LocalSarvDimensions.current.dimen56),
     ) {
         if (navController.previousBackStackEntry != null) {
             IconButton(
@@ -212,10 +212,10 @@ private fun SarvBottomBar(
     NavigationBar(
         modifier =
             Modifier
-                .shadow(spotColor = MaterialTheme.colorScheme.tertiary, elevation = SarvDimensions.dimen1)
+                .shadow(spotColor = MaterialTheme.colorScheme.tertiary, elevation = LocalSarvDimensions.current.dimen1)
                 .windowInsetsPadding(WindowInsets.navigationBars)
                 .fillMaxWidth()
-                .heightIn(min = SarvDimensions.dimen64),
+                .heightIn(min = LocalSarvDimensions.current.dimen64),
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
         bottomNavItems.forEach { item ->
@@ -253,7 +253,7 @@ private fun SarvBottomBar(
                 },
                 icon = {
                     Icon(
-                        modifier = Modifier.size(SarvDimensions.dimen22),
+                        modifier = Modifier.size(LocalSarvDimensions.current.dimen22),
                         painter = painterResource(item.icon),
                         contentDescription = stringResource(item.title),
                     )
@@ -284,7 +284,7 @@ private fun SarvNavigationRail(
     navController: NavController,
 ) {
     NavigationRail(
-        modifier = Modifier.heightIn(min = SarvDimensions.dimen64),
+        modifier = Modifier.heightIn(min = LocalSarvDimensions.current.dimen64),
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
         bottomNavItems.forEach { item ->
@@ -322,7 +322,7 @@ private fun SarvNavigationRail(
                 },
                 icon = {
                     Icon(
-                        modifier = Modifier.size(SarvDimensions.dimen22),
+                        modifier = Modifier.size(LocalSarvDimensions.current.dimen22),
                         painter = painterResource(item.icon),
                         contentDescription = stringResource(item.title),
                     )

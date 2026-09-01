@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.game_next_verse_instruction
 import org.jetbrains.compose.resources.stringResource
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 @Composable
 fun NextVerseContent(
@@ -43,17 +43,17 @@ fun NextVerseContent(
     if (isExpanded) {
         Row(
             modifier = modifier,
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         ) {
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             ) {
                 NextVersePoemCard(question, selectedOptionIndex, answerPhase)
             }
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             ) {
                 NextVerseOptionList(
                     question, selectedOptionIndex, disabledOptionIndices,
@@ -64,7 +64,7 @@ fun NextVerseContent(
     } else {
         Column(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
         ) {
             NextVersePoemCard(question, selectedOptionIndex, answerPhase)
             NextVerseOptionList(
@@ -146,8 +146,8 @@ private fun NextVerseOptionList(
                 .gameOptionStyle(state)
                 .clickable(enabled = clickable) { onOptionSelect(index) }
                 .padding(
-                    horizontal = SarvDimensions.dimen16,
-                    vertical = SarvDimensions.dimen14,
+                    horizontal = LocalSarvDimensions.current.dimen16,
+                    vertical = LocalSarvDimensions.current.dimen14,
                 ),
             text = option,
             style = MaterialTheme.typography.bodyMedium,

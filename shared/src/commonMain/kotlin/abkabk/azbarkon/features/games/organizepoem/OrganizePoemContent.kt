@@ -33,7 +33,7 @@ import sarv.shared.generated.resources.game_organize_poem_instruction
 import sarv.shared.generated.resources.keep
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 private const val POEM_LINE_COUNT = 4
 
@@ -55,11 +55,11 @@ fun OrganizePoemContent(
     if (isExpanded) {
         Row(
             modifier = modifier,
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         ) {
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             ) {
                 OrganizePoemCardContent(
                     question = question,
@@ -72,7 +72,7 @@ fun OrganizePoemContent(
             }
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             ) {
                 OrganizePoemReorderSection(
                     question = question,
@@ -88,7 +88,7 @@ fun OrganizePoemContent(
     } else {
         Column(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
         ) {
             OrganizePoemCardContent(
                 question = question,
@@ -150,10 +150,10 @@ private fun OrganizePoemReorderSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(SarvDimensions.dimen12))
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen12))
                 .background(background)
-                .padding(SarvDimensions.dimen12),
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+                .padding(LocalSarvDimensions.current.dimen12),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
@@ -189,7 +189,7 @@ private fun OrganizePoemCardContent(
     initialOrderedLineIds: List<String>,
     answerPhase: QuizAnswerPhase,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8)) {
+    Column(verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8)) {
         if (answerPhase == QuizAnswerPhase.Answering) {
             if (orderedLineIds == initialOrderedLineIds) {
                 repeat(POEM_LINE_COUNT) {

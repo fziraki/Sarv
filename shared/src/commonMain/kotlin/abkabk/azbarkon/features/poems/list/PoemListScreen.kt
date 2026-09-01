@@ -40,7 +40,7 @@ import sarv.shared.generated.resources.list_load_error
 import kotlinx.coroutines.flow.flowOf
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import abkabk.azbarkon.core.ui.LocalWindowSizeClass
 import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -120,9 +120,9 @@ fun PoemListScreen(
         LazyVerticalGrid(
             columns = columns,
             modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(horizontal = SarvDimensions.dimen16, vertical = SarvDimensions.dimen24),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+            contentPadding = PaddingValues(horizontal = LocalSarvDimensions.current.dimen16, vertical = LocalSarvDimensions.current.dimen24),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
         ) {
             items(
                 count = poems.itemCount,
@@ -133,14 +133,14 @@ fun PoemListScreen(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(SarvDimensions.dimen16))
+                                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16))
                                 .background(MaterialTheme.colorScheme.surfaceVariant)
                                 .border(
-                                    width = SarvDimensions.dimen1,
+                                    width = LocalSarvDimensions.current.dimen1,
                                     color = MaterialTheme.colorScheme.outlineVariant,
-                                    shape = RoundedCornerShape(SarvDimensions.dimen16),
+                                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
                                 ).clickable { onPoemClick(poem.id) }
-                                .padding(SarvDimensions.dimen14),
+                                .padding(LocalSarvDimensions.current.dimen14),
                         text = poem.title,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -155,8 +155,8 @@ fun PoemListScreen(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .height(SarvDimensions.dimen56)
-                                .clip(RoundedCornerShape(SarvDimensions.dimen16)),
+                                .height(LocalSarvDimensions.current.dimen56)
+                                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16)),
                     )
                 }
             }

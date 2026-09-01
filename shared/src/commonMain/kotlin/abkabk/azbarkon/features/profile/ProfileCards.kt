@@ -74,7 +74,7 @@ import sarv.shared.generated.resources.profile_xp_format
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 private const val WEEKLY_STREAK_BADGE_ID = 3
 private const val POETRY_LOVER_BADGE_ID = 4
@@ -103,14 +103,14 @@ fun ProfileHeader(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         levelImageResource(levelProgress.levelId)?.let { drawable ->
             Image(
                 painter = painterResource(drawable),
                 contentDescription = null,
-                modifier = Modifier.size(SarvDimensions.dimen96).clickable(onClick = onLevelsClick),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen96).clickable(onClick = onLevelsClick),
             )
         }
 
@@ -119,7 +119,7 @@ fun ProfileHeader(
                 Modifier
                     .fillMaxWidth()
                     .clickable(onClick = onLevelsClick),
-            horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4, Alignment.CenterHorizontally ),
+            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen4, Alignment.CenterHorizontally ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -129,7 +129,7 @@ fun ProfileHeader(
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
             )
-            Box(modifier = Modifier.size(SarvDimensions.dimen3)
+            Box(modifier = Modifier.size(LocalSarvDimensions.current.dimen3)
                 .background(
                     color = MaterialTheme.colorScheme.onSurface,
                     shape = CircleShape
@@ -142,12 +142,12 @@ fun ProfileHeader(
             )
             IconButton(
                 onClick = onLevelsClick,
-                modifier = Modifier.size(SarvDimensions.dimen32),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen32),
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_help),
                     contentDescription = stringResource(Res.string.cd_levels),
-                    modifier = Modifier.size(SarvDimensions.dimen18),
+                    modifier = Modifier.size(LocalSarvDimensions.current.dimen18),
                 )
             }
         }
@@ -165,8 +165,8 @@ fun ProfileHeader(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = SarvDimensions.dimen32)
-                        .height(SarvDimensions.dimen8),
+                        .padding(horizontal = LocalSarvDimensions.current.dimen32)
+                        .height(LocalSarvDimensions.current.dimen8),
                 trackColor = LightColorScheme.outlineVariant,
                 strokeCap = StrokeCap.Round,
                 drawStopIndicator = {},
@@ -229,14 +229,14 @@ private fun ProfileStatusCard(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(SarvDimensions.dimen12),
-        tonalElevation = SarvDimensions.dimen1,
-        shadowElevation = SarvDimensions.dimen1,
+        shape = RoundedCornerShape(LocalSarvDimensions.current.dimen12),
+        tonalElevation = LocalSarvDimensions.current.dimen1,
+        shadowElevation = LocalSarvDimensions.current.dimen1,
         color = MaterialTheme.colorScheme.surfaceVariant
     ) {
         Column(
-            modifier = Modifier.padding(SarvDimensions.dimen16),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+            modifier = Modifier.padding(LocalSarvDimensions.current.dimen16),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -261,7 +261,7 @@ private fun ProfileStatusCard(
                     if (index < items.lastIndex) {
                         VerticalDivider(
                             modifier = Modifier.fillMaxHeight(),
-                            thickness = SarvDimensions.dimen1,
+                            thickness = LocalSarvDimensions.current.dimen1,
                             color = MaterialTheme.colorScheme.secondary,
                         )
                     }
@@ -279,8 +279,8 @@ private fun ProfileStatItem(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(horizontal = SarvDimensions.dimen4),
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen8),
+        modifier = modifier.padding(horizontal = LocalSarvDimensions.current.dimen4),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
@@ -307,18 +307,18 @@ fun ProfileBadges(
 
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(SarvDimensions.dimen12),
-        tonalElevation = SarvDimensions.dimen1,
-        shadowElevation = SarvDimensions.dimen1,
+        shape = RoundedCornerShape(LocalSarvDimensions.current.dimen12),
+        tonalElevation = LocalSarvDimensions.current.dimen1,
+        shadowElevation = LocalSarvDimensions.current.dimen1,
         color = MaterialTheme.colorScheme.surfaceVariant
     ) {
         Column(
-            modifier = Modifier.padding(vertical = SarvDimensions.dimen16),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+            modifier = Modifier.padding(vertical = LocalSarvDimensions.current.dimen16),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             horizontalAlignment = Alignment.End,
         ) {
             Text(
-                modifier = Modifier.clickable(onClick = onViewAllClick).padding(end = SarvDimensions.dimen16),
+                modifier = Modifier.clickable(onClick = onViewAllClick).padding(end = LocalSarvDimensions.current.dimen16),
                 text = stringResource(Res.string.profile_view_all_badges),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary,
@@ -347,7 +347,7 @@ fun BadgeItem(
     BadgeIcon(
         badgeId = item.id,
         isEarned = item.isEarned,
-        modifier = modifier.width(SarvDimensions.dimen80),
+        modifier = modifier.width(LocalSarvDimensions.current.dimen80),
         showName = true,
         name = item.name,
     )
@@ -361,17 +361,17 @@ fun BadgeListRow(
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+        horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
     ) {
         BadgeIcon(
             badgeId = item.id,
             isEarned = item.isEarned,
-            modifier = Modifier.size(SarvDimensions.dimen56),
+            modifier = Modifier.size(LocalSarvDimensions.current.dimen56),
         )
 
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen4),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen4),
             horizontalAlignment = Alignment.Start
         ) {
             Text(
@@ -416,7 +416,7 @@ private fun BadgeIcon(
         }
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen16),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(

@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import abkabk.azbarkon.core.designsystem.SarvDimensions
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 @Composable
 fun GameSessionRoot(
@@ -125,12 +125,12 @@ fun GameSessionScreen(
                     .fillMaxSize()
                     .then(if (needsScroll) Modifier.verticalScroll(rememberScrollState()) else Modifier)
                     .padding(
-                        top = paddingValues.calculateTopPadding() + SarvDimensions.dimen16,
+                        top = paddingValues.calculateTopPadding() + LocalSarvDimensions.current.dimen16,
                         bottom = paddingValues.calculateBottomPadding(),
-                        start = SarvDimensions.dimen16,
-                        end = SarvDimensions.dimen16
+                        start = LocalSarvDimensions.current.dimen16,
+                        end = LocalSarvDimensions.current.dimen16
                         ),
-            verticalArrangement = Arrangement.spacedBy(SarvDimensions.dimen12),
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
         ) {
             when (val question = state.currentQuestion) {
                 is GameQuestion.NextVerse ->
