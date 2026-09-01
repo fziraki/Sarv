@@ -78,7 +78,12 @@ private fun ColorOptionsRow(
 ) {
     if (isExpanded) {
         LazyColumn(
-            modifier = Modifier.fillMaxHeight().padding(horizontal = LocalSarvDimensions.current.dimen8, vertical = LocalSarvDimensions.current.dimen8),
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(
+                    horizontal = LocalSarvDimensions.current.dimen8,
+                    vertical = LocalSarvDimensions.current.dimen8,
+                ),
             verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
         ) {
             itemsIndexed(TasvirNegarCatalog.colorOptions) { index, option ->
@@ -87,7 +92,12 @@ private fun ColorOptionsRow(
         }
     } else {
         LazyRow(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = LocalSarvDimensions.current.dimen8, vertical = LocalSarvDimensions.current.dimen8),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = LocalSarvDimensions.current.dimen8,
+                    vertical = LocalSarvDimensions.current.dimen8,
+                ),
             horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
         ) {
             itemsIndexed(TasvirNegarCatalog.colorOptions) { index, option ->
@@ -167,7 +177,11 @@ private fun ShapeOptionItem(
                 .size(LocalSarvDimensions.current.dimen56)
                 .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen8))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                .border(LocalSarvDimensions.current.dimen1, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(LocalSarvDimensions.current.dimen8))
+                .border(
+                    LocalSarvDimensions.current.dimen1,
+                    MaterialTheme.colorScheme.outlineVariant,
+                    RoundedCornerShape(LocalSarvDimensions.current.dimen8),
+                )
                 .clickable(onClick = onClick)
                 .padding(LocalSarvDimensions.current.dimen8),
         contentAlignment = Alignment.Center,

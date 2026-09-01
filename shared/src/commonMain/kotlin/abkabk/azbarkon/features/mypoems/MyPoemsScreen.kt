@@ -152,7 +152,10 @@ fun MyPoemsScreen(
         } else {
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(horizontal = LocalSarvDimensions.current.dimen16, vertical = LocalSarvDimensions.current.dimen24),
+                contentPadding = PaddingValues(
+                    horizontal = LocalSarvDimensions.current.dimen16,
+                    vertical = LocalSarvDimensions.current.dimen24,
+                ),
                 verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             ) {
                 state.activeGroups.forEach { poetGroup ->

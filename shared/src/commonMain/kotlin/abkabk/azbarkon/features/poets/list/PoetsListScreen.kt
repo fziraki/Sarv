@@ -115,7 +115,10 @@ fun PoetsListScreen(
         LazyVerticalGrid(
             columns = columns,
             modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(vertical = LocalSarvDimensions.current.dimen24, horizontal = LocalSarvDimensions.current.dimen16),
+            contentPadding = PaddingValues(
+                vertical = LocalSarvDimensions.current.dimen24,
+                horizontal = LocalSarvDimensions.current.dimen16,
+            ),
             verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
             horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
         ) {

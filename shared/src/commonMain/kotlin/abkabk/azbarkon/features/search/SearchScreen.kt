@@ -250,7 +250,10 @@ private fun SearchResultsList(
                 columns = columns,
                 state = rememberLazyGridState(),
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = LocalSarvDimensions.current.dimen16, vertical = LocalSarvDimensions.current.dimen8),
+                contentPadding = PaddingValues(
+                    horizontal = LocalSarvDimensions.current.dimen16,
+                    vertical = LocalSarvDimensions.current.dimen8,
+                ),
                 verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen10),
                 horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen10),
             ) {

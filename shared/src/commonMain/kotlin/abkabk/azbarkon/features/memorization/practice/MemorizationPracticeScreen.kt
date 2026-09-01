@@ -231,7 +231,10 @@ fun MemorizationPracticeScreen(
                             PracticeProgressSection(
                                 cardIndex = state.cardIndex,
                                 totalCards = state.totalCards,
-                                modifier = Modifier.padding(top = LocalSarvDimensions.current.dimen16, bottom = LocalSarvDimensions.current.dimen12),
+                                modifier = Modifier.padding(
+                                    top = LocalSarvDimensions.current.dimen16,
+                                    bottom = LocalSarvDimensions.current.dimen12,
+                                ),
                             )
                         }
 
