@@ -45,6 +45,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.unit.min
+import kotlin.math.min
 
 @Composable
 fun TasvirNegarRoot(
@@ -165,9 +173,11 @@ fun TasvirNegarScreen(
             snackbarHost = {
                 SarvSnackbarHost(hostState = LocalSnackbarHostState.current)
             },
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize().padding(vertical = LocalSarvDimensions.current.dimen128),
+        ) { paddingValues ->
+
+            BoxWithConstraints(
+                modifier = Modifier.fillMaxSize()
+                    .padding(vertical = LocalSarvDimensions.current.dimen128),
                 contentAlignment = Alignment.Center,
             ) {
                 EditorCanvas(
@@ -185,7 +195,7 @@ fun TasvirNegarScreen(
                             onCaptureReady = onCaptureReady,
                         ),
                     showEditOverlays = !state.isExporting,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.size(min(maxWidth, maxHeight)),
                 )
 
                 if (!state.isExporting &&
@@ -197,8 +207,11 @@ fun TasvirNegarScreen(
                         onProgressChange = { onAction(TasvirNegarAction.OnSizeProgressChange(it)) },
                         modifier =
                             Modifier
+                                .fillMaxHeight()
                                 .align(Alignment.CenterEnd)
-                                .padding(end = LocalSarvDimensions.current.dimen4),
+                                .padding(
+                                    horizontal = LocalSarvDimensions.current.dimen4,
+                                    vertical = LocalSarvDimensions.current.dimen64),
                     )
                 }
             }
@@ -240,18 +253,25 @@ private fun TasvirNegarExpandedLayout(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            if (!state.isExporting) {
-                OptionsRow(
-                    mode = state.document.activeOptionPanel,
-                    onColorClick = { onAction(TasvirNegarAction.OnColorOptionClick(it)) },
-                    onShapeClick = { onAction(TasvirNegarAction.OnShapeOptionClick(it)) },
-                    onFontClick = { onAction(TasvirNegarAction.OnFontOptionClick(it)) },
-                    modifier = Modifier.padding(start = LocalSarvDimensions.current.dimen8),
-                    isExpanded = true,
-                )
+            Box(modifier = Modifier.fillMaxHeight()
+                .width(LocalSarvDimensions.current.dimen72),
+                contentAlignment = Alignment.CenterStart){
+
+                if (!state.isExporting) {
+                    OptionsRow(
+                        mode = state.document.activeOptionPanel,
+                        onColorClick = { onAction(TasvirNegarAction.OnColorOptionClick(it)) },
+                        onShapeClick = { onAction(TasvirNegarAction.OnShapeOptionClick(it)) },
+                        onFontClick = { onAction(TasvirNegarAction.OnFontOptionClick(it)) },
+                        isExpanded = true,
+                    )
+                }
             }
-            Box(
+
+
+            BoxWithConstraints(
                 modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.Center,
             ) {
@@ -269,7 +289,7 @@ private fun TasvirNegarExpandedLayout(
                         onCaptureReady = onCaptureReady,
                     ),
                     showEditOverlays = !state.isExporting,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.size(min(maxWidth, maxHeight)),
                 )
                 if (!state.isExporting &&
                     state.document.isEditPanelExpanded &&
@@ -279,18 +299,28 @@ private fun TasvirNegarExpandedLayout(
                         progress = sizeProgressFor(state.document),
                         onProgressChange = { onAction(TasvirNegarAction.OnSizeProgressChange(it)) },
                         modifier = Modifier
+                            .fillMaxHeight()
                             .align(Alignment.CenterEnd)
-                            .padding(end = LocalSarvDimensions.current.dimen4),
+                            .padding(
+                                horizontal = LocalSarvDimensions.current.dimen4,
+                                vertical = LocalSarvDimensions.current.dimen64),
                     )
                 }
             }
-            if (!state.isExporting && state.document.isEditPanelExpanded) {
-                EditToolbar(
-                    onAction = onAction,
-                    modifier = Modifier.padding(end = LocalSarvDimensions.current.dimen8),
-                    isExpanded = true,
-                )
+
+            Box(modifier = Modifier
+                .fillMaxHeight()
+                .width(LocalSarvDimensions.current.dimen72),
+                contentAlignment = Alignment.CenterEnd){
+
+                if (!state.isExporting && state.document.isEditPanelExpanded) {
+                    EditToolbar(
+                        onAction = onAction,
+                        isExpanded = true,
+                    )
+                }
             }
+
         }
     }
 }

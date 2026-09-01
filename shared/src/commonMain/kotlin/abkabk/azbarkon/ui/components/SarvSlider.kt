@@ -109,14 +109,12 @@ fun SarvSlider(
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
             Box(
                 modifier = modifier
-                    .width(LocalSarvDimensions.current.dimen32)
-                    .height(LocalSarvDimensions.current.dimen200),
+                    .width(LocalSarvDimensions.current.dimen32),
                 contentAlignment = Alignment.Center,
             ) {
                 slider(
                     Modifier
                         .verticalSliderTransform()
-                        .width(LocalSarvDimensions.current.dimen200)
                         .height(LocalSarvDimensions.current.dimen32),
                 )
             }
