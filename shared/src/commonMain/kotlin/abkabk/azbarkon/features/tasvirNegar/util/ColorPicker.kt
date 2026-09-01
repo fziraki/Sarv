@@ -51,7 +51,7 @@ internal fun HsvColorPickerContent(
     val selectedColor = remember(hue, saturation, value) { Color.hsv(hue, saturation, value) }
 
     SarvModalBottomSheet(
-        onDismissRequest = {},
+        onDismissRequest = onDismiss,
         sheetGesturesEnabled = false,
     ) {
         Column(
