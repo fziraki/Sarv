@@ -52,6 +52,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -61,8 +62,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
@@ -106,7 +111,6 @@ private const val SLIDER_TOP_WEIGHT = 0.4f
 private const val SLIDER_CONTENT_WEIGHT = 0.6f
 private const val SLIDER_BUTTON_WIDTH_FRACTION = 0.6f
 private const val TOP_SLIDER_HEIGHT_FRACTION = 0.25f
-private const val HERO_CARD_WEIGHT_EXPANDED = 1.5f
 private const val HERO_CARD_SPACER_WEIGHT_EXPANDED = 0.75f
 private const val BEYT_SLIDE_SPACER_WEIGHT_EXPANDED = 0.2f
 
@@ -233,6 +237,9 @@ fun HomeScreen(
         }
         item {
             if (isExpandedScreen) {
+
+                var maxHeight by remember { mutableIntStateOf(0) }
+
                 Row(
                     modifier =
                         Modifier
@@ -246,12 +253,14 @@ fun HomeScreen(
                         onTasvirNegarClick = { onAction(HomeAction.OnTasvirNegarClick) },
                         onReviewClick = { onAction(HomeAction.OnReviewClick) },
                         isExpanded = true,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
+                            .onGloballyPositioned { maxHeight = it.size.height },
                     )
                     HeroCard(
                         hero = state.memorizationHero,
                         onClick = { onAction(HomeAction.OnMemorizationClick) },
-                        modifier = Modifier.weight(HERO_CARD_WEIGHT_EXPANDED),
+                        modifier = Modifier.weight(1f)
+                            .height(with(LocalDensity.current) { maxHeight.toDp().coerceAtLeast(0.dp) }),
                         isExpandedScreen = isExpandedScreen
                     )
                 }
@@ -559,7 +568,7 @@ fun HeroCard(
             modifier =
                 Modifier
                     .padding(LocalSarvDimensions.current.dimen16)
-                    .fillMaxWidth(),
+                    .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (isExpandedScreen){
@@ -568,8 +577,12 @@ fun HeroCard(
                 Spacer(modifier = Modifier.weight(1f))
             }
             Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
+                modifier = Modifier.fillMaxHeight().weight(1f),
+                verticalArrangement = if (isExpandedScreen){
+                    Arrangement.SpaceBetween
+                }else {
+                    Arrangement.spacedBy(LocalSarvDimensions.current.dimen8)
+                      },
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(

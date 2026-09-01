@@ -43,13 +43,7 @@ class SarvDimensions(
     val dimen88: Dp = 88.dp,
     val dimen92: Dp = 92.dp,
     val dimen96: Dp = 96.dp,
-    val dimen120: Dp = 120.dp,
     val dimen128: Dp = 128.dp,
-    val dimen160: Dp = 160.dp,
-    val dimen180: Dp = 180.dp,
-    val dimen200: Dp = 200.dp,
-    val dimen280: Dp = 280.dp,
-    val dimen300: Dp = 300.dp,
 )
 
 val LocalSarvDimensions = staticCompositionLocalOf {
@@ -98,12 +92,6 @@ fun sarvDimensions(): SarvDimensions {
         dimen88 = 88.dp + offset,
         dimen92 = 92.dp + offset,
         dimen96 = 96.dp + offset,
-        dimen120 = 120.dp + offset,
         dimen128 = 128.dp + offset,
-        dimen160 = 160.dp + offset,
-        dimen180 = 180.dp + offset,
-        dimen200 = 200.dp + offset,
-        dimen280 = 280.dp + offset,
-        dimen300 = 300.dp + offset,
     )
 }
