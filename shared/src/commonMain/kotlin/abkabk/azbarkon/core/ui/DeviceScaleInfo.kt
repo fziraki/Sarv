@@ -7,11 +7,13 @@ import androidx.compose.runtime.staticCompositionLocalOf
 class DeviceScaleInfo(
     val widthSizeClass: WindowWidthSizeClass,
     val widthDp: Int,
+    val heightDp: Int
 )
 
 val LocalDeviceScaleInfo = staticCompositionLocalOf {
     DeviceScaleInfo(
         widthSizeClass = WindowWidthSizeClass.Compact,
         widthDp = 0,
+        heightDp = 0
     )
 }

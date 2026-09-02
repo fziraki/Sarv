@@ -1,28 +1,26 @@
 package abkabk.azbarkon.core.designsystem
 
 import abkabk.azbarkon.core.ui.LocalWindowSizeClass
-import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import kotlin.math.floor
 
-private const val HEADLINE_SMALL_BASE = 12
-private const val HEADLINE_MEDIUM_BASE = 14
-private const val HEADLINE_LARGE_BASE = 16
-private const val BODY_SMALL_BASE = 12
-private const val BODY_MEDIUM_BASE = 14
-private const val BODY_LARGE_BASE = 16
-private const val LABEL_SMALL_EMPHASIZED_BASE = 10
-private const val LABEL_SMALL_BASE = 12
-private const val LABEL_MEDIUM_BASE = 14
-private const val LABEL_LARGE_BASE = 16
+private const val BASE_WIDTH_DP = 360
 
-private const val COMPACT_OFFSET = 0f
-private const val MEDIUM_OFFSET = 4f
-private const val EXPANDED_OFFSET = 8f
+private const val HEADLINE_SMALL_BASE = 12f
+private const val HEADLINE_MEDIUM_BASE = 14f
+private const val HEADLINE_LARGE_BASE = 16f
+private const val BODY_SMALL_BASE = 12f
+private const val BODY_MEDIUM_BASE = 14f
+private const val BODY_LARGE_BASE = 16f
+private const val LABEL_SMALL_EMPHASIZED_BASE = 10f
+private const val LABEL_SMALL_BASE = 12f
+private const val LABEL_MEDIUM_BASE = 14f
+private const val LABEL_LARGE_BASE = 16f
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -30,13 +28,13 @@ fun sarvTypography(
     fontSizeScale: Float = 1f,
 ): Typography {
     val fontFamily = vazirmatnFontFamily()
-    val offset = when (LocalWindowSizeClass.current.widthSizeClass) {
-        WindowWidthSizeClass.Compact -> COMPACT_OFFSET
-        WindowWidthSizeClass.Medium -> MEDIUM_OFFSET
-        WindowWidthSizeClass.Expanded -> EXPANDED_OFFSET
-    }
+    val widthDp = LocalWindowSizeClass.current.widthDp
+    val heightDp = LocalWindowSizeClass.current.heightDp
 
-    fun sp(base: Int) = ((base + offset) * fontSizeScale).sp
+    val min = minOf(widthDp, heightDp)
+
+    val scale = floorToHalf((min / BASE_WIDTH_DP).toFloat())
+    fun sp(base: Float) = (base * scale * fontSizeScale).sp
 
     return Typography(
         headlineSmall = TextStyle(

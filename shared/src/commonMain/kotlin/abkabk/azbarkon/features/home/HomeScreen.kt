@@ -4,11 +4,11 @@ import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import abkabk.azbarkon.core.designsystem.brown
 import abkabk.azbarkon.core.notifications.MAX_NOTIFICATION_PERMISSION_DECLINES
 import abkabk.azbarkon.core.notifications.NotificationPermissionSheet
+import abkabk.azbarkon.core.ui.LocalWindowSizeClass
+import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalSarvAppState
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
-import abkabk.azbarkon.core.ui.LocalWindowSizeClass
-import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import abkabk.azbarkon.domain.model.Poet
 import abkabk.azbarkon.domain.model.RandomDistich
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
@@ -24,6 +24,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -31,7 +32,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -64,7 +64,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -111,8 +110,9 @@ private const val SLIDER_TOP_WEIGHT = 0.4f
 private const val SLIDER_CONTENT_WEIGHT = 0.6f
 private const val SLIDER_BUTTON_WIDTH_FRACTION = 0.6f
 private const val TOP_SLIDER_HEIGHT_FRACTION = 0.25f
-private const val HERO_CARD_SPACER_WEIGHT_EXPANDED = 0.75f
+private const val TOP_SLIDER_HEIGHT_FRACTION_EXPAND = 0.3f
 private const val BEYT_SLIDE_SPACER_WEIGHT_EXPANDED = 0.2f
+private const val HERO_CARD_BUTTON_WIDTH_FRACTION = 0.5f
 
 data class HomeCallbacks(
     val onNavigateToPoetsList: () -> Unit,
@@ -198,16 +198,12 @@ fun HomeScreen(
     val isExpandedScreen =
         LocalWindowSizeClass.current.widthSizeClass == WindowWidthSizeClass.Expanded
 
-    val verticalArrangement =
-        when (LocalWindowSizeClass.current.widthSizeClass) {
-            WindowWidthSizeClass.Compact -> Arrangement.SpaceBetween
-            else -> Arrangement.spacedBy(LocalSarvDimensions.current.dimen12)
-        }
-
-
-
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
-        val topSliderHeight = maxHeight * TOP_SLIDER_HEIGHT_FRACTION
+        val topSliderHeight = if (!isExpandedScreen){
+            maxHeight * TOP_SLIDER_HEIGHT_FRACTION
+        }else{
+            maxHeight * TOP_SLIDER_HEIGHT_FRACTION_EXPAND
+        }
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -217,7 +213,7 @@ fun HomeScreen(
                     LocalSarvDimensions.current.dimen1
                 }
             ),
-            verticalArrangement = verticalArrangement,
+            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12)
         ) {
             item {
                 TopSlider(
@@ -511,10 +507,12 @@ fun QuickAccessItem(
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.secondary,
             )
+
             Text(
                 text = stringResource(title),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.secondary,
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -564,55 +562,45 @@ fun HeroCard(
                 .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16)),
             contentScale = ContentScale.Crop
         )
-        Row(
+        Column(
             modifier =
                 Modifier
                     .padding(LocalSarvDimensions.current.dimen16)
                     .fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = if (isExpandedScreen){
+                Arrangement.SpaceBetween
+            }else {
+                Arrangement.spacedBy(LocalSarvDimensions.current.dimen8)
+            },
+            horizontalAlignment = Alignment.End,
         ) {
-            if (isExpandedScreen){
-                Spacer(modifier = Modifier.weight(HERO_CARD_SPACER_WEIGHT_EXPANDED))
-            }else{
-                Spacer(modifier = Modifier.weight(1f))
-            }
-            Column(
-                modifier = Modifier.fillMaxHeight().weight(1f),
-                verticalArrangement = if (isExpandedScreen){
-                    Arrangement.SpaceBetween
-                }else {
-                    Arrangement.spacedBy(LocalSarvDimensions.current.dimen8)
-                      },
-                horizontalAlignment = Alignment.End,
-            ) {
-                Text(
-                    text = stringResource(Res.string.poetry_memorization),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = LightColorScheme.onSecondary,
-                )
-                Text(
-                    text = titleText,
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = LightColorScheme.surfaceVariant,
-                )
-                Text(
-                    text = descText,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = LightColorScheme.onSecondary,
-                )
-                SarvButton(
-                    text = buttonText,
-                    onClick = onClick,
-                    colors =
-                        ButtonColors(
-                            containerColor = brown,
-                            contentColor = LightColorScheme.onPrimary,
-                            disabledContainerColor = brown,
-                            disabledContentColor = LightColorScheme.onPrimary,
-                        ),
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
+            Text(
+                text = stringResource(Res.string.poetry_memorization),
+                style = MaterialTheme.typography.bodySmall,
+                color = LightColorScheme.onSecondary,
+            )
+            Text(
+                text = titleText,
+                style = MaterialTheme.typography.headlineLarge,
+                color = LightColorScheme.surfaceVariant,
+            )
+            Text(
+                text = descText,
+                style = MaterialTheme.typography.labelSmall,
+                color = LightColorScheme.onSecondary,
+            )
+            SarvButton(
+                text = buttonText,
+                onClick = onClick,
+                colors =
+                    ButtonColors(
+                        containerColor = brown,
+                        contentColor = LightColorScheme.onPrimary,
+                        disabledContainerColor = brown,
+                        disabledContentColor = LightColorScheme.onPrimary,
+                    ),
+                modifier = Modifier.fillMaxWidth(HERO_CARD_BUTTON_WIDTH_FRACTION),
+            )
         }
     }
 }

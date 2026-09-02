@@ -277,7 +277,7 @@ private fun SearchResultsList(
                                 Modifier
                                     .fillMaxWidth()
                                     .height(LocalSarvDimensions.current.dimen64)
-                                    .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen14)),
+                                    .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16)),
                         )
                     }
                 }
@@ -299,7 +299,7 @@ private fun SearchResultsShimmer() {
             ShimmerPlaceholder(
                 modifier =
                     Modifier.fillMaxWidth().height(LocalSarvDimensions.current.dimen64)
-                        .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen14)),
+                        .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16)),
             )
         }
     }
@@ -366,13 +366,13 @@ private fun SearchQueryField(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen14))
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
                     width = LocalSarvDimensions.current.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen14),
-                ).padding(horizontal = LocalSarvDimensions.current.dimen14, vertical = LocalSarvDimensions.current.dimen12),
+                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
+                ).padding(horizontal = LocalSarvDimensions.current.dimen16, vertical = LocalSarvDimensions.current.dimen12),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen10),
     ) {
@@ -422,7 +422,7 @@ private fun SearchPickerField(
     Column(
         modifier =
             modifier
-                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen14))
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16))
                 .background(
                     if (enabled) {
                         MaterialTheme.colorScheme.surfaceVariant
@@ -432,7 +432,7 @@ private fun SearchPickerField(
                 ).border(
                     width = LocalSarvDimensions.current.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen14),
+                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
                 ).clickable(enabled = enabled, onClick = onClick)
                 .padding(horizontal = LocalSarvDimensions.current.dimen12, vertical = LocalSarvDimensions.current.dimen10),
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen4),
@@ -468,14 +468,14 @@ private fun SearchResultRow(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen14))
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
                     width = LocalSarvDimensions.current.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen14),
+                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
                 ).clickable(onClick = onClick)
-                .padding(LocalSarvDimensions.current.dimen14),
+                .padding(LocalSarvDimensions.current.dimen16),
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen6),
     ) {
         Text(

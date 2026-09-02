@@ -1,5 +1,6 @@
 package abkabk.azbarkon.features.profile
 
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import abkabk.azbarkon.domain.model.ThemeMode
 import abkabk.azbarkon.domain.model.profile.BadgeUi
 import abkabk.azbarkon.domain.model.profile.GameLevelCatalog
@@ -41,6 +42,8 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.add_box_24px
 import sarv.shared.generated.resources.check_circle
@@ -75,9 +78,6 @@ import sarv.shared.generated.resources.profile_theme_light
 import sarv.shared.generated.resources.profile_theme_system
 import sarv.shared.generated.resources.profile_theme_title
 import sarv.shared.generated.resources.upload
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
-import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 private const val FONT_SIZE_DEFAULT = 1f
 private const val FONT_SIZE_BIG = 1.05f
@@ -453,7 +453,7 @@ private fun ProfileBadgesSheetContent(badges: List<BadgeUi>) {
             textAlign = TextAlign.Center,
         )
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen0),
+            verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {
             items(badges, key = { it.id }) { badge ->
                 BadgeListRow(
@@ -516,7 +516,8 @@ private fun ProfileLevelRow(item: LevelListItemUi) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen12))
                 .background(backgroundColor)
-                .padding(horizontal = LocalSarvDimensions.current.dimen12, vertical = LocalSarvDimensions.current.dimen14),
+                .padding(horizontal = LocalSarvDimensions.current.dimen12,
+                    vertical = LocalSarvDimensions.current.dimen16),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
     ) {

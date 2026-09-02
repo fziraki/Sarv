@@ -49,9 +49,13 @@ fun App(
     val deviceScaleInfo = DeviceScaleInfo(
         widthSizeClass = windowSizeClass.widthSizeClass,
         widthDp = windowSizeClass.widthDp,
+        heightDp = windowSizeClass.heightDp
     )
 
-    val sarvDimensions = sarvDimensions()
+    val sarvDimensions = sarvDimensions(
+        widthDp = windowSizeClass.widthDp,
+        heightDp = windowSizeClass.heightDp
+    )
 
     CompositionLocalProvider(
         LocalWindowSizeClass provides windowSizeClass,

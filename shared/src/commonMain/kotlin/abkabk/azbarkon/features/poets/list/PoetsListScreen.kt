@@ -168,7 +168,7 @@ private fun FeaturedPoetCard(
                 .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen20))
                 .background(LightColorScheme.primary)
                 .padding(LocalSarvDimensions.current.dimen20),
-        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen14),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
     ) {
 
         Row(
@@ -267,14 +267,14 @@ private fun PoetListRow(
         elevation =  CardDefaults.cardElevation(defaultElevation = LocalSarvDimensions.current.dimen1)
     ){
         Row(
-            modifier = Modifier.padding(horizontal = LocalSarvDimensions.current.dimen14, vertical = LocalSarvDimensions.current.dimen12),
+            modifier = Modifier.padding(horizontal = LocalSarvDimensions.current.dimen16, vertical = LocalSarvDimensions.current.dimen12),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen20),
         ) {
 
             PoetAvatar(
                 imageUrl = poet.imageUrl,
-                modifier = Modifier.size(LocalSarvDimensions.current.dimen52),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen56),
             )
 
             Column(

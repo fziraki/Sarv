@@ -216,7 +216,7 @@ private fun PoetDetailHero(
                     shape = RoundedCornerShape(LocalSarvDimensions.current.dimen20),
                 ).padding(LocalSarvDimensions.current.dimen20),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen14),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
     ) {
         PoetHeroInfo(
             state = state,
@@ -240,7 +240,7 @@ private fun PoetHeroInfo(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen14),
+        verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
     ) {
         PoetAvatar(
             imageUrl = state.imageUrl,

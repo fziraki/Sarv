@@ -162,7 +162,7 @@ private fun CompletePoemOptionGrid(
                         .clickable(enabled = clickable) { onWordSelect(word) }
                         .padding(
                             horizontal = LocalSarvDimensions.current.dimen12,
-                            vertical = LocalSarvDimensions.current.dimen14,
+                            vertical = LocalSarvDimensions.current.dimen16,
                         ),
                     text = completePoemOptionLabel(
                         word = word,

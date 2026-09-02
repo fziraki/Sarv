@@ -143,7 +143,7 @@ fun PoemListScreen(
                                     color = MaterialTheme.colorScheme.outlineVariant,
                                     shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
                                 ).clickable { onPoemClick(poem.id) }
-                                .padding(LocalSarvDimensions.current.dimen14),
+                                .padding(LocalSarvDimensions.current.dimen16),
                         text = poem.title,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground,

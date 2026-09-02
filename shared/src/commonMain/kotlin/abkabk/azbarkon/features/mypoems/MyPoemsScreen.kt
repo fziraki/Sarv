@@ -252,13 +252,13 @@ private fun MyPoemsTabRow(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(LocalSarvDimensions.current.dimen3)
+                    .height(LocalSarvDimensions.current.dimen4)
                     .background(MaterialTheme.colorScheme.surfaceVariant),
         ) {
             BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                 val tabWidth = maxWidth / 2
                 val indicatorOffset by animateDpAsState(
-                    targetValue = if (selectedTab == MyPoemsTab.Liked) LocalSarvDimensions.current.dimen0 else tabWidth,
+                    targetValue = if (selectedTab == MyPoemsTab.Liked) 0.dp else tabWidth,
                     animationSpec = tween(durationMillis = 200),
                 )
 
@@ -297,9 +297,9 @@ private fun MyPoemRow(
                 )
                 .clickable(onClick = onPoemClick)
                 .padding(
-                    start = LocalSarvDimensions.current.dimen14,
-                    top = LocalSarvDimensions.current.dimen14,
-                    bottom = LocalSarvDimensions.current.dimen14,
+                    start = LocalSarvDimensions.current.dimen16,
+                    top = LocalSarvDimensions.current.dimen16,
+                    bottom = LocalSarvDimensions.current.dimen16,
                     end = LocalSarvDimensions.current.dimen8,
                 ),
         verticalAlignment = Alignment.CenterVertically,

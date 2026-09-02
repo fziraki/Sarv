@@ -60,6 +60,7 @@ import sarv.shared.generated.resources.whois_poet_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
+import androidx.compose.foundation.layout.offset
 
 private const val PERCENT_MULTIPLIER = 100
 
@@ -406,7 +407,7 @@ private fun GameResultReplayButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.height(LocalSarvDimensions.current.dimen52),
+        modifier = modifier.fillMaxWidth(),
         shape = SarvButtonDefaults.Shape,
         colors =
             ButtonDefaults.buttonColors(
@@ -415,7 +416,11 @@ private fun GameResultReplayButton(
             ),
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
+            modifier = Modifier.fillMaxWidth().padding(
+                vertical = LocalSarvDimensions.current.dimen8),
+            horizontalArrangement = Arrangement.spacedBy(
+                space = LocalSarvDimensions.current.dimen8,
+                alignment = Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
@@ -440,7 +445,7 @@ private fun GameResultBackToListButton(
 ) {
     OutlinedButton(
         onClick = onClick,
-        modifier = modifier.height(LocalSarvDimensions.current.dimen52),
+        modifier = modifier.fillMaxWidth(),
         shape = SarvButtonDefaults.Shape,
         border = BorderStroke(LocalSarvDimensions.current.dimen1, MaterialTheme.colorScheme.outline),
         colors =
@@ -450,8 +455,13 @@ private fun GameResultBackToListButton(
             ),
     ) {
         Text(
+            modifier = Modifier.fillMaxWidth()
+                .padding(
+                    vertical = LocalSarvDimensions.current.dimen8
+                ),
             text = stringResource(Res.string.game_back_to_list),
             style = MaterialTheme.typography.labelMedium,
+            textAlign = TextAlign.Center
         )
     }
 }

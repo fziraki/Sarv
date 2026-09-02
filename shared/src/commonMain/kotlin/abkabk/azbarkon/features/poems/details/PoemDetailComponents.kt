@@ -49,6 +49,8 @@ import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
 
 @Composable
 fun PoemVerseItem(
@@ -271,7 +273,7 @@ fun PoemActionBar(
     isExpanded: Boolean = false,
 ) {
     if (isExpanded) {
-        Column(
+        LazyColumn(
             modifier =
                 modifier
                     .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16))
@@ -281,9 +283,14 @@ fun PoemActionBar(
                         color = MaterialTheme.colorScheme.outlineVariant,
                         shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
                     ).padding(vertical = LocalSarvDimensions.current.dimen8, horizontal = LocalSarvDimensions.current.dimen6),
-            verticalArrangement = Arrangement.SpaceEvenly,
+            verticalArrangement = Arrangement.spacedBy(
+                space = LocalSarvDimensions.current.dimen16,
+                alignment = Alignment.CenterVertically
+            ),
             horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(LocalSarvDimensions.current.dimen4)
         ) {
+            item {
             PoemActionItem(
                 icon = if (isLiked) Res.drawable.heart_filled else Res.drawable.heart,
                 label = Res.string.poem_liked,
@@ -291,16 +298,18 @@ fun PoemActionBar(
                 tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                 labelColor = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                 onClick = onLikeClick,
-            )
+            )}
 
+            item {
             PoemActionItem(
                 icon = Res.drawable.palette,
                 label = Res.string.poem_image_creator,
                 contentDescription = Res.string.cd_image_creator,
                 onClick = onImageCreatorClick,
-            )
+            )}
 
             if (!isProse) {
+                item {
                 PoemActionItem(
                     icon = Res.drawable.add_box_24px,
                     label = Res.string.poem_memorize,
@@ -308,22 +317,24 @@ fun PoemActionBar(
                     onClick = onMemorizeClick,
                     tint = MaterialTheme.colorScheme.primary,
                     labelColor = MaterialTheme.colorScheme.primary,
-                )
+                )}
             }
 
+            item {
             PoemActionItem(
                 icon = Res.drawable.share,
                 label = Res.string.poem_share,
                 contentDescription = Res.string.cd_share,
                 onClick = onShareClick,
-            )
+            )}
 
+            item {
             PoemActionItem(
                 icon = Res.drawable.search,
                 label = Res.string.search,
                 contentDescription = Res.string.cd_context_search,
                 onClick = onSearchClick,
-            )
+            )}
         }
     } else {
         Row(
@@ -400,7 +411,6 @@ private fun PoemActionItem(
     Column(
         modifier =
             modifier
-                .width(LocalSarvDimensions.current.dimen64)
                 .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen12))
                 .clickable(onClick = onClick)
                 .padding(vertical = LocalSarvDimensions.current.dimen4),

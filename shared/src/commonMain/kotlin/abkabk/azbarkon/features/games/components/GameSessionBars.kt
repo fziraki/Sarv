@@ -168,7 +168,7 @@ private fun GameCoinBadge(balance: Int) {
         Image(
             painter = painterResource(Res.drawable.coin),
             contentDescription = null,
-            modifier = Modifier.size(LocalSarvDimensions.current.dimen18),
+            modifier = Modifier.size(LocalSarvDimensions.current.dimen20),
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
         )
         Text(
@@ -234,7 +234,7 @@ private fun GameHintButton(
                 painter = painterResource(Res.drawable.coin),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(LocalSarvDimensions.current.dimen18),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen20),
             )
             Text(
                 text = stringResource(Res.string.game_hint_cost),

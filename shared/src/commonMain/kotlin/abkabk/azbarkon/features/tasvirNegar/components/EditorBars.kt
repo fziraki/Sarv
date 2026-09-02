@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -80,7 +82,7 @@ fun EditorHeader(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(LocalSarvDimensions.current.dimen54)
+                .height(LocalSarvDimensions.current.dimen56)
                 .background(MaterialTheme.colorScheme.surface),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -180,36 +182,46 @@ fun EditToolbar(
 ) {
     val tint = MaterialTheme.colorScheme.onSurfaceVariant
     if (isExpanded) {
-        Column(
+        LazyColumn(
             modifier =
                 modifier
                     .fillMaxHeight()
                     .width(LocalSarvDimensions.current.dimen72)
                     .background(MaterialTheme.colorScheme.surfaceVariant),
-            verticalArrangement = Arrangement.SpaceEvenly,
+            verticalArrangement = Arrangement.spacedBy(
+                space = LocalSarvDimensions.current.dimen16,
+                alignment = Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(LocalSarvDimensions.current.dimen4)
         ) {
+            item {
             ToolbarIcon(Res.drawable.ic_text_format, tint, stringResource(Res.string.tasvir_font)) {
                 onAction(TasvirNegarAction.OnShowFontOptions)
-            }
+            }}
+            item {
             ToolbarIcon(Res.drawable.text_fields, tint, stringResource(Res.string.tasvir_text)) {
                 onAction(TasvirNegarAction.OnEnterText)
-            }
+            }}
+            item {
             ToolbarIcon(Res.drawable.ic_sticker, tint, stringResource(Res.string.tasvir_sticker)) {
                 onAction(TasvirNegarAction.OnShowShapeOptions)
-            }
+            }}
+            item {
             ToolbarIcon(Res.drawable.ic_color, tint, stringResource(Res.string.tasvir_color)) {
                 onAction(TasvirNegarAction.OnShowColorOptions)
-            }
+            }}
+            item {
             ToolbarIcon(Res.drawable.ic_texture, tint, stringResource(Res.string.tasvir_texture)) {
                 onAction(TasvirNegarAction.OnLayerSelect(null))
-            }
+            }}
+            item {
             ToolbarIcon(Res.drawable.ic_grid, tint, stringResource(Res.string.tasvir_grid)) {
                 onAction(TasvirNegarAction.OnToggleGrid)
-            }
+            }}
+            item {
             ToolbarIcon(Res.drawable.ic_wallpaper, tint, stringResource(Res.string.tasvir_gallery)) {
                 onAction(TasvirNegarAction.OnGalleryClick)
-            }
+            }}
         }
     } else {
         Row(

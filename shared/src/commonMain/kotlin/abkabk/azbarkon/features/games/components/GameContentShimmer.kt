@@ -46,7 +46,7 @@ private fun NextVerseContentShimmer(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
     ) {
         GamePoemCard {
-            ShimmerBar(height = LocalSarvDimensions.current.dimen14, widthFraction = 0.35f)
+            ShimmerBar(height = LocalSarvDimensions.current.dimen16, widthFraction = 0.35f)
             ShimmerBar(height = LocalSarvDimensions.current.dimen20)
             ShimmerBar(height = LocalSarvDimensions.current.dimen20)
         }
@@ -69,7 +69,7 @@ private fun FindPoetContentShimmer(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
     ) {
         GamePoemCard {
-            ShimmerBar(height = LocalSarvDimensions.current.dimen14, widthFraction = 0.35f)
+            ShimmerBar(height = LocalSarvDimensions.current.dimen16, widthFraction = 0.35f)
             Column(verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8)) {
                 ShimmerBar(height = LocalSarvDimensions.current.dimen20)
                 ShimmerBar(height = LocalSarvDimensions.current.dimen20)
@@ -114,7 +114,7 @@ private fun CompletePoemContentShimmer(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
     ) {
         GamePoemCard {
-            ShimmerBar(height = LocalSarvDimensions.current.dimen14, widthFraction = 0.35f)
+            ShimmerBar(height = LocalSarvDimensions.current.dimen16, widthFraction = 0.35f)
             Column(verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8)) {
                 ShimmerBar(height = LocalSarvDimensions.current.dimen20)
                 ShimmerBar(height = LocalSarvDimensions.current.dimen20)
@@ -149,7 +149,7 @@ private fun OrganizePoemContentShimmer(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
     ) {
         GamePoemCard {
-            ShimmerBar(height = LocalSarvDimensions.current.dimen14, widthFraction = 0.35f)
+            ShimmerBar(height = LocalSarvDimensions.current.dimen16, widthFraction = 0.35f)
             Column(verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8)) {
                 repeat(SHIMMER_ROW_COUNT) {
                     ShimmerBar(height = LocalSarvDimensions.current.dimen20)

@@ -11,22 +11,31 @@ enum class WindowWidthSizeClass { Compact, Medium, Expanded }
 class WindowSizeClass(
     val widthSizeClass: WindowWidthSizeClass,
     val widthDp: Int,
+    val heightDp: Int,
 )
 
 val LocalWindowSizeClass = staticCompositionLocalOf {
-    WindowSizeClass(WindowWidthSizeClass.Compact, 0)
+    WindowSizeClass(
+        widthSizeClass = WindowWidthSizeClass.Compact,
+        widthDp = 0,
+        heightDp = 0
+    )
 }
 
 private const val MEDIUM_MIN_DP = 600
 private const val EXPANDED_MIN_DP = 840
 
-fun calculateWindowSizeClass(widthDp: Int): WindowSizeClass {
+fun calculateWindowSizeClass(widthDp: Int, heightDp: Int): WindowSizeClass {
     val widthClass = when {
         widthDp >= EXPANDED_MIN_DP -> WindowWidthSizeClass.Expanded
         widthDp >= MEDIUM_MIN_DP -> WindowWidthSizeClass.Medium
         else -> WindowWidthSizeClass.Compact
     }
-    return WindowSizeClass(widthClass, widthDp)
+    return WindowSizeClass(
+        widthSizeClass = widthClass,
+        widthDp = widthDp,
+        heightDp = heightDp
+    )
 }
 
 @Composable

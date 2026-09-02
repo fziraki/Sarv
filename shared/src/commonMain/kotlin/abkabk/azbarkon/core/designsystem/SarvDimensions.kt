@@ -1,28 +1,24 @@
 package abkabk.azbarkon.core.designsystem
 
-import abkabk.azbarkon.core.ui.LocalWindowSizeClass
-import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlin.math.floor
+
+private const val BASE_WIDTH_DP = 360
 
 @Immutable
 class SarvDimensions(
-    val dimen0: Dp = 0.dp,
     val dimen1: Dp = 1.dp,
     val dimen2: Dp = 2.dp,
-    val dimen3: Dp = 3.dp,
     val dimen4: Dp = 4.dp,
-    val dimen5: Dp = 5.dp,
     val dimen6: Dp = 6.dp,
     val dimen8: Dp = 8.dp,
     val dimen10: Dp = 10.dp,
     val dimen12: Dp = 12.dp,
-    val dimen14: Dp = 14.dp,
     val dimen16: Dp = 16.dp,
-    val dimen18: Dp = 18.dp,
     val dimen20: Dp = 20.dp,
     val dimen22: Dp = 22.dp,
     val dimen24: Dp = 24.dp,
@@ -30,14 +26,9 @@ class SarvDimensions(
     val dimen32: Dp = 32.dp,
     val dimen36: Dp = 36.dp,
     val dimen40: Dp = 40.dp,
-    val dimen42: Dp = 42.dp,
-    val dimen44: Dp = 44.dp,
     val dimen48: Dp = 48.dp,
-    val dimen52: Dp = 52.dp,
-    val dimen54: Dp = 54.dp,
     val dimen56: Dp = 56.dp,
     val dimen64: Dp = 64.dp,
-    val dimen68: Dp = 68.dp,
     val dimen72: Dp = 72.dp,
     val dimen80: Dp = 80.dp,
     val dimen88: Dp = 88.dp,
@@ -50,48 +41,44 @@ val LocalSarvDimensions = staticCompositionLocalOf {
     SarvDimensions()
 }
 
+
+fun floorToHalf(value: Float): Float {
+    return (floor(value * 2) / 2)
+}
 @Composable
-fun sarvDimensions(): SarvDimensions {
-    val widthSizeClass = LocalWindowSizeClass.current.widthSizeClass
-    val offset = when (widthSizeClass) {
-        WindowWidthSizeClass.Compact -> 0.dp
-        WindowWidthSizeClass.Medium -> 4.dp
-        WindowWidthSizeClass.Expanded -> 8.dp
-    }
+fun sarvDimensions(widthDp: Int, heightDp: Int): SarvDimensions {
+
+    println("width $widthDp")
+
+    val min = minOf(widthDp, heightDp)
+
+    val scale = floorToHalf((min / BASE_WIDTH_DP).toFloat())
+    fun dp(base: Int) = (base * scale).dp
+
     return SarvDimensions(
-        dimen0 = 0.dp + offset,
-        dimen1 = 1.dp + offset,
-        dimen2 = 2.dp + offset,
-        dimen3 = 3.dp + offset,
-        dimen4 = 4.dp + offset,
-        dimen5 = 5.dp + offset,
-        dimen6 = 6.dp + offset,
-        dimen8 = 8.dp + offset,
-        dimen10 = 10.dp + offset,
-        dimen12 = 12.dp + offset,
-        dimen14 = 14.dp + offset,
-        dimen16 = 16.dp + offset,
-        dimen18 = 18.dp + offset,
-        dimen20 = 20.dp + offset,
-        dimen22 = 22.dp + offset,
-        dimen24 = 24.dp + offset,
-        dimen28 = 28.dp + offset,
-        dimen32 = 32.dp + offset,
-        dimen36 = 36.dp + offset,
-        dimen40 = 40.dp + offset,
-        dimen42 = 42.dp + offset,
-        dimen44 = 44.dp + offset,
-        dimen48 = 48.dp + offset,
-        dimen52 = 52.dp + offset,
-        dimen54 = 54.dp + offset,
-        dimen56 = 56.dp + offset,
-        dimen64 = 64.dp + offset,
-        dimen68 = 68.dp + offset,
-        dimen72 = 72.dp + offset,
-        dimen80 = 80.dp + offset,
-        dimen88 = 88.dp + offset,
-        dimen92 = 92.dp + offset,
-        dimen96 = 96.dp + offset,
-        dimen128 = 128.dp + offset,
+        dimen1 = dp(1),
+        dimen2 = dp(2),
+        dimen4 = dp(4),
+        dimen6 = dp(6),
+        dimen8 = dp(8),
+        dimen10 = dp(10),
+        dimen12 = dp(12),
+        dimen16 = dp(16),
+        dimen20 = dp(20),
+        dimen22 = dp(22),
+        dimen24 = dp(24),
+        dimen28 = dp(28),
+        dimen32 = dp(32),
+        dimen36 = dp(36),
+        dimen40 = dp(40),
+        dimen48 = dp(48),
+        dimen56 = dp(56),
+        dimen64 = dp(64),
+        dimen72 = dp(72),
+        dimen80 = dp(80),
+        dimen88 = dp(88),
+        dimen92 = dp(92),
+        dimen96 = dp(96),
+        dimen128 = dp(128),
     )
 }

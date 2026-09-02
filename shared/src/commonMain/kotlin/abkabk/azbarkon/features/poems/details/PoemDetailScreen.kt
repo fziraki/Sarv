@@ -606,7 +606,7 @@ private fun PlayPauseButton(
             CircularProgressIndicator(
                 progress = { ringProgress.value },
                 modifier = Modifier.size(LocalSarvDimensions.current.dimen48),
-                strokeWidth = LocalSarvDimensions.current.dimen3,
+                strokeWidth = LocalSarvDimensions.current.dimen2,
                 color = iconTint,
                 trackColor = MaterialTheme.colorScheme.primary,
             )

@@ -6,5 +6,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 @Composable
 actual fun calculateWindowSizeClass(): WindowSizeClass {
     val configuration = LocalConfiguration.current
-    return calculateWindowSizeClass(configuration.screenWidthDp)
+    return calculateWindowSizeClass(
+        widthDp = configuration.screenWidthDp,
+        heightDp = configuration.screenHeightDp
+    )
 }

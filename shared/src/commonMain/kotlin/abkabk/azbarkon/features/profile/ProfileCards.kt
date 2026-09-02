@@ -129,7 +129,7 @@ fun ProfileHeader(
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
             )
-            Box(modifier = Modifier.size(LocalSarvDimensions.current.dimen3)
+            Box(modifier = Modifier.size(LocalSarvDimensions.current.dimen2)
                 .background(
                     color = MaterialTheme.colorScheme.onSurface,
                     shape = CircleShape
@@ -147,7 +147,7 @@ fun ProfileHeader(
                 Icon(
                     painter = painterResource(Res.drawable.ic_help),
                     contentDescription = stringResource(Res.string.cd_levels),
-                    modifier = Modifier.size(LocalSarvDimensions.current.dimen18),
+                    modifier = Modifier.size(LocalSarvDimensions.current.dimen20),
                 )
             }
         }

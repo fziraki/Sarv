@@ -9,5 +9,6 @@ import platform.UIKit.UIScreen
 @Composable
 actual fun calculateWindowSizeClass(): WindowSizeClass {
     val width = UIScreen.mainScreen.bounds.useContents { size.width.toInt() }
-    return calculateWindowSizeClass(width)
+    val height = UIScreen.mainScreen.bounds.useContents { size.height.toInt() }
+    return calculateWindowSizeClass(widthDp = width, heightDp = height)
 }

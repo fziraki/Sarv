@@ -40,13 +40,13 @@ fun FindTextField(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen14))
+                .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen16))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
                     width = LocalSarvDimensions.current.dimen1,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen14),
-                ).padding(horizontal = LocalSarvDimensions.current.dimen14, vertical = LocalSarvDimensions.current.dimen12),
+                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
+                ).padding(horizontal = LocalSarvDimensions.current.dimen16, vertical = LocalSarvDimensions.current.dimen12),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
     ) {

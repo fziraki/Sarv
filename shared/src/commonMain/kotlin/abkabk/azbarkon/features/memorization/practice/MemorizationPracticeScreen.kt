@@ -1,23 +1,24 @@
 package abkabk.azbarkon.features.memorization.practice
 
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import abkabk.azbarkon.core.notifications.rememberNotificationPermissionRequester
 import abkabk.azbarkon.core.ui.keyboardAboveIme
 import abkabk.azbarkon.core.ui.rememberKeyboardLiftPx
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
-import abkabk.azbarkon.ui.components.SarvSnackbarHost
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
 import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
 import abkabk.azbarkon.domain.platform.NotificationPermissionGateway
 import abkabk.azbarkon.domain.srs.CardGenerator
 import abkabk.azbarkon.domain.srs.DiffTokenType
-import abkabk.azbarkon.ui.components.SarvButton
-import abkabk.azbarkon.ui.components.SarvPrimaryButton
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
-import abkabk.azbarkon.ui.theme.SarvTheme
+import abkabk.azbarkon.ui.components.SarvButton
+import abkabk.azbarkon.ui.components.SarvPrimaryButton
+import abkabk.azbarkon.ui.components.SarvSnackbarHost
 import abkabk.azbarkon.ui.theme.LightColorScheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
@@ -71,6 +72,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.keyboard
 import sarv.shared.generated.resources.memorization_grade_again
@@ -89,17 +96,9 @@ import sarv.shared.generated.resources.memorization_practice_stat_today
 import sarv.shared.generated.resources.memorization_practice_title
 import sarv.shared.generated.resources.memorization_reveal_content_description
 import sarv.shared.generated.resources.memorization_reveal_label
-import sarv.shared.generated.resources.memorization_review_notification_enabled
 import sarv.shared.generated.resources.memorization_submit_typing
 import sarv.shared.generated.resources.memorization_typing_hint
 import sarv.shared.generated.resources.reveal_eye
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
-import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 private const val PROGRESS_FLIP_ROTATION_DEGREES = 180f
 private val CORRECT_DIFF_COLOR = Color(0xFF2E7D32)
@@ -204,7 +203,8 @@ fun MemorizationPracticeScreen(
                     SarvPrimaryButton(
                         text = stringResource(Res.string.memorization_practice_done),
                         onClick = { onAction(MemorizationPracticeAction.OnBackClick) },
-                        modifier = Modifier.fillMaxWidth().height(LocalSarvDimensions.current.dimen52),
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalTextPadding = LocalSarvDimensions.current.dimen8
                     )
                 }
             }
@@ -499,8 +499,9 @@ private fun PracticeActionRow(
         SarvPrimaryButton(
             text = stringResource(primaryButtonState.labelRes),
             onClick = { onAction(primaryButtonState.action) },
-            modifier = Modifier.fillMaxWidth().height(LocalSarvDimensions.current.dimen52),
+            modifier = Modifier.fillMaxWidth(),
             enabled = primaryButtonState.enabled,
+            verticalTextPadding = LocalSarvDimensions.current.dimen8
         )
         return
     }
@@ -522,17 +523,15 @@ private fun PracticeActionRow(
 
         if (showPrimaryButton) {
             Box(
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .height(LocalSarvDimensions.current.dimen48),
+                modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.Center,
             ) {
                 SarvPrimaryButton(
                     text = stringResource(primaryButtonState.labelRes),
                     onClick = { onAction(primaryButtonState.action) },
-                    modifier = Modifier.fillMaxWidth().height(LocalSarvDimensions.current.dimen52),
+                    modifier = Modifier.fillMaxWidth(),
                     enabled = primaryButtonState.enabled,
+                    verticalTextPadding = LocalSarvDimensions.current.dimen8
                 )
             }
         } else {

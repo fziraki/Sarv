@@ -1,8 +1,8 @@
 package abkabk.azbarkon.features.memorization
 
-import abkabk.azbarkon.core.designsystem.brown
-import abkabk.azbarkon.ui.theme.SarvTheme
+import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import abkabk.azbarkon.ui.theme.LightColorScheme
+import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,25 +29,24 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.feather
 import sarv.shared.generated.resources.forward
 import sarv.shared.generated.resources.ic_delete
 import sarv.shared.generated.resources.memorization_due_cards_format
 import sarv.shared.generated.resources.memorization_quick_start
+import sarv.shared.generated.resources.memorization_quick_start_couplet
 import sarv.shared.generated.resources.memorization_quick_start_desc
 import sarv.shared.generated.resources.memorization_quick_start_ghazal
-import sarv.shared.generated.resources.memorization_quick_start_couplet
 import sarv.shared.generated.resources.memorization_quick_start_rubaiyat
 import sarv.shared.generated.resources.memorization_select_hero_subtitle
 import sarv.shared.generated.resources.memorization_select_hero_title
 import sarv.shared.generated.resources.memorization_status_format
 import sarv.shared.generated.resources.ornoment30
 import sarv.shared.generated.resources.search
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
-import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 private const val LABEL_WIDTH_FRACTION = 0.9f
 
@@ -173,7 +171,7 @@ fun QuickStartCategoryTile(
                 painter = painterResource(Res.drawable.ornoment30),
                 contentDescription = null,
                 tint = LightColorScheme.onPrimary,
-                modifier = Modifier.size(LocalSarvDimensions.current.dimen42),
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen40),
             )
         }
 
@@ -206,7 +204,7 @@ fun MemorizationOptionRow(
                     color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
                 ).clickable(onClick = onClick)
-                .padding(horizontal = LocalSarvDimensions.current.dimen14, vertical = LocalSarvDimensions.current.dimen14),
+                .padding(LocalSarvDimensions.current.dimen16),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
     ) {
@@ -215,7 +213,7 @@ fun MemorizationOptionRow(
         Box(
             modifier =
                 Modifier
-                    .size(LocalSarvDimensions.current.dimen44)
+                    .size(LocalSarvDimensions.current.dimen48)
                     .clip(CircleShape)
                     .background(LightColorScheme.secondary),
             contentAlignment = Alignment.Center,
@@ -277,7 +275,7 @@ fun ActivePoemCard(
                     color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
                 ).clickable(onClick = onClick)
-                .padding(horizontal = LocalSarvDimensions.current.dimen14, vertical = LocalSarvDimensions.current.dimen14),
+                .padding(LocalSarvDimensions.current.dimen16),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(

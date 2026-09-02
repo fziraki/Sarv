@@ -145,10 +145,7 @@ private fun NextVerseOptionList(
                 .fillMaxWidth()
                 .gameOptionStyle(state)
                 .clickable(enabled = clickable) { onOptionSelect(index) }
-                .padding(
-                    horizontal = LocalSarvDimensions.current.dimen16,
-                    vertical = LocalSarvDimensions.current.dimen14,
-                ),
+                .padding(LocalSarvDimensions.current.dimen16),
             text = option,
             style = MaterialTheme.typography.bodyMedium,
             color = contentColor,

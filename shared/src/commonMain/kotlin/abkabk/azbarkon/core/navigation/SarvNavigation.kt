@@ -1,11 +1,12 @@
 package abkabk.azbarkon.core.navigation
 
 import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
-import abkabk.azbarkon.core.uidata.SarvAppState
+import abkabk.azbarkon.core.ui.LocalWindowSizeClass
+import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import abkabk.azbarkon.core.uidata.LocalSarvAppState
 import abkabk.azbarkon.core.uidata.LocalSnackbarHostState
+import abkabk.azbarkon.core.uidata.SarvAppState
 import abkabk.azbarkon.core.uidata.rememberSarvAppState
-import abkabk.azbarkon.ui.components.SarvSnackbarHost
 import abkabk.azbarkon.features.games.navigation.GamePlayRoute
 import abkabk.azbarkon.features.games.navigation.GameTypeRoute
 import abkabk.azbarkon.features.games.navigation.GamesRoute
@@ -16,6 +17,10 @@ import abkabk.azbarkon.features.home.navigation.HomeRoute
 import abkabk.azbarkon.features.home.navigation.MyPoemsRoute
 import abkabk.azbarkon.features.home.navigation.homeGraph
 import abkabk.azbarkon.features.memorization.navigation.MemorizationPracticeRoute
+import abkabk.azbarkon.features.memorization.navigation.memorizationGraph
+import abkabk.azbarkon.features.memorization.navigation.navigateToActiveMemorization
+import abkabk.azbarkon.features.memorization.navigation.navigateToMemorizationPractice
+import abkabk.azbarkon.features.memorization.navigation.navigateToMemorizationSelect
 import abkabk.azbarkon.features.poets.navigation.ChatRoute
 import abkabk.azbarkon.features.poets.navigation.PoemDetailRoute
 import abkabk.azbarkon.features.poets.navigation.PoetDetailRoute
@@ -23,18 +28,14 @@ import abkabk.azbarkon.features.poets.navigation.PoetsListRoute
 import abkabk.azbarkon.features.poets.navigation.poetsGraph
 import abkabk.azbarkon.features.profile.navigation.ProfileRoute
 import abkabk.azbarkon.features.profile.navigation.profileGraph
-import abkabk.azbarkon.features.tasvirNegar.navigation.TasvirNegarRoute
-import abkabk.azbarkon.features.tasvirNegar.navigation.tasvirNegarGraph
-import abkabk.azbarkon.features.memorization.navigation.memorizationGraph
-import abkabk.azbarkon.features.memorization.navigation.navigateToActiveMemorization
-import abkabk.azbarkon.features.memorization.navigation.navigateToMemorizationPractice
-import abkabk.azbarkon.features.memorization.navigation.navigateToMemorizationSelect
 import abkabk.azbarkon.features.search.navigation.navigateToSearch
 import abkabk.azbarkon.features.search.navigation.searchGraph
-import abkabk.azbarkon.core.ui.LocalWindowSizeClass
+import abkabk.azbarkon.features.tasvirNegar.navigation.TasvirNegarRoute
+import abkabk.azbarkon.features.tasvirNegar.navigation.tasvirNegarGraph
+import abkabk.azbarkon.ui.components.SarvSnackbarHost
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -59,7 +60,6 @@ import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -69,16 +69,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.Shekasteh
 import sarv.shared.generated.resources.app_name
@@ -88,9 +88,6 @@ import sarv.shared.generated.resources.cd_search
 import sarv.shared.generated.resources.cd_settings
 import sarv.shared.generated.resources.search
 import sarv.shared.generated.resources.settings
-import org.jetbrains.compose.resources.Font
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 
 // ponytail: null destination = start destination not yet resolved; treat as a root tab
 // so top/bottom bars render on the first frame and the content never reflows.
@@ -287,60 +284,68 @@ private fun SarvNavigationRail(
         modifier = Modifier.heightIn(min = LocalSarvDimensions.current.dimen64),
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        bottomNavItems.forEach { item ->
-            val selected =
-                when (item) {
-                    BottomNavItem.Home -> currentDestination?.hasRoute<HomeRoute>() == true
-                    BottomNavItem.Treasure -> currentDestination?.hasRoute<PoetsListRoute>() == true
-                    BottomNavItem.Games -> currentDestination?.hasRoute<GamesRoute>() == true
-                    BottomNavItem.Profile -> currentDestination?.hasRoute<ProfileRoute>() == true
-                }
-
-            NavigationRailItem(
-                selected = selected,
-                onClick = {
-                    val route =
-                        when (item) {
-                            BottomNavItem.Home -> HomeRoute
-                            BottomNavItem.Treasure -> PoetsListRoute
-                            BottomNavItem.Games -> GamesRoute
-                            BottomNavItem.Profile -> ProfileRoute
-                        }
-                    if (item == BottomNavItem.Home) {
-                        navController.navigate(HomeRoute) {
-                            popUpTo(HomeRoute) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    } else {
-                        navController.navigate(route) {
-                            popUpTo(HomeRoute) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(
+                space = LocalSarvDimensions.current.dimen16,
+                alignment = Alignment.CenterVertically
+            ),
+        ) {
+            bottomNavItems.forEach { item ->
+                val selected =
+                    when (item) {
+                        BottomNavItem.Home -> currentDestination?.hasRoute<HomeRoute>() == true
+                        BottomNavItem.Treasure -> currentDestination?.hasRoute<PoetsListRoute>() == true
+                        BottomNavItem.Games -> currentDestination?.hasRoute<GamesRoute>() == true
+                        BottomNavItem.Profile -> currentDestination?.hasRoute<ProfileRoute>() == true
                     }
-                },
-                icon = {
-                    Icon(
-                        modifier = Modifier.size(LocalSarvDimensions.current.dimen22),
-                        painter = painterResource(item.icon),
-                        contentDescription = stringResource(item.title),
-                    )
-                },
-                colors =
-                    NavigationRailItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.secondary,
-                        selectedTextColor = MaterialTheme.colorScheme.secondary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    ),
-                label = {
-                    Text(
-                        text = stringResource(item.title),
-                        style = MaterialTheme.typography.labelSmall,
-                    )
-                },
-            )
+
+                NavigationRailItem(
+                    selected = selected,
+                    onClick = {
+                        val route =
+                            when (item) {
+                                BottomNavItem.Home -> HomeRoute
+                                BottomNavItem.Treasure -> PoetsListRoute
+                                BottomNavItem.Games -> GamesRoute
+                                BottomNavItem.Profile -> ProfileRoute
+                            }
+                        if (item == BottomNavItem.Home) {
+                            navController.navigate(HomeRoute) {
+                                popUpTo(HomeRoute) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        } else {
+                            navController.navigate(route) {
+                                popUpTo(HomeRoute) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            modifier = Modifier.size(LocalSarvDimensions.current.dimen22),
+                            painter = painterResource(item.icon),
+                            contentDescription = stringResource(item.title),
+                        )
+                    },
+                    colors =
+                        NavigationRailItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.secondary,
+                            selectedTextColor = MaterialTheme.colorScheme.secondary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                    label = {
+                        Text(
+                            text = stringResource(item.title),
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    },
+                )
+            }
         }
     }
 }
@@ -484,8 +489,8 @@ fun SarvNavigation(
                     profileGraph()
                     poetsGraph(navController)
                     searchGraph(navController)
-                }
-            }
+        }
         }
     }
 }
+    }

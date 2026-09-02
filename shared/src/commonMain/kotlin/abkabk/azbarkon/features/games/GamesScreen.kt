@@ -162,7 +162,7 @@ fun GameItem(
                         )
                         .clip(RoundedCornerShape(
                             topStart = LocalSarvDimensions.current.dimen12, bottomStart = LocalSarvDimensions.current.dimen12,
-                            topEnd = LocalSarvDimensions.current.dimen0, bottomEnd = LocalSarvDimensions.current.dimen0
+                            topEnd = 0.dp, bottomEnd = 0.dp
                         )),
                 painter = painterResource(icon),
                 contentDescription = null,

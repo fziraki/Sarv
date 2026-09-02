@@ -75,7 +75,7 @@ fun PoetCategoryRow(
                             onLeafClick()
                         }
                     },
-                ).padding(LocalSarvDimensions.current.dimen14),
+                ).padding(LocalSarvDimensions.current.dimen16),
     ) {
         Box(
             modifier =

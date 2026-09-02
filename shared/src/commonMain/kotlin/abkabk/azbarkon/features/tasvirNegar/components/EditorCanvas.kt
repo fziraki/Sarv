@@ -121,7 +121,7 @@ private fun selectionPalette(
 @Composable
 private fun selectionBorderModifier(palette: SelectionPalette): Modifier =
     (palette.halo?.let { Modifier.border(LocalSarvDimensions.current.dimen2, it) } ?: Modifier)
-        .border(LocalSarvDimensions.current.dimen5, palette.main)
+        .border(LocalSarvDimensions.current.dimen4, palette.main)
 
 data class DraggableLayerCallbacks(
     val onSelect: () -> Unit,

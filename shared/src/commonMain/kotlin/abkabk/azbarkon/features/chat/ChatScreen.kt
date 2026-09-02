@@ -292,10 +292,10 @@ private fun UserMessageBubble(
                     Modifier
                         .clip(
                             RoundedCornerShape(
-                                topStart = LocalSarvDimensions.current.dimen18,
-                                topEnd = LocalSarvDimensions.current.dimen18,
+                                topStart = LocalSarvDimensions.current.dimen20,
+                                topEnd = LocalSarvDimensions.current.dimen20,
                                 bottomStart = LocalSarvDimensions.current.dimen4,
-                                bottomEnd = LocalSarvDimensions.current.dimen18,
+                                bottomEnd = LocalSarvDimensions.current.dimen20,
                             ),
                         ).background(colors.userBubble)
                         .padding(horizontal = LocalSarvDimensions.current.dimen16, vertical = LocalSarvDimensions.current.dimen12),
@@ -339,9 +339,9 @@ private fun PoetMessageBubble(
 ) {
     val bubbleShape =
         RoundedCornerShape(
-            topStart = LocalSarvDimensions.current.dimen18,
-            topEnd = LocalSarvDimensions.current.dimen18,
-            bottomStart = LocalSarvDimensions.current.dimen18,
+            topStart = LocalSarvDimensions.current.dimen20,
+            topEnd = LocalSarvDimensions.current.dimen20,
+            bottomStart = LocalSarvDimensions.current.dimen20,
             bottomEnd = LocalSarvDimensions.current.dimen4,
         )
 

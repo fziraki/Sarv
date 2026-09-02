@@ -33,6 +33,9 @@ import sarv.shared.generated.resources.tasvir_pick_color
 import org.jetbrains.compose.resources.stringResource
 import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
+private const val LABEL_WEIGHT = 0.2f
+private const val SLIDER_WEIGHT = 0.8f
+
 @Composable
 expect fun TasvirCustomColorPicker(
     visible: Boolean,
@@ -85,7 +88,7 @@ internal fun HsvColorPickerContent(
                 SarvButton(
                     text = stringResource(Res.string.clear_cancel),
                     onClick = onDismiss,
-                    modifier = Modifier.weight(1f).height(LocalSarvDimensions.current.dimen48),
+                    modifier = Modifier.weight(1f),
                     colors =
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -95,7 +98,7 @@ internal fun HsvColorPickerContent(
                 SarvPrimaryButton(
                     text = stringResource(Res.string.tasvir_pick_color),
                     onClick = { onColorSelect(selectedColor) },
-                    modifier = Modifier.weight(1f).height(LocalSarvDimensions.current.dimen48),
+                    modifier = Modifier.weight(1f),
                 )
             }
         }
@@ -116,17 +119,14 @@ private fun ColorSlider(
     ) {
         Text(
             text = label,
-            modifier = Modifier.size(
-                width = LocalSarvDimensions.current.dimen80,
-                height = LocalSarvDimensions.current.dimen24,
-            ),
+            modifier = Modifier.weight(LABEL_WEIGHT),
             style = MaterialTheme.typography.bodyMedium,
         )
         SarvSlider(
             value = value,
             onValueChange = onValueChange,
             valueRange = valueRange,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(SLIDER_WEIGHT),
         )
     }
 }
