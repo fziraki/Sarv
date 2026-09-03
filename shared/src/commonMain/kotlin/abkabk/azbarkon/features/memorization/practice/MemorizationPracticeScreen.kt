@@ -166,16 +166,7 @@ fun MemorizationPracticeScreen(
     onAlarmClick: (() -> Unit)? = null,
 ) {
     var showHelpDialog by remember { mutableStateOf(false) }
-
-    if (showHelpDialog) {
-        SarvAlertDialog(
-            onDismissRequest = { showHelpDialog = false },
-            title = stringResource(Res.string.memorization_practice_help_title),
-            text = stringResource(Res.string.memorization_practice_help_body),
-            confirmLabel = stringResource(Res.string.memorization_practice_done),
-            onConfirm = { showHelpDialog = false },
-        )
-    }
+    HelpDialog(show = showHelpDialog, onDismiss = { showHelpDialog = false })
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -291,6 +282,18 @@ fun MemorizationPracticeScreen(
             }
         }
     }
+}
+
+@Composable
+private fun HelpDialog(show: Boolean, onDismiss: () -> Unit) {
+    if (!show) return
+    SarvAlertDialog(
+        onDismissRequest = onDismiss,
+        title = stringResource(Res.string.memorization_practice_help_title),
+        text = stringResource(Res.string.memorization_practice_help_body),
+        confirmLabel = stringResource(Res.string.memorization_practice_done),
+        onConfirm = onDismiss,
+    )
 }
 
 @Composable
