@@ -60,6 +60,7 @@ fun Header(
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
+                    modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                     painter = painterResource(Res.drawable.arrow_back_right),
                     contentDescription = stringResource(Res.string.cd_back),
                     tint = MaterialTheme.colorScheme.onBackground,
@@ -123,6 +124,7 @@ private fun HeaderActionButton(action: HeaderAction) {
         when (action) {
             is HeaderAction.Search -> {
                 Icon(
+                    modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                     painter = painterResource(Res.drawable.search),
                     contentDescription = stringResource(Res.string.cd_search),
                 )
@@ -130,6 +132,7 @@ private fun HeaderActionButton(action: HeaderAction) {
 
             is HeaderAction.Bookmark -> {
                 Icon(
+                    modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                     painter =
                         painterResource(
                             if (action.isBookmarked) {
@@ -150,6 +153,7 @@ private fun HeaderActionButton(action: HeaderAction) {
 
             is HeaderAction.Alarm -> {
                 Icon(
+                    modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                     painter = painterResource(Res.drawable.notifications),
                     contentDescription = stringResource(Res.string.cd_memorization_review_alarm),
                     tint =

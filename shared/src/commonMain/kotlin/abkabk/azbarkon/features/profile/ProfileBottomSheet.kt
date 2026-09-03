@@ -370,6 +370,7 @@ private fun ProfileDataActionRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
+            modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
             painter = if (filled) iconFilled else icon,
             contentDescription = null,
             tint =

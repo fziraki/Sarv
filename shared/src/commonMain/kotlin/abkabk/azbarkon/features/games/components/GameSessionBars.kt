@@ -103,6 +103,7 @@ private fun GameSessionTitleRow(
             modifier =
                 Modifier
                     .align(Alignment.CenterEnd)
+                    .size(LocalSarvDimensions.current.dimen24)
                     .clickable(onClick = onBackClick),
             painter = painterResource(Res.drawable.arrow_back_left),
             contentDescription = stringResource(Res.string.cd_back),

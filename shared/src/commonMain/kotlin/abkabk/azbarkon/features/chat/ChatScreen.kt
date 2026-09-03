@@ -228,7 +228,7 @@ private fun ChatTopBar(
     ) {
 
         Icon(
-            modifier = Modifier.clickable(onClick = onBackClick),
+            modifier = Modifier.size(LocalSarvDimensions.current.dimen24).clickable(onClick = onBackClick),
             painter = painterResource(Res.drawable.arrow_back_right),
             contentDescription = stringResource(Res.string.cd_back),
             tint = MaterialTheme.colorScheme.onSurface,

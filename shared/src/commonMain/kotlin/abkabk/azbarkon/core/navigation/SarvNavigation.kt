@@ -137,6 +137,7 @@ private fun SarvTopBar(
                 onClick = { navController.navigateUp() },
             ) {
                 Icon(
+                    modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                     painter = painterResource(Res.drawable.arrow_back_right),
                     contentDescription = stringResource(Res.string.cd_back),
                 )
@@ -181,6 +182,7 @@ private fun SarvTopBar(
                 onClick = { appState.onProfileSettingsClick?.invoke() },
             ) {
                 Icon(
+                    modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                     painter = painterResource(Res.drawable.settings),
                     contentDescription = stringResource(Res.string.cd_settings),
                 )
@@ -193,6 +195,7 @@ private fun SarvTopBar(
                 onClick = { navController.navigateToSearch() },
             ) {
                 Icon(
+                    modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                     painter = painterResource(Res.drawable.search),
                     contentDescription = stringResource(Res.string.cd_search),
                 )

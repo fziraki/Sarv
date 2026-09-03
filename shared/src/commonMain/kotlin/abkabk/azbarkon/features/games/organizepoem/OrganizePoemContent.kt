@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -157,6 +158,7 @@ private fun OrganizePoemReorderSection(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                 painter = painterResource(
                     if (isPinned && reorderEnabled) Res.drawable.keep else Res.drawable.drag_handle,
                 ),

@@ -212,6 +212,7 @@ fun PoemDetailScreen(
                                 onAction(PoemDetailAction.OnFindBarClose)
                             }) {
                                 Icon(
+                                    modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                                     painter = painterResource(Res.drawable.close),
                                     contentDescription = stringResource(Res.string.cd_close_find_bar),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -388,6 +389,7 @@ private fun PoemDetailBottomBar(
                     onAction(PoemDetailAction.OnFindBarClose)
                 }) {
                     Icon(
+                        modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                         painter = painterResource(Res.drawable.close),
                         contentDescription = stringResource(Res.string.cd_close_find_bar),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,

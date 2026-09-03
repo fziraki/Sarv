@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -377,6 +378,7 @@ private fun SearchQueryField(
         horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen10),
     ) {
         Icon(
+            modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
             painter = painterResource(Res.drawable.search),
             contentDescription = stringResource(Res.string.search),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,

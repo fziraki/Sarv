@@ -318,6 +318,7 @@ fun ActivePoemCard(
         }
         IconButton(onClick = onDeleteClick) {
             Icon(
+                modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
                 painter = painterResource(Res.drawable.ic_delete),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,

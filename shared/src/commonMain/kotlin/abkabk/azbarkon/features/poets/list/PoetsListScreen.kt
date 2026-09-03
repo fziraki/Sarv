@@ -227,6 +227,7 @@ private fun FeaturedPoetCard(
                     tint = LightColorScheme.surfaceVariant,
                     modifier =
                         Modifier
+                            .size(LocalSarvDimensions.current.dimen24)
                             .clip(CircleShape)
                             .clickable(onClick = onChatClick)
                             .padding(LocalSarvDimensions.current.dimen4),
@@ -315,6 +316,7 @@ private fun PoetListRow(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier =
                             Modifier
+                                .size(LocalSarvDimensions.current.dimen24)
                                 .clip(CircleShape)
                                 .clickable(onClick = onDownloadClick)
                                 .padding(LocalSarvDimensions.current.dimen4),
@@ -327,6 +329,7 @@ private fun PoetListRow(
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier =
                         Modifier
+                            .size(LocalSarvDimensions.current.dimen24)
                             .clip(CircleShape)
                             .clickable(onClick = onChatClick)
                             .padding(LocalSarvDimensions.current.dimen4),
