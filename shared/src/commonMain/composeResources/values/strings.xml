@@ -76,6 +76,9 @@
     <string name="memorization_practice_stat_mistakes">اشتباه</string>
     <string name="memorization_practice_stat_today">تا امروز</string>
     <string name="memorization_practice_stat_learned">یادگرفته‌ام</string>
+    <string name="memorization_practice_help">راهنما</string>
+    <string name="memorization_practice_help_title">راهنمای تمرین حفظ</string>
+    <string name="memorization_practice_help_body">شما ابتدای مصرع را روی صفحه می‌بینید و باید با انتخاب یکی از دو حالت نمایش یا صفحه کلید آن را کامل کنید. اگر حالت نمایش را انتخاب کنید مصرع به صورت خودکار کامل می‌شود و شما به میزان یادآوری خود یکی از ۴ گزینه آسان، خوب، سخت یا دوباره را انتخاب می‌کنید. انتخاب «دوباره» به معنای خیلی سخت بودن آن مصرع برای شماست. در صورتی که از حالت صفحه کلید استفاده کنید باید بقیه شعر را خودتان بنویسید و بعد از زدن بررسی، پاسخ شما سنجیده می‌شود و تصمیم گرفته می‌شود که شعر با چند روز فاصله تکرار شود. اگر پنج مرور کامل شعر را با امتیاز آسان بگذرانید شعر به لیست حفظ‌شده‌ها منتقل می‌شود.</string>
     <string name="memorization_grade_again">دوباره</string>
     <string name="memorization_grade_hard">سخت</string>
     <string name="memorization_grade_good">خوب</string>

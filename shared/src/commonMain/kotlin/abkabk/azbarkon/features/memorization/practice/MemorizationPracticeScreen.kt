@@ -14,6 +14,7 @@ import abkabk.azbarkon.domain.srs.CardGenerator
 import abkabk.azbarkon.domain.srs.DiffTokenType
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
+import abkabk.azbarkon.ui.components.SarvAlertDialog
 import abkabk.azbarkon.ui.components.SarvButton
 import abkabk.azbarkon.ui.components.SarvPrimaryButton
 import abkabk.azbarkon.ui.components.SarvSnackbarHost
@@ -40,11 +41,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -79,6 +82,7 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import sarv.shared.generated.resources.Res
+import sarv.shared.generated.resources.ic_help
 import sarv.shared.generated.resources.keyboard
 import sarv.shared.generated.resources.memorization_grade_again
 import sarv.shared.generated.resources.memorization_grade_easy
@@ -89,6 +93,9 @@ import sarv.shared.generated.resources.memorization_keyboard_label
 import sarv.shared.generated.resources.memorization_next_verse
 import sarv.shared.generated.resources.memorization_practice_complete
 import sarv.shared.generated.resources.memorization_practice_done
+import sarv.shared.generated.resources.memorization_practice_help
+import sarv.shared.generated.resources.memorization_practice_help_body
+import sarv.shared.generated.resources.memorization_practice_help_title
 import sarv.shared.generated.resources.memorization_practice_progress
 import sarv.shared.generated.resources.memorization_practice_stat_learned
 import sarv.shared.generated.resources.memorization_practice_stat_mistakes
@@ -158,6 +165,18 @@ fun MemorizationPracticeScreen(
     notificationsEnabled: Boolean = false,
     onAlarmClick: (() -> Unit)? = null,
 ) {
+    var showHelpDialog by remember { mutableStateOf(false) }
+
+    if (showHelpDialog) {
+        SarvAlertDialog(
+            onDismissRequest = { showHelpDialog = false },
+            title = stringResource(Res.string.memorization_practice_help_title),
+            text = stringResource(Res.string.memorization_practice_help_body),
+            confirmLabel = stringResource(Res.string.memorization_practice_done),
+            onConfirm = { showHelpDialog = false },
+        )
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -231,6 +250,7 @@ fun MemorizationPracticeScreen(
                             PracticeProgressSection(
                                 cardIndex = state.cardIndex,
                                 totalCards = state.totalCards,
+                                onHelpClick = { showHelpDialog = true },
                                 modifier = Modifier.padding(
                                     top = LocalSarvDimensions.current.dimen16,
                                     bottom = LocalSarvDimensions.current.dimen12,
@@ -278,22 +298,40 @@ private fun PracticeProgressSection(
     cardIndex: Int,
     totalCards: Int,
     modifier: Modifier = Modifier,
+    onHelpClick: () -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text =
-                stringResource(
-                    Res.string.memorization_practice_progress,
-                    cardIndex,
-                    totalCards,
-                ),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Spacer(Modifier.width(LocalSarvDimensions.current.dimen24))
+            Text(
+                text =
+                    stringResource(
+                        Res.string.memorization_practice_progress,
+                        cardIndex,
+                        totalCards,
+                    ),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Icon(
+                painter = painterResource(Res.drawable.ic_help),
+                contentDescription = stringResource(Res.string.memorization_practice_help),
+                modifier = Modifier
+                    .clickable { onHelpClick() }
+                    .size(LocalSarvDimensions.current.dimen24),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
         LinearProgressIndicator(
             progress = { (cardIndex.toFloat() / totalCards.coerceAtLeast(1)).coerceIn(0f, 1f) },
             modifier = Modifier.fillMaxWidth().rotate(PROGRESS_FLIP_ROTATION_DEGREES),
