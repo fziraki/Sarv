@@ -78,7 +78,7 @@ fun MemorizationHeroSection(
 
         Text(
             text = stringResource(Res.string.memorization_select_hero_title),
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
         )

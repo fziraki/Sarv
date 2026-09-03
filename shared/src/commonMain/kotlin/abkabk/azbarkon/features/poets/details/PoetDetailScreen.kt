@@ -249,7 +249,7 @@ private fun PoetHeroInfo(
 
         Text(
             text = state.name,
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
         )

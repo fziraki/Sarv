@@ -581,7 +581,7 @@ fun HeroCard(
             )
             Text(
                 text = titleText,
-                style = MaterialTheme.typography.headlineLarge,
+                style = MaterialTheme.typography.titleLarge,
                 color = LightColorScheme.surfaceVariant,
             )
             Text(

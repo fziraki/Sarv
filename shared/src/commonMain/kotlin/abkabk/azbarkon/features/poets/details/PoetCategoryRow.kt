@@ -87,7 +87,7 @@ fun PoetCategoryRow(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = category.title,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.titleMedium,
                 color = contentColor,
                 textAlign = TextAlign.Center,
             )

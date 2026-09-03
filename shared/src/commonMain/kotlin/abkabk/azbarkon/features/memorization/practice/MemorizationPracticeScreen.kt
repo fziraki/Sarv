@@ -196,7 +196,7 @@ fun MemorizationPracticeScreen(
                 ) {
                     Text(
                         text = stringResource(Res.string.memorization_practice_complete),
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MaterialTheme.typography.titleMedium,
                         textAlign = TextAlign.Center,
                     )
                     Spacer(modifier = Modifier.height(LocalSarvDimensions.current.dimen16))
@@ -318,7 +318,7 @@ private fun PracticeCardContent(
             PracticePhase.SHOW_FRONT -> {
                 Text(
                     text = card.front,
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -327,7 +327,7 @@ private fun PracticeCardContent(
             PracticePhase.REVEALED -> {
                 Text(
                     text = card.back,
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -439,7 +439,7 @@ private fun RevealedFrontText(
         }
     Text(
         text = annotated,
-        style = MaterialTheme.typography.headlineMedium,
+        style = MaterialTheme.typography.titleMedium,
         textAlign = TextAlign.Center,
         modifier = modifier,
     )

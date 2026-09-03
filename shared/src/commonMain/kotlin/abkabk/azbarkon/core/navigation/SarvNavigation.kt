@@ -155,13 +155,13 @@ private fun SarvTopBar(
                     Text(
                         text = stringResource(it),
                         fontFamily = FontFamily(Font(Res.font.Shekasteh)),
-                        style = MaterialTheme.typography.headlineLarge,
+                        style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary,
                     )
                 }else{
                     Text(
                         text = stringResource(it),
-                        style = MaterialTheme.typography.headlineLarge,
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 }
 

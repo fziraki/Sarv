@@ -7,20 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import kotlin.math.floor
 
 private const val BASE_WIDTH_DP = 360
-
-private const val HEADLINE_SMALL_BASE = 12f
-private const val HEADLINE_MEDIUM_BASE = 14f
-private const val HEADLINE_LARGE_BASE = 16f
-private const val BODY_SMALL_BASE = 12f
-private const val BODY_MEDIUM_BASE = 14f
-private const val BODY_LARGE_BASE = 16f
-private const val LABEL_SMALL_EMPHASIZED_BASE = 10f
-private const val LABEL_SMALL_BASE = 12f
-private const val LABEL_MEDIUM_BASE = 14f
-private const val LABEL_LARGE_BASE = 16f
+private const val SMALL_BASE = 12f
+private const val MEDIUM_BASE = 14f
+private const val LARGE_BASE = 16f
+private const val SMALL_EMPHASIZED_BASE = 10f
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -37,52 +29,55 @@ fun sarvTypography(
     fun sp(base: Float) = (base * scale * fontSizeScale).sp
 
     return Typography(
-        headlineSmall = TextStyle(
+        titleSmall = TextStyle(
             fontFamily = fontFamily,
-            fontSize = sp(HEADLINE_SMALL_BASE),
+            fontSize = sp(SMALL_BASE),
             fontWeight = FontWeight.Bold,
         ),
-        headlineMedium = TextStyle(
+        titleMedium = TextStyle(
             fontFamily = fontFamily,
-            fontSize = sp(HEADLINE_MEDIUM_BASE),
+            fontSize = sp(MEDIUM_BASE),
             fontWeight = FontWeight.Bold,
         ),
-        headlineLarge = TextStyle(
+        titleLarge = TextStyle(
             fontFamily = fontFamily,
-            fontSize = sp(HEADLINE_LARGE_BASE),
+            fontSize = sp(LARGE_BASE),
             fontWeight = FontWeight.Bold,
         ),
         bodySmall = TextStyle(
             fontFamily = fontFamily,
-            fontSize = sp(BODY_SMALL_BASE),
+            fontSize = sp(SMALL_BASE),
+            fontWeight = FontWeight.Normal,
         ),
         bodyMedium = TextStyle(
             fontFamily = fontFamily,
-            fontSize = sp(BODY_MEDIUM_BASE),
+            fontSize = sp(MEDIUM_BASE),
+            fontWeight = FontWeight.Normal,
         ),
         bodyLarge = TextStyle(
             fontFamily = fontFamily,
-            fontSize = sp(BODY_LARGE_BASE),
+            fontSize = sp(LARGE_BASE),
+            fontWeight = FontWeight.Normal,
         ),
         labelSmall = TextStyle(
             fontFamily = fontFamily,
-            fontSize = sp(LABEL_SMALL_BASE),
-            fontWeight = FontWeight.Thin,
+            fontSize = sp(SMALL_BASE),
+            fontWeight = FontWeight.Light,
         ),
         labelMedium = TextStyle(
             fontFamily = fontFamily,
-            fontSize = sp(LABEL_MEDIUM_BASE),
-            fontWeight = FontWeight.Thin,
+            fontSize = sp(MEDIUM_BASE),
+            fontWeight = FontWeight.Light,
         ),
         labelLarge = TextStyle(
             fontFamily = fontFamily,
-            fontSize = sp(LABEL_LARGE_BASE),
-            fontWeight = FontWeight.Thin,
+            fontSize = sp(LARGE_BASE),
+            fontWeight = FontWeight.Light,
         ),
         labelSmallEmphasized = TextStyle(
             fontFamily = fontFamily,
-            fontSize = sp(LABEL_SMALL_EMPHASIZED_BASE),
-            fontWeight = FontWeight.Thin,
+            fontSize = sp(SMALL_EMPHASIZED_BASE),
+            fontWeight = FontWeight.Light,
         )
     )
 }

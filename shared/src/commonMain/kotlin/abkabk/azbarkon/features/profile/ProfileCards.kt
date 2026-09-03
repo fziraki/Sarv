@@ -286,7 +286,7 @@ private fun ProfileStatItem(
         Text(
             text = value.toString(),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
         )
         Text(

@@ -191,7 +191,7 @@ private fun FeaturedPoetCard(
             ) {
                 Text(
                     text = poet.name,
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.titleLarge,
                     color = LightColorScheme.onPrimary,
                 )
                 Text(
@@ -286,7 +286,7 @@ private fun PoetListRow(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = poet.name,
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Start,
                 )

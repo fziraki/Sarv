@@ -240,7 +240,7 @@ private fun GameResultStatCard(
     ) {
         Text(
             text = value,
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.titleLarge,
             color = valueColor,
             textAlign = TextAlign.Center,
         )

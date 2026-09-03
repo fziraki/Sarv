@@ -182,7 +182,7 @@ fun GameItem(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(title),
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Start,
                 )

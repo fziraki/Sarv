@@ -119,7 +119,7 @@ fun PoetsSectionTitle(
     Text(
         modifier = modifier.fillMaxWidth(),
         text = title,
-        style = MaterialTheme.typography.headlineMedium,
+        style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.Start,
     )
