@@ -80,8 +80,8 @@ import sarv.shared.generated.resources.profile_theme_title
 import sarv.shared.generated.resources.upload
 
 private const val FONT_SIZE_DEFAULT = 1f
-private const val FONT_SIZE_BIG = 1.05f
-private const val FONT_SIZE_BIGGER = 1.1f
+private const val FONT_SIZE_BIG = 1.1f
+private const val FONT_SIZE_BIGGER = 1.2f
 
 @Composable
 fun ProfileSheets(
@@ -227,7 +227,7 @@ private fun ProfileThemeSelector(
         horizontalAlignment = Alignment.Start) {
         Text(
             text = stringResource(Res.string.profile_theme_title),
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Start,
         )
@@ -266,7 +266,7 @@ private fun ProfileFontSizeSelector(
         horizontalAlignment = Alignment.Start) {
         Text(
             text = stringResource(Res.string.profile_font_size_title),
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Start,
         )
@@ -334,7 +334,7 @@ private fun ProfileSettingToggleRow(
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start,
             )
@@ -386,7 +386,7 @@ private fun ProfileDataActionRow(
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start,
             )

@@ -145,7 +145,7 @@ fun PoemListScreen(
                                 ).clickable { onPoemClick(poem.id) }
                                 .padding(LocalSarvDimensions.current.dimen16),
                         text = poem.title,
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Start,
                     )

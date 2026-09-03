@@ -120,7 +120,7 @@ private fun ColorSlider(
         Text(
             text = label,
             modifier = Modifier.weight(LABEL_WEIGHT),
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.labelMedium,
         )
         SarvSlider(
             value = value,

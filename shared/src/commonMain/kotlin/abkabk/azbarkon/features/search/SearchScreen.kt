@@ -537,7 +537,7 @@ private fun SearchOptionRow(
 ) {
     Text(
         text = title,
-        style = MaterialTheme.typography.bodyLarge,
+        style = MaterialTheme.typography.labelLarge,
         color =
             if (isSelected) {
                 MaterialTheme.colorScheme.primary

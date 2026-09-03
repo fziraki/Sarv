@@ -144,7 +144,7 @@ class LocalUserPreferencesRepository(
         }
 
     internal companion object {
-        val FONT_SIZE_SCALES = floatArrayOf(1f, 1.05f, 1.1f)
+        val FONT_SIZE_SCALES = floatArrayOf(1f, 1.1f, 1.2f)
         const val KEY_FONT_SIZE_SCALE = "font_size_scale"
         const val KEY_DAILY_BEYT_NOTIFICATIONS_ENABLED = "daily_beyt_notifications_enabled"
         const val KEY_MEMORIZATION_REMINDER_ENABLED = "memorization_reminder_enabled"

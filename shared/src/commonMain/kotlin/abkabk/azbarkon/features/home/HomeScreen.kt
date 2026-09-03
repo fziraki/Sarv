@@ -36,7 +36,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -108,7 +108,6 @@ import sarv.shared.generated.resources.unknown
 
 private const val SLIDER_TOP_WEIGHT = 0.4f
 private const val SLIDER_CONTENT_WEIGHT = 0.6f
-private const val SLIDER_BUTTON_WIDTH_FRACTION = 0.6f
 private const val TOP_SLIDER_HEIGHT_FRACTION = 0.25f
 private const val TOP_SLIDER_HEIGHT_FRACTION_EXPAND = 0.3f
 private const val BEYT_SLIDE_SPACER_WEIGHT_EXPANDED = 0.2f
@@ -320,7 +319,7 @@ fun Poets(
         ) {
             Text(
                 text = stringResource(Res.string.popular_poets),
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Text(
@@ -581,7 +580,7 @@ fun HeroCard(
             )
             Text(
                 text = titleText,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = LightColorScheme.surfaceVariant,
             )
             Text(
@@ -740,7 +739,7 @@ fun TasvirNegarSlide(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(Res.string.slider_tasvir_negar_title),
                     color = LightColorScheme.secondary,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     textAlign = TextAlign.End,
                 )
 
@@ -759,10 +758,7 @@ fun TasvirNegarSlide(
                 SarvButton(
                     text = stringResource(Res.string.slider_tasvir_negar_button),
                     onClick = onClick,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(SLIDER_BUTTON_WIDTH_FRACTION)
-                            .wrapContentHeight(),
+                    modifier = Modifier.wrapContentSize(),
                     textStyle = MaterialTheme.typography.labelSmall,
                     colors =
                         ButtonColors(
@@ -818,7 +814,7 @@ fun ChallengeSlide(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(Res.string.slider_challenge_title),
                     color = LightColorScheme.tertiary,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     textAlign = TextAlign.End,
                 )
 
@@ -835,10 +831,7 @@ fun ChallengeSlide(
                 SarvButton(
                     text = stringResource(Res.string.slider_challenge_button),
                     onClick = onClick,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(SLIDER_BUTTON_WIDTH_FRACTION)
-                            .wrapContentHeight(),
+                    modifier = Modifier.wrapContentSize(),
                     textStyle = MaterialTheme.typography.labelSmall,
                     colors =
                         ButtonColors(
@@ -901,7 +894,7 @@ fun BeytOfDaySlide(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(Res.string.slider_beyt_of_day_title),
                     color = LightColorScheme.tertiary,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     textAlign = TextAlign.Start,
                 )
 

@@ -217,7 +217,7 @@ private fun MyPoemsTabRow(
             ) {
                 Text(
                     text = likedLabel,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.labelLarge,
                     color =
                         if (selectedTab == MyPoemsTab.Liked) {
                             MaterialTheme.colorScheme.primary
@@ -237,7 +237,7 @@ private fun MyPoemsTabRow(
             ) {
                 Text(
                     text = bookmarkedLabel,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.labelLarge,
                     color =
                         if (selectedTab == MyPoemsTab.Bookmarked) {
                             MaterialTheme.colorScheme.primary
@@ -311,7 +311,7 @@ private fun MyPoemRow(
         ) {
             Text(
                 text = poemTitle,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Start,
             )
