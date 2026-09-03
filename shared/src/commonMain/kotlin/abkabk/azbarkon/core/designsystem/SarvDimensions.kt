@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber", "LongParameterList")
+
 package abkabk.azbarkon.core.designsystem
 
 import androidx.compose.runtime.Composable
