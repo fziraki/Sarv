@@ -45,6 +45,18 @@ selectAll:
 SELECT poem_id, added_at, status
 FROM active_srs_poem;
 
+-- Fetch poem ids by status.
+selectPoemIdsByStatus:
+SELECT poem_id
+FROM active_srs_poem
+WHERE status = ?;
+
+-- Update poem status.
+updatePoemStatus:
+UPDATE active_srs_poem
+SET status = ?
+WHERE poem_id = ?;
+
 -- Remove all enrollments (full reset/restore).
 deleteAll:
 DELETE FROM active_srs_poem;

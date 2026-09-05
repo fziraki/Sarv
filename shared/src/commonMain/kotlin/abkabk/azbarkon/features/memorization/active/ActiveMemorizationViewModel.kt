@@ -25,6 +25,8 @@ class ActiveMemorizationViewModel(
         when (action) {
             ActiveMemorizationAction.OnLoad -> loadPoems()
 
+            ActiveMemorizationAction.OnResume -> loadPoems()
+
             ActiveMemorizationAction.OnBackClick -> {
                 viewModelScope.launch { sendEvent(ActiveMemorizationEvent.NavigateBack) }
             }
@@ -55,7 +57,25 @@ class ActiveMemorizationViewModel(
                         .onSuccess {
                             setState { copy(poemToDelete = null) }
                             loadPoems()
-                        }                        .onFailure {
+                        }.onFailure {
+                            setState {
+                                copy(screenState = UiScreenState.Error(message = UiText.Resource(Res.string.error_db_query)))
+                            }
+                        }
+                }
+            }
+
+            is ActiveMemorizationAction.OnTabSelected -> {
+                setState { copy(selectedTab = action.tab) }
+            }
+
+            is ActiveMemorizationAction.OnReReviewClick -> {
+                viewModelScope.launch {
+                    memorizationRepository
+                        .resetPoemToActive(action.poemId)
+                        .onSuccess {
+                            loadPoems()
+                        }.onFailure {
                             setState {
                                 copy(screenState = UiScreenState.Error(message = UiText.Resource(Res.string.error_db_query)))
                             }
@@ -68,6 +88,7 @@ class ActiveMemorizationViewModel(
     private fun loadPoems() {
         viewModelScope.launch {
             setState { copy(screenState = UiScreenState.Loading) }
+
             memorizationRepository
                 .getActivePoems()
                 .onSuccess { poems ->
@@ -80,24 +101,28 @@ class ActiveMemorizationViewModel(
                 }.onFailure {
                     setState { copy(screenState = UiScreenState.Error(UiText.Resource(Res.string.error_db_query))) }
                 }
+
+            memorizationRepository
+                .getCompletedPoems()
+                .onSuccess { poems ->
+                    setState {
+                        copy(
+                            completedPoems = poems.map { it.toUi() },
+                        )
+                    }
+                }
         }
     }
 }
 
-private fun ActiveMemorizationPoem.toUi(): ActiveMemorizationPoemUi {
-    val progress =
-        if (totalCards == 0) {
-            0f
-        } else {
-            reviewedCards.toFloat() / totalCards.toFloat()
-        }
-    return ActiveMemorizationPoemUi(
+private fun ActiveMemorizationPoem.toUi(): ActiveMemorizationPoemUi =
+    ActiveMemorizationPoemUi(
         poemId = poemId,
         title = title,
         poetName = poetName,
-        boxLevel = boxLevel,
-        level = level,
-        progress = progress,
-        dueCards = dueCards,
+        reviewCount = reviewCount,
+        nextReviewDays = nextReviewDays,
+        isCompleted = status == abkabk.azbarkon.domain.model.memorization.ActiveMemorizationStatus.COMPLETED,
+        totalCards = totalCards,
+        reviewedCards = reviewedCards,
     )
-}

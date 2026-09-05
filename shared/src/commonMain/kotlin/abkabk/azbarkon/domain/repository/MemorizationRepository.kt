@@ -19,16 +19,30 @@ interface MemorizationRepository {
 
     suspend fun getActivePoems(): Result<List<ActiveMemorizationPoem>, MemorizationError>
 
+    suspend fun getCompletedPoems(): Result<List<ActiveMemorizationPoem>, MemorizationError>
+
+    suspend fun markPoemCompleted(poemId: Int): EmptyResult<MemorizationError>
+
+    suspend fun resetPoemToActive(poemId: Int): EmptyResult<MemorizationError>
+
     suspend fun addPoem(poemId: Int): EmptyResult<MemorizationError>
 
     suspend fun removePoem(poemId: Int): EmptyResult<MemorizationError>
 
     suspend fun getDueCards(poemId: Int? = null): Result<List<SrsCard>, MemorizationError>
 
+    suspend fun getCardsByPoemId(poemId: Int): Result<List<SrsCard>, MemorizationError>
+
     suspend fun submitReview(
         cardId: Long,
         grade: SrsGrade,
     ): Result<SrsCard, MemorizationError>
+
+    suspend fun submitPoemReview(
+        poemId: Int,
+        verseGrades: List<SrsGrade>,
+        consecutiveEasy: Int,
+    ): Result<Int, MemorizationError>
 
     suspend fun isPoemActive(poemId: Int): Boolean
 

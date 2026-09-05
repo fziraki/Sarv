@@ -2,29 +2,23 @@ package abkabk.azbarkon.features.mypoems
 
 import abkabk.azbarkon.core.uidata.BaseScreen
 import abkabk.azbarkon.core.uidata.ObserveAsEvents
+import abkabk.azbarkon.ui.components.AnimatedTabRow
 import abkabk.azbarkon.ui.components.SarvAlertDialog
 import abkabk.azbarkon.ui.components.Header
 import abkabk.azbarkon.ui.components.HeaderAction
 import abkabk.azbarkon.ui.theme.SarvTheme
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -124,9 +118,11 @@ fun MyPoemsScreen(
                 },
         )
 
-        MyPoemsTabRow(
+        AnimatedTabRow(
             selectedTab = state.selectedTab,
             onSelectTab = { tab -> onAction(MyPoemsAction.OnTabSelected(tab)) },
+            tabTitles = listOf(stringResource(Res.string.tab_liked), stringResource(Res.string.tab_bookmarked)),
+            tabs = MyPoemsTab.entries,
         )
 
         if (state.isActiveTabEmpty) {
@@ -188,90 +184,6 @@ fun MyPoemsScreen(
             onConfirm = { onAction(MyPoemsAction.OnClearAllConfirm) },
             dismissLabel = stringResource(Res.string.clear_cancel),
         )
-    }
-}
-
-@Composable
-private fun MyPoemsTabRow(
-    selectedTab: MyPoemsTab,
-    onSelectTab: (MyPoemsTab) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val likedLabel = stringResource(Res.string.tab_liked)
-    val bookmarkedLabel = stringResource(Res.string.tab_bookmarked)
-
-    Column(modifier = modifier.fillMaxWidth()) {
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(LocalSarvDimensions.current.dimen48),
-        ) {
-            Box(
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clickable { onSelectTab(MyPoemsTab.Liked) },
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = likedLabel,
-                    style = MaterialTheme.typography.labelLarge,
-                    color =
-                        if (selectedTab == MyPoemsTab.Liked) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
-                )
-            }
-
-            Box(
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clickable { onSelectTab(MyPoemsTab.Bookmarked) },
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = bookmarkedLabel,
-                    style = MaterialTheme.typography.labelLarge,
-                    color =
-                        if (selectedTab == MyPoemsTab.Bookmarked) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
-                )
-            }
-        }
-
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(LocalSarvDimensions.current.dimen4)
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-        ) {
-            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-                val tabWidth = maxWidth / 2
-                val indicatorOffset by animateDpAsState(
-                    targetValue = if (selectedTab == MyPoemsTab.Liked) 0.dp else tabWidth,
-                    animationSpec = tween(durationMillis = 200),
-                )
-
-                Box(
-                    modifier =
-                        Modifier
-                            .width(tabWidth)
-                            .fillMaxHeight()
-                            .offset(x = indicatorOffset)
-                            .background(MaterialTheme.colorScheme.primary),
-                )
-            }
-        }
     }
 }
 

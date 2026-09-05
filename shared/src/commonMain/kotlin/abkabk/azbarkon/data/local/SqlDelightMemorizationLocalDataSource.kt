@@ -73,9 +73,9 @@ class SqlDelightMemorizationLocalDataSource(
                     front = card.front,
                     back = card.back,
                     interval = card.interval.toLong(),
-                    ease = card.ease,
                     due_date = card.dueDateMillis,
                     consecutive_correct = card.consecutiveCorrect.toLong(),
+                    score = card.score,
                 )
             }
         }
@@ -100,6 +100,12 @@ class SqlDelightMemorizationLocalDataSource(
                 .executeAsList()
         }.map { it.toSrsCard() }
 
+    override suspend fun getCardsByPoemId(poemId: Int): List<SrsCard> =
+        cardQueries
+            .selectCardsByPoemId(poem_id = poemId.toLong())
+            .executeAsList()
+            .map { it.toSrsCard() }
+
     override suspend fun countDueCards(
         nowMillis: Long,
         poemId: Int?,
@@ -117,10 +123,40 @@ class SqlDelightMemorizationLocalDataSource(
     override suspend fun updateCard(card: SrsCard) {
         cardQueries.updateCard(
             interval = card.interval.toLong(),
-            ease = card.ease,
             due_date = card.dueDateMillis,
             consecutive_correct = card.consecutiveCorrect.toLong(),
+            score = card.score,
             id = card.id,
+        )
+    }
+
+    override suspend fun updateCardsByPoemId(
+        poemId: Int,
+        interval: Int,
+        dueDateMillis: Long,
+        consecutiveCorrect: Int,
+        score: Double,
+    ) {
+        cardQueries.updateCardsByPoemId(
+            interval = interval.toLong(),
+            due_date = dueDateMillis,
+            consecutive_correct = consecutiveCorrect.toLong(),
+            score = score,
+            poem_id = poemId.toLong(),
+        )
+    }
+
+    override suspend fun updateCardsByPoemIdSchedule(
+        poemId: Int,
+        interval: Int,
+        dueDateMillis: Long,
+        score: Double,
+    ) {
+        cardQueries.updateCardsByPoemIdSchedule(
+            interval = interval.toLong(),
+            due_date = dueDateMillis,
+            score = score,
+            poem_id = poemId.toLong(),
         )
     }
 
@@ -148,6 +184,38 @@ class SqlDelightMemorizationLocalDataSource(
             .executeAsList()
             .maxOfOrNull { it.consecutive_correct.toInt() }
             ?: 0
+
+    override suspend fun getMaxIntervalByPoemId(poemId: Int): Int =
+        cardQueries
+            .getMaxIntervalByPoemId(poem_id = poemId.toLong()) { max -> max?.toInt() ?: 0 }
+            .executeAsOne()
+
+    override suspend fun getMinScoreByPoemId(poemId: Int): Double =
+        cardQueries
+            .getMinScoreByPoemId(poem_id = poemId.toLong()) { min -> min ?: 0.0 }
+            .executeAsOne()
+
+    override suspend fun getReviewCountByPoemId(poemId: Int): Int =
+        reviewLogQueries
+            .countReviewSessionsByPoemId(poem_id = poemId.toLong())
+            .executeAsOne()
+            .toInt()
+
+    override suspend fun getActivePoemIdsByStatus(status: String): List<Int> =
+        activePoemQueries
+            .selectPoemIdsByStatus(status = status)
+            .executeAsList()
+            .map { it.toInt() }
+
+    override suspend fun updatePoemStatus(
+        poemId: Int,
+        status: String,
+    ) {
+        activePoemQueries.updatePoemStatus(
+            status = status,
+            poem_id = poemId.toLong(),
+        )
+    }
 
     override suspend fun insertReviewLog(
         cardId: Long,
@@ -223,9 +291,9 @@ class SqlDelightMemorizationLocalDataSource(
                     front = card.front,
                     back = card.back,
                     interval = card.interval.toLong(),
-                    ease = card.ease,
                     due_date = card.dueDateMillis,
                     consecutive_correct = card.consecutiveCorrect.toLong(),
+                    score = card.score,
                 )
             }
             reviewLogs.forEach { log ->

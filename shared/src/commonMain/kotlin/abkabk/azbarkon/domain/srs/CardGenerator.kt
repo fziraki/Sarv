@@ -3,7 +3,6 @@ package abkabk.azbarkon.domain.srs
 import abkabk.azbarkon.core.util.currentTimeMillis
 import abkabk.azbarkon.domain.model.PoemVerse
 import abkabk.azbarkon.domain.model.memorization.SrsCard
-import abkabk.azbarkon.domain.srs.SrsScheduler.DEFAULT_EASE
 
 data class GeneratedCard(
     val cardIndex: Int,
@@ -26,9 +25,9 @@ object CardGenerator {
                 front = card.front,
                 back = card.back,
                 interval = 0,
-                ease = DEFAULT_EASE,
                 dueDateMillis = nowMillis,
                 consecutiveCorrect = 0,
+                score = 0.0,
             )
         }
     }

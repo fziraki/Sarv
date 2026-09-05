@@ -190,7 +190,6 @@ class MemorizationPracticeViewModelTest {
         front = front,
         back = back,
         interval = 0,
-        ease = 2.5,
         dueDateMillis = 0,
         consecutiveCorrect = 0,
     )

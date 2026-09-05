@@ -91,11 +91,13 @@ import sarv.shared.generated.resources.memorization_grade_hard
 import sarv.shared.generated.resources.memorization_keyboard_content_description
 import sarv.shared.generated.resources.memorization_keyboard_label
 import sarv.shared.generated.resources.memorization_next_verse
+import sarv.shared.generated.resources.memorization_practice_close
 import sarv.shared.generated.resources.memorization_practice_complete
 import sarv.shared.generated.resources.memorization_practice_done
 import sarv.shared.generated.resources.memorization_practice_help
 import sarv.shared.generated.resources.memorization_practice_help_body
 import sarv.shared.generated.resources.memorization_practice_help_title
+import sarv.shared.generated.resources.memorization_practice_next_poem
 import sarv.shared.generated.resources.memorization_practice_progress
 import sarv.shared.generated.resources.memorization_practice_stat_learned
 import sarv.shared.generated.resources.memorization_practice_stat_mistakes
@@ -116,6 +118,7 @@ private val WRONG_DIFF_COLOR = Color(0xFFC62828)
 fun MemorizationPracticeRoot(
     poemId: Int?,
     onBackClick: () -> Unit,
+    onNavigateToPoem: (Int) -> Unit = {},
     viewModel: MemorizationPracticeViewModel = koinViewModel { parametersOf(poemId) },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -142,6 +145,7 @@ fun MemorizationPracticeRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             MemorizationPracticeEvent.NavigateBack -> onBackClick()
+            is MemorizationPracticeEvent.NavigateToPoem -> onNavigateToPoem(event.poemId)
         }
     }
 
@@ -211,8 +215,17 @@ fun MemorizationPracticeScreen(
                     )
                     Spacer(modifier = Modifier.height(LocalSarvDimensions.current.dimen16))
                     SarvPrimaryButton(
-                        text = stringResource(Res.string.memorization_practice_done),
-                        onClick = { onAction(MemorizationPracticeAction.OnBackClick) },
+                        text = stringResource(
+                            if (state.hasOtherDuePoems) Res.string.memorization_practice_next_poem
+                            else Res.string.memorization_practice_close
+                        ),
+                        onClick = {
+                            if (state.hasOtherDuePoems) {
+                                onAction(MemorizationPracticeAction.OnNextPoemClick)
+                            } else {
+                                onAction(MemorizationPracticeAction.OnBackClick)
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         verticalTextPadding = LocalSarvDimensions.current.dimen8
                     )

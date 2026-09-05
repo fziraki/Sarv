@@ -1,82 +1,71 @@
 package abkabk.azbarkon.domain.srs
 
 import abkabk.azbarkon.core.util.currentTimeMillis
-import abkabk.azbarkon.domain.model.memorization.SrsCard
 import abkabk.azbarkon.domain.model.memorization.SrsGrade
-import kotlin.math.max
-import kotlin.math.roundToInt
 
 object SrsScheduler {
-    const val MIN_EASE = 1.3
-    const val MAX_EASE = 2.8
-    const val DEFAULT_EASE = 2.5
     const val MILLIS_PER_DAY = 86_400_000L
 
-    private const val AGAIN_EASE_PENALTY = 0.20
-    private const val HARD_EASE_PENALTY = 0.15
-    private const val EASY_EASE_BONUS = 0.15
-    private const val HARD_INTERVAL_FACTOR = 1.2
-    private const val EASY_INTERVAL_FACTOR = 1.3
-    private const val BOX_2_UP_TO_DAYS = 3
-    private const val BOX_3_UP_TO_DAYS = 7
-    private const val BOX_4_UP_TO_DAYS = 14
-    private const val BOX_3 = 3
-    private const val BOX_4 = 4
-    private const val MAX_BOX_NUMBER = 5
+    // Grade score deltas
+    private const val AGAIN_DELTA = -1.20
+    private const val HARD_DELTA = -1.15
+    private const val GOOD_DELTA = 0.0
+    private const val EASY_DELTA = 1.15
 
     data class ReviewResult(
         val interval: Int,
-        val ease: Double,
+        val score: Double,
         val dueDateMillis: Long,
-        val consecutiveCorrect: Int,
+        val consecutiveEasy: Int,
     )
 
-    fun applyReview(
-        card: SrsCard,
-        grade: SrsGrade,
-        nowMillis: Long = currentTimeMillis(),
+    fun updateVerseScore(currentScore: Double, grade: SrsGrade): Double =
+        when (grade) {
+            SrsGrade.AGAIN -> currentScore + AGAIN_DELTA
+            SrsGrade.HARD -> currentScore + HARD_DELTA
+            SrsGrade.GOOD -> currentScore + GOOD_DELTA
+            SrsGrade.EASY -> currentScore + EASY_DELTA
+        }
+
+    fun calculatePoemInterval(
+        verseScores: List<Double>,
+        consecutiveEasy: Int,
     ): ReviewResult {
-        val previousInterval = card.interval
-        val previousEase = card.ease
+        val total = verseScores.sum()
+        val minTotal = verseScores.size * 1.0
 
-        val newEase =
-            when (grade) {
-                SrsGrade.AGAIN -> clampEase(previousEase - AGAIN_EASE_PENALTY)
-                SrsGrade.HARD -> clampEase(previousEase - HARD_EASE_PENALTY)
-                SrsGrade.GOOD -> previousEase
-                SrsGrade.EASY -> clampEase(previousEase + EASY_EASE_BONUS)
-            }
+        val interval: Int
+        val newConsecutiveEasy: Int
 
-        val newInterval =
-            when (grade) {
-                SrsGrade.AGAIN -> 1
-                SrsGrade.HARD -> max(1, (previousInterval * HARD_INTERVAL_FACTOR).roundToInt())
-                SrsGrade.GOOD -> max(1, (previousInterval * newEase).roundToInt())
-                SrsGrade.EASY -> max(1, (previousInterval * newEase * EASY_INTERVAL_FACTOR).roundToInt())
+        when {
+            total < minTotal -> {
+                interval = 1
+                newConsecutiveEasy = 0
             }
-
-        val consecutiveCorrect =
-            when (grade) {
-                SrsGrade.AGAIN -> 0
-                else -> card.consecutiveCorrect + 1
+            total == minTotal -> {
+                interval = 2
+                newConsecutiveEasy = 0
             }
+            else -> {
+                newConsecutiveEasy = consecutiveEasy + 1
+                interval = newConsecutiveEasy
+            }
+        }
 
         return ReviewResult(
-            interval = newInterval,
-            ease = newEase,
-            dueDateMillis = nowMillis + newInterval * MILLIS_PER_DAY,
-            consecutiveCorrect = consecutiveCorrect,
+            interval = interval,
+            score = verseScores.average(),
+            dueDateMillis = currentTimeMillis() + interval * MILLIS_PER_DAY,
+            consecutiveEasy = newConsecutiveEasy,
         )
     }
 
     fun boxFromInterval(interval: Int): Int =
         when {
             interval <= 1 -> 1
-            interval <= BOX_2_UP_TO_DAYS -> 2
-            interval <= BOX_3_UP_TO_DAYS -> BOX_3
-            interval <= BOX_4_UP_TO_DAYS -> BOX_4
-            else -> MAX_BOX_NUMBER
+            interval <= 3 -> 2
+            interval <= 7 -> 3
+            interval <= 14 -> 4
+            else -> 5
         }
-
-    fun clampEase(ease: Double): Double = ease.coerceIn(MIN_EASE, MAX_EASE)
 }

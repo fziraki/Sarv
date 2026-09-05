@@ -1,6 +1,6 @@
--- SRS (Spaced Repetition System) flashcard for poems.
+-- SRS flashcard for poems.
 -- Each card represents one verse of a poem, tracking review state
--- (interval, ease, due date, consecutive correct reviews) for the SM-2 algorithm.
+-- (score, interval, due date, consecutive correct reviews).
 CREATE TABLE srs_poem_card (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     poem_id INTEGER NOT NULL,
@@ -8,67 +8,53 @@ CREATE TABLE srs_poem_card (
     front TEXT NOT NULL,
     back TEXT NOT NULL,
     interval INTEGER NOT NULL,
-    ease REAL NOT NULL,
     due_date INTEGER NOT NULL,
-    consecutive_correct INTEGER NOT NULL
+    consecutive_correct INTEGER NOT NULL,
+    score REAL NOT NULL DEFAULT 0.0
 );
 
--- Insert a new SRS card with auto-generated id (normal new-card creation).
+-- Insert a new SRS card with auto-generated id.
 insertCard:
 INSERT INTO srs_poem_card(
-    poem_id,
-    card_index,
-    front,
-    back,
-    interval,
-    ease,
-    due_date,
-    consecutive_correct
+    poem_id, card_index, front, back,
+    interval, due_date, consecutive_correct, score
 )
 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 -- Insert an SRS card with a specific id (used during import/restore).
 insertCardWithId:
 INSERT INTO srs_poem_card(
-    id,
-    poem_id,
-    card_index,
-    front,
-    back,
-    interval,
-    ease,
-    due_date,
-    consecutive_correct
+    id, poem_id, card_index, front, back,
+    interval, due_date, consecutive_correct, score
 )
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- Fetch every card in the database, ordered by id.
 selectAllCards:
-SELECT id, poem_id, card_index, front, back, interval, ease, due_date, consecutive_correct
+SELECT id, poem_id, card_index, front, back, interval, due_date, consecutive_correct, score
 FROM srs_poem_card
 ORDER BY id;
 
--- Wipe all cards (used for full reset/restore).
+-- Wipe all cards.
 deleteAllCards:
 DELETE FROM srs_poem_card;
 
 -- Fetch a single card by its primary key.
 selectCardById:
-SELECT id, poem_id, card_index, front, back, interval, ease, due_date, consecutive_correct
+SELECT id, poem_id, card_index, front, back, interval, due_date, consecutive_correct, score
 FROM srs_poem_card
 WHERE id = ?;
 
 -- Fetch all cards belonging to a specific poem, ordered by card index.
 selectCardsByPoemId:
-SELECT id, poem_id, card_index, front, back, interval, ease, due_date, consecutive_correct
+SELECT id, poem_id, card_index, front, back, interval, due_date, consecutive_correct, score
 FROM srs_poem_card
 WHERE poem_id = ?
 ORDER BY card_index;
 
--- Fetch cards due for review across all active poems (main review screen query).
--- Filters by due_date <= now AND poem must be in active_srs_poem with status='ACTIVE'.
+-- Fetch cards due for review across all active poems.
 selectDueCards:
-SELECT id, poem_id, card_index, front, back, interval, ease, due_date, consecutive_correct
+SELECT id, poem_id, card_index, front, back, interval, due_date, consecutive_correct, score
 FROM srs_poem_card
 WHERE due_date <= ?
   AND poem_id IN (
@@ -78,13 +64,13 @@ ORDER BY due_date ASC, card_index ASC;
 
 -- Fetch cards due for review for a specific poem only.
 selectDueCardsByPoemId:
-SELECT id, poem_id, card_index, front, back, interval, ease, due_date, consecutive_correct
+SELECT id, poem_id, card_index, front, back, interval, due_date, consecutive_correct, score
 FROM srs_poem_card
 WHERE poem_id = ?
   AND due_date <= ?
 ORDER BY card_index ASC;
 
--- Count total due cards across all active poems (badge/notification count).
+-- Count total due cards across all active poems.
 countDueCards:
 SELECT COUNT(*)
 FROM srs_poem_card
@@ -100,29 +86,64 @@ FROM srs_poem_card
 WHERE poem_id = ?
   AND due_date <= ?;
 
--- Update review state (interval, ease, due date, streak) after a review session.
+-- Update review state after a review.
 updateCard:
 UPDATE srs_poem_card
 SET interval = ?,
-    ease = ?,
     due_date = ?,
-    consecutive_correct = ?
+    consecutive_correct = ?,
+    score = ?
 WHERE id = ?;
 
--- Delete all cards belonging to a poem (when removing a poem from SRS).
+-- Update all cards of a poem (poem-level review).
+updateCardsByPoemId:
+UPDATE srs_poem_card
+SET interval = ?,
+    due_date = ?,
+    consecutive_correct = ?,
+    score = ?
+WHERE poem_id = ?;
+
+-- Update interval, due_date and score without resetting consecutive_correct.
+updateCardsByPoemIdSchedule:
+UPDATE srs_poem_card
+SET interval = ?,
+    due_date = ?,
+    score = ?
+WHERE poem_id = ?;
+
+-- Delete all cards belonging to a poem.
 deleteCardsByPoemId:
 DELETE FROM srs_poem_card
 WHERE poem_id = ?;
 
--- Count total cards for a poem (progress tracking).
+-- Count total cards for a poem.
 countCardsByPoemId:
 SELECT COUNT(*)
 FROM srs_poem_card
 WHERE poem_id = ?;
 
--- Count cards with at least one correct review (progress tracking: reviewed vs total).
+-- Count cards that have been reviewed at least once (any score).
 countReviewedCardsByPoemId:
 SELECT COUNT(*)
 FROM srs_poem_card
 WHERE poem_id = ?
-  AND consecutive_correct > 0;
+  AND interval > 0;
+
+-- Get maximum interval for a poem (used for next review calculation).
+getMaxIntervalByPoemId:
+SELECT MAX(interval)
+FROM srs_poem_card
+WHERE poem_id = ?;
+
+-- Get minimum score for a poem (used for completion detection).
+getMinScoreByPoemId:
+SELECT MIN(score)
+FROM srs_poem_card
+WHERE poem_id = ?;
+
+-- Count total reviews for a poem (sum of consecutive_correct).
+getReviewCountByPoemId:
+SELECT SUM(consecutive_correct)
+FROM srs_poem_card
+WHERE poem_id = ?;

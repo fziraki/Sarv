@@ -44,6 +44,10 @@
     <string name="memorization_select_title">انتخاب شعر</string>
     <string name="memorization_quick_start">شروع سریع</string>
     <string name="memorization_active_poems">شعرهای در حال حفظ</string>
+    <string name="memorization_completed_poems">شعرهای حفظ شده</string>
+    <string name="memorization_completed_empty">هنوز شعری حفظ نکرده‌اید</string>
+    <string name="memorization_re_review">مرور دوباره</string>
+    <string name="memorization_review_info_format">مرور %1$d · مرور بعدی %2$d روز دیگر</string>
     <string name="memorization_select_hero_title">اولین شعر خود را از بر کن</string>
     <string name="memorization_select_hero_subtitle">مسیر حفظ شما از همین‌جا آغاز می‌شود</string>
     <string name="memorization_quick_start_desc">یک شعر کوتاه و مناسب برای شروع انتخاب کنید</string>
@@ -64,8 +68,10 @@
     <string name="memorization_card_not_error">کارت مرور یافت نشد</string>
     <string name="memorization_practice_title">تمرین حفظ</string>
     <string name="memorization_practice_progress">%1$d از %2$d</string>
-    <string name="memorization_practice_complete">مرور امروز تمام شد</string>
+    <string name="memorization_practice_complete">اتمام مرور امروز این شعر</string>
     <string name="memorization_practice_done">پایان</string>
+    <string name="memorization_practice_next_poem">مرور شعر بعدی</string>
+    <string name="memorization_practice_close">بستن</string>
     <string name="memorization_typing_hint">ادامه شعر را بنویسید...</string>
     <string name="memorization_submit_typing">بررسی پاسخ</string>
     <string name="memorization_next_verse">مصرع بعدی</string>
@@ -84,6 +90,7 @@
     <string name="memorization_grade_good">خوب</string>
     <string name="memorization_grade_easy">آسان</string>
     <string name="memorization_due_cards_format">%1$d کارت امروز</string>
+    <string name="memorization_cards_progress_format">%1$d/%2$d</string>
     <string name="memorization_remove_confirm_title">حذف از حفظ</string>
     <string name="memorization_remove_confirm_body">این شعر از فهرست حفظ حذف شود؟ پیشرفت حفظ پاک می‌شود.</string>
     <string name="memorization_already_active">در حال حفظ</string>

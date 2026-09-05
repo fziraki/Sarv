@@ -64,6 +64,42 @@ class OfflineFirstMemorizationRepository(
             Result.Error(MemorizationError.Unknown)
         }
 
+    override suspend fun getCompletedPoems(): Result<List<ActiveMemorizationPoem>, MemorizationError> =
+        try {
+            val now = currentTimeMillis()
+            val poemIds = localDataSource.getActivePoemIdsByStatus(ActiveMemorizationStatus.COMPLETED.name)
+            val poems =
+                poemIds.mapNotNull { poemId ->
+                    buildActivePoem(poemId, now)
+                }
+            Result.Success(poems)
+        } catch (e: IllegalStateException) {
+            Napier.e("getCompletedPoems failed", e)
+            Result.Error(MemorizationError.Unknown)
+        }
+
+    override suspend fun markPoemCompleted(poemId: Int): EmptyResult<MemorizationError> =
+        try {
+            localDataSource.updatePoemStatus(poemId, ActiveMemorizationStatus.COMPLETED.name)
+            notifySummaryChanged()
+            syncReviewNotifications()
+            Result.Success(Unit)
+        } catch (e: IllegalStateException) {
+            Napier.e("markPoemCompleted failed for poemId=$poemId", e)
+            Result.Error(MemorizationError.Unknown)
+        }
+
+    override suspend fun resetPoemToActive(poemId: Int): EmptyResult<MemorizationError> =
+        try {
+            localDataSource.updatePoemStatus(poemId, ActiveMemorizationStatus.ACTIVE.name)
+            notifySummaryChanged()
+            syncReviewNotifications()
+            Result.Success(Unit)
+        } catch (e: IllegalStateException) {
+            Napier.e("resetPoemToActive failed for poemId=$poemId", e)
+            Result.Error(MemorizationError.Unknown)
+        }
+
     override suspend fun addPoem(poemId: Int): EmptyResult<MemorizationError> {
         if (localDataSource.isPoemActive(poemId)) {
             notifySummaryChanged()
@@ -116,6 +152,15 @@ class OfflineFirstMemorizationRepository(
             Result.Error(MemorizationError.Unknown)
         }
 
+    override suspend fun getCardsByPoemId(poemId: Int): Result<List<SrsCard>, MemorizationError> =
+        try {
+            val cards = localDataSource.getCardsByPoemId(poemId)
+            Result.Success(cards)
+        } catch (e: IllegalStateException) {
+            Napier.e("getCardsByPoemId failed for poemId=$poemId", e)
+            Result.Error(MemorizationError.Unknown)
+        }
+
     override suspend fun submitReview(
         cardId: Long,
         grade: SrsGrade,
@@ -123,13 +168,14 @@ class OfflineFirstMemorizationRepository(
         val card = localDataSource.getCardById(cardId) ?: return Result.Error(MemorizationError.CardNotFound)
         val now = currentTimeMillis()
         val previousInterval = card.interval
-        val review = SrsScheduler.applyReview(card, grade, now)
+        val newScore = SrsScheduler.updateVerseScore(card.score, grade)
+        val result = SrsScheduler.calculatePoemInterval(listOf(newScore), card.consecutiveCorrect)
         val updated =
             card.copy(
-                interval = review.interval,
-                ease = review.ease,
-                dueDateMillis = review.dueDateMillis,
-                consecutiveCorrect = review.consecutiveCorrect,
+                interval = result.interval,
+                score = newScore,
+                dueDateMillis = result.dueDateMillis,
+                consecutiveCorrect = result.consecutiveEasy,
             )
         return try {
             localDataSource.updateCard(updated)
@@ -137,7 +183,7 @@ class OfflineFirstMemorizationRepository(
                 cardId = cardId,
                 grade = grade,
                 previousInterval = previousInterval,
-                newInterval = review.interval,
+                newInterval = result.interval,
                 reviewTimeMillis = now,
             )
             notifySummaryChanged()
@@ -145,6 +191,48 @@ class OfflineFirstMemorizationRepository(
             Result.Success(updated)
         } catch (e: IllegalStateException) {
             Napier.e("submitReview failed for cardId=$cardId", e)
+            Result.Error(MemorizationError.Unknown)
+        }
+    }
+
+    override suspend fun submitPoemReview(
+        poemId: Int,
+        verseGrades: List<SrsGrade>,
+        consecutiveEasy: Int,
+    ): Result<Int, MemorizationError> {
+        val cards = localDataSource.getCardsByPoemId(poemId)
+        if (cards.isEmpty()) return Result.Error(MemorizationError.CardNotFound)
+
+        val now = currentTimeMillis()
+        val verseScores = cards.mapIndexed { index, card ->
+            val grade = verseGrades.getOrNull(index) ?: SrsGrade.GOOD
+            SrsScheduler.updateVerseScore(card.score, grade)
+        }
+
+        val result = SrsScheduler.calculatePoemInterval(verseScores, consecutiveEasy)
+
+        return try {
+            localDataSource.updateCardsByPoemIdSchedule(
+                poemId = poemId,
+                interval = result.interval,
+                dueDateMillis = result.dueDateMillis,
+                score = result.score,
+            )
+            cards.forEachIndexed { index, card ->
+                val grade = verseGrades.getOrNull(index) ?: return@forEachIndexed
+                localDataSource.insertReviewLog(
+                    cardId = card.id,
+                    grade = grade,
+                    previousInterval = card.interval,
+                    newInterval = result.interval,
+                    reviewTimeMillis = now,
+                )
+            }
+            notifySummaryChanged()
+            syncReviewNotifications()
+            Result.Success(result.interval)
+        } catch (e: IllegalStateException) {
+            Napier.e("submitPoemReview failed for poemId=$poemId", e)
             Result.Error(MemorizationError.Unknown)
         }
     }
@@ -210,6 +298,21 @@ class OfflineFirstMemorizationRepository(
         val avgInterval = localDataSource.getAverageInterval(poemId)
         val maxLevel = localDataSource.getMaxConsecutiveCorrect(poemId)
         val addedAt = localDataSource.getActivePoemAddedAt(poemId) ?: nowMillis
+        val maxInterval = localDataSource.getMaxIntervalByPoemId(poemId)
+        val reviewCount = localDataSource.getReviewCountByPoemId(poemId)
+        val minScore = localDataSource.getMinScoreByPoemId(poemId)
+
+        val statusString = localDataSource.getActivePoemAddedAt(poemId)?.let {
+            localDataSource.getActivePoemIdsByStatus(ActiveMemorizationStatus.ACTIVE.name).contains(poemId)
+        } ?: true
+
+        val status = when {
+            localDataSource.getActivePoemIdsByStatus(ActiveMemorizationStatus.COMPLETED.name).contains(poemId) ->
+                ActiveMemorizationStatus.COMPLETED
+            localDataSource.getActivePoemIdsByStatus(ActiveMemorizationStatus.PAUSED.name).contains(poemId) ->
+                ActiveMemorizationStatus.PAUSED
+            else -> ActiveMemorizationStatus.ACTIVE
+        }
 
         return ActiveMemorizationPoem(
             poemId = poemId,
@@ -217,12 +320,14 @@ class OfflineFirstMemorizationRepository(
             poetName = detail.poetName,
             categoryName = detail.categoryName,
             addedAtMillis = addedAt,
-            status = ActiveMemorizationStatus.ACTIVE,
+            status = status,
             totalCards = totalCards,
             reviewedCards = reviewedCards,
             dueCards = dueCards,
             boxLevel = SrsScheduler.boxFromInterval(avgInterval),
             level = maxLevel.coerceAtLeast(1),
+            reviewCount = reviewCount,
+            nextReviewDays = maxInterval,
         )
     }
 

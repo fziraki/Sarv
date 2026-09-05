@@ -53,6 +53,12 @@ fun NavGraphBuilder.memorizationGraph(
         MemorizationPracticeRoot(
             poemId = route.poemId,
             onBackClick = navController::popPracticeToActiveMemorization,
+            onNavigateToPoem = { poemId ->
+                navController.navigate(MemorizationPracticeRoute(poemId = poemId)) {
+                    popUpTo<MemorizationPracticeRoute> { inclusive = true }
+                    launchSingleTop = true
+                }
+            },
         )
     }
 }

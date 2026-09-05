@@ -12,6 +12,7 @@ enum class SrsGrade {
 enum class ActiveMemorizationStatus {
     ACTIVE,
     PAUSED,
+    COMPLETED,
 }
 
 @Serializable
@@ -22,9 +23,9 @@ data class SrsCard(
     val front: String,
     val back: String,
     val interval: Int,
-    val ease: Double,
     val dueDateMillis: Long,
     val consecutiveCorrect: Int,
+    val score: Double = 0.0,
 )
 
 @Serializable
@@ -61,6 +62,8 @@ data class ActiveMemorizationPoem(
     val dueCards: Int,
     val boxLevel: Int,
     val level: Int,
+    val reviewCount: Int,
+    val nextReviewDays: Int,
 )
 
 data class QuickStartTarget(

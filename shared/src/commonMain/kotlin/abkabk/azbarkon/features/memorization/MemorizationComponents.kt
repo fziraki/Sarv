@@ -36,15 +36,17 @@ import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.feather
 import sarv.shared.generated.resources.forward
 import sarv.shared.generated.resources.ic_delete
+import sarv.shared.generated.resources.memorization_cards_progress_format
 import sarv.shared.generated.resources.memorization_due_cards_format
 import sarv.shared.generated.resources.memorization_quick_start
 import sarv.shared.generated.resources.memorization_quick_start_couplet
 import sarv.shared.generated.resources.memorization_quick_start_desc
 import sarv.shared.generated.resources.memorization_quick_start_ghazal
 import sarv.shared.generated.resources.memorization_quick_start_rubaiyat
+import sarv.shared.generated.resources.memorization_re_review
+import sarv.shared.generated.resources.memorization_review_info_format
 import sarv.shared.generated.resources.memorization_select_hero_subtitle
 import sarv.shared.generated.resources.memorization_select_hero_title
-import sarv.shared.generated.resources.memorization_status_format
 import sarv.shared.generated.resources.ornoment30
 import sarv.shared.generated.resources.search
 
@@ -256,14 +258,19 @@ fun MemorizationOptionRow(
 fun ActivePoemCard(
     title: String,
     poetName: String,
-    boxLevel: Int,
-    level: Int,
-    progress: Float,
-    dueCards: Int,
+    reviewCount: Int,
+    nextReviewDays: Int,
+    isCompleted: Boolean,
     onClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onReReviewClick: () -> Unit,
     modifier: Modifier = Modifier,
+    totalCards: Int = 0,
+    reviewedCards: Int = 0,
 ) {
+    val progress =
+        if (totalCards == 0) 0f
+        else (reviewedCards.toFloat() / totalCards.toFloat()).coerceIn(0f, 1f)
     Row(
         modifier =
             modifier
@@ -282,47 +289,73 @@ fun ActivePoemCard(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen6),
         ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Icon(
+                    modifier = Modifier.clickable{ onDeleteClick() }
+                        .size(LocalSarvDimensions.current.dimen24),
+                    painter = painterResource(Res.drawable.ic_delete),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                )
+            }
+
             Text(
                 text = poetName,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            Text(
-                text =
-                    stringResource(
-                        Res.string.memorization_status_format,
-                        boxLevel,
-                        level,
-                    ),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.secondary,
-            )
-            LinearProgressIndicator(
-                progress = { progress.coerceIn(0f, 1f) },
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                trackColor = LightColorScheme.outlineVariant,
-                gapSize = (-4).dp
-            )
-            if (dueCards > 0) {
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
-                    text = stringResource(Res.string.memorization_due_cards_format, dueCards),
+                    text =
+                        stringResource(
+                            Res.string.memorization_review_info_format,
+                            reviewCount,
+                            nextReviewDays,
+                        ),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+                Text(
+                    text = stringResource(Res.string.memorization_cards_progress_format, reviewedCards, totalCards),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                 )
             }
-        }
-        IconButton(onClick = onDeleteClick) {
-            Icon(
-                modifier = Modifier.size(LocalSarvDimensions.current.dimen24),
-                painter = painterResource(Res.drawable.ic_delete),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-            )
+
+            if (!isCompleted){
+                LinearProgressIndicator(
+                    progress = { progress.coerceIn(0f, 1f) },
+                    modifier = Modifier.fillMaxWidth(),
+                    trackColor = LightColorScheme.outlineVariant,
+                    gapSize = (-4).dp
+                )
+            }else{
+                Text(
+                    modifier = Modifier.clickable{ onReReviewClick()},
+                    text =
+                        stringResource(
+                            Res.string.memorization_re_review,
+                            reviewCount,
+                            nextReviewDays,
+                        ),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+            }
+
         }
     }
 }
@@ -369,13 +402,15 @@ private fun ActivePoemCardPreview() {
         ActivePoemCard(
             title = "غزل ۱",
             poetName = "حافظ",
-            boxLevel = 2,
-            level = 2,
-            progress = 0.4f,
-            dueCards = 3,
+            reviewCount = 5,
+            nextReviewDays = 3,
+            isCompleted = false,
             onClick = {},
             onDeleteClick = {},
+            onReReviewClick = {},
             modifier = Modifier.padding(LocalSarvDimensions.current.dimen16),
+            totalCards = 10,
+            reviewedCards = 4,
         )
     }
 }

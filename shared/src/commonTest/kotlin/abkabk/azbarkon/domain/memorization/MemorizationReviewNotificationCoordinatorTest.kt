@@ -102,12 +102,22 @@ class MemorizationReviewNotificationCoordinatorTest {
             poemId: Int?,
         ): List<SrsCard> = emptyList()
 
+        override suspend fun getCardsByPoemId(poemId: Int): List<SrsCard> = emptyList()
+
         override suspend fun countDueCards(
             nowMillis: Long,
             poemId: Int?,
         ): Int = 0
 
         override suspend fun updateCard(card: SrsCard) = Unit
+
+        override suspend fun updateCardsByPoemId(
+            poemId: Int,
+            interval: Int,
+            dueDateMillis: Long,
+            consecutiveCorrect: Int,
+            score: Double,
+        ) = Unit
 
         override suspend fun countCardsByPoemId(poemId: Int): Int = 0
 
@@ -116,6 +126,19 @@ class MemorizationReviewNotificationCoordinatorTest {
         override suspend fun getAverageInterval(poemId: Int): Int = 0
 
         override suspend fun getMaxConsecutiveCorrect(poemId: Int): Int = 0
+
+        override suspend fun getMaxIntervalByPoemId(poemId: Int): Int = 0
+
+        override suspend fun getMinScoreByPoemId(poemId: Int): Double = 0.0
+
+        override suspend fun getReviewCountByPoemId(poemId: Int): Int = 0
+
+        override suspend fun getActivePoemIdsByStatus(status: String): List<Int> = emptyList()
+
+        override suspend fun updatePoemStatus(
+            poemId: Int,
+            status: String,
+        ) = Unit
 
         override suspend fun insertReviewLog(
             cardId: Long,

@@ -13,9 +13,9 @@ fun Srs_poem_card.toSrsCard(): SrsCard =
         front = front,
         back = back,
         interval = interval.toInt(),
-        ease = ease,
         dueDateMillis = due_date,
         consecutiveCorrect = consecutive_correct.toInt(),
+        score = score,
     )
 
 fun SrsGrade.toStorageValue(): String = name

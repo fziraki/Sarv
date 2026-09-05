@@ -45,6 +45,12 @@ class FakeMemorizationRepository : MemorizationRepository {
 
     override suspend fun getActivePoems(): Result<List<ActiveMemorizationPoem>, MemorizationError> = activePoems
 
+    override suspend fun getCompletedPoems(): Result<List<ActiveMemorizationPoem>, MemorizationError> = activePoems
+
+    override suspend fun markPoemCompleted(poemId: Int): EmptyResult<MemorizationError> = Result.Success(Unit)
+
+    override suspend fun resetPoemToActive(poemId: Int): EmptyResult<MemorizationError> = Result.Success(Unit)
+
     override suspend fun addPoem(poemId: Int): EmptyResult<MemorizationError> {
         lastAddedPoemId = poemId
         return addPoemResult
@@ -54,6 +60,8 @@ class FakeMemorizationRepository : MemorizationRepository {
 
     override suspend fun getDueCards(poemId: Int?): Result<List<SrsCard>, MemorizationError> = dueCards
 
+    override suspend fun getCardsByPoemId(poemId: Int): Result<List<SrsCard>, MemorizationError> = dueCards
+
     override suspend fun submitReview(
         cardId: Long,
         grade: SrsGrade,
@@ -62,6 +70,12 @@ class FakeMemorizationRepository : MemorizationRepository {
         lastReviewGrade = grade
         return reviewResult
     }
+
+    override suspend fun submitPoemReview(
+        poemId: Int,
+        verseGrades: List<SrsGrade>,
+        consecutiveEasy: Int,
+    ): Result<Int, MemorizationError> = Result.Success(1)
 
     override suspend fun isPoemActive(poemId: Int): Boolean = isActive
 

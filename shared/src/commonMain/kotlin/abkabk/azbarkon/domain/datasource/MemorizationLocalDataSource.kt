@@ -33,12 +33,29 @@ interface MemorizationLocalDataSource {
         poemId: Int? = null,
     ): List<SrsCard>
 
+    suspend fun getCardsByPoemId(poemId: Int): List<SrsCard>
+
     suspend fun countDueCards(
         nowMillis: Long,
         poemId: Int? = null,
     ): Int
 
     suspend fun updateCard(card: SrsCard)
+
+    suspend fun updateCardsByPoemId(
+        poemId: Int,
+        interval: Int,
+        dueDateMillis: Long,
+        consecutiveCorrect: Int,
+        score: Double,
+    )
+
+    suspend fun updateCardsByPoemIdSchedule(
+        poemId: Int,
+        interval: Int,
+        dueDateMillis: Long,
+        score: Double,
+    )
 
     suspend fun countCardsByPoemId(poemId: Int): Int
 
@@ -47,6 +64,19 @@ interface MemorizationLocalDataSource {
     suspend fun getAverageInterval(poemId: Int): Int
 
     suspend fun getMaxConsecutiveCorrect(poemId: Int): Int
+
+    suspend fun getMaxIntervalByPoemId(poemId: Int): Int
+
+    suspend fun getMinScoreByPoemId(poemId: Int): Double
+
+    suspend fun getReviewCountByPoemId(poemId: Int): Int
+
+    suspend fun getActivePoemIdsByStatus(status: String): List<Int>
+
+    suspend fun updatePoemStatus(
+        poemId: Int,
+        status: String,
+    )
 
     suspend fun insertReviewLog(
         cardId: Long,
