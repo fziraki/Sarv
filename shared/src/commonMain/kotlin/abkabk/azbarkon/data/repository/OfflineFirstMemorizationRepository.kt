@@ -300,11 +300,6 @@ class OfflineFirstMemorizationRepository(
         val addedAt = localDataSource.getActivePoemAddedAt(poemId) ?: nowMillis
         val maxInterval = localDataSource.getMaxIntervalByPoemId(poemId)
         val reviewCount = localDataSource.getReviewCountByPoemId(poemId)
-        val minScore = localDataSource.getMinScoreByPoemId(poemId)
-
-        val statusString = localDataSource.getActivePoemAddedAt(poemId)?.let {
-            localDataSource.getActivePoemIdsByStatus(ActiveMemorizationStatus.ACTIVE.name).contains(poemId)
-        } ?: true
 
         val status = when {
             localDataSource.getActivePoemIdsByStatus(ActiveMemorizationStatus.COMPLETED.name).contains(poemId) ->
