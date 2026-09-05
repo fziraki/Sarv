@@ -161,6 +161,7 @@ fun MemorizationPracticeRoot(
     }
 }
 
+@Suppress("LongMethod")
 @Composable
 fun MemorizationPracticeScreen(
     state: MemorizationPracticeState,

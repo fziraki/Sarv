@@ -254,6 +254,7 @@ fun MemorizationOptionRow(
     }
 }
 
+@Suppress("LongParameterList")
 @Composable
 fun ActivePoemCard(
     title: String,

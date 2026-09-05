@@ -60,12 +60,21 @@ object SrsScheduler {
         )
     }
 
+    private const val BOX_1_MAX = 1
+    private const val BOX_2_MAX = 3
+    private const val BOX_3_MAX = 7
+    private const val BOX_4_MAX = 14
+
+    private const val BOX_LEVEL_3 = 3
+    private const val BOX_LEVEL_4 = 4
+    private const val BOX_LEVEL_5 = 5
+
     fun boxFromInterval(interval: Int): Int =
         when {
-            interval <= 1 -> 1
-            interval <= 3 -> 2
-            interval <= 7 -> 3
-            interval <= 14 -> 4
-            else -> 5
+            interval <= BOX_1_MAX -> 1
+            interval <= BOX_2_MAX -> 2
+            interval <= BOX_3_MAX -> BOX_LEVEL_3
+            interval <= BOX_4_MAX -> BOX_LEVEL_4
+            else -> BOX_LEVEL_5
         }
 }
