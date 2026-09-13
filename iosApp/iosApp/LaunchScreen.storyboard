@@ -15,15 +15,16 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchLogo" translatesAutoresizingMaskIntoConstraints="NO" id="hF2-pW-3dK">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchLogo" translatesAutoresizingMaskIntoConstraints="NO" id="hF2-pW-3dK">
+                                <rect key="frame" x="106.5" y="336" width="180" height="180"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="180" id="wVd-1a-5mB"/>
+                                    <constraint firstAttribute="height" secondItem="hF2-pW-3dK" secondAttribute="width" id="hCn-2b-7pQ"/>
                                 </constraints>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" name="SplashBackground"/>
                         <constraints>
                             <constraint firstItem="hF2-pW-3dK" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="1Xb-4A-3rX"/>
                             <constraint firstItem="hF2-pW-3dK" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="8vY-7x-3kC"/>
@@ -35,4 +36,10 @@
             <point key="canvasLocation" x="53" y="375"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="LaunchLogo" width="180" height="180"/>
+        <namedColor name="SplashBackground">
+            <color red="0.42352941176470588" green="0.30196078431372547" blue="0.21176470588235294" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>

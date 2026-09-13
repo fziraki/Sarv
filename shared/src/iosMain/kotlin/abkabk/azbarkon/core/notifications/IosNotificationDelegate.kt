@@ -15,7 +15,7 @@ import platform.UserNotifications.UNUserNotificationCenter
 import platform.UserNotifications.UNUserNotificationCenterDelegateProtocol
 import platform.darwin.NSObject
 
-object IosNotificationDelegate : NSObject(), UNUserNotificationCenterDelegateProtocol {
+class IosNotificationDelegate : NSObject(), UNUserNotificationCenterDelegateProtocol {
     val poemId = MutableStateFlow<Int?>(null)
     val openMemorizationPractice = MutableStateFlow(false)
 
@@ -54,3 +54,5 @@ object IosNotificationDelegate : NSObject(), UNUserNotificationCenterDelegatePro
         withCompletionHandler()
     }
 }
+
+internal val iosNotificationDelegate = IosNotificationDelegate()

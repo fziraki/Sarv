@@ -44,7 +44,6 @@ fun App(
     )
 
     val windowSizeClass = calculateWindowSizeClass()
-    println("SarvDebug: WindowSizeClass = ${windowSizeClass.widthSizeClass}")
 
     val deviceScaleInfo = DeviceScaleInfo(
         widthSizeClass = windowSizeClass.widthSizeClass,

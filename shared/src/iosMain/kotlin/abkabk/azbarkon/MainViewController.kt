@@ -1,7 +1,7 @@
 package abkabk.azbarkon
 
 import abkabk.azbarkon.core.di.initKoinIfNeeded
-import abkabk.azbarkon.core.notifications.IosNotificationDelegate
+import abkabk.azbarkon.core.notifications.iosNotificationDelegate
 import abkabk.azbarkon.domain.memorization.MemorizationReviewNotificationCoordinator
 import abkabk.azbarkon.domain.platform.DailyDistichNotificationScheduler
 import androidx.compose.runtime.collectAsState
@@ -21,7 +21,7 @@ private object IosAppBootstrap : KoinComponent {
 
     fun onLaunch() {
         initKoinIfNeeded()
-        IosNotificationDelegate.install()
+        iosNotificationDelegate.install()
         dailyDistichNotificationScheduler.rescheduleIfEnabled()
         scope.launch {
             reviewNotificationCoordinator.sync()
@@ -29,13 +29,14 @@ private object IosAppBootstrap : KoinComponent {
     }
 }
 
-fun MainViewController() =
-    ComposeUIViewController {
-        IosAppBootstrap.onLaunch()
-        val poemId by IosNotificationDelegate.poemId.collectAsState()
-        val openMemorizationPractice by IosNotificationDelegate.openMemorizationPractice.collectAsState()
+fun MainViewController(): platform.UIKit.UIViewController {
+    IosAppBootstrap.onLaunch()
+    return ComposeUIViewController {
+        val poemId by iosNotificationDelegate.poemId.collectAsState()
+        val openMemorizationPractice by iosNotificationDelegate.openMemorizationPractice.collectAsState()
         App(
             initialPoemId = poemId,
             openMemorizationPractice = openMemorizationPractice,
         )
     }
+}

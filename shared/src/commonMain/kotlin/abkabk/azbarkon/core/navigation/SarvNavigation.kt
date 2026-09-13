@@ -495,8 +495,8 @@ fun SarvNavigation(
                     profileGraph()
                     poetsGraph(navController)
                     searchGraph(navController)
-        }
+                }
+            }
         }
     }
 }
-    }

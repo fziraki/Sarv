@@ -13,7 +13,9 @@ captures
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata/
+!*.xcodeproj/xcshareddata/**
 !*.xcodeproj/project.xcworkspace/
+!*.xcodeproj/project.xcworkspace/**
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
