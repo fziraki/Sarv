@@ -1,11 +1,21 @@
 package abkabk.azbarkon.core.local
 
+import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.UnsafeNumber
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.usePinned
+import kotlinx.coroutines.runBlocking
+import no.synth.kmpzip.zip.ZipInputStream
 import platform.Foundation.NSDocumentDirectory
-import platform.Foundation.NSBundle
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
+import platform.posix.FILE
+import platform.posix.fclose
+import platform.posix.fopen
+import platform.posix.fwrite
+import sarv.shared.generated.resources.Res
 
 internal const val DATABASE_NAME = "ganjoor.s3db"
 
@@ -27,22 +37,27 @@ internal fun hasBundledDatabase(): Boolean {
     return NSFileManager.defaultManager.fileExistsAtPath(path)
 }
 
-@OptIn(ExperimentalForeignApi::class)
+@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 internal fun copyDatabaseIfNeeded() {
-    val fileManager = NSFileManager.defaultManager
     val dbPath = bundledDatabasePath() ?: return
 
-    if (!fileManager.fileExistsAtPath(dbPath)) {
-        val bundlePath =
-            NSBundle.mainBundle.pathForResource(
-                "ganjoor",
-                ofType = "s3db",
-            ) ?: return
+    if (!NSFileManager.defaultManager.fileExistsAtPath(dbPath)) {
+        val zipBytes: ByteArray = runBlocking { Res.readBytes("files/$DATABASE_NAME.zip") }
+        val extracted: ByteArray = ZipInputStream(zipBytes).use { zip ->
+            zip.nextEntry ?: return@use ByteArray(0)
+            zip.readBytes()
+        }
+        writeBytesToFile(extracted, dbPath)
+    }
+}
 
-        fileManager.copyItemAtPath(
-            bundlePath,
-            toPath = dbPath,
-            error = null,
-        )
+@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
+private fun writeBytesToFile(data: ByteArray, path: String) {
+    data.usePinned { pinned ->
+        val file: CPointer<FILE>? = fopen(path, "wb")
+        if (file != null) {
+            fwrite(pinned.addressOf(0), 1u, data.size.toULong(), file)
+            fclose(file)
+        }
     }
 }

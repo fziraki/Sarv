@@ -38,6 +38,7 @@ work = "2.11.2"
 media3 = "1.11.0"
 composeLints = "1.5.4"
 detektComposeRules = "0.6.4"
+kmpZip = "0.16.0"
 
 
 [libraries]
@@ -97,6 +98,7 @@ androidx-media3-common = { module = "androidx.media3:media3-common", version.ref
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
 compose-lint-checks = { module = "com.slack.lint.compose:compose-lint-checks", version.ref = "composeLints" }
 compose-rules-detekt = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektComposeRules" }
+kmp-zip = { module = "no.synth:kmp-zip", version.ref = "kmpZip" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

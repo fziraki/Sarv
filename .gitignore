@@ -57,6 +57,7 @@ GoogleService-Info.plist
 **/assets/
 
 *.s3db
+*.s3db.zip
 
 # poet db builder output
 tools/out/
