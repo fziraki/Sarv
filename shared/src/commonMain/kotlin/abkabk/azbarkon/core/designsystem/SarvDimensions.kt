@@ -49,9 +49,6 @@ fun floorToHalf(value: Float): Float {
 }
 @Composable
 fun sarvDimensions(widthDp: Int, heightDp: Int): SarvDimensions {
-
-    println("width $widthDp")
-
     val min = minOf(widthDp, heightDp)
 
     val scale = floorToHalf((min / BASE_WIDTH_DP).toFloat())

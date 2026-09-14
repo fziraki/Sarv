@@ -9,5 +9,4 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
--keep class abkabk.azbarkon.features.games.navigation.GameTypeRoute { *; }
 # ponytail: package stays abkabk.azbarkon for backwards compat; only display/DB names changed to Sarv

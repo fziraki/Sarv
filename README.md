@@ -1,7 +1,9 @@
 <p>
   <img src="androidApp/src/main/ic_launcher-playstore.png" width="96" alt="sarv logo" align="left" />
   <b>Sarv — سرو</b><br>
-  A modern Persian poetry app for reading, learning, and playing.
+  A modern Persian poetry app for reading, learning, and playing.<br>
+  <a href="https://cafebazaar.ir/app/abkabk.azbarkon">Android</a><br>
+  <a href="https://github.com/fziraki/Sarv/releases/download/latest-ios/Sarv.ipa">iOS</a>
 </p>
 <br clear="all"/>
 

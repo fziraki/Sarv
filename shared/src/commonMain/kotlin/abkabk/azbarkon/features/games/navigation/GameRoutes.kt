@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object GamesRoute
 
-@Serializable
 enum class GameTypeRoute {
     NEXT_VERSE,
     FIND_POET,
@@ -16,17 +15,38 @@ enum class GameTypeRoute {
 
 @Serializable
 data class GamePlayRoute(
-    val type: GameTypeRoute,
+    val type: String,
 )
 
 @Serializable
 data class GameResultRoute(
-    val type: GameTypeRoute,
+    val type: String,
     val correct: Int,
     val wrong: Int,
     val noAnswer: Int,
     val scoreDelta: Int,
 )
+
+fun GamePlayRoute(type: GameTypeRoute): GamePlayRoute = GamePlayRoute(type.name)
+
+fun GameResultRoute(
+    type: GameTypeRoute,
+    correct: Int,
+    wrong: Int,
+    noAnswer: Int,
+    scoreDelta: Int,
+): GameResultRoute =
+    GameResultRoute(
+        type = type.name,
+        correct = correct,
+        wrong = wrong,
+        noAnswer = noAnswer,
+        scoreDelta = scoreDelta,
+    )
+
+fun GamePlayRoute.toGameTypeRoute(): GameTypeRoute = GameTypeRoute.valueOf(type)
+
+fun GameResultRoute.toGameTypeRoute(): GameTypeRoute = GameTypeRoute.valueOf(type)
 
 fun GameTypeRoute.toDomain(): GameType =
     when (this) {

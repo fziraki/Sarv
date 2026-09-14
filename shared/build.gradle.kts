@@ -62,6 +62,7 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation(libs.sqldelight.native.driver)
+            implementation(libs.kmp.zip)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)

@@ -16,7 +16,7 @@ fun NavGraphBuilder.gamesGraph(
     composable<GamesRoute> {
         GamesRoot(
             onNavigateToGame = { type ->
-                navController.navigate(GamePlayRoute(type = type.toRoute()))
+                navController.navigate(GamePlayRoute(type.toRoute()))
             },
         )
     }
@@ -24,7 +24,7 @@ fun NavGraphBuilder.gamesGraph(
     composable<GamePlayRoute> { backStackEntry ->
         val route = backStackEntry.toRoute<GamePlayRoute>()
         GameSessionRoot(
-            gameTypeRoute = route.type,
+            gameTypeRoute = route.toGameTypeRoute(),
             onBackClick = navController::navigateUp,
             onNavigateToResult = { gameType, summary ->
                 navController.navigate(summary.toResultRoute(gameType)) {
@@ -42,7 +42,7 @@ fun NavGraphBuilder.gamesGraph(
             noAnswerCount = route.noAnswer,
             scoreDelta = route.scoreDelta,
             onReplayClick = {
-                navController.navigate(GamePlayRoute(type = route.type)) {
+                navController.navigate(GamePlayRoute(route.toGameTypeRoute())) {
                     popUpTo<GameResultRoute> { inclusive = true }
                 }
             },
@@ -58,13 +58,13 @@ fun NavGraphBuilder.gamesGraph(
 
 private fun GameSessionSummary.toResultRoute(gameType: GameType): GameResultRoute =
     GameResultRoute(
-        type = gameType.toRoute(),
-        correct = correctCount,
-        wrong = wrongCount,
-        noAnswer = noAnswerCount,
-        scoreDelta = scoreDelta,
+        gameType.toRoute(),
+        correctCount,
+        wrongCount,
+        noAnswerCount,
+        scoreDelta,
     )
 
 fun NavController.navigateToGame(type: GameTypeRoute) {
-    navigate(GamePlayRoute(type = type))
+    navigate(GamePlayRoute(type))
 }

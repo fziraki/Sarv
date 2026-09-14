@@ -7,6 +7,8 @@ import com.sarv.db.SarvDatabase
 import io.github.aakira.napier.Napier
 import java.io.File
 import java.util.zip.ZipInputStream
+import kotlinx.coroutines.runBlocking
+import sarv.shared.generated.resources.Res
 
 internal const val DATABASE_NAME = "ganjoor.s3db"
 
@@ -22,7 +24,7 @@ fun copyDatabaseIfNeeded(context: Context) {
 
     if (copy) {
         dbFile.delete()
-        copyBundledDatabase(context, dbFile)
+        copyBundledDatabase(dbFile)
     }
     syncBundledDatabaseVersion(dbFile.path)
     Napier.d(
@@ -55,16 +57,13 @@ private fun databaseVersion(dbFile: File): Int =
         0
     }
 
-private fun copyBundledDatabase(context: Context, dbFile: File) {
+private fun copyBundledDatabase(dbFile: File) {
     dbFile.parentFile?.mkdirs()
-    context.assets.open("$DATABASE_NAME.zip").use { input ->
-        extractFirstEntry(ZipInputStream(input), dbFile)
+    val zipBytes = runBlocking { Res.readBytes("files/$DATABASE_NAME.zip") }
+    ZipInputStream(zipBytes.inputStream()).use { zip ->
+        zip.nextEntry ?: return
+        dbFile.outputStream().use { zip.copyTo(it) }
     }
-}
-
-private fun extractFirstEntry(zip: ZipInputStream, dbFile: File) {
-    zip.nextEntry ?: return
-    dbFile.outputStream().use { zip.copyTo(it) }
 }
 
 private fun syncBundledDatabaseVersion(dbPath: String) {
