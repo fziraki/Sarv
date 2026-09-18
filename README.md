@@ -102,7 +102,7 @@ core/                → Design system, DI, networking, notifications
 | Analytics | Firebase Crashlytics, Cloud Messaging |
 | Serialization | Kotlinx Serialization 1.11.0 |
 | Testing | JUnit 5, assertk, Turbine |
-| Coverage | JaCoCo (15%) |
+| Coverage | [![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/fziraki/Sarv/main/.github/coverage-badge.json)](shared/build/reports/jacoco/jacocoTestReport/html/index.html) |
 | Lint | Detekt, Compose Lint Checks |
 
 ---
