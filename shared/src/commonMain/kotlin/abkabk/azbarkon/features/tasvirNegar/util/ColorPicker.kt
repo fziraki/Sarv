@@ -110,9 +110,9 @@ internal fun HsvColorPickerContent(
 private fun ColorSlider(
     label: String,
     value: Float,
-    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     modifier: Modifier = Modifier,
-    onValueChange: (Float) -> Unit,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
+    onValueChange: (Float) -> Unit
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
