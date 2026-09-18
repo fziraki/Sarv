@@ -45,7 +45,7 @@ jobs:
           python3 -c "
           import json, os
           cov = os.environ['COVERAGE']
-          color = 'brightgreen' if float(cov) >= 80 else 'yellow' if float(cov) >= 60 else 'red'
+          color = "blue"
           badge = {
               'schemaVersion': 1,
               'label': 'coverage',
