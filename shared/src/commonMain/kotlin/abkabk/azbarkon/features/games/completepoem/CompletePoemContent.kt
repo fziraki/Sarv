@@ -30,6 +30,7 @@ import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.game_complete_poem_instruction
 import org.jetbrains.compose.resources.stringResource
 import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
+import androidx.compose.ui.platform.testTag
 
 private const val MIN_BLANK_PARTS = 3
 
@@ -169,7 +170,8 @@ private fun CompletePoemOptionGrid(
                         .padding(
                             horizontal = LocalSarvDimensions.current.dimen12,
                             vertical = LocalSarvDimensions.current.dimen16,
-                        ),
+                        )
+                        .testTag("CompletePoemOption_$index"),
                     text = completePoemOptionLabel(
                         word = word,
                         filledWords = filledWords,

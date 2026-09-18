@@ -102,6 +102,7 @@ core/                → Design system, DI, networking, notifications
 | Analytics | Firebase Crashlytics, Cloud Messaging |
 | Serialization | Kotlinx Serialization 1.11.0 |
 | Testing | JUnit 5, assertk, Turbine |
+| Coverage | JaCoCo (15%) |
 | Lint | Detekt, Compose Lint Checks |
 
 ---

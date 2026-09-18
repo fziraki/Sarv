@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -33,7 +32,6 @@ import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 private const val TRACK_MIN_DIVISOR = 0.001f
 private const val VERTICAL_ROTATION_DEGREES = 270f
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SarvSlider(
     value: Float,

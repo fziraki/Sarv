@@ -27,6 +27,7 @@ import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.game_next_verse_instruction
 import org.jetbrains.compose.resources.stringResource
 import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun NextVerseContent(
@@ -151,7 +152,8 @@ private fun NextVerseOptionList(
                 .fillMaxWidth()
                 .gameOptionStyle(state)
                 .clickable(enabled = clickable) { onOptionSelect(index) }
-                .padding(LocalSarvDimensions.current.dimen16),
+                .padding(LocalSarvDimensions.current.dimen16)
+                .testTag("NextVerseOption_$index"),
             text = option,
             style = MaterialTheme.typography.bodyMedium,
             color = contentColor,

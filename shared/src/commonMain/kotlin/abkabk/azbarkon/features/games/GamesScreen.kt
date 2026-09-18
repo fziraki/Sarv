@@ -53,6 +53,7 @@ import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
+import androidx.compose.ui.platform.testTag
 
 private const val GAME_CARD_IMAGE_WEIGHT = 0.3f
 private const val GAME_CARD_CONTENT_WEIGHT = 0.7f
@@ -110,7 +111,7 @@ fun GamesScreen(
 
     LazyVerticalGrid(
         columns = columns,
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().testTag("GamesGrid"),
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
         horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
         contentPadding = PaddingValues(vertical = LocalSarvDimensions.current.dimen24, horizontal = LocalSarvDimensions.current.dimen16),
@@ -142,7 +143,9 @@ fun GameItem(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min).clickable { onClick() },
+            .height(IntrinsicSize.Min)
+            .clickable { onClick() }
+            .testTag("GameItem_${gameType.name}"),
         shape = RoundedCornerShape(LocalSarvDimensions.current.dimen12),
         tonalElevation = LocalSarvDimensions.current.dimen1,
         shadowElevation = LocalSarvDimensions.current.dimen1,

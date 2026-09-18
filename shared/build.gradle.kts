@@ -155,7 +155,13 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "src/androidMain/kotlin",
     )
     classDirectories.setFrom(
-        fileTree("build/tmp/kotlin-classes/androidHostTest") { include("**/*.class") }
+        fileTree("build/classes/kotlin/android/main") {
+            exclude("**/generated/**")
+            exclude("**/ui/theme/**")
+            exclude("**/composables/**")
+            exclude("**/*\$Composable*")
+            exclude("**/*\$lambda*")
+        }
     )
     executionData.setFrom(
         fileTree("build") {

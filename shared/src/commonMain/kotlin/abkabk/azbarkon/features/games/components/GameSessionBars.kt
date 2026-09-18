@@ -49,6 +49,7 @@ import sarv.shared.generated.resources.whois_poet_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
+import androidx.compose.ui.platform.testTag
 
 private const val PROGRESS_FLIP_ROTATION_DEGREES = 180f
 private const val PRIMARY_BUTTON_WEIGHT = 0.6f
@@ -104,7 +105,8 @@ private fun GameSessionTitleRow(
                 Modifier
                     .align(Alignment.CenterEnd)
                     .size(LocalSarvDimensions.current.dimen24)
-                    .clickable(onClick = onBackClick),
+                    .clickable(onClick = onBackClick)
+                    .testTag("GameBackButton"),
             painter = painterResource(Res.drawable.arrow_back_left),
             contentDescription = stringResource(Res.string.cd_back),
             tint = MaterialTheme.colorScheme.onBackground,
@@ -156,13 +158,13 @@ fun GameQuizProgressSection(
 @Composable
 private fun GameCoinBadge(balance: Int, modifier: Modifier = Modifier) {
     Row(
-        modifier =
-            modifier
-                .border(
-                    width = LocalSarvDimensions.current.dimen1,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
-                ).padding(horizontal = LocalSarvDimensions.current.dimen10, vertical = LocalSarvDimensions.current.dimen6),
+        modifier = modifier
+            .testTag("CoinBadge")
+            .border(
+                width = LocalSarvDimensions.current.dimen1,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                shape = RoundedCornerShape(LocalSarvDimensions.current.dimen16),
+            ).padding(horizontal = LocalSarvDimensions.current.dimen10, vertical = LocalSarvDimensions.current.dimen6),
         horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen6),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -202,12 +204,12 @@ fun GameSessionBottomBar(
             text = checkAnswerLabel(hasSelection = hasSelection, isRevealing = isRevealing),
             onClick = onCheckAnswerClick,
             enabled = canPressPrimaryAction,
-            modifier = Modifier.weight(PRIMARY_BUTTON_WEIGHT),
+            modifier = Modifier.weight(PRIMARY_BUTTON_WEIGHT).testTag("PrimaryActionButton"),
         )
 
         GameHintButton(
             onClick = onHintClick,
-            modifier = Modifier.weight(HINT_BUTTON_WEIGHT),
+            modifier = Modifier.weight(HINT_BUTTON_WEIGHT).testTag("HintButton"),
         )
     }
 }

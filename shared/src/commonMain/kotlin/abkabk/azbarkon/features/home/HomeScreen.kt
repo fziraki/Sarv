@@ -18,7 +18,6 @@ import abkabk.azbarkon.ui.components.SarvButton
 import abkabk.azbarkon.ui.theme.LightColorScheme
 import abkabk.azbarkon.ui.theme.SarvTheme
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -622,7 +621,6 @@ fun HeroCard(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TopSlider(
     items: List<SliderPage>,

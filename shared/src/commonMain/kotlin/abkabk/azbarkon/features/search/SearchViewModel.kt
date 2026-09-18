@@ -15,7 +15,6 @@ import androidx.paging.cachedIn
 import androidx.paging.map as pagingMap
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.search_empty_query
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -38,7 +37,6 @@ class SearchViewModel(
     private val searchParams = MutableStateFlow<SearchParams?>(null)
     private var searchLoadingJob: Job? = null
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val searchResults: Flow<PagingData<SearchResultUi>> =
         searchParams
             .flatMapLatest { params ->
