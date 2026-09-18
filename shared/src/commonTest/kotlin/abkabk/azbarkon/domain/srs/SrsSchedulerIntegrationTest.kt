@@ -16,8 +16,11 @@ import assertk.assertions.isFalse
 import assertk.assertions.isGreaterThan
 import assertk.assertions.isTrue
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlin.test.Test
 
+@Suppress("DEPRECATION")
 class SrsSchedulerIntegrationTest {
 
     private val baseTime = Instant.parse("2026-01-01T10:00:00Z")
