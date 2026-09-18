@@ -18,9 +18,11 @@ import sarv.shared.generated.resources.chat_persian_only
 import sarv.shared.generated.resources.poem_copied
 
 import abkabk.azbarkon.testing.runViewModelTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlin.test.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ChatViewModelTest {
 
     @Test

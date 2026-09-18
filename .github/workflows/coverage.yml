@@ -45,7 +45,7 @@ jobs:
           python3 -c "
           import json, os
           cov = os.environ['COVERAGE']
-          color = "blue"
+          color = 'blue'
           badge = {
               'schemaVersion': 1,
               'label': 'coverage',

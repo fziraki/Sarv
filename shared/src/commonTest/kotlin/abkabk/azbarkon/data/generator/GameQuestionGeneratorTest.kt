@@ -22,7 +22,7 @@ class GameQuestionGeneratorTest {
             )
 
         assertThat(question).isNotNull()
-        assertThat(question!!.options).hasSize(4)
+        assertThat(question.options).hasSize(4)
         assertThat(question.options[question.correctIndex]).isEqualTo("تویی")
     }
 
@@ -38,8 +38,8 @@ class GameQuestionGeneratorTest {
             )
 
         assertThat(question).isNotNull()
-        assertThat(question!!.poetName).isEqualTo("حافظ")
-        assertThat(question!!.options).hasSize(4)
+        assertThat(question.poetName).isEqualTo("حافظ")
+        assertThat(question.options).hasSize(4)
         assertThat(question.options).contains(question.correctWords.first)
         assertThat(question.options).contains(question.correctWords.second)
     }
