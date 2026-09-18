@@ -56,12 +56,12 @@ jobs:
               json.dump(badge, f, indent=2)
           "
 
-      - name: Push badge to main
+      - name: Commit badge & update README
         run: |
-          cp .github/coverage-badge.json /tmp/coverage-badge.json
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout main
-          cp /tmp/coverage-badge.json .github/coverage-badge.json
-          git add .github/coverage-badge.json
-          git diff --cached --quiet || git commit -m "ci: update coverage badge [skip ci]" && git push origin main
+          BRANCH="${GITHUB_REF_NAME}"
+          ESCAPED_URL="https://raw.githubusercontent.com/fziraki/Sarv/${BRANCH}/.github/coverage-badge.json"
+          sed -i "s|url=https://raw.githubusercontent.com/fziraki/Sarv/[^/]*/.github/coverage-badge.json|url=${ESCAPED_URL}|g" README.md
+          git add .github/coverage-badge.json README.md
+          git diff --cached --quiet || git commit -m "ci: update coverage badge [skip ci]" && git push
