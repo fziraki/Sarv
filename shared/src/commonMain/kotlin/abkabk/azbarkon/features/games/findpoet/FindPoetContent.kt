@@ -37,6 +37,7 @@ import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.game_find_poet_instruction
 import org.jetbrains.compose.resources.stringResource
 import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun FindPoetContent(
@@ -162,7 +163,9 @@ private fun FindPoetOptionGrid(
                             .gameOptionStyle(state)
                             .clickable(enabled = clickable) {
                                 onPoetSelect(poetOption.id)
-                            }.padding(LocalSarvDimensions.current.dimen12),
+                            }
+                            .padding(LocalSarvDimensions.current.dimen12)
+                            .testTag("FindPoetOption_${poetOption.id}"),
                         horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {

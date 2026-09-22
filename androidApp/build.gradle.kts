@@ -28,6 +28,12 @@ dependencies {
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.crashlytics)
 
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.12.0")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4-android:1.12.0")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+
 }
 
 android {
@@ -49,6 +55,8 @@ android {
                 .toInt()
         versionCode = libs.versions.android.versionCode.get().toInt()
         versionName = libs.versions.android.versionName.get()
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     packaging {
         resources {

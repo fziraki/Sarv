@@ -92,16 +92,17 @@ core/                → Design system, DI, networking, notifications
 
 | Layer | Technology |
 |-------|-----------|
-| Language | Kotlin 2.4.10 |
-| UI | Compose Multiplatform 1.11.1, Material3 |
+| Language | Kotlin |
+| UI | Compose Multiplatform, Material3 |
 | Navigation | Compose Navigation (type-safe routes) |
-| DI | Koin 4.2.2 |
-| Database | SQLDelight 2.3.2 |
-| Networking | Ktor 3.5.2 |
-| Image Loading | Coil 3.5.0 |
+| DI | Koin |
+| Database | SQLDelight |
+| Networking | Ktor |
+| Image Loading | Coil |
 | Analytics | Firebase Crashlytics, Cloud Messaging |
-| Serialization | Kotlinx Serialization 1.11.0 |
+| Serialization | Kotlinx Serialization |
 | Testing | JUnit 5, assertk, Turbine |
+| Coverage | [![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/fziraki/Sarv/test/jacoco-coverage/.github/coverage-badge.json)](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/fziraki/Sarv/test/jacoco-coverage/.github/coverage-badge.json) |
 | Lint | Detekt, Compose Lint Checks |
 
 ---

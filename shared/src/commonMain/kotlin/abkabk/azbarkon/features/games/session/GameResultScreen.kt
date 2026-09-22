@@ -47,6 +47,7 @@ import sarv.shared.generated.resources.game_result_progress_answered_format
 import sarv.shared.generated.resources.game_result_progress_percent_format
 import sarv.shared.generated.resources.game_result_progress_question_count_label
 import sarv.shared.generated.resources.game_result_progress_total_questions_format
+import androidx.compose.ui.platform.testTag
 import sarv.shared.generated.resources.game_result_score
 import sarv.shared.generated.resources.game_result_title
 import sarv.shared.generated.resources.game_result_wrong
@@ -97,7 +98,8 @@ fun GameResultScreen(
         modifier =
             modifier
                 .verticalScroll(rememberScrollState())
-                .padding(LocalSarvDimensions.current.dimen16),
+                .padding(LocalSarvDimensions.current.dimen16)
+                .testTag("GameResultScreen"),
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
     ) {
         Header(
@@ -105,7 +107,10 @@ fun GameResultScreen(
             onBackClick = onBackToListClick,
         )
 
-        GameResultScoreCard(scoreDelta = scoreDelta)
+        GameResultScoreCard(
+            scoreDelta = scoreDelta,
+            modifier = Modifier.testTag("ResultScoreCard"),
+        )
 
         GameResultStatsRow(
             correctCount = correctCount,
@@ -120,12 +125,12 @@ fun GameResultScreen(
 
         GameResultReplayButton(
             onClick = onReplayClick,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("ReplayButton"),
         )
 
         GameResultBackToListButton(
             onClick = onBackToListClick,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("BackToListButton"),
         )
     }
 }
@@ -196,21 +201,21 @@ private fun GameResultStatsRow(
             value = noAnswerCount.toString(),
             label = stringResource(Res.string.game_result_no_answer),
             valueColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).testTag("ResultNoAnswerStat"),
         )
 
         GameResultStatCard(
             value = wrongCount.toString(),
             label = stringResource(Res.string.game_result_wrong),
             valueColor = MaterialTheme.colorScheme.error,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).testTag("ResultWrongStat"),
         )
 
         GameResultStatCard(
             value = correctCount.toString(),
             label = stringResource(Res.string.game_result_correct),
             valueColor = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).testTag("ResultCorrectStat"),
         )
     }
 }

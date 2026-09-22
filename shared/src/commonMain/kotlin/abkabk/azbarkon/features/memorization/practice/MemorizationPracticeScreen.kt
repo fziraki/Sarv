@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -63,6 +62,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalDensity
@@ -189,7 +189,8 @@ fun MemorizationPracticeScreen(
                     modifier =
                         Modifier
                             .padding(horizontal = LocalSarvDimensions.current.dimen20, vertical = LocalSarvDimensions.current.dimen12)
-                            .keyboardAboveIme(),
+                            .keyboardAboveIme()
+                            .testTag("PracticeBottomPanel"),
                 )
             }
         },
@@ -204,7 +205,8 @@ fun MemorizationPracticeScreen(
                         Modifier
                             .fillMaxSize()
                             .padding(paddingValues)
-                            .padding(LocalSarvDimensions.current.dimen24),
+                            .padding(LocalSarvDimensions.current.dimen24)
+                            .testTag("PracticeComplete"),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
@@ -251,15 +253,15 @@ fun MemorizationPracticeScreen(
                                 .padding(horizontal = LocalSarvDimensions.current.dimen20),
                     ) {
                         if (state.totalCards > 0) {
-                            PracticeProgressSection(
-                                cardIndex = state.cardIndex,
-                                totalCards = state.totalCards,
-                                onHelpClick = { showHelpDialog = true },
-                                modifier = Modifier.padding(
-                                    top = LocalSarvDimensions.current.dimen16,
-                                    bottom = LocalSarvDimensions.current.dimen12,
-                                ),
-                            )
+                    PracticeProgressSection(
+                        cardIndex = state.cardIndex,
+                        totalCards = state.totalCards,
+                        onHelpClick = { showHelpDialog = true },
+                        modifier = Modifier.padding(
+                            top = LocalSarvDimensions.current.dimen16,
+                            bottom = LocalSarvDimensions.current.dimen12,
+                        ).testTag("PracticeProgress"),
+                    )
                         }
 
                         LazyColumn(
@@ -365,7 +367,7 @@ private fun PracticeCardContent(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().padding(vertical = LocalSarvDimensions.current.dimen16),
+        modifier = modifier.fillMaxWidth().padding(vertical = LocalSarvDimensions.current.dimen16).testTag("CardContent"),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
     ) {
@@ -468,7 +470,10 @@ private fun PracticeBottomPanel(
             onAction = onAction,
         )
 
-        PracticeSessionStatsBar(state = state)
+        PracticeSessionStatsBar(
+            state = state,
+            modifier = Modifier.testTag("SessionStatsBar"),
+        )
     }
 }
 
@@ -508,9 +513,10 @@ private fun PracticeModeIconButton(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    testTag: String = ""
 ) {
     Column(
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier.clickable(onClick = onClick).testTag(testTag),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen4),
     ) {
@@ -555,7 +561,7 @@ private fun PracticeActionRow(
         SarvPrimaryButton(
             text = stringResource(primaryButtonState.labelRes),
             onClick = { onAction(primaryButtonState.action) },
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier.fillMaxWidth().testTag("PrimaryAction"),
             enabled = primaryButtonState.enabled,
             verticalTextPadding = LocalSarvDimensions.current.dimen8
         )
@@ -575,6 +581,7 @@ private fun PracticeActionRow(
             contentDescription = stringResource(Res.string.memorization_reveal_content_description),
             selected = !state.isTypingMode,
             onClick = { onAction(MemorizationPracticeAction.OnRevealClick) },
+            testTag = "RevealButton",
         )
 
         if (showPrimaryButton) {
@@ -600,6 +607,7 @@ private fun PracticeActionRow(
             contentDescription = stringResource(Res.string.memorization_keyboard_content_description),
             selected = state.isTypingMode,
             onClick = { onAction(MemorizationPracticeAction.OnTypingModeClick) },
+            testTag = "TypingModeButton",
         )
     }
     }
@@ -721,14 +729,13 @@ private fun primaryButtonState(state: MemorizationPracticeState): PrimaryButtonS
             )
     }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun GradeButtons(
     onAction: (MemorizationPracticeAction) -> Unit,
+    modifier: Modifier = Modifier,
     selectedGrade: SrsGrade? = null,
     suggestedGrade: SrsGrade? = null,
-    enabled: Boolean = true,
-    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     FlowRow(
         modifier = modifier.fillMaxWidth(),
@@ -742,6 +749,7 @@ private fun GradeButtons(
             isSuggested = suggestedGrade == SrsGrade.AGAIN,
             enabled = enabled,
             onAction = onAction,
+            testTag = "GradeAgain",
         )
         GradeButton(
             label = stringResource(Res.string.memorization_grade_hard),
@@ -750,6 +758,7 @@ private fun GradeButtons(
             isSuggested = suggestedGrade == SrsGrade.HARD,
             enabled = enabled,
             onAction = onAction,
+            testTag = "GradeHard",
         )
         GradeButton(
             label = stringResource(Res.string.memorization_grade_good),
@@ -758,6 +767,7 @@ private fun GradeButtons(
             isSuggested = suggestedGrade == SrsGrade.GOOD,
             enabled = enabled,
             onAction = onAction,
+            testTag = "GradeGood",
         )
         GradeButton(
             label = stringResource(Res.string.memorization_grade_easy),
@@ -766,6 +776,7 @@ private fun GradeButtons(
             isSuggested = suggestedGrade == SrsGrade.EASY,
             enabled = enabled,
             onAction = onAction,
+            testTag = "GradeEasy",
         )
     }
 }
@@ -779,6 +790,7 @@ private fun GradeButton(
     enabled: Boolean,
     onAction: (MemorizationPracticeAction) -> Unit,
     modifier: Modifier = Modifier,
+    testTag: String = ""
 ) {
     val containerColor =
         when {
@@ -795,7 +807,7 @@ private fun GradeButton(
     SarvButton(
         text = label,
         onClick = { onAction(MemorizationPracticeAction.OnGradeClick(grade)) },
-        modifier = modifier,
+        modifier = modifier.testTag(testTag),
         enabled = enabled,
         colors =
             ButtonDefaults.buttonColors(

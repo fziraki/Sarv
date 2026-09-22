@@ -34,6 +34,7 @@ import sarv.shared.generated.resources.keep
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
+import androidx.compose.ui.platform.testTag
 
 private const val POEM_LINE_COUNT = 4
 
@@ -153,7 +154,8 @@ private fun OrganizePoemReorderSection(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen12))
                 .background(background)
-                .padding(LocalSarvDimensions.current.dimen12),
+                .padding(LocalSarvDimensions.current.dimen12)
+                .testTag("OrganizeLine_${lineId}"),
             horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
             verticalAlignment = Alignment.CenterVertically,
         ) {

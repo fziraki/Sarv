@@ -20,6 +20,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.test.Test
 
+@Suppress("DEPRECATION")
 class SrsSchedulerIntegrationTest {
 
     private val baseTime = Instant.parse("2026-01-01T10:00:00Z")
@@ -36,7 +37,7 @@ class SrsSchedulerIntegrationTest {
         repeat(5) { i ->
             val result = SrsScheduler.calculatePoemInterval(
                 minTotalScore = 2.0,
-                userTotalScore = 4.0, // above min → easy path
+                userTotalScore = 4.0,
                 consecutiveEasy = consecutiveEasy,
                 clock = testClock,
             )
@@ -44,17 +45,13 @@ class SrsSchedulerIntegrationTest {
             consecutiveEasy = result.consecutiveEasy
             lastDueDate = result.dueDateMillis
 
-            // each iteration: consecutiveEasy should be i+1
             assertThat(result.consecutiveEasy).isEqualTo(i + 1)
-            // interval grows: 1, 2, 3, 4, 5
             assertThat(result.interval).isEqualTo(i + 1)
         }
 
-        // after 5 consecutive easy, threshold is met
         assertThat(consecutiveEasy).isEqualTo(5)
         assertThat(consecutiveEasy).isGreaterThan(4)
 
-        // verify badge would be earned
         val badgeEarned = BadgeCatalog.resolveEarned(
             badgeId = 1,
             hasCompletedGhazal = true,
@@ -79,16 +76,12 @@ class SrsSchedulerIntegrationTest {
                 clock = testClock,
             )
 
-            // due date should be in the future
             assertThat(result.dueDateMillis).isGreaterThan(currentTime.toEpochMilliseconds())
-
-            // due date should increase with each review
             assertThat(result.dueDateMillis).isGreaterThan(previousDueDate)
 
             consecutiveEasy = result.consecutiveEasy
             previousDueDate = result.dueDateMillis
 
-            // advance time to the due date for next iteration
             currentTime = Instant.fromEpochMilliseconds(
                 result.dueDateMillis
             )
@@ -97,7 +90,6 @@ class SrsSchedulerIntegrationTest {
 
     @Test
     fun `resetting to again breaks consecutive easy streak`() {
-        // build up 3 consecutive easy
         var consecutiveEasy = 0
         repeat(3) {
             val result = SrsScheduler.calculatePoemInterval(
@@ -111,7 +103,6 @@ class SrsSchedulerIntegrationTest {
         }
         assertThat(consecutiveEasy).isEqualTo(3)
 
-        // one again grade resets streak
         val resetResult = SrsScheduler.calculatePoemInterval(
             minTotalScore = 2.0,
             userTotalScore = -0.5, // below min → again path
@@ -126,7 +117,7 @@ class SrsSchedulerIntegrationTest {
     fun `hard grade does not increment consecutive easy`() {
         val result = SrsScheduler.calculatePoemInterval(
             minTotalScore = 2.0,
-            userTotalScore = 2.0, // equals min → hard path
+            userTotalScore = 2.0,
             consecutiveEasy = 3,
             clock = testClock,
         )
@@ -136,14 +127,6 @@ class SrsSchedulerIntegrationTest {
 
     @Test
     fun `full scenario add poem then 5 easy sessions then completed`() {
-        // simulate the full flow:
-        // 1. poem added, interval=1, dueDate=now (due immediately)
-        // 2. first review: easy → consecutiveEasy=1, interval=1
-        // 3. second review: easy → consecutiveEasy=2, interval=2
-        // 4. third review: easy → consecutiveEasy=3, interval=3
-        // 5. fourth review: easy → consecutiveEasy=4, interval=4
-        // 6. fifth review: easy → consecutiveEasy=5 → COMPLETED
-
         var consecutiveEasy = 0
         val reviews = mutableListOf<Pair<Int, Long>>() // interval, dueDate
 
@@ -159,17 +142,14 @@ class SrsSchedulerIntegrationTest {
             currentTime = Instant.fromEpochMilliseconds(result.dueDateMillis)
         }
 
-        // verify progression
         assertThat(reviews.map { it.first }).isEqualTo(listOf(1, 2, 3, 4, 5))
         assertThat(reviews.map { it.second }).isEqualTo(
             reviews.map { it.second }.sorted()
         )
 
-        // verify completion threshold
         val isCompleted = consecutiveEasy >= 5
         assertThat(isCompleted).isTrue()
 
-        // verify badge
         val badgeEarned = BadgeCatalog.resolveEarned(
             badgeId = 1,
             hasCompletedGhazal = isCompleted,
@@ -192,12 +172,10 @@ class SrsSchedulerIntegrationTest {
             userPreferencesRepository = preferences,
         )
 
-        // no active poems → disabled
         coordinator.sync()
         assertThat(scheduler.isEnabled).isFalse()
         assertThat(scheduler.disableCallCount).isEqualTo(1)
 
-        // add a poem
         localDataSource.activePoemCount = 1
         coordinator.sync()
         assertThat(scheduler.isEnabled).isTrue()
@@ -217,11 +195,9 @@ class SrsSchedulerIntegrationTest {
             userPreferencesRepository = preferences,
         )
 
-        // active poems + reminder on → enabled
         coordinator.sync()
         assertThat(scheduler.isEnabled).isTrue()
 
-        // turn off reminder
         preferences.setMemorizationReminderEnabled(false)
         coordinator.sync()
         assertThat(scheduler.isEnabled).isFalse()
@@ -242,7 +218,6 @@ class SrsSchedulerIntegrationTest {
         coordinator.sync()
         assertThat(scheduler.isEnabled).isTrue()
 
-        // remove all poems
         localDataSource.activePoemCount = 0
         coordinator.sync()
         assertThat(scheduler.isEnabled).isFalse()
@@ -260,11 +235,9 @@ class SrsSchedulerIntegrationTest {
             userPreferencesRepository = preferences,
         )
 
-        // 1. no poems → disabled
         coordinator.sync()
         assertThat(scheduler.disableCallCount).isEqualTo(1)
 
-        // 2. add poem via SRS, time travel through 5 reviews
         localDataSource.activePoemCount = 1
         var consecutiveEasy = 0
         repeat(5) {
@@ -278,12 +251,10 @@ class SrsSchedulerIntegrationTest {
             currentTime = Instant.fromEpochMilliseconds(result.dueDateMillis)
         }
 
-        // 3. sync → notifications enabled (poems still active)
         coordinator.sync()
         assertThat(scheduler.isEnabled).isTrue()
         assertThat(scheduler.enableCallCount).isEqualTo(1)
 
-        // 4. simulate poem completed → remove from active
         localDataSource.activePoemCount = 0
         coordinator.sync()
         assertThat(scheduler.disableCallCount).isEqualTo(2)
