@@ -29,13 +29,14 @@ jobs:
           COV=$(python3 -c "
           import xml.etree.ElementTree as ET
           tree = ET.parse('shared/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml')
-          for c in tree.findall('.//counter[@type=\"LINE\"]'):
-              covered = int(c.get('covered'))
-              missed = int(c.get('missed'))
-              total = covered + missed
-              pct = round(covered * 100 / total, 1) if total else 0
-              print(f'{pct}')
-              break
+          for c in tree.getroot():
+              if c.tag == 'counter' and c.get('type') == 'LINE':
+                  covered = int(c.get('covered'))
+                  missed = int(c.get('missed'))
+                  total = covered + missed
+                  pct = round(covered * 100 / total, 1) if total else 0
+                  print(f'{pct}')
+                  break
           ")
           echo "COVERAGE=${COV}" >> $GITHUB_ENV
           echo "Coverage: ${COV}%"
