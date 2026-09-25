@@ -108,7 +108,8 @@ fun ProfileHeader(
         levelImageResource(levelProgress.levelId)?.let { drawable ->
             Image(
                 painter = painterResource(drawable),
-                contentDescription = stringResource(Res.string.profile_level_format, levelProgress.levelId) + "، " + levelProgress.levelName,
+                contentDescription =
+                    stringResource(Res.string.profile_level_format, levelProgress.levelId) + "، " + levelProgress.levelName,
                 modifier = Modifier.size(LocalSarvDimensions.current.dimen96).clickable(onClick = onLevelsClick),
             )
         }
