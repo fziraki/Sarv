@@ -238,6 +238,13 @@
     <string name="cd_bookmark">نشان‌گذاری</string>
     <string name="cd_state_on">فعال</string>
     <string name="cd_state_off">غیرفعال</string>
+    <string name="cd_switch_on">روشن</string>
+    <string name="cd_switch_off">خاموش</string>
+    <string name="state_badge_earned">دریافت شده</string>
+    <string name="state_badge_locked">دریافت نشده</string>
+    <string name="state_level_locked">قفل شده</string>
+    <string name="state_level_current">سطح فعلی</string>
+    <string name="state_level_completed">تکمیل شده</string>
     <string name="cd_add_poem">افزودن شعر به حفظ</string>
     <string name="cd_select_track">انتخاب تلاوت</string>    <string name="cd_menu">منو</string>
     <string name="cd_copy">کپی شعر</string>

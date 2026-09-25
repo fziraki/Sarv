@@ -229,7 +229,7 @@ private fun FeaturedPoetCard(
                             .size(LocalSarvDimensions.current.dimen48)
                             .clip(CircleShape)
                             .clickable(onClick = onChatClick)
-                            .padding(LocalSarvDimensions.current.dimen16),
+                            .padding(LocalSarvDimensions.current.dimen12),
                 )
             }
 

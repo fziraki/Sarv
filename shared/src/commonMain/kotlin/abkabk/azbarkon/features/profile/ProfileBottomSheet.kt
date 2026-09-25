@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,6 +41,12 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -48,6 +55,8 @@ import org.jetbrains.compose.resources.stringResource
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.add_box_24px
 import sarv.shared.generated.resources.check_circle
+import sarv.shared.generated.resources.cd_switch_off
+import sarv.shared.generated.resources.cd_switch_on
 import sarv.shared.generated.resources.download
 import sarv.shared.generated.resources.lock
 import sarv.shared.generated.resources.notifications
@@ -78,6 +87,9 @@ import sarv.shared.generated.resources.profile_theme_dark
 import sarv.shared.generated.resources.profile_theme_light
 import sarv.shared.generated.resources.profile_theme_system
 import sarv.shared.generated.resources.profile_theme_title
+import sarv.shared.generated.resources.state_level_completed
+import sarv.shared.generated.resources.state_level_current
+import sarv.shared.generated.resources.state_level_locked
 import sarv.shared.generated.resources.upload
 
 private const val FONT_SIZE_DEFAULT = 1f
@@ -162,9 +174,8 @@ private fun ProfileSettingsSheetContent(
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
         horizontalAlignment = Alignment.Start
     ) {
-
         Text(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().semantics { heading() },
             text = stringResource(Res.string.profile_settings_title),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
@@ -310,12 +321,29 @@ private fun ProfileSettingToggleRow(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-) {    Row(
+) {
+    val switchStateLabel =
+        stringResource(
+            if (checked) {
+                Res.string.cd_switch_on
+            } else {
+                Res.string.cd_switch_off
+            },
+        )
+    Row(
         modifier =
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen12))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
+                .toggleable(
+                    value = checked,
+                    onValueChange = onCheckedChange,
+                    indication = null,
+                    interactionSource = null,
+                    role = Role.Switch,
+                )
+                .semantics { stateDescription = switchStateLabel }
                 .padding(horizontal = LocalSarvDimensions.current.dimen16, vertical = LocalSarvDimensions.current.dimen12),
         horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
         verticalAlignment = Alignment.CenterVertically,
@@ -325,6 +353,7 @@ private fun ProfileSettingToggleRow(
             Switch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
+                modifier = Modifier.clearAndSetSemantics { },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.primary,
                     checkedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -417,6 +446,7 @@ private fun ProfileSegmentedOption(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val isSelected = selected
     Row(
         modifier =
             modifier
@@ -428,6 +458,7 @@ private fun ProfileSegmentedOption(
                         MaterialTheme.colorScheme.surfaceVariant
                     },
                 ).clickable(onClick = onClick)
+                .semantics { this.selected = isSelected }
                 .padding(horizontal = LocalSarvDimensions.current.dimen8, vertical = LocalSarvDimensions.current.dimen8),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -457,9 +488,9 @@ private fun ProfileBadgesSheetContent(badges: List<BadgeUi>, modifier: Modifier 
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen12),
     ) {
         Text(
+            modifier = Modifier.fillMaxWidth().semantics { heading() },
             text = stringResource(Res.string.profile_badges_title),
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
         )
         LazyColumn(
@@ -490,9 +521,9 @@ private fun ProfileLevelsSheetContent(levels: List<LevelListItemUi>, modifier: M
         verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8),
     ) {
         Text(
+            modifier = Modifier.fillMaxWidth().semantics { heading() },
             text = stringResource(Res.string.profile_levels_title),
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
         )
         LazyColumn(verticalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen8)) {
@@ -520,12 +551,22 @@ private fun ProfileLevelRow(item: LevelListItemUi, modifier: Modifier = Modifier
             )
         }
 
+    val stateLabel =
+        stringResource(
+            when (item.state) {
+                LevelRowState.Locked -> Res.string.state_level_locked
+                LevelRowState.Current -> Res.string.state_level_current
+                LevelRowState.Completed -> Res.string.state_level_completed
+            },
+        )
+
     Row(
         modifier =
             modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(LocalSarvDimensions.current.dimen12))
                 .background(backgroundColor)
+                .semantics(mergeDescendants = true) { stateDescription = stateLabel }
                 .padding(horizontal = LocalSarvDimensions.current.dimen12,
                     vertical = LocalSarvDimensions.current.dimen16),
         verticalAlignment = Alignment.CenterVertically,

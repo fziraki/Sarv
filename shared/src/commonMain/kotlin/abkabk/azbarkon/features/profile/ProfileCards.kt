@@ -38,6 +38,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -66,6 +68,8 @@ import sarv.shared.generated.resources.memorization_completed_poems
 import sarv.shared.generated.resources.profile_memorization_status_title
 import sarv.shared.generated.resources.profile_view_all_badges
 import sarv.shared.generated.resources.profile_xp_format
+import sarv.shared.generated.resources.state_badge_earned
+import sarv.shared.generated.resources.state_badge_locked
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -104,7 +108,7 @@ fun ProfileHeader(
         levelImageResource(levelProgress.levelId)?.let { drawable ->
             Image(
                 painter = painterResource(drawable),
-                contentDescription = null,
+                contentDescription = stringResource(Res.string.profile_level_format, levelProgress.levelId) + "، " + levelProgress.levelName,
                 modifier = Modifier.size(LocalSarvDimensions.current.dimen96).clickable(onClick = onLevelsClick),
             )
         }
@@ -223,7 +227,7 @@ private fun ProfileStatusCard(
     modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().semantics(mergeDescendants = true) {},
         shape = RoundedCornerShape(LocalSarvDimensions.current.dimen12),
         tonalElevation = LocalSarvDimensions.current.dimen1,
         shadowElevation = LocalSarvDimensions.current.dimen1,
@@ -339,10 +343,21 @@ fun BadgeItem(
     item: BadgeUi,
     modifier: Modifier = Modifier,
 ) {
+    val stateLabel =
+        stringResource(
+            if (item.isEarned) {
+                Res.string.state_badge_earned
+            } else {
+                Res.string.state_badge_locked
+            },
+        )
     BadgeIcon(
         badgeId = item.id,
         isEarned = item.isEarned,
-        modifier = modifier.width(LocalSarvDimensions.current.dimen80),
+        modifier =
+            modifier
+                .width(LocalSarvDimensions.current.dimen80)
+                .semantics(mergeDescendants = true) { stateDescription = stateLabel },
         showName = true,
         name = item.name,
     )
@@ -353,8 +368,19 @@ fun BadgeListRow(
     item: BadgeUi,
     modifier: Modifier = Modifier,
 ) {
+    val stateLabel =
+        stringResource(
+            if (item.isEarned) {
+                Res.string.state_badge_earned
+            } else {
+                Res.string.state_badge_locked
+            },
+        )
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .semantics(mergeDescendants = true) { stateDescription = stateLabel },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(LocalSarvDimensions.current.dimen16),
     ) {
