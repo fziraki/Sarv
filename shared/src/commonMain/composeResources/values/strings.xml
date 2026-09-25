@@ -33,6 +33,7 @@
 
     <string name="popular_poets">شاعران محبوب</string>
     <string name="all">همه</string>
+    <string name="cd_list_all_poets">لیست همه شاعران</string>
 
     <string name="poetry_memorization">حفظ شعر</string>
     <string name="new_memorization_title">حفظ جدید</string>
@@ -235,6 +236,8 @@
     <string name="poem_copied">شعر کپی شد</string>
     <string name="coming_soon">به‌زودی</string>
     <string name="cd_bookmark">نشان‌گذاری</string>
+    <string name="cd_state_on">فعال</string>
+    <string name="cd_state_off">غیرفعال</string>
     <string name="cd_add_poem">افزودن شعر به حفظ</string>
     <string name="cd_select_track">انتخاب تلاوت</string>    <string name="cd_menu">منو</string>
     <string name="cd_copy">کپی شعر</string>

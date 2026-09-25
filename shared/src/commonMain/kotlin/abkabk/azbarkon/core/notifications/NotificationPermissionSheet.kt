@@ -18,6 +18,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.notification_permission_allow
 import sarv.shared.generated.resources.notification_permission_body
@@ -60,6 +62,7 @@ fun NotificationPermissionSheet(
                 text = stringResource(Res.string.notification_permission_title),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.semantics { heading() },
             )
             Text(
                 text = stringResource(Res.string.notification_permission_body),

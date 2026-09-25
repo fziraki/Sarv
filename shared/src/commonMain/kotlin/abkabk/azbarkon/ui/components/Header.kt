@@ -18,6 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.arrow_back_right
 import sarv.shared.generated.resources.bookmark
@@ -26,6 +30,8 @@ import sarv.shared.generated.resources.cd_back
 import sarv.shared.generated.resources.cd_bookmark
 import sarv.shared.generated.resources.cd_memorization_review_alarm
 import sarv.shared.generated.resources.cd_search
+import sarv.shared.generated.resources.cd_state_off
+import sarv.shared.generated.resources.cd_state_on
 import sarv.shared.generated.resources.clear_all_title
 import sarv.shared.generated.resources.notifications
 import sarv.shared.generated.resources.search
@@ -78,6 +84,7 @@ fun Header(
                 text = title,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.semantics { heading() },
             )
             if (subtitle != null) {
                 Text(
@@ -112,12 +119,27 @@ private fun HeaderActionButton(action: HeaderAction) {
         return
     }
 
+    val alarmStateText =
+        if (action is HeaderAction.Alarm) {
+            stringResource(if (action.isEnabled) Res.string.cd_state_on else Res.string.cd_state_off)
+        } else {
+            null
+        }
+
     Box(
         modifier =
             Modifier
                 .size(LocalSarvDimensions.current.dimen40)
                 .clip(CircleShape)
-                .clickable(onClick = action.onClick),
+                .clickable(onClick = action.onClick)
+                .semantics {
+                    if (action is HeaderAction.Bookmark) {
+                        selected = action.isBookmarked
+                    }
+                    if (alarmStateText != null) {
+                        stateDescription = alarmStateText
+                    }
+                },
         contentAlignment = Alignment.Center,
     ) {
         when (action) {

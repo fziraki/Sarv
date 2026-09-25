@@ -13,10 +13,11 @@ import coil3.compose.SubcomposeAsyncImage
 fun NetworkImage(
     imageUrl: String,
     modifier: Modifier = Modifier,
+    contentDescription: String? = null,
 ) {
     SubcomposeAsyncImage(
         model = imageUrl,
-        contentDescription = null,
+        contentDescription = contentDescription,
         modifier = modifier,
         contentScale = ContentScale.Crop,
         loading = {

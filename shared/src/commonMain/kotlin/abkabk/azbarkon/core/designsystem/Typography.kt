@@ -25,7 +25,7 @@ fun sarvTypography(
 
     val min = minOf(widthDp, heightDp)
 
-    val scale = floorToHalf((min / BASE_WIDTH_DP).toFloat())
+    val scale = floorToHalf((min / BASE_WIDTH_DP).toFloat()).coerceAtLeast(1f)
     fun sp(base: Float) = (base * scale * fontSizeScale).sp
 
     return Typography(

@@ -4,6 +4,7 @@ import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import abkabk.azbarkon.core.designsystem.brown
 import abkabk.azbarkon.core.notifications.MAX_NOTIFICATION_PERMISSION_DECLINES
 import abkabk.azbarkon.core.notifications.NotificationPermissionSheet
+import abkabk.azbarkon.core.platform.isTouchExplorationEnabled
 import abkabk.azbarkon.core.ui.LocalWindowSizeClass
 import abkabk.azbarkon.core.ui.WindowWidthSizeClass
 import abkabk.azbarkon.core.uidata.BaseScreen
@@ -47,6 +48,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -65,6 +67,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -80,6 +85,7 @@ import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.all
 import sarv.shared.generated.resources.continue_memorization_desc
 import sarv.shared.generated.resources.continue_memorization_title
+import sarv.shared.generated.resources.cd_list_all_poets
 import sarv.shared.generated.resources.herobg
 import sarv.shared.generated.resources.image_creator_bg
 import sarv.shared.generated.resources.memorization_button
@@ -333,14 +339,19 @@ fun Poets(
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = LocalSarvDimensions.current.dimen8),
             horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
+                modifier = Modifier.semantics { heading() },
                 text = stringResource(Res.string.popular_poets),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onBackground,
             )
+            val allPoetsCd = stringResource(Res.string.cd_list_all_poets)
             Text(
-                modifier = Modifier.clickable(onClick = onSeeAllClick),
+                modifier = Modifier
+                    .clickable(onClick = onSeeAllClick)
+                    .semantics { contentDescription = allPoetsCd },
                 text = stringResource(Res.string.all),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -643,7 +654,10 @@ fun TopSlider(
     fun getItem(page: Int): SliderPage = items[page % items.size]
 
     // 🎬 AUTOPLAY (simple)
-    LaunchedEffect(items.size) {
+    // ponytail: touch-exploration state is read at composition, not observed live
+    val touchExplorationEnabled = isTouchExplorationEnabled()
+    LaunchedEffect(items.size, touchExplorationEnabled) {
+        if (touchExplorationEnabled) return@LaunchedEffect
         while (true) {
             delay(autoPlayDuration)
 

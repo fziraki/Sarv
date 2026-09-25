@@ -51,7 +51,7 @@ fun floorToHalf(value: Float): Float {
 fun sarvDimensions(widthDp: Int, heightDp: Int): SarvDimensions {
     val min = minOf(widthDp, heightDp)
 
-    val scale = floorToHalf((min / BASE_WIDTH_DP).toFloat())
+    val scale = floorToHalf((min / BASE_WIDTH_DP).toFloat()).coerceAtLeast(1f)
     fun dp(base: Int) = (base * scale).dp
 
     return SarvDimensions(

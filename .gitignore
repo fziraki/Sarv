@@ -66,3 +66,6 @@ tools/out/
 
 # graphify generated artifacts
 graphify-out/
+
+# opencode project config
+.opencode/

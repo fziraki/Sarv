@@ -4,7 +4,6 @@ import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -15,12 +14,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 
 @Composable
 fun <T> AnimatedTabRow(
@@ -35,7 +37,8 @@ fun <T> AnimatedTabRow(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(LocalSarvDimensions.current.dimen48),
+                    .height(LocalSarvDimensions.current.dimen48)
+                    .selectableGroup(),
         ) {
             tabs.forEachIndexed { index, tab ->
                 Box(
@@ -43,7 +46,11 @@ fun <T> AnimatedTabRow(
                         Modifier
                             .weight(1f)
                             .fillMaxHeight()
-                            .clickable { onSelectTab(tab) },
+                            .selectable(
+                                selected = selectedTab == tab,
+                                role = Role.Tab,
+                                onClick = { onSelectTab(tab) },
+                            ),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
