@@ -25,10 +25,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import sarv.shared.generated.resources.Res
 import sarv.shared.generated.resources.filter
-import sarv.shared.generated.resources.search
 import sarv.shared.generated.resources.unknown
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 import abkabk.azbarkon.core.designsystem.LocalSarvDimensions
 
 
@@ -55,7 +53,7 @@ fun FilterField(
     ) {
         Icon(
             painter = painterResource(Res.drawable.filter),
-            contentDescription = stringResource(Res.string.search),
+            contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(LocalSarvDimensions.current.dimen20),
         )
